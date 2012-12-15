@@ -1,0 +1,360 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>Brook framework: BrookMessages</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit BrookMessages</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td><a class="section"  href="#%40Uses">Uses</a></td><td><a class="section"  href="#%40Classes">Classes, Interfaces, Objects and Records</a></td><td><a class="section"  href="#%40FuncsProcs">Functions and Procedures</a></td><td><a class="section"  href="#%40Types">Types</a></td><td>Constants</td><td><a class="section"  href="#%40Variables">Variables</a></td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+<p>
+Brook Messages unit.
+
+<p>Copyright (C) 2012-2014 Silvio Clecio.
+
+<p><a  target="_parent" href="http://brookframework.org">http://brookframework.org</a>
+
+<p>All contributors: Plase see the file CONTRIBUTORS.txt, included in this distribution.
+
+<p>See the file LICENSE.txt, included in this distribution, for details about the copyright.
+
+<p>This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
+<a name="%40Uses"></a><h2 class="uses">Uses</h2>
+<ul class="useslist"><li><a   href="BrookClasses.html">BrookClasses</a></li><li><a   href="BrookConsts.html">BrookConsts</a></li><li><a   href="BrookException.html">BrookException</a></li><li>Classes</li><li>SysUtils</li></ul><h2 class="overview">Overview</h2>
+<a name="%40Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="BrookMessages.EBrookMessage.html"><code>EBrookMessage</code></a></td>
+<td class="itemdesc">Handles exceptions for <a class="normal"  href="BrookMessages.TBrookMessage.html">TBrookMessage</a>.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="BrookMessages.EBrookMessages.html"><code>EBrookMessages</code></a></td>
+<td class="itemdesc">Handles exceptions for <a class="normal"  href="BrookMessages.TBrookMessages.html">TBrookMessages</a>.</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="BrookMessages.TBrookMessage.html"><code>TBrookMessage</code></a></td>
+<td class="itemdesc">Handles strings for translation of messages.</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="BrookMessages.TBrookMessages.html"><code>TBrookMessages</code></a></td>
+<td class="itemdesc">Registers the available language in the framework.</td>
+</tr>
+</table>
+<a name="%40FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a   href="BrookMessages.html#BrookSetDefaultLanguage">BrookSetDefaultLanguage</a></b>;</code></td>
+</tr>
+</table>
+<a name="%40Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#TBrookMessageClass">TBrookMessageClass</a></b> = class of <a   href="BrookMessages.TBrookMessage.html">TBrookMessage</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#TBrookMessagesClass">TBrookMessagesClass</a></b> = class of <a   href="BrookMessages.TBrookMessages.html">TBrookMessages</a>;</code></td>
+</tr>
+</table>
+<a name="%40Variables"></a><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookFileNotFoundError">SBrookFileNotFoundError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNoRequestMethodError">SBrookNoRequestMethodError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNoApplicationRegisteredError">SBrookNoApplicationRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookApplicationAlreadyRegisteredError">SBrookApplicationAlreadyRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookRegiterTBrookActionError">SBrookRegiterTBrookActionError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookActionAlreadyRegisteredError">SBrookActionAlreadyRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookDefaultActionAlreadyRegisteredError">SBrookDefaultActionAlreadyRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookPatternAlreadyRegisteredError">SBrookPatternAlreadyRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookRouterAlreadyRegisteredError">SBrookRouterAlreadyRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNoRouterRegisteredError">SBrookNoRouterRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookMessagesAlreadyRegisteredError">SBrookMessagesAlreadyRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNoMessagesRegisteredError">SBrookNoMessagesRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNoRouteRegisteredError">SBrookNoRouteRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookDataBaseItemNotFound">SBrookDataBaseItemNotFound</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookMessageItemNotFound">SBrookMessageItemNotFound</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookCfgFileNotFoundError">SBrookCfgFileNotFoundError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNilJSONParamError">SBrookNilJSONParamError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNilParamError">SBrookNilParamError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookDataBaseAlreadyRegisteredError">SBrookDataBaseAlreadyRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNoDataBaseRegisteredError">SBrookNoDataBaseRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookNoQueryBrokerClassRegisteredError">SBrookNoQueryBrokerClassRegisteredError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookEmptyTableNameError">SBrookEmptyTableNameError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookEmptyLibraryNameError">SBrookEmptyLibraryNameError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookEmptyCountryCodeError">SBrookEmptyCountryCodeError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookMethodNotAllowedError">SBrookMethodNotAllowedError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookMessages.html#SBrookIncompatibleTypesError">SBrookIncompatibleTypesError</a></b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookSetDefaultLanguage"></a><code>procedure <b>BrookSetDefaultLanguage</b>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Translates the framework messages acoording to the default language.</p>
+</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TBrookMessageClass"></a><code><b>TBrookMessageClass</b> = class of <a   href="BrookMessages.TBrookMessage.html">TBrookMessage</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Is a metaclass for <a class="normal"  href="BrookMessages.TBrookMessage.html">TBrookMessage</a> class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TBrookMessagesClass"></a><code><b>TBrookMessagesClass</b> = class of <a   href="BrookMessages.TBrookMessages.html">TBrookMessages</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Is a metaclass for <a class="normal"  href="BrookMessages.TBrookMessages.html">TBrookMessages</a> class.</p>
+</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookFileNotFoundError"></a><code><b>SBrookFileNotFoundError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNoRequestMethodError"></a><code><b>SBrookNoRequestMethodError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNoApplicationRegisteredError"></a><code><b>SBrookNoApplicationRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookApplicationAlreadyRegisteredError"></a><code><b>SBrookApplicationAlreadyRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookRegiterTBrookActionError"></a><code><b>SBrookRegiterTBrookActionError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookActionAlreadyRegisteredError"></a><code><b>SBrookActionAlreadyRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookDefaultActionAlreadyRegisteredError"></a><code><b>SBrookDefaultActionAlreadyRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookPatternAlreadyRegisteredError"></a><code><b>SBrookPatternAlreadyRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookRouterAlreadyRegisteredError"></a><code><b>SBrookRouterAlreadyRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNoRouterRegisteredError"></a><code><b>SBrookNoRouterRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookMessagesAlreadyRegisteredError"></a><code><b>SBrookMessagesAlreadyRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNoMessagesRegisteredError"></a><code><b>SBrookNoMessagesRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNoRouteRegisteredError"></a><code><b>SBrookNoRouteRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookDataBaseItemNotFound"></a><code><b>SBrookDataBaseItemNotFound</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookMessageItemNotFound"></a><code><b>SBrookMessageItemNotFound</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookCfgFileNotFoundError"></a><code><b>SBrookCfgFileNotFoundError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNilJSONParamError"></a><code><b>SBrookNilJSONParamError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNilParamError"></a><code><b>SBrookNilParamError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookDataBaseAlreadyRegisteredError"></a><code><b>SBrookDataBaseAlreadyRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNoDataBaseRegisteredError"></a><code><b>SBrookNoDataBaseRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookNoQueryBrokerClassRegisteredError"></a><code><b>SBrookNoQueryBrokerClassRegisteredError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookEmptyTableNameError"></a><code><b>SBrookEmptyTableNameError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookEmptyLibraryNameError"></a><code><b>SBrookEmptyLibraryNameError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookEmptyCountryCodeError"></a><code><b>SBrookEmptyCountryCodeError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookMethodNotAllowedError"></a><code><b>SBrookMethodNotAllowedError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SBrookIncompatibleTypesError"></a><code><b>SBrookIncompatibleTypesError</b>: string = <a   href="BrookConsts.html#ES">ES</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+</body></html>

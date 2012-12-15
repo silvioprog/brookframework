@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>Brook framework: BrookResponseHelper: Class TBrookResponseHelper</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TBrookResponseHelper"></a><h1 class="cio">Class TBrookResponseHelper</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td><a class="section"  href="#%40Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#%40Methods">Methods</a></td><td><a class="section"  href="#%40Properties">Properties</a></td></tr></table>
+<a name="%40Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="BrookResponseHelper.html">BrookResponseHelper</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TBrookResponseHelper = class helper(TObject) for TResponse</code></p>
+<h2 class="description">Description</h2>
+<p>
+Adds features to <code>TResponse</code> class.</p>
+<a name="%40Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TBrookResponseHelper</li></ul><h2 class="overview">Overview</h2>
+<a name="%40Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsEmpty">IsEmpty</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsInformational">IsInformational</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsOK">IsOK</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsSuccessful">IsSuccessful</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsRedirection">IsRedirection</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsRedirect">IsRedirect</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsForbidden">IsForbidden</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsNotFound">IsNotFound</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsClientError">IsClientError</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#IsServerError">IsServerError</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#AddContentDisposition">AddContentDisposition</a></b>(const AContentType: ShortString; const AFileName: TFileName = <a   href="BrookConsts.html#ES">ES</a>; const ADispositionType: ShortString = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_DISPOSITION_ATTACHMENT">BROOK_HTTP_CONTENT_DISPOSITION_ATTACHMENT</a>; const AContentDescription: ShortString = <a   href="BrookConsts.html#ES">ES</a>; const AModificationDate: TDateTime = <a   href="BrookConsts.html#NullDate">NullDate</a>);</code></td>
+</tr>
+</table>
+<a name="%40Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#Header">Header</a></b>[AName: string]: string read GetHeader write SetHeader;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookResponseHelper.TBrookResponseHelper.html#Status">Status</a></b>: Integer read GetStatus write SetStatus;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsEmpty"></a><code>function <b>IsEmpty</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a empty response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsInformational"></a><code>function <b>IsInformational</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this an informational response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsOK"></a><code>function <b>IsOK</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a 200 OK response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsSuccessful"></a><code>function <b>IsSuccessful</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a 2xx successful response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsRedirection"></a><code>function <b>IsRedirection</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a 3xx redirection response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsRedirect"></a><code>function <b>IsRedirect</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a specific redirect response? (301, 302, 303, 307)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsForbidden"></a><code>function <b>IsForbidden</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a forbidden response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsNotFound"></a><code>function <b>IsNotFound</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a 404 not found response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsClientError"></a><code>function <b>IsClientError</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a client error response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsServerError"></a><code>function <b>IsServerError</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is this a server error response?</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AddContentDisposition"></a><code>procedure <b>AddContentDisposition</b>(const AContentType: ShortString; const AFileName: TFileName = <a   href="BrookConsts.html#ES">ES</a>; const ADispositionType: ShortString = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_DISPOSITION_ATTACHMENT">BROOK_HTTP_CONTENT_DISPOSITION_ATTACHMENT</a>; const AContentDescription: ShortString = <a   href="BrookConsts.html#ES">ES</a>; const AModificationDate: TDateTime = <a   href="BrookConsts.html#NullDate">NullDate</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Defines a content disposition for a file.</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Header"></a><code>property <b>Header</b>[AName: string]: string read GetHeader write SetHeader;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get or set a HTTP header.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Status"></a><code>property <b>Status</b>: Integer read GetStatus write SetStatus;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get or set a HTTP status code.</p>
+</td></tr>
+</table>
+</body></html>

@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>Brook framework: BrookRequestHelper: Class TBrookRequestHelper</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TBrookRequestHelper"></a><h1 class="cio">Class TBrookRequestHelper</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td><a class="section"  href="#%40Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#%40Methods">Methods</a></td><td><a class="section"  href="#%40Properties">Properties</a></td></tr></table>
+<a name="%40Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="BrookRequestHelper.html">BrookRequestHelper</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TBrookRequestHelper = class helper(TObject) for TRequest</code></p>
+<h2 class="description">Description</h2>
+<p>
+Adds features to <code>TRequest</code> class.</p>
+<a name="%40Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TBrookRequestHelper</li></ul><h2 class="overview">Overview</h2>
+<a name="%40Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#SetScheme">SetScheme</a></b>(const AScheme: ShortString);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetScheme">GetScheme</a></b>: ShortString;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetPath">GetPath</a></b>(const AIndex: Integer): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsGet">IsGet</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsPost">IsPost</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsPut">IsPut</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsDelete">IsDelete</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsHead">IsHead</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsOptions">IsOptions</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsAjax">IsAjax</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsXhr">IsXhr</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsForm">IsForm</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#IsFormData">IsFormData</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#OverriddenMethod">OverriddenMethod</a></b>: ShortString;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetHostWithPort">GetHostWithPort</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetPath">GetPath</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetFullURL">GetFullURL</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetURLWithScriptName">GetURLWithScriptName</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetIP">GetIP</a></b>: ShortString;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#GetDocumentRoot">GetDocumentRoot</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#Variable">Variable</a></b>(const AName: string): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#Variables">Variables</a></b>(out AValues: TStrings);</code></td>
+</tr>
+</table>
+<a name="%40Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookRequestHelper.TBrookRequestHelper.html#Path">Path</a></b>[const AIndex: Integer]: string read <a   href="BrookRequestHelper.TBrookRequestHelper.html#GetPath">GetPath</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SetScheme"></a><code>class procedure <b>SetScheme</b>(const AScheme: ShortString);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Set the URL scheme (HTTP or HTTPs) in <code>GetFullURL</code> function.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetScheme"></a><code>class function <b>GetScheme</b>: ShortString;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the current URL scheme (HTTP or HTTPs).</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetPath"></a><code>function <b>GetPath</b>(const AIndex: Integer): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the path level passing the respective index. Exemple:
+
+<p><code>BrookGetPathLavel('/a/b/c/', 1)</code> = b.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsGet"></a><code>function <b>IsGet</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done under the GET method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsPost"></a><code>function <b>IsPost</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done under the POST method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsPut"></a><code>function <b>IsPut</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done under the PUT method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsDelete"></a><code>function <b>IsDelete</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done under the DELETE method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsHead"></a><code>function <b>IsHead</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done under the HEAD method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsOptions"></a><code>function <b>IsOptions</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done under the OPTIONS method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsAjax"></a><code>function <b>IsAjax</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done by means of Ajax.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsXhr"></a><code>function <b>IsXhr</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done by means of Xhr.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsForm"></a><code>function <b>IsForm</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done by means of a HTML form.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IsFormData"></a><code>function <b>IsFormData</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the request was done by means of a HTML data form.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OverriddenMethod"></a><code>function <b>OverriddenMethod</b>: ShortString;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get X-HTTP-Method-Override header</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetHostWithPort"></a><code>function <b>GetHostWithPort</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the URL and the port separated by a &quot;:&quot;, exemple: <a  target="_parent" href="http://localhost:80">http://localhost:80</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetPath"></a><code>function <b>GetPath</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the current path.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetFullURL"></a><code>function <b>GetFullURL</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the full URL, schema included.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetURLWithScriptName"></a><code>function <b>GetURLWithScriptName</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the full URL, schema and script name included.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetIP"></a><code>function <b>GetIP</b>: ShortString;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the IP of the requester.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetDocumentRoot"></a><code>function <b>GetDocumentRoot</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the server path where HTML documents can be placed.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Variable"></a><code>function <b>Variable</b>(const AName: string): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get a environment variable given its name.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Variables"></a><code>procedure <b>Variables</b>(out AValues: TStrings);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get a list with all environment variables.</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Path"></a><code>property <b>Path</b>[const AIndex: Integer]: string read <a   href="BrookRequestHelper.TBrookRequestHelper.html#GetPath">GetPath</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the current path, script name and pathinfo included.</p>
+</td></tr>
+</table>
+</body></html>

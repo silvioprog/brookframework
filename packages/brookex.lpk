@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="BrookEX"/>
+    <Author Value="Silvio Clecio - http://silvioprog.com.br"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <IncludeFiles Value="..\includes"/>
+        <OtherUnitFiles Value="..\core;..\ideintf"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Brook experts package."/>
+    <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
+    <Version Release="1"/>
+    <Files Count="9">
+      <Item1>
+        <Filename Value="..\ideintf\brookprojectintf.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="BrookProjectIntf"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\ideintf\frmbrookactedit.pas"/>
+        <UnitName Value="frmBrookActEdit"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\ideintf\frmbrookactedit.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\ideintf\frmbrooknewplugin.pas"/>
+        <UnitName Value="frmBrookNewPlugin"/>
+      </Item4>
+      <Item5>
+        <Filename Value="..\ideintf\frmbrooknewplugin.lfm"/>
+        <Type Value="LFM"/>
+      </Item5>
+      <Item6>
+        <Filename Value="..\ideintf\frmbrooknewproject.pas"/>
+        <UnitName Value="frmBrookNewProject"/>
+      </Item6>
+      <Item7>
+        <Filename Value="..\ideintf\frmbrooknewproject.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+      <Item8>
+        <Filename Value="..\ideintf\frmbrooktable2htmlform.pas"/>
+        <UnitName Value="frmBrookTable2HTMLForm"/>
+      </Item8>
+      <Item9>
+        <Filename Value="..\ideintf\frmbrooktable2htmlform.lfm"/>
+        <Type Value="LFM"/>
+      </Item9>
+    </Files>
+    <Type Value="DesignTime"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="BrookRT"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

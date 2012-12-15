@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>Person</title>
+	<link rel="stylesheet" href="http://brookframework.org/assets/jeasyui/themes/gray/easyui.css">
+	<link rel="stylesheet" href="http://brookframework.org/assets/jeasyui/themes/icon.css">
+	<link rel="stylesheet" href="http://brookframework.org/assets/jeasyui/demo/demo.css">
+	<link rel="stylesheet" href="http://brookframework.org/demos/db/jeasyui/crud.css"/>
+	<script type="text/javascript" src="http://brookframework.org/assets/js/jquery.js"></script>
+	<script type="text/javascript" src="http://brookframework.org/assets/jeasyui/jquery.easyui.js"></script>
+	<script type="text/javascript" src="http://brookframework.org/demos/db/jeasyui/crud.js"></script>
+</head>
+<body>
+<noscript>
+<h2>JavaScript must be enabled in order for you to use this demo in standard view. However, it seems JavaScript is either disabled or not supported by your browser. To use standard view, enable JavaScript by changing your browser options, then try again.</h2>
+</noscript>
+<div id="main">
+	<table id="dg"></table>
+	<div id="dlg" class="easyui-dialog">
+		<div class="ftitle">Person information</div>
+		<form id="fm" method="post" novalidate>
+			<div class="fitem">
+				<label for="name" >
+					Name: <input name="name" id="name" class="easyui-validatebox" maxlength=50 required>
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+object frCustomEdit: TfrCustomEdit
+  Left = 258
+  Height = 100
+  Top = 169
+  Width = 200
+  BorderStyle = bsDialog
+  ClientHeight = 100
+  ClientWidth = 200
+  Position = poDesktopCenter
+  LCLVersion = '1.1'
+  object pnClient: TPanel
+    Left = 0
+    Height = 72
+    Top = 0
+    Width = 200
+    Align = alClient
+    TabOrder = 0
+  end
+  object pnBottom: TPanel
+    Left = 0
+    Height = 28
+    Top = 72
+    Width = 200
+    Align = alBottom
+    AutoSize = True
+    ClientHeight = 28
+    ClientWidth = 200
+    TabOrder = 1
+    object btSubmit: TBitBtn
+      Left = 35
+      Height = 26
+      Top = 1
+      Width = 83
+      Align = alRight
+      AutoSize = True
+      Caption = '&Submit'
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object btCancel: TBitBtn
+      Left = 118
+      Height = 26
+      Top = 1
+      Width = 81
+      Align = alRight
+      AutoSize = True
+      Cancel = True
+      Caption = '&Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+end

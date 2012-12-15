@@ -1,0 +1,6 @@
+#main { display: none; }
+#fm { margin: 0; padding: 10px 30px; }
+#dlg { width: 400px; height: 280px; padding: 10px 20px }
+.ftitle { font-size: 14px; font-weight: bold; color: #666; padding: 5px 0; margin-bottom: 10px; border-bottom: 1px solid #ccc; }
+.fitem { margin-bottom: 5px; }
+.fitem label { display: inline-block; width: 80px; }

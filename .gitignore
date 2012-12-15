@@ -1,0 +1,10 @@
+*.[oa]
+*.ppu
+*.lps
+*.rst
+*.compiled
+*.bak*
+*.exe
+*.dll
+*.dbg
+packages/lib

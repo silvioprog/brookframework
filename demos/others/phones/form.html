@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="utf-8">
+	<title>Phones</title>
+</head>
+<body>
+<form>
+	<label for="name">
+		Name: <input type="text" name="name" id="name" maxlength="50" autofocus />
+	</label><br />
+	<ol id="phones"></ol><br />
+	<button id="save" >Save</button><br />
+	<div id="result" ></div>
+</form>
+<script type="text/javascript" src="http://brookframework.org/assets/js/jquery.js"></script>
+<script type="text/javascript">
+	// add phone
+	function addPhone() {
+		var id = "phone-";
+		id += $("#phones li:last").index() + 1;
+		$("#phones").append(
+			$("<li>").append(
+				$("<label>").html("Phone: ").append(
+					$("<input>").attr({ type: "text", id: id, autofocus: "autofocus" })
+				).attr({ "for": id })
+			).append(
+				$("<button>").html("Add").attr({ onclick: "addPhone();return false;" })
+			)
+		);
+		// enter add new item
+		$("#" + id).keypress(function(e) {
+			if (e.keyCode == 13)
+				addPhone();
+		});
+	};
+
+	// send all data
+	$("#save").on("click", function() {
+		var items = [];
+		$("#phones li").each(function() {
+			var input = $(this).find(":input");
+			if (input.val() != "")
+				items.push(input.val());
+		});
+		var json = { name: $("#name").val(), phones: "[" + items.toString() + "]" }
+		$.ajax({
+			async: false,
+			type: "POST",
+			url: "/cgi-bin/cgi1",
+			data: $.param(json),
+			success: function(result) {
+				$("form")[0].reset(); // clear the form fields.
+				$("#result").html(result);
+			}
+		});
+		return false;
+	});
+
+	// add first phone
+	addPhone();
+
+	// focus field name
+	$("#name").focus();
+</script>
+</body>
+</html>

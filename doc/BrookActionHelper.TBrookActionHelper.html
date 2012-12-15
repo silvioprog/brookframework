@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>Brook framework: BrookActionHelper: Class TBrookActionHelper</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TBrookActionHelper"></a><h1 class="cio">Class TBrookActionHelper</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td><a class="section"  href="#%40Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#%40Methods">Methods</a></td><td>Properties</td></tr></table>
+<a name="%40Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="BrookActionHelper.html">BrookActionHelper</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TBrookActionHelper = class helper(TObject) for TBrookAction</code></p>
+<h2 class="description">Description</h2>
+<p>
+Adds features to <code>TBrookAction</code> class.</p>
+<a name="%40Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TBrookActionHelper</li></ul><h2 class="overview">Overview</h2>
+<a name="%40Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookActionHelper.TBrookActionHelper.html#Alert">Alert</a></b>(const S: string);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#Confirm">Confirm</a></b>(const S: string): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#Prompt">Prompt</a></b>(const S, ADefaultValue: string): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookActionHelper.TBrookActionHelper.html#SetCookie">SetCookie</a></b>(const AName, AValue: string; const AExpires: TDateTime = <a   href="BrookConsts.html#NullDate">NullDate</a>; const APath: string = <a   href="BrookConsts.html#ES">ES</a>; const ADomain: string = <a   href="BrookConsts.html#ES">ES</a>; const ASecure: Boolean = False; const AHttpOnly: Boolean = False);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#GetCookie">GetCookie</a></b>(const AName: string): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookActionHelper.TBrookActionHelper.html#DeleteCookie">DeleteCookie</a></b>(const AName: string; const APath: string = <a   href="BrookConsts.html#ES">ES</a>; const ADomain: string = <a   href="BrookConsts.html#ES">ES</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#Link">Link</a></b>(ACaption: string; const AUrl: string = <a   href="BrookConsts.html#ES">ES</a>; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#LinkTo">LinkTo</a></b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: array of string; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#LinkTo">LinkTo</a></b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: TJSONData; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#LinkTo">LinkTo</a></b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#LinkTo">LinkTo</a></b>(const ACaption, AClassName: string; const AParams: array of string; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#LinkTo">LinkTo</a></b>(const ACaption, AClassName: string; const AParams: TJSONData; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#LinkTo">LinkTo</a></b>(const ACaption, AClassName, AClass: string): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#ButtonTo">ButtonTo</a></b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: array of string; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#ButtonTo">ButtonTo</a></b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: TJSONData; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#ButtonTo">ButtonTo</a></b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#ButtonTo">ButtonTo</a></b>(const ACaption, AClassName: string; const AParams: array of string; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#ButtonTo">ButtonTo</a></b>(const ACaption, AClassName: string; const AParams: TJSONData; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookActionHelper.TBrookActionHelper.html#ButtonTo">ButtonTo</a></b>(const ACaption, AClassName: string; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Alert"></a><code>procedure <b>Alert</b>(const S: string);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Shows a dialog with a information message.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Confirm"></a><code>function <b>Confirm</b>(const S: string): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Shows a dialog with a confirmation message.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Prompt"></a><code>function <b>Prompt</b>(const S, ADefaultValue: string): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Shows a dialog with a question message.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SetCookie"></a><code>procedure <b>SetCookie</b>(const AName, AValue: string; const AExpires: TDateTime = <a   href="BrookConsts.html#NullDate">NullDate</a>; const APath: string = <a   href="BrookConsts.html#ES">ES</a>; const ADomain: string = <a   href="BrookConsts.html#ES">ES</a>; const ASecure: Boolean = False; const AHttpOnly: Boolean = False);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a cookie.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetCookie"></a><code>function <b>GetCookie</b>(const AName: string): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get a cookie value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DeleteCookie"></a><code>procedure <b>DeleteCookie</b>(const AName: string; const APath: string = <a   href="BrookConsts.html#ES">ES</a>; const ADomain: string = <a   href="BrookConsts.html#ES">ES</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Deletes a cookie.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Link"></a><code>function <b>Link</b>(ACaption: string; const AUrl: string = <a   href="BrookConsts.html#ES">ES</a>; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a link HTML tag.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LinkTo"></a><code>function <b>LinkTo</b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: array of string; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a link HTML tag for an action passing an array of parameters however informing the class name as string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LinkTo"></a><code>function <b>LinkTo</b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: TJSONData; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an link HTML tag for an action passing a JSON data.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LinkTo"></a><code>function <b>LinkTo</b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an link HTML tag for an action.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LinkTo"></a><code>function <b>LinkTo</b>(const ACaption, AClassName: string; const AParams: array of string; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an link HTML tag for an action passing an array of parameters however informing the class name as string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LinkTo"></a><code>function <b>LinkTo</b>(const ACaption, AClassName: string; const AParams: TJSONData; const AClass: string = <a   href="BrookConsts.html#ES">ES</a>): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an link HTML tag for an action passing a JSON data however informing the class name as string.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LinkTo"></a><code>function <b>LinkTo</b>(const ACaption, AClassName, AClass: string): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an link HTML tag for an action informing the class name as string.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ButtonTo"></a><code>function <b>ButtonTo</b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: array of string; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a button HTML tag for an action passing an array of parameters.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ButtonTo"></a><code>function <b>ButtonTo</b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: TJSONData; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an button HTML tag for an action passing a JSON data.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ButtonTo"></a><code>function <b>ButtonTo</b>(const ACaption: string; AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an button HTML tag for an action.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ButtonTo"></a><code>function <b>ButtonTo</b>(const ACaption, AClassName: string; const AParams: array of string; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a button HTML tag for an action passing an array of parameters however informing the class name as string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ButtonTo"></a><code>function <b>ButtonTo</b>(const ACaption, AClassName: string; const AParams: TJSONData; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an button HTML tag for an action passing a JSON data however informing the class name as string.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ButtonTo"></a><code>function <b>ButtonTo</b>(const ACaption, AClassName: string; const AValue: ShortString = 'delete'): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an button HTML tag for an action informing the class name as string.</p>
+</td></tr>
+</table>
+</body></html>

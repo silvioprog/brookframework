@@ -1,0 +1,37 @@
+﻿<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>REST browser</title>
+</head>
+<body>
+<p>
+	<label for="url">
+		URL: <input type="text" name="url" id="url" value="/cgi-bin/cgi1/person" required />
+	</label>
+</p>
+<p>
+	<label for="method">
+		Method: <select id="method">
+			<option value="get">GET</option>
+			<option value="post">POST</option>
+			<option value="put">PUT</option>
+			<option value="delete">DELETE</option>
+		</select>
+	</label>
+</p>
+<p>
+	<label for="name">
+		Name: <input type="text" name="name" id="name" value="Foo" required />
+	</label>
+</p>
+<p>
+	<button id="submit" >Submit</button>
+</p>
+<p>
+	<div id="result" ></div>
+</p>
+<script type="text/javascript" src="http://brookframework.org/assets/js/jquery.js"></script>
+<script type="text/javascript" src="browser.js"></script>
+</body>
+</html>

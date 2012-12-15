@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="BrookGreyhoundRT"/>
+    <Author Value="Silvio Clecio - http://silvioprog.com.br"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="..\brokers"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CompilerMessages>
+          <MsgFileName Value=""/>
+        </CompilerMessages>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Brook Greyhound runtime package."/>
+    <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
+    <Version Release="1"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="..\brokers\brookghbroker.pas"/>
+        <UnitName Value="BrookGhBroker"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\brokers\brookghdbaction.pas"/>
+        <UnitName Value="BrookGhDBAction"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\brokers\brookghsqldbbroker.pas"/>
+        <UnitName Value="BrookGhSQLdbBroker"/>
+      </Item3>
+    </Files>
+    <Type Value="RunTimeOnly"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="BrookRT"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="gh_pack"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

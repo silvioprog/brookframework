@@ -1,0 +1,1001 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>Brook framework: BrookQuery: Class TBrookQuery</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TBrookQuery"></a><h1 class="cio">Class TBrookQuery</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td><a class="section"  href="#%40Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#%40Methods">Methods</a></td><td><a class="section"  href="#%40Properties">Properties</a></td></tr></table>
+<a name="%40Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="BrookQuery.html">BrookQuery</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TBrookQuery = class(<a class="normal"  href="BrookClasses.TBrookObject.html">TBrookObject</a>)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Handles database queries.</p>
+<a name="%40Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="ancestor"><a class="normal"  href="BrookClasses.TBrookObject.html">TBrookObject</a></li>
+<li class="thisitem">TBrookQuery</li></ul><h2 class="overview">Overview</h2>
+<a name="%40Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a   href="BrookQuery.TBrookQuery.html#Init">Init</a></b>(ADataBase: <a   href="BrookDataBase.TBrookDataBase.html">TBrookDataBase</a>); virtual; abstract;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a   href="BrookQuery.TBrookQuery.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookQuery.TBrookQuery.html#Create">Create</a></b>(ADataBase: <a   href="BrookDataBase.TBrookDataBase.html">TBrookDataBase</a>): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#InitBrokerClass">InitBrokerClass</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookQuery.TBrookQuery.html#BrokerClass">BrokerClass</a></b>: <a   href="BrookQuery.html#TBrookQueryClass">TBrookQueryClass</a>; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookQuery.TBrookQuery.html#GetJSONType">GetJSONType</a></b>(const AFieldClass: TFieldClass): ShortString;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookQuery.TBrookQuery.html#GetJSONType">GetJSONType</a></b>(const AField: TField): ShortString;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#JSONToFields">JSONToFields</a></b>(AJSON: TJSONObject; AFields: TFields; const ADateAsString: Boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#FieldsToJSON">FieldsToJSON</a></b>(AFields: TFields; AJSON: TJSONObject; const ADateAsString: Boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#DataSetToJSON">DataSetToJSON</a></b>(ADataSet: TDataSet; AJSON: TJSONArray; const ADateAsString: Boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#JSONToParams">JSONToParams</a></b>(AJSON: TJSONObject; AParams: TParams; AFieldDefs: TFieldDefs; const ADateAsString, AAutoCreateParams: Boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#FieldDefsToSchema">FieldDefsToSchema</a></b>(AFieldDefs: TFieldDefs; ASchema: TJSONObject); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#FieldDefsToSchema">FieldDefsToSchema</a></b>(AFieldDefs: TFieldDefs; out ASchema: TJSONStringType); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookQuery.TBrookQuery.html#GetJSONAttributes">GetJSONAttributes</a></b>(AJSON: TJSONObject; out ANames: string; out AValues: Variant; const ADelimiter: Char = <a   href="BrookConsts.html#SC">SC</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookQuery.TBrookQuery.html#GetSchema">GetSchema</a></b>(out ASchema: TJSONObject); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#GetSchema">GetSchema</a></b>: TJSONStringType; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookQuery.TBrookQuery.html#Locate">Locate</a></b>(ADataSet: TDataSet; const AJSON: TJSONObject; const AOptions: TLocateOptions): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#GetRows">GetRows</a></b>(out AJSON: TJSONArray): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#GetRow">GetRow</a></b>(out AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#SetRows">SetRows</a></b>(AJSON: TJSONArray): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#SetRow">SetRow</a></b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Bind">Bind</a></b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#ApplyUpdates">ApplyUpdates</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#CancelUpdates">CancelUpdates</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Apply">Apply</a></b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Undo">Undo</a></b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Commit">Commit</a></b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Rollback">Rollback</a></b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Append">Append</a></b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Insert">Insert</a></b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Edit">Edit</a></b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Cancel">Cancel</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Delete">Delete</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Open">Open</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Close">Close</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Refresh">Refresh</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#First">First</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Prior">Prior</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Next">Next</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Last">Last</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Post">Post</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Execute">Execute</a></b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#RowsAffected">RowsAffected</a></b>: TRowsCount; virtual; abstract;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Locate">Locate</a></b>(const AJSON: TJSONObject; const AOptions: TLocateOptions = []): Boolean; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Locate">Locate</a></b>(const AKeyFields: string; const AKeyValues: Variant; const AOptions: TLocateOptions = []): Boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Param">Param</a></b>(const AName: string): TParam; virtual; abstract;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Field">Field</a></b>(const AName: string): TField; virtual; abstract;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#FieldDef">FieldDef</a></b>(const AName: string): TFieldDef; virtual; abstract;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Count">Count</a></b>: Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Position">Position</a></b>: Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#GetBookmark">GetBookmark</a></b>: TBookmark;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookQuery.TBrookQuery.html#GotoBookmark">GotoBookmark</a></b>(ABookmark: TBookmark);</code></td>
+</tr>
+</table>
+<a name="%40Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#SQL">SQL</a></b>: TStrings read GetSQL;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Fields">Fields</a></b>: TFields read GetFields;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Params">Params</a></b>: TParams read GetParams;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#BOF">BOF</a></b>: Boolean read GetBOF;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#EOF">EOF</a></b>: Boolean read GetEOF;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Bookmark">Bookmark</a></b>: TBookmark read <a   href="BrookQuery.TBrookQuery.html#GetBookmark">GetBookmark</a> write <a   href="BrookQuery.TBrookQuery.html#GotoBookmark">GotoBookmark</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Modified">Modified</a></b>: Boolean read GetModified;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#State">State</a></b>: TDataSetState read GetState;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Active">Active</a></b>: Boolean read GetActive write SetActive;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#DataSet">DataSet</a></b>: TDataSet read GetDataSet;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#FieldDefs">FieldDefs</a></b>: TFieldDefs read GetFieldDefs;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#DataSource">DataSource</a></b>: TDataSource read GetDataSource write SetDataSource;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#DataBase">DataBase</a></b>: <a   href="BrookDataBase.TBrookDataBase.html">TBrookDataBase</a> read GetDataBase write SetDataBase;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#DateAsString">DateAsString</a></b>: Boolean read FDateAsString write FDateAsString;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#AsJSON">AsJSON</a></b>: TJSONStringType read GetAsJSON write SetAsJSON;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Rows">Rows</a></b>: TJSONArray read <a   href="BrookQuery.TBrookQuery.html#GetRows">GetRows</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Row">Row</a></b>: TJSONObject read <a   href="BrookQuery.TBrookQuery.html#GetRow">GetRow</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Init"></a><code>constructor <b>Init</b>(ADataBase: <a   href="BrookDataBase.TBrookDataBase.html">TBrookDataBase</a>); virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an instance of a <a class="normal"  href="BrookQuery.TBrookQuery.html">TBrookQuery</a> class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Frees an instance of <a class="normal"  href="BrookQuery.TBrookQuery.html">TBrookQuery</a> class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>class function <b>Create</b>(ADataBase: <a   href="BrookDataBase.TBrookDataBase.html">TBrookDataBase</a>): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an instance of a <a class="normal"  href="BrookQuery.TBrookQuery.html">TBrookQuery</a> class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="InitBrokerClass"></a><code>class procedure <b>InitBrokerClass</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Initializes the class broker.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="BrokerClass"></a><code>class function <b>BrokerClass</b>: <a   href="BrookQuery.html#TBrookQueryClass">TBrookQueryClass</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Registers the broker class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetJSONType"></a><code>class function <b>GetJSONType</b>(const AFieldClass: TFieldClass): ShortString;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns a JSON type according to a field class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetJSONType"></a><code>class function <b>GetJSONType</b>(const AField: TField): ShortString;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns a JSON type according to a field type.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="JSONToFields"></a><code>class procedure <b>JSONToFields</b>(AJSON: TJSONObject; AFields: TFields; const ADateAsString: Boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Set the content of a JSON object to fields.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FieldsToJSON"></a><code>class procedure <b>FieldsToJSON</b>(AFields: TFields; AJSON: TJSONObject; const ADateAsString: Boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Set the content of fields to a JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DataSetToJSON"></a><code>class procedure <b>DataSetToJSON</b>(ADataSet: TDataSet; AJSON: TJSONArray; const ADateAsString: Boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Set the content of a dataset to a JSON array.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="JSONToParams"></a><code>class procedure <b>JSONToParams</b>(AJSON: TJSONObject; AParams: TParams; AFieldDefs: TFieldDefs; const ADateAsString, AAutoCreateParams: Boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Set the content of a JSON object to params.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FieldDefsToSchema"></a><code>class procedure <b>FieldDefsToSchema</b>(AFieldDefs: TFieldDefs; ASchema: TJSONObject); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Set the content of fieldsdefs to a JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FieldDefsToSchema"></a><code>class procedure <b>FieldDefsToSchema</b>(AFieldDefs: TFieldDefs; out ASchema: TJSONStringType); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Set the content of fieldsdefs to a JSON string.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetJSONAttributes"></a><code>class procedure <b>GetJSONAttributes</b>(AJSON: TJSONObject; out ANames: string; out AValues: Variant; const ADelimiter: Char = <a   href="BrookConsts.html#SC">SC</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the attributes of a JSON object and converts into a variant.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetSchema"></a><code>procedure <b>GetSchema</b>(out ASchema: TJSONObject); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns a JSON object with the query columns.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetSchema"></a><code>function <b>GetSchema</b>: TJSONStringType; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns a JSON string with the query columns.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Locate"></a><code>class function <b>Locate</b>(ADataSet: TDataSet; const AJSON: TJSONObject; const AOptions: TLocateOptions): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Locates a register from a JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetRows"></a><code>function <b>GetRows</b>(out AJSON: TJSONArray): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get all the rows of a query in a JSON array.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetRow"></a><code>function <b>GetRow</b>(out AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the current register in a JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SetRows"></a><code>function <b>SetRows</b>(AJSON: TJSONArray): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Inserts registers from a JSON array.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SetRow"></a><code>function <b>SetRow</b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Inserts one register from a JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Bind"></a><code>function <b>Bind</b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Binds a JSON object to the parameters.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ApplyUpdates"></a><code>function <b>ApplyUpdates</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Applies all the changes stored in the buffer.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="CancelUpdates"></a><code>function <b>CancelUpdates</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Cancels all the updates stored in the buffer.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Apply"></a><code>function <b>Apply</b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Applies the updates stored in the buffer and commits the transaction.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Undo"></a><code>function <b>Undo</b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Undoes the updates stored in the buffer and rollbacks the transaction.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Commit"></a><code>function <b>Commit</b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Commits the transaction.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Rollback"></a><code>function <b>Rollback</b>(const ARetaining: Boolean = False): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Rollbacks the transaction.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Append"></a><code>function <b>Append</b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Adds a JSON object to the end of registers.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Insert"></a><code>function <b>Insert</b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Inserts a JSON object in the current position.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Edit"></a><code>function <b>Edit</b>(AJSON: TJSONObject): <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Edits the current register by means of a JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Cancel"></a><code>function <b>Cancel</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Cancels editions in the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Delete"></a><code>function <b>Delete</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Deletes the current register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Open"></a><code>function <b>Open</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Opens the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Close"></a><code>function <b>Close</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Closes the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Refresh"></a><code>function <b>Refresh</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Refreshes the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="First"></a><code>function <b>First</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Goes to the query first register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Prior"></a><code>function <b>Prior</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Goes to the query previous register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Next"></a><code>function <b>Next</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Goes to the query next register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Last"></a><code>function <b>Last</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Goes to the query last register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Post"></a><code>function <b>Post</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Applies editions to the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>: <a   href="BrookQuery.TBrookQuery.html">TBrookQuery</a>; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Executes the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RowsAffected"></a><code>function <b>RowsAffected</b>: TRowsCount; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the number of changed registers.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Locate"></a><code>function <b>Locate</b>(const AJSON: TJSONObject; const AOptions: TLocateOptions = []): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Locates a register by means of JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Locate"></a><code>function <b>Locate</b>(const AKeyFields: string; const AKeyValues: Variant; const AOptions: TLocateOptions = []): Boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Locates a register passing a key and a value.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Param"></a><code>function <b>Param</b>(const AName: string): TParam; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get a query parameter.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Field"></a><code>function <b>Field</b>(const AName: string): TField; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get a query field.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FieldDef"></a><code>function <b>FieldDef</b>(const AName: string): TFieldDef; virtual; abstract;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get a query fielddef.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Count"></a><code>function <b>Count</b>: Int64;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the number of registers.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Position"></a><code>function <b>Position</b>: Int64;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the position of the current register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetBookmark"></a><code>function <b>GetBookmark</b>: TBookmark;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates a bookmark.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GotoBookmark"></a><code>procedure <b>GotoBookmark</b>(ABookmark: TBookmark);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Goes to a bookmark.</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SQL"></a><code>property <b>SQL</b>: TStrings read GetSQL;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is the SQL statement.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Fields"></a><code>property <b>Fields</b>: TFields read GetFields;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Are the query fields.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Params"></a><code>property <b>Params</b>: TParams read GetParams;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Are the query parameters.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="BOF"></a><code>property <b>BOF</b>: Boolean read GetBOF;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the cursor is at the first register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="EOF"></a><code>property <b>EOF</b>: Boolean read GetEOF;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the cursor is at the last register.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Bookmark"></a><code>property <b>Bookmark</b>: TBookmark read <a   href="BrookQuery.TBrookQuery.html#GetBookmark">GetBookmark</a> write <a   href="BrookQuery.TBrookQuery.html#GotoBookmark">GotoBookmark</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns or creates a bookmark.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Modified"></a><code>property <b>Modified</b>: Boolean read GetModified;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns <code>True</code> if the content of the query has changed.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="State"></a><code>property <b>State</b>: TDataSetState read GetState;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the current query state.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Active"></a><code>property <b>Active</b>: Boolean read GetActive write SetActive;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Checks if the query is active.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DataSet"></a><code>property <b>DataSet</b>: TDataSet read GetDataSet;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the dataset of the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FieldDefs"></a><code>property <b>FieldDefs</b>: TFieldDefs read GetFieldDefs;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the fieldefs of the query.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DataSource"></a><code>property <b>DataSource</b>: TDataSource read GetDataSource write SetDataSource;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get or set a master query datasource.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DataBase"></a><code>property <b>DataBase</b>: <a   href="BrookDataBase.TBrookDataBase.html">TBrookDataBase</a> read GetDataBase write SetDataBase;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get or set a query database.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DateAsString"></a><code>property <b>DateAsString</b>: Boolean read FDateAsString write FDateAsString;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Enables the date saving as string.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AsJSON"></a><code>property <b>AsJSON</b>: TJSONStringType read GetAsJSON write SetAsJSON;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns a JSON string with the query registers.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Rows"></a><code>property <b>Rows</b>: TJSONArray read <a   href="BrookQuery.TBrookQuery.html#GetRows">GetRows</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns a JSON array with the query registers.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Row"></a><code>property <b>Row</b>: TJSONObject read <a   href="BrookQuery.TBrookQuery.html#GetRow">GetRow</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns the current register in a JSON object.</p>
+</td></tr>
+</table>
+</body></html>
