@@ -1,4 +1,4 @@
-﻿The following people contributed to Brook framework:
+﻿The following people contributed to the Brook framework:
 
 Silvio Clecio (silvioprog)
 Luciano Souza (luchyanus)
