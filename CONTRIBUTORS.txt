@@ -6,5 +6,6 @@ Joao Morais (jcmoraisjr)
 Marcos Douglas (mdbs99)
 Waldir Paim (waldirpaim)
 Luiz Americo Pereira Camara (blikblum)
+Reinier Olislagers (reiniero)
 
 and special thanks to the Lazarus-BR group and FPC-Lazarus team.
