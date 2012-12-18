@@ -443,8 +443,8 @@ begin
     1: VBroker := 'BrookFCLFCGIBroker';
   end;
   case FAppDefCharset of
-    0: VCharset := 'HTTP_CHARSET_UTF_8';
-    1: VCharset := 'HTTP_CHARSET_ISO_8859_1';
+    0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
+    1: VCharset := 'BROOK_HTTP_CHARSET_ISO_8859_1';
   end;
   if FFullPlg then
   begin

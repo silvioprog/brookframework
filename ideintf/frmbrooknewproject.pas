@@ -126,6 +126,7 @@ begin
   if TfrBrookActEdit.Execute('Add', VName, VPattern, VDefault) then
   begin
     VItem := lvActions.Items.Add;
+    VItem.Data := VItem;
     VItem.Caption := VName;
     VItem.SubItems.Add(VPattern);
     VItem.SubItems.Add(BoolToStr(VDefault, True));
@@ -275,31 +276,31 @@ procedure TfrBrookNewProject.ValidateData(const AName, APattern: string;
   const ADefault: Boolean);
 var
   I: Integer;
-  VItem: TListItem;
+  VData: Pointer;
+  VItem, VSelected: TListItem;
 begin
   for I := 0 to Pred(lvActions.Items.Count) do
   begin
     VItem := lvActions.Items[I];
-    if CompareText(AName, VItem.Caption) = 0 then
+    VSelected := lvActions.Selected;
+    VData := nil;
+    if Assigned(VSelected) then
+      VData := VSelected.Data;
+    if SameText(AName, VItem.Caption) and
+      SameText(APattern, VItem.SubItems[0]) and (VItem.Data <> VData) then
     begin
-      if VItem = lvActions.Selected then
-        Continue;
       ShowMessage(Format('The action "%s" is already added.',
         [VItem.Caption]));
       Abort;
     end;
-    if CompareText(APattern, VItem.SubItems[0]) = 0 then
+    if SameText(APattern, VItem.SubItems[0]) and (VItem.Data <> VData) then
     begin
-      if VItem = lvActions.Selected then
-        Continue;
       ShowMessage(Format('There is already an action added with the pattern "%s".',
         [VItem.Caption]));
       Abort;
     end;
-    if ADefault and StrToBool(VItem.SubItems[1]) then
+    if ADefault and StrToBool(VItem.SubItems[1]) and (VItem.Data <> VData) then
     begin
-      if VItem = lvActions.Selected then
-        Continue;
       ShowMessage(Format('There is already a default action added.',
         [VItem.Caption]));
       Abort;
