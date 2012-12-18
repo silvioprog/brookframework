@@ -488,7 +488,7 @@ object frBrookNewProject: TfrBrookNewProject
           OnClick = btDeleteActClick
           TabOrder = 2
         end
-        object btPatternsHelp: TBitBtn
+        object btHelp: TBitBtn
           Left = 247
           Height = 26
           Top = 3
@@ -497,7 +497,6 @@ object frBrookNewProject: TfrBrookNewProject
           AutoSize = True
           BorderSpacing.Around = 2
           Caption = 'Patterns help'
-          Enabled = False
           Glyph.Data = {
             36040000424D3604000000000000360000002800000010000000100000000100
             2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -534,7 +533,7 @@ object frBrookNewProject: TfrBrookNewProject
             FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
             FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
           }
-          OnClick = btPatternsHelpClick
+          OnClick = btHelpClick
           TabOrder = 3
         end
       end

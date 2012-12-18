@@ -25,14 +25,14 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, ExtCtrls, Buttons, StdCtrls,
-  ComCtrls, LCLType, EditBtn, XMLPropStorage;
+  ComCtrls, LCLType, LCLIntf, EditBtn, XMLPropStorage;
 
 type
   TfrBrookNewProject = class(TForm)
     btAddAct: TBitBtn;
     btEditAct: TBitBtn;
     btDeleteAct: TBitBtn;
-    btPatternsHelp: TBitBtn;
+    btHelp: TBitBtn;
     btOK: TBitBtn;
     btPrior: TBitBtn;
     btNext: TBitBtn;
@@ -59,7 +59,7 @@ type
     procedure btDeleteActClick(Sender: TObject);
     procedure btEditActClick(Sender: TObject);
     procedure btNextClick(Sender: TObject);
-    procedure btPatternsHelpClick(Sender: TObject);
+    procedure btHelpClick(Sender: TObject);
     procedure btPriorClick(Sender: TObject);
     procedure edAppNameContextPopup(Sender: TObject;{%H-}MousePos: TPoint;
       var Handled: Boolean);
@@ -108,9 +108,10 @@ begin
   pcWizard.PageIndex := Succ(pcWizard.PageIndex);
 end;
 
-procedure TfrBrookNewProject.btPatternsHelpClick(Sender: TObject);
+procedure TfrBrookNewProject.btHelpClick(Sender: TObject);
 begin
-  //
+  OpenURL(
+    'http://docs.brookframework.org/BrookAction.TBrookAction.html#Register');
 end;
 
 procedure TfrBrookNewProject.btAddActClick(Sender: TObject);
@@ -190,7 +191,7 @@ begin
       VK_INSERT: btAddActClick(Sender);
       VK_F2: btEditActClick(Sender);
       VK_DELETE: btDeleteActClick(Sender);
-      VK_F1: btPatternsHelpClick(Sender);
+      VK_F1: btHelpClick(Sender);
     end;
 end;
 
