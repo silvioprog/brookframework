@@ -110,7 +110,7 @@ object frMain: TfrMain
     }
     Layout = blGlyphTop
     OnClick = btAddContactClick
-    TabOrder = 5
+    TabOrder = 1
   end
   object btEditContact: TBitBtn
     AnchorSideLeft.Control = btAddContact
@@ -161,7 +161,7 @@ object frMain: TfrMain
     }
     Layout = blGlyphTop
     OnClick = btEditContactClick
-    TabOrder = 6
+    TabOrder = 2
   end
   object btDeleteContact: TBitBtn
     AnchorSideLeft.Control = btEditContact
@@ -212,7 +212,7 @@ object frMain: TfrMain
     }
     Layout = blGlyphTop
     OnClick = btDeleteContactClick
-    TabOrder = 7
+    TabOrder = 3
   end
   object btAddPhone: TBitBtn
     AnchorSideLeft.Control = grPhones
@@ -262,7 +262,7 @@ object frMain: TfrMain
     }
     Layout = blGlyphTop
     OnClick = btAddPhoneClick
-    TabOrder = 2
+    TabOrder = 6
   end
   object btEditPhone: TBitBtn
     AnchorSideLeft.Control = btAddPhone
@@ -313,7 +313,7 @@ object frMain: TfrMain
     }
     Layout = blGlyphTop
     OnClick = btEditPhoneClick
-    TabOrder = 3
+    TabOrder = 7
   end
   object btDeletePhone: TBitBtn
     AnchorSideLeft.Control = btEditPhone
@@ -364,7 +364,7 @@ object frMain: TfrMain
     }
     Layout = blGlyphTop
     OnClick = btDeletePhoneClick
-    TabOrder = 4
+    TabOrder = 8
   end
   object grPhones: TStringGrid
     AnchorSideLeft.Control = lbPhones
@@ -392,7 +392,7 @@ object frMain: TfrMain
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goSmoothScroll]
     RowCount = 2
-    TabOrder = 1
+    TabOrder = 5
     OnDblClick = grPhonesDblClick
   end
   object btUpdateContacts: TBitBtn
@@ -410,7 +410,7 @@ object frMain: TfrMain
     Layout = blGlyphTop
     ModalResult = 4
     OnClick = btUpdateContactsClick
-    TabOrder = 8
+    TabOrder = 4
   end
   object btUpdateContacts1: TBitBtn
     AnchorSideLeft.Control = btDeletePhone
