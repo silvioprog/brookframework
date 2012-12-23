@@ -44,7 +44,7 @@
         <Filename Value="addressbookclient.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="addressbookclient"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="22"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pas"/>
@@ -56,10 +56,11 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="50"/>
+        <CursorPos X="48" Y="67"/>
+        <UsageCount Value="22"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="frmcustomedit.pas"/>
@@ -68,7 +69,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmCustomEdit"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="22"/>
       </Unit2>
       <Unit3>
         <Filename Value="frmphoneedit.pas"/>
@@ -77,13 +78,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmPhoneEdit"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="22"/>
       </Unit3>
       <Unit4>
         <Filename Value="serializer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Serializer"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="22"/>
       </Unit4>
       <Unit5>
         <Filename Value="frmcontactedit.pas"/>
@@ -92,7 +93,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmContactEdit"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="22"/>
       </Unit5>
     </Units>
   </ProjectOptions>
@@ -107,6 +108,9 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
