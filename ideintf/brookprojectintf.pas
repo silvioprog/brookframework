@@ -352,11 +352,15 @@ begin
   VProject.IsPartOfProject := True;
   AProject.AddFile(VProject, False);
   AProject.AddPackageDependency('BrookRT');
+  AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements, pfRunnable];
   case VDlg.rgAppType.ItemIndex of
     0: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text;
-    1: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fcgi';
+    1:
+      begin
+        AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fcgi';
+        AProject.Flags := AProject.Flags + [pfRunnable];
+      end;
   end;
-  AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements, pfRunnable];
   AProject.LazCompilerOptions.Win32GraphicApp := False;
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   AProject.SessionStorage := pssInProjectInfo;
