@@ -7,4 +7,7 @@
 *.exe
 *.dll
 *.dbg
-packages/lib
+*.fuse_hidden*
+demos/db/blog/blog.log
+demos/db/blog/src/blog
+demos/db/blog/src/db.sqlite3

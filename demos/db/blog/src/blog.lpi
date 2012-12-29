@@ -6,7 +6,6 @@
     <General>
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
-        <Runnable Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
       <UseAppBundle Value="False"/>
@@ -45,48 +44,58 @@
         <Filename Value="blog.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="blog"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="19" Y="6"/>
+        <UsageCount Value="37"/>
+        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="main"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="0"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="105"/>
+        <CursorPos X="37" Y="154"/>
+        <UsageCount Value="37"/>
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="brokers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Brokers"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="24" Y="12"/>
+        <UsageCount Value="37"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\html\404.html"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="37"/>
         <DefaultSyntaxHighlighter Value="HTML"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\html\500.html"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="37"/>
         <DefaultSyntaxHighlighter Value="HTML"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\html\newpost.html"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="37"/>
         <DefaultSyntaxHighlighter Value="HTML"/>
       </Unit5>
       <Unit6>
         <Filename Value="..\html\home.html"/>
         <IsPartOfProject Value="True"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="37"/>
         <DefaultSyntaxHighlighter Value="HTML"/>
       </Unit6>
     </Units>
