@@ -5,7 +5,7 @@ unit frmMain;
 interface
 
 uses
-  Forms, StdCtrls, Grids, Buttons, LJGridUtils, HttpUtils, SysUtils, ConfigClient;
+  Forms, StdCtrls, Grids, Buttons, LJGridUtils, HttpUtils, SysUtils, ConfigClient, Classes;
 
 type
 
@@ -33,6 +33,7 @@ type
     procedure btUpdateContacts1Click(Sender: TObject);
     procedure btUpdateContactsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure grContactsDblClick(Sender: TObject);
     procedure grContactsSelection(Sender: TObject;{%H-}aCol,{%H-}aRow: Integer);
@@ -64,7 +65,7 @@ function TfrMain.url : String;
 begin
   result  := format(URL_ROOT,[ FConfigClient.Host, FConfigClient.AppName]);
   if (FConfigClient.Port <> 80) then
-  result := format(URL_ROOT,[ format('%s:%d',[FConfigClient.Host,FConfigClient.Port]), FConfigClient.AppName]);
+  result := format(URL_ROOT,[ format('%s:%d',[ FConfigClient.Host, FConfigClient.Port]), FConfigClient.AppName]);
 end;
 
 procedure TfrMain.FormShow(Sender: TObject);
@@ -128,6 +129,11 @@ end;
 procedure TfrMain.FormCreate(Sender: TObject);
 begin
    FConfigClient := TConfigClient.create;
+end;
+
+procedure TfrMain.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil( FConfigClient );
 end;
 
 procedure TfrMain.btDeleteContactClick(Sender: TObject);
