@@ -7,5 +7,6 @@ Marcos Douglas (mdbs99)
 Waldir Paim (waldirpaim)
 Luiz Americo Pereira Camara (blikblum)
 Reinier Olislagers (reiniero)
+Mario Ray Mahardhika (leledumbo)
 
 and special thanks to the Lazarus-BR group and FPC-Lazarus team.
