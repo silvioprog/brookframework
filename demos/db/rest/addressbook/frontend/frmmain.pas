@@ -5,7 +5,7 @@ unit frmMain;
 interface
 
 uses
-  Forms, StdCtrls, Grids, Buttons, LJGridUtils, HttpUtils, SysUtils, IniFiles, Classes;
+  Forms, StdCtrls, Grids, Buttons, LJGridUtils, HttpUtils, SysUtils, ConfigClient;
 
 type
 
@@ -38,10 +38,7 @@ type
     procedure grContactsSelection(Sender: TObject;{%H-}aCol,{%H-}aRow: Integer);
     procedure grPhonesDblClick(Sender: TObject);
   private
-    FHost : String;
-    FPort : Integer;
-    FAppName : String;
-    procedure StartAppIni;
+    FConfigClient : TConfigClient;
     function url : String;
   protected
     procedure UpdateContacts;
@@ -63,49 +60,11 @@ const
 
 { TfrMain }
 
-procedure TfrMain.StartAppIni;
-var
-  FAppPath : String;
-  FApp : String;
-begin
-  FApp         := ExtractFileName( ChangeFileExt( Application.ExeName, '.cfg') );
-  FAppPath     := format('%s%s',[ ExtractFilePath( Application.ExeName ), FApp]);
-  with TIniFile.Create(FAppPath) do
-  begin
-   try
-    FHost    := ReadString('Server', 'Host', '');
-    if (FHost = '') then
-    begin
-     FHost    := '127.0.0.1';
-     WriteString('Server', 'Host', FHost);
-    end;
-
-    FPort    := ReadInteger('Server', 'Port', 0);
-    if FPort = 0 then
-    begin
-     FPort   := 80;
-     WriteInteger('Server', 'Port', FPort);
-    end;
-
-    FAppName  := ReadString('Server', 'AppName', '');
-
-    if FAppName = '' then
-    begin
-     FAppName := 'addressbook';
-     WriteString('Server', 'AppName', FAppName);
-    end;
-
-   finally
-    Destroy;
-   end;
-  end;
-end;
-
 function TfrMain.url : String;
 begin
-  result  := format(URL_ROOT,[ FHost, FAppName]);
-  if FPort <> 80 then
-  result := format(URL_ROOT,[ format('%s:%d',[FHost,FPort]), FAppName]);
+  result  := format(URL_ROOT,[ FConfigClient.Host, FConfigClient.AppName]);
+  if (FConfigClient.Port <> 80) then
+  result := format(URL_ROOT,[ format('%s:%d',[FConfigClient.Host,FConfigClient.Port]), FConfigClient.AppName]);
 end;
 
 procedure TfrMain.FormShow(Sender: TObject);
@@ -168,7 +127,7 @@ end;
 
 procedure TfrMain.FormCreate(Sender: TObject);
 begin
-   StartAppIni;
+   FConfigClient := TConfigClient.create;
 end;
 
 procedure TfrMain.btDeleteContactClick(Sender: TObject);

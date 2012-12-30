@@ -39,12 +39,12 @@
         <PackageName Value="LJGridUtilsPkg"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="addressbookclient.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="addressbookclient"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pas"/>
@@ -53,12 +53,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmMain"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="50"/>
-        <CursorPos X="48" Y="67"/>
-        <UsageCount Value="22"/>
+        <TopLine Value="1"/>
+        <CursorPos X="82" Y="8"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -69,7 +68,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmCustomEdit"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
       </Unit2>
       <Unit3>
         <Filename Value="frmphoneedit.pas"/>
@@ -78,13 +77,13 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmPhoneEdit"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
       </Unit3>
       <Unit4>
         <Filename Value="serializer.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Serializer"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
       </Unit4>
       <Unit5>
         <Filename Value="frmcontactedit.pas"/>
@@ -93,8 +92,20 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmContactEdit"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="24"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="configclient.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ConfigClient"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="10" Y="8"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -104,13 +115,11 @@
       <Filename Value="addressbookclient"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)"/>
+      <IncludeFiles Value="$(ProjOutDir);..\..\..\..\..\includes"/>
+      <OtherUnitFiles Value="..\..\..\..\..\core"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
-      <Debugging>
-        <GenerateDebugInfo Value="False"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

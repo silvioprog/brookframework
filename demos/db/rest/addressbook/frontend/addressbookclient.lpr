@@ -6,7 +6,7 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Interfaces, Forms, frmMain;
+  Interfaces, Forms, frmMain, ConfigClient;
 
 {$R *.res}
 
