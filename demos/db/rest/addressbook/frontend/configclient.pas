@@ -5,7 +5,10 @@ unit ConfigClient;
 interface
 
 uses
-  Forms, SysUtils, BrookConfigurator, Classes;
+  Forms,
+  SysUtils,
+  BrookConfigurator,
+  Classes;
 
 type
 

@@ -53,11 +53,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="frmMain"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="53"/>
-        <CursorPos X="48" Y="68"/>
+        <CursorPos X="13" Y="60"/>
         <UsageCount Value="24"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -99,10 +98,11 @@
         <Filename Value="configclient.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ConfigClient"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="10" Y="8"/>
+        <CursorPos X="3" Y="11"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit6>

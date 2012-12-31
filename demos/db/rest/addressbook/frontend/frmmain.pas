@@ -57,7 +57,7 @@ uses
   frmCustomEdit, frmContactEdit, frmPhoneEdit;
 
 const
-  URL_ROOT = 'http://%s/cgi-bin/%s/';
+  URL_ROOT  = 'http://%s/cgi-bin/%s/';
 
 { TfrMain }
 
