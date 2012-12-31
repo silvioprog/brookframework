@@ -558,7 +558,7 @@ begin
         if VRedirect and Canonicalize(ARequest, AResponse) then
           Exit;
         VMatchPattern := True;
-        if not BrookMacthMethod(PRoute^.Method, ARequest.Method) then
+        if not BrookMatchMethod(PRoute^.Method, ARequest.Method) then
           Continue;
         VMatchMethod := True;
         VActClass := PRoute^.ActionClass;
