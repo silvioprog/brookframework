@@ -44,11 +44,10 @@
         <Filename Value="addressbook.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="addressbook"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="32" Y="6"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -56,7 +55,13 @@
         <Filename Value="contacts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Contacts"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="7" Y="4"/>
         <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="brokers.pas"/>
