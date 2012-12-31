@@ -5,7 +5,8 @@ unit frmMain;
 interface
 
 uses
-  Forms, StdCtrls, Grids, Buttons, LJGridUtils, HttpUtils;
+  Forms, StdCtrls, Grids, Buttons, Classes, LJGridUtils, HttpUtils,
+  BrookConfigurator;
 
 type
   TfrMain = class(TForm)
@@ -33,9 +34,18 @@ type
     procedure grContactsDblClick(Sender: TObject);
     procedure grContactsSelection(Sender: TObject;{%H-}aCol,{%H-}aRow: Integer);
     procedure grPhonesDblClick(Sender: TObject);
+  private
+    FConfigurator: TBrookConfigurator;
+    FRootUrl: string;
   protected
     procedure UpdateContacts;
     procedure UpdatePhones;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Configurator: TBrookConfigurator read FConfigurator;
+  published
+    property RootUrl: string read FRootUrl write FRootUrl;
   end;
 
 var
@@ -48,11 +58,21 @@ implementation
 uses
   frmCustomEdit, frmContactEdit, frmPhoneEdit;
 
-const
-  URL_ROOT =
-    'http://brookframework.org/demos/db/rest/addressbook/backend/addressbook.fbf/';
-
 { TfrMain }
+
+constructor TfrMain.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FConfigurator := TBrookConfigurator.Create('addressbookclient.cfg');
+  FConfigurator.Target := Self;
+  FConfigurator.Configure;
+end;
+
+destructor TfrMain.Destroy;
+begin
+  FConfigurator.Free;
+  inherited Destroy;
+end;
 
 procedure TfrMain.FormShow(Sender: TObject);
 begin
@@ -77,27 +97,27 @@ end;
 
 procedure TfrMain.btAddContactClick(Sender: TObject);
 begin
-  if TfrContactEdit.Add(URL_ROOT + 'contacts') then
+  if TfrContactEdit.Add(RootUrl + 'contacts') then
     UpdateContacts;
 end;
 
 procedure TfrMain.btAddPhoneClick(Sender: TObject);
 begin
-  if TfrPhoneEdit.Add(URL_ROOT + 'contacts/:id/phones',
+  if TfrPhoneEdit.Add(RootUrl + 'contacts/:id/phones',
     GetSelectedRow(grContacts)) then
     UpdatePhones;
 end;
 
 procedure TfrMain.btEditContactClick(Sender: TObject);
 begin
-  if TfrContactEdit.Edit(URL_ROOT + 'contacts/:id',
+  if TfrContactEdit.Edit(RootUrl + 'contacts/:id',
     GetSelectedRow(grContacts)) then
     UpdateContacts;
 end;
 
 procedure TfrMain.btEditPhoneClick(Sender: TObject);
 begin
-  if TfrPhoneEdit.Edit(URL_ROOT + 'contacts/:contactid/phones/:id',
+  if TfrPhoneEdit.Edit(RootUrl + 'contacts/:contactid/phones/:id',
     GetSelectedRow(grPhones)) then
     UpdatePhones;
 end;
@@ -114,26 +134,26 @@ end;
 
 procedure TfrMain.btDeleteContactClick(Sender: TObject);
 begin
-  if TfrContactEdit.Delete(URL_ROOT + 'contacts/:id', 'Delete contact?',
+  if TfrContactEdit.Delete(RootUrl + 'contacts/:id', 'Delete contact?',
     GetSelectedRow(grContacts)) then
     UpdateContacts;
 end;
 
 procedure TfrMain.btDeletePhoneClick(Sender: TObject);
 begin
-  if TfrPhoneEdit.Delete(URL_ROOT + 'contacts/:contactid/phones/:id',
+  if TfrPhoneEdit.Delete(RootUrl + 'contacts/:contactid/phones/:id',
     'Delete phone?', GetSelectedRow(grPhones)) then
     UpdatePhones;
 end;
 
 procedure TfrMain.UpdateContacts;
 begin
-  TfrCustomEdit.Refresh(grContacts, URL_ROOT + 'contacts');
+  TfrCustomEdit.Refresh(grContacts, RootUrl + 'contacts');
 end;
 
 procedure TfrMain.UpdatePhones;
 begin
-  TfrCustomEdit.Refresh(grPhones, URL_ROOT + 'contacts/:id/phones',
+  TfrCustomEdit.Refresh(grPhones, RootUrl + 'contacts/:id/phones',
     GetSelectedRow(grContacts));
 end;
 
