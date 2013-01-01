@@ -302,13 +302,11 @@ begin
     R.SendContent;
     Exit;
   end;
-  if ((R.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) or
-    (BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML)) and
-    (not R.HeadersSent) then
+  if (R.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) or
+    (BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) then
   begin
     VStr := TStringList.Create;
     try
-      R.ContentType := FormatContentType;
       ExceptionToHTML(VStr, E, Title, Email, Administrator);
       R.Content := VStr.Text;
       R.SendContent;
