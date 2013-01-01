@@ -33,12 +33,27 @@ type
     procedure Get; override;
   end;
 
-  { TPost }
+  { TPostAdd }
 
-  TPost = class(TActionView)
+  TPostAdd = class(TActionView)
   public
     procedure Get; override;
     procedure Post; override;
+  end;
+
+  { TPostEdit }
+
+  TPostEdit = class(TActionView)
+  public
+    procedure Get; override;
+    procedure Post; override;
+  end;
+
+  { TPostRemove }
+
+  TPostRemove = class(TActionView)
+  public
+    procedure Get; override;
   end;
 
 implementation
@@ -86,8 +101,8 @@ begin
     case AWritingType of
       wtHeadTD: Result := AData + LF + HT + HT + '<td>Action</td>';
       wtBodyTD: Result := AData + LF + HT + '<td>'
-        + LF + HT + HT + Link('Edit','/post/?action=edit&id=' + ID)
-        + LF + HT + HT + Link('Remove','/post/?action=remove&id=' + ID)
+        + LF + HT + HT + Link('Edit','/post/edit/' + ID)
+        + LF + HT + HT + Link('Remove','/post/remove/' + ID)
         + LF + HT + '</td>'
         + LF;
     end;
@@ -98,68 +113,80 @@ end;
 procedure THome.Get;
 begin
   LoadHtml('home');
-  Template.Fields.Clear;
-  Template.Fields.Add('menu', UrlFor(TPost, ['new']));
+  Template.Fields.Add('menu', UrlFor(TPostAdd, ['new']));
   Template.Fields.Add('post', BrookDataSetToHTMLTable(Table.Open.DataSet, [],
     'table table-bordered table-hover',1,[],@AddEditRemoveButton));
 end;
 
-{ TPost }
+{ TPostAdd }
 
-procedure TPost.Get;
+procedure TPostAdd.Get;
+begin
+  LoadHtml('newpost');
+  Template.Fields.Add('title','');
+  Template.Fields.Add('author','');
+  Template.Fields.Add('post','');
+  Template.Fields.Add('action','/post/add');
+end;
+
+procedure TPostAdd.Post;
+begin
+  Table.Insert(Fields).Apply;
+  Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
+end;
+
+{ TPostEdit }
+
+procedure TPostEdit.Get;
 var
-  Action,ID: TJSONData;
+  ID: TJSONStringType;
   Row: TBrookTable;
 begin
-  Template.Fields.Clear;
-
-  Action := Params.Find('action');
-  ID := Params.Find('id');
-  if Assigned(Action) and Assigned(ID) then begin
-    case Action.AsString of
-      'edit': begin
-        Row := Table.Get('id',ID.AsString);
-        Template.Fields.Add('title',Row['title'].AsString);
-        Template.Fields.Add('author',Row['author'].AsString);
-        Template.Fields.Add('post',Row['post'].AsString);
-        Template.Fields.Add('action','/post/?action=edit&id=' + ID.AsString);
-        LoadHtml('newpost');
-      end;
-      'remove': begin
-        Table.Get('id',ID.AsString).Delete.Apply;
-        Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
-      end;
-      else begin
-        Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
-      end;
-    end;
-  end else begin
-    Template.Fields.Add('title','');
-    Template.Fields.Add('author','');
-    Template.Fields.Add('post','');
-    Template.Fields.Add('action','/post/?action=append');
+  ID := Values['id'].AsString;
+  Row := Table.Get('id',ID);
+  if not Row.EOF then begin
     LoadHtml('newpost');
+    Template.Fields.Add('title',Row['title'].AsString);
+    Template.Fields.Add('author',Row['author'].AsString);
+    Template.Fields.Add('post',Row['post'].AsString);
+    Template.Fields.Add('action','/post/edit/' + ID);
+  end else begin
+    Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
   end;
 end;
 
-procedure TPost.Post;
+procedure TPostEdit.Post;
 var
-  Action,ID: TJSONData;
+  ID: TJSONStringType;
+  Row: TBrookTable;
 begin
-  Action := Params.Find('action');
-  ID := Params.Find('id');
-  if Assigned(Action) then begin
-    case Action.AsString of
-      'append': Table.Insert(Fields).Apply;
-      'edit'  : if Assigned(ID) then
-        Table.Get('id',ID.AsString).Edit(Fields).Apply;
-    end;
+  ID := Values['id'].AsString;
+  Row := Table.Get('id',ID);
+  if not Row.EOF then begin
+    Row.Edit(Fields).Apply;
+  end;
+  Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
+end;
+
+{ TPostRemove }
+
+procedure TPostRemove.Get;
+var
+  ID: TJSONStringType;
+  Row: TBrookTable;
+begin
+  ID := Values['id'].AsString;
+  Row := Table.Get('id',ID);
+  if not Row.EOF then begin
+    Row.Delete.Apply;
   end;
   Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
 end;
 
 initialization
   THome.Register('post', '*', True);
-  TPost.Register('post', '/post/');
+  TPostAdd.Register('post', '/post/add/');
+  TPostEdit.Register('post', '/post/edit/:id');
+  TPostRemove.Register('post', '/post/remove/:id');
 
 end.
