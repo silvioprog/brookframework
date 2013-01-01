@@ -22,7 +22,7 @@
     <Description Value="Brook runtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Release="1"/>
-    <Files Count="32">
+    <Files Count="34">
       <Item1>
         <Filename Value="..\brokers\brookfclcgibroker.pas"/>
         <UnitName Value="BrookFCLCGIBroker"/>
@@ -151,6 +151,14 @@
         <Filename Value="..\includes\brookmessages_ptbr.inc"/>
         <Type Value="Include"/>
       </Item32>
+      <Item33>
+        <Filename Value="..\core\brookunhandledexceptionhandler.pas"/>
+        <UnitName Value="BrookUnhandledExceptionHandler"/>
+      </Item33>
+      <Item34>
+        <Filename Value="..\brokers\brookfclhttpappbroker.pas"/>
+        <UnitName Value="BrookFCLHTTPAppBroker"/>
+      </Item34>
     </Files>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
