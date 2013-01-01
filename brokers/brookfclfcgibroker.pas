@@ -238,10 +238,15 @@ end;
 
 procedure TBrookFCGIHandler.HandleRequest(ARequest: TRequest; AResponse: TResponse);
 begin
-  AResponse.ContentType := FormatContentType;
-  if BrookSettings.Language <> BROOK_DEFAULT_LANGUAGE then
-    TBrookMessages.Service.SetLanguage(BrookSettings.Language);
-  TBrookRouter.Service.Route(ARequest, AResponse);
+  try
+    AResponse.ContentType := FormatContentType;
+    if BrookSettings.Language <> BROOK_DEFAULT_LANGUAGE then
+      TBrookMessages.Service.SetLanguage(BrookSettings.Language);
+    TBrookRouter.Service.Route(ARequest, AResponse);
+  except
+    on E: Exception do
+      ShowRequestException(AResponse, E);
+  end;
 end;
 
 procedure TBrookFCGIHandler.ShowRequestException(R: TResponse; E: Exception);
