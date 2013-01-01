@@ -96,7 +96,7 @@ function BrookGetPathLevels(const APath: string; const AIndex: SizeInt = 0;
   const ADelimiter: Char = US): string;
 { Checks if a string is equivalent a enumerator representing a HTTP request
   method. }
-function BrookMacthMethod(const ABrookMethod: TBrookRequestMethods;
+function BrookMatchMethod(const ABrookMethod: TBrookRequestMethods;
   const AMethod: string): Boolean;
 { Deletes files according to their creation dates and file names. }
 procedure BrookDeleteFiles(APath: string; const ABeforeOf: TDateTime;
@@ -186,7 +186,7 @@ begin
   SetLength(Result, L);
 end;
 
-function BrookMacthMethod(const ABrookMethod: TBrookRequestMethods;
+function BrookMatchMethod(const ABrookMethod: TBrookRequestMethods;
   const AMethod: string): Boolean;
 begin
   case ABrookMethod of
