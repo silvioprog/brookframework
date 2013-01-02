@@ -97,10 +97,12 @@ begin
   begin
     ID := ADataSet.FieldByName('id').AsString;
     case AWritingType of
-      wtHeadTD: Result := AData + LF + HT + HT + '<td>Action</td>';
+      wtHeadTD: Result := AData + LF + HT + HT +
+        '<td width="120" style="text-align: center;">Action</td>';
       wtBodyTD: Result := AData + LF + HT + '<td>' + LF + HT + HT +
-        LinkTo('Edit', TPostEdit, [ID], 'btn') + LF + HT + HT +
-        LinkTo('Remove', TPostRemove, [ID], 'btn') + LF + HT + '</td>' + LF;
+        LinkTo('Edit', TPostEdit, [ID], 'btn btn-small') + LF + HT + HT +
+        LinkTo('Remove', TPostRemove, [ID], 'btn btn-small') + LF + HT +
+          '</td>' + LF;
     end;
   end
   else
