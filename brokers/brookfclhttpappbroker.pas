@@ -29,13 +29,13 @@ uses
   FPJSON, Classes, SysUtils;
 
 type
-  TBrookHTTPAppApplication = class;
+  TBrookHTTPApplication = class;
 
   { TBrookApplication }
 
   TBrookApplication = class(TBrookInterfacedObject, IBrookApplication)
   private
-    FApp: TBrookHTTPAppApplication;
+    FApp: TBrookHTTPApplication;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -43,9 +43,9 @@ type
     procedure Run;
   end;
 
-  { TBrookHTTPAppApplication }
+  { TBrookHTTPApplication }
 
-  TBrookHTTPAppApplication = class(TCustomHTTPApplication)
+  TBrookHTTPApplication = class(TCustomHTTPApplication)
   protected
     function InitializeWebHandler: TWebHandler; override;
   end;
@@ -66,7 +66,7 @@ implementation
 
 constructor TBrookApplication.Create;
 begin
-  FApp := TBrookHTTPAppApplication.Create(nil);
+  FApp := TBrookHTTPApplication.Create(nil);
   FApp.Initialize;
 end;
 
@@ -86,9 +86,9 @@ begin
   FApp.Run;
 end;
 
-{ TBrookHTTPAppApplication }
+{ TBrookHTTPApplication }
 
-function TBrookHTTPAppApplication.InitializeWebHandler: TWebHandler;
+function TBrookHTTPApplication.InitializeWebHandler: TWebHandler;
 begin
   Result := TBrookHTTPServerHandler.Create(Self);
 end;
