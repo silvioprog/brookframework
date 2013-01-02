@@ -99,8 +99,8 @@ begin
     case AWritingType of
       wtHeadTD: Result := AData + LF + HT + HT + '<td>Action</td>';
       wtBodyTD: Result := AData + LF + HT + '<td>' + LF + HT + HT +
-        LinkTo('Edit', TPostEdit, [ID]) + LF + HT + HT +
-        LinkTo('Remove', TPostRemove, [ID]) + LF + HT + '</td>' + LF;
+        LinkTo('Edit', TPostEdit, [ID], 'btn') + LF + HT + HT +
+        LinkTo('Remove', TPostRemove, [ID], 'btn') + LF + HT + '</td>' + LF;
     end;
   end
   else
