@@ -5,8 +5,9 @@ unit main;
 interface
 
 uses
-  BrookDBAction, BrookDBUtils, BrookHTTPConsts, BrookTable, BrookConsts,
-  BrookActionHelper, Brokers, JTemplate, SysUtils, HTTPDefs, DB, FPJSON;
+  BrookDBAction, BrookUtils, BrookDBUtils, BrookHTTPConsts, BrookTable,
+  BrookConsts, BrookActionHelper, Brokers, JTemplate, SysUtils, HTTPDefs, DB,
+  FPJSON;
 
 type
 
@@ -138,46 +139,29 @@ end;
 
 procedure TPostEdit.Get;
 var
-  ID: TJSONStringType;
-  Row: TBrookTable;
+  Row: TJSONObject;
 begin
-  ID := Values['id'].AsString;
-  Row := Table.Get('id', ID);
-  if not Row.EOF then
-  begin
+  Table.Find(Values).GetRow(Row);
+  try
     LoadHtml('newpost');
-    Template.Fields.Add('title', Row['title'].AsString);
-    Template.Fields.Add('author', Row['author'].AsString);
-    Template.Fields.Add('post', Row['post'].AsString);
-    Template.Fields.Add('action', UrlFor(TPostEdit, [ID]));
-  end
-  else
-    Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
+    BrookJSONCopy(Row, Template.Fields);
+    Template.Fields.Add('action', UrlFor(TPostEdit, Row));
+  finally
+    FreeAndNil(Row);
+  end;
 end;
 
 procedure TPostEdit.Post;
-var
-  ID: TJSONStringType;
-  Row: TBrookTable;
 begin
-  ID := Values['id'].AsString;
-  Row := Table.Get('id', ID);
-  if not Row.EOF then
-    Row.Edit(Fields).Apply;
+  Table.Find(Values).Edit(Fields).Apply;
   Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
 end;
 
 { TPostRemove }
 
 procedure TPostRemove.Get;
-var
-  ID: TJSONStringType;
-  Row: TBrookTable;
 begin
-  ID := Values['id'].AsString;
-  Row := Table.Get('id', ID);
-  if not Row.EOF then
-    Row.Delete.Apply;
+  Table.Find(Values).Delete.Apply;
   Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
 end;
 
