@@ -5,7 +5,8 @@ unit main;
 interface
 
 uses
-  BrookDBAction, BrookDBUtils, BrookHTTPConsts, JTemplate, HTTPDefs;
+  BrookDBAction, BrookDBUtils, BrookHTTPConsts, BrookTable, BrookConsts,
+  BrookActionHelper, Brokers, JTemplate, SysUtils, HTTPDefs, DB, FPJSON;
 
 type
 
@@ -25,16 +26,34 @@ type
   { THome }
 
   THome = class(TActionView)
+    function GridCallback(ADataSet: TDataSet;
+      const AWritingType: TBrookHTMLTableWritingState;
+      const APosition, AMax: Integer; var AData: string): string;
   public
     procedure Get; override;
   end;
 
-  { TPost }
+  { TPostAdd }
 
-  TPost = class(TActionView)
+  TPostAdd = class(TActionView)
   public
     procedure Get; override;
     procedure Post; override;
+  end;
+
+  { TPostEdit }
+
+  TPostEdit = class(TActionView)
+  public
+    procedure Get; override;
+    procedure Post; override;
+  end;
+
+  { TPostRemove }
+
+  TPostRemove = class(TActionView)
+  public
+    procedure Get; override;
   end;
 
 implementation
@@ -63,34 +82,107 @@ end;
 
 procedure TActionView.LoadHtml(const AHtml: string);
 begin
-  FTemplate.LoadFromFile(AHtml + '.html');
+  FTemplate.LoadFromFile(PUBLIC_HTML + AHtml + '.html');
 end;
 
 { THome }
 
+function THome.GridCallback(ADataSet: TDataSet;
+  const AWritingType: TBrookHTMLTableWritingState;
+  const APosition, AMax: Integer; var AData: string): string;
+var
+  ID: string;
+begin
+  if (APosition = AMax) and (AWritingType in [wtHeadTD, wtBodyTD]) then
+  begin
+    ID := ADataSet.FieldByName('id').AsString;
+    case AWritingType of
+      wtHeadTD: Result := AData + LF + HT + HT + '<td>Action</td>';
+      wtBodyTD: Result := AData + LF + HT + '<td>' + LF + HT + HT +
+        LinkTo('Edit', TPostEdit, [ID]) + LF + HT + HT +
+        LinkTo('Remove', TPostRemove, [ID]) + LF + HT + '</td>' + LF;
+    end;
+  end
+  else
+    Result := AData;
+end;
+
 procedure THome.Get;
 begin
   LoadHtml('home');
-  Template.Fields.Add('menu', UrlFor(TPost, ['new']));
+  Template.Fields.Add('menu', UrlFor(TPostAdd, ['new']));
   Template.Fields.Add('post', BrookDataSetToHTMLTable(Table.Open.DataSet, [],
-    'table table-bordered table-hover'));
+    'table table-bordered table-hover', 1, [], @GridCallback));
 end;
 
-{ TPost }
+{ TPostAdd }
 
-procedure TPost.Get;
+procedure TPostAdd.Get;
 begin
   LoadHtml('newpost');
+  Template.Fields.Add('title', ES);
+  Template.Fields.Add('author', ES);
+  Template.Fields.Add('post', ES);
+  Template.Fields.Add('action', UrlFor(TPostAdd));
 end;
 
-procedure TPost.Post;
+procedure TPostAdd.Post;
 begin
   Table.Insert(Fields).Apply;
   Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
 end;
 
+{ TPostEdit }
+
+procedure TPostEdit.Get;
+var
+  ID: TJSONStringType;
+  Row: TBrookTable;
+begin
+  ID := Values['id'].AsString;
+  Row := Table.Get('id', ID);
+  if not Row.EOF then
+  begin
+    LoadHtml('newpost');
+    Template.Fields.Add('title', Row['title'].AsString);
+    Template.Fields.Add('author', Row['author'].AsString);
+    Template.Fields.Add('post', Row['post'].AsString);
+    Template.Fields.Add('action', UrlFor(TPostEdit, [ID]));
+  end
+  else
+    Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
+end;
+
+procedure TPostEdit.Post;
+var
+  ID: TJSONStringType;
+  Row: TBrookTable;
+begin
+  ID := Values['id'].AsString;
+  Row := Table.Get('id', ID);
+  if not Row.EOF then
+    Row.Edit(Fields).Apply;
+  Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
+end;
+
+{ TPostRemove }
+
+procedure TPostRemove.Get;
+var
+  ID: TJSONStringType;
+  Row: TBrookTable;
+begin
+  ID := Values['id'].AsString;
+  Row := Table.Get('id', ID);
+  if not Row.EOF then
+    Row.Delete.Apply;
+  Redirect(UrlFor(THome), BROOK_HTTP_STATUS_CODE_FOUND);
+end;
+
 initialization
   THome.Register('post', '*', True);
-  TPost.Register('post', '/post/');
+  TPostAdd.Register('post', '/post/add/');
+  TPostEdit.Register('post', '/post/edit/:id');
+  TPostRemove.Register('post', '/post/remove/:id');
 
 end.
