@@ -21,7 +21,7 @@
     </CompilerOptions>
     <Description Value="Brook experts package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
-    <Version Release="2"/>
+    <Version Release="2" Build="1"/>
     <Files Count="9">
       <Item1>
         <Filename Value="..\ideintf\brookprojectintf.pas"/>
