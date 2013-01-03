@@ -39,6 +39,7 @@ type
     btCancel: TBitBtn;
     edAppName: TEdit;
     edPubHTMLDir: TDirectoryEdit;
+    imLogo: TImage;
     lbAppName: TLabel;
     lbInfo2: TLabel;
     lbInfo1: TLabel;

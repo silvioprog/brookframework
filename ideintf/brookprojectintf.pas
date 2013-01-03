@@ -444,17 +444,15 @@ begin
   VProject.IsPartOfProject := True;
   AProject.AddFile(VProject, False);
   AProject.AddPackageDependency('BrookRT');
-  AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements, pfRunnable];
+  AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
+  AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text;
+  AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   case VDlg.rgAppType.ItemIndex of
-    0: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text;
-    1:
-      begin
-        AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fcgi';
-        AProject.Flags := AProject.Flags + [pfRunnable];
-      end;
+    0: AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
+    1: AProject.Flags := AProject.Flags - [pfRunnable];
+    2: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fcgi';
   end;
   AProject.LazCompilerOptions.Win32GraphicApp := False;
-  AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   AProject.SessionStorage := pssInProjectInfo;
   AProject.MainFileID := 0;
   S :=
@@ -535,9 +533,9 @@ var
   VCharset, VBroker: string;
 begin
   case FAppType of
-    0: VBroker := 'BrookFCLCGIBroker';
-    1: VBroker := 'BrookFCLFCGIBroker';
-    2: VBroker := 'BrookFCLHTTPAppBroker';
+    0: VBroker := 'BrookFCLHTTPAppBroker';
+    1: VBroker := 'BrookFCLCGIBroker';
+    2: VBroker := 'BrookFCLFCGIBroker';
   end;
   case FAppDefCharset of
     0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
