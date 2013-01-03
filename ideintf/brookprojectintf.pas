@@ -296,7 +296,7 @@ begin
     SBrookBrokersName) as TBrookBrokersFileDescPascalUnit;
   VPlgItem.FQuiet := True;
   VPlgItem.FFullPlg := False;
-  VPlgItem.FAppType := 0;
+  VPlgItem.FAppType := 1;
   VPlgItem.FAppDefCharset := 0;
   LazarusIDE.DoNewEditorFile(VPlgItem, '', '',
     [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
@@ -330,7 +330,7 @@ begin
     SBrookBrokersName) as TBrookBrokersFileDescPascalUnit;
   VPlgItem.FQuiet := True;
   VPlgItem.FFullPlg := False;
-  VPlgItem.FAppType := 2;
+  VPlgItem.FAppType := 0;
   VPlgItem.FAppDefCharset := 0;
   LazarusIDE.DoNewEditorFile(VPlgItem, '', '',
     [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
