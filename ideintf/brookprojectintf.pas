@@ -46,6 +46,7 @@ type
   TBrookSimpleProjectDescriptor = class(TBrookCustomSimpleProjectDescriptor)
   public
     constructor Create; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
@@ -240,30 +241,13 @@ end;
 
 function TBrookCustomSimpleProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
-var
-  VProject: TLazProjectFile;
 begin
-  VProject := AProject.CreateProjectFile('cgi1.lpr');
-  VProject.IsPartOfProject := True;
-  AProject.AddFile(VProject, False);
   AProject.AddPackageDependency('BrookRT');
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements, pfRunnable];
   AProject.LazCompilerOptions.Win32GraphicApp := False;
-  AProject.LazCompilerOptions.TargetFileName := 'cgi1';
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   AProject.SessionStorage := pssInProjectInfo;
   AProject.MainFileID := 0;
-  AProject.MainFile.SetSourceText(
-    'program cgi1;'+le+
-    ''+le+
-    '{$mode objfpc}{$H+}'+le+
-    ''+le+
-    'uses'+le+
-    '  BrookApplication, Brokers;'+le+
-    ''+le+
-    'begin'+le+
-    '  BrookApp.Run;'+le+
-    'end.');
   AProject.Title := '';
   Result := mrOK;
 end;
@@ -284,6 +268,29 @@ constructor TBrookSimpleProjectDescriptor.Create;
 begin
   inherited Create;
   Name := SBrookSimpleAppName;
+end;
+
+function TBrookSimpleProjectDescriptor.InitProject(
+  AProject: TLazProject): TModalResult;
+var
+  VProject: TLazProjectFile;
+begin
+  VProject := AProject.CreateProjectFile('cgi1.lpr');
+  VProject.IsPartOfProject := True;
+  AProject.AddFile(VProject, False);
+  Result := inherited InitProject(AProject);
+  AProject.MainFile.SetSourceText(
+    'program cgi1;'+le+
+    ''+le+
+    '{$mode objfpc}{$H+}'+le+
+    ''+le+
+    'uses'+le+
+    '  BrookApplication, Brokers;'+le+
+    ''+le+
+    'begin'+le+
+    '  BrookApp.Run;'+le+
+    'end.');
+  AProject.LazCompilerOptions.TargetFileName := 'cgi1';
 end;
 
 function TBrookSimpleProjectDescriptor.CreateStartFiles(
@@ -338,10 +345,27 @@ end;
 
 function TBrookHTTPAppProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
+var
+  VProject: TLazProjectFile;
 begin
+  VProject := AProject.CreateProjectFile('project1.lpr');
+  VProject.IsPartOfProject := True;
+  AProject.AddFile(VProject, False);
   Result := inherited InitProject(AProject);
   AProject.Flags := AProject.Flags + [pfRunnable];
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
+  AProject.MainFile.SetSourceText(
+    'program project1;'+le+
+    ''+le+
+    '{$mode objfpc}{$H+}'+le+
+    ''+le+
+    'uses'+le+
+    '  BrookApplication, Brokers;'+le+
+    ''+le+
+    'begin'+le+
+    '  BrookApp.Run;'+le+
+    'end.');
+  AProject.LazCompilerOptions.TargetFileName := 'project1';
 end;
 
 function TBrookHTTPAppProjectDescriptor.GetLocalizedName: string;
