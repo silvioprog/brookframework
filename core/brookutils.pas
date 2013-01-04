@@ -62,6 +62,8 @@ type
     Configuration: string;
     { Handles the application exceptions. }
     OnError: TOnShowRequestException;
+    { Show stack trace along with Page404 or Page500 }
+    ShowStackTraceOnError: Boolean
   end;
 
 var
@@ -78,6 +80,7 @@ var
     AcceptsJSONContent: False;
     Configuration: ES;
     OnError: nil;
+    ShowStackTraceOnError: False;
   );
 
 { Get the next pathinfo level. }

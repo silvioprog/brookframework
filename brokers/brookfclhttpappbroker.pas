@@ -154,10 +154,9 @@ begin
     else
       R.Content := BrookSettings.Page404;
     R.Content := Format(R.Content, [ApplicationURL]);
-    R.SendContent;
-    Exit;
   end;
-  if (BrookSettings.Page500 <> ES) and (not R.HeadersSent) then
+  if (BrookSettings.Page500 <> ES) and (E is EBrookHTTP500) and
+    (not R.HeadersSent) then
   begin
     R.Code := BROOK_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR;
     R.CodeText := 'Application error ' + E.ClassName;
@@ -173,22 +172,21 @@ begin
           [StringToJSONString(E.Message)])
       else
         R.Content := Format(BrookSettings.Page500, [E.Message]);
-    R.SendContent;
-    Exit;
   end;
-  if (R.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) or
-    (BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) then
+  if BrookSettings.ShowStackTraceOnError and
+     ((R.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) or
+      (BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML)) then
   begin
     VStr := TStringList.Create;
     try
       R.ContentType := FormatContentType;
       ExceptionToHTML(VStr, E, Title, Email, Administrator);
-      R.Content := VStr.Text;
-      R.SendContent;
+      R.Content := R.Content + VStr.Text;
     finally
       VStr.Free;
     end;
   end;
+  R.SendContent;
 end;
 
 initialization
