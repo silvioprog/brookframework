@@ -9,7 +9,7 @@
         <MainUnitHasCreateFormStatements Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <Title Value="cgi1"/>
+      <Title Value="project1"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
       <ActiveWindowIndexAtStart Value="0"/>
@@ -40,9 +40,9 @@
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
-        <Filename Value="cgi1.lpr"/>
+        <Filename Value="project1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="cgi1"/>
+        <UnitName Value="project1"/>
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
@@ -69,7 +69,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="cgi1"/>
+      <Filename Value="project1"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

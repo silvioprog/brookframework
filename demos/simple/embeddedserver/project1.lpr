@@ -1,4 +1,4 @@
-program cgi1;
+program project1;
 
 {$mode objfpc}{$H+}
 
