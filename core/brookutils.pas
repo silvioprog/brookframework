@@ -111,6 +111,8 @@ function BrookFileSetDate(const AFileName: TFileName;
   const ADateTime: TDateTime): LongInt;
 { Copy the content of a JSON Object to another. }
 procedure BrookJSONCopy(ASrc, ADest: TJSONObject);
+{ Writes a backtrace of the current exception. }
+function BrookDumpStack(const AEOL: ShortString = BR): string;
 
 implementation
 
@@ -275,6 +277,15 @@ begin
     raise EBrook.CreateFmt('BrookJSONCopy', SBrookNilParamError, ['ADest']);
   for I := 0 to Pred(ASrc.Count) do
     ADest.Add(ASrc.Names[I], ASrc.Items[I].Clone);
+end;
+
+function BrookDumpStack(const AEOL: ShortString): string;
+var
+  I: Integer;
+begin
+  Result := BackTraceStrFunc(ExceptAddr) + AEOL;
+  for I := 0 to Pred(ExceptFrameCount) do
+    Result += BackTraceStrFunc(ExceptFrames[I]) + AEOL;
 end;
 
 end.
