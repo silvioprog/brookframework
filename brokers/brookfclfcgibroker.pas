@@ -26,7 +26,7 @@ interface
 uses
   BrookClasses, BrookApplication, BrookException, BrookMessages, BrookConsts,
   BrookHTTPConsts, BrookRouter, BrookUtils, HTTPDefs, CustWeb, CustFCGI, FPJSON,
-  JSONParser, Classes, SysUtils;
+  JSONParser, Classes, SysUtils, StrUtils;
 
 type
   TBrookFCGIApplication = class;
@@ -296,14 +296,17 @@ begin
     if FileExists(BrookSettings.Page500) then
     begin
       R.Contents.LoadFromFile(BrookSettings.Page500);
-      R.Content := Format(R.Content, [E.Message, BrookDumpStack]);
+      R.Content := StringsReplace(R.Content, ['@error', '@trace'],
+        [E.Message, BrookDumpStack], [rfIgnoreCase, rfReplaceAll]);
     end
     else
       if BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_APP_JSON then
-        R.Content := Format(BrookSettings.Page500,
-          [StringToJSONString(E.Message), StringToJSONString(BrookDumpStack(LE))])
+        R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
+          [StringToJSONString(E.Message), StringToJSONString(BrookDumpStack(LE))],
+          [rfIgnoreCase, rfReplaceAll])
       else
-        R.Content := Format(BrookSettings.Page500, [E.Message, BrookDumpStack]);
+        R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
+          [E.Message, BrookDumpStack], [rfIgnoreCase, rfReplaceAll]);
     R.SendContent;
     Exit;
   end;
