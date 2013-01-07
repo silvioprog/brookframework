@@ -15,14 +15,14 @@ implementation
 {$IFDEF BROOK_DEBUG}
 const
   HEAP_FN = 'HEAP.TXT';
-  HTML_TPL = '<html><head><title>%s</title><style>body{margin:0;padding:30px;font:12px/1.5 Helvetica,Arial,Verdana,sans-serif;}h1{margin:0;font-size:48px;font-weight:normal;line-height:48px;}strong{display:inline-block;width:65px;}</style></head><body><h1>%s</h1><br />%s</body></html>';
+  HTML_TPL = '<html><head><title>%s</title><style>body{margin:0;padding:30px;font:12px/1.5 Helvetica,Arial,Verdana,sans-serif;}h1{margin:0;font-size:48px;font-weight:normal;line-height:48px;}strong{display:inline-block;width:65px;}</style></head><body><h1>%s</h1><br />%s%s</body></html>';
 
 var
   TmpDir: string;
 
-function HTML(const ATitle, AError, ABody: string): string;
+function HTML(const ATitle, AError, AMsg, ATrace: string): string;
 begin
-  Result := Format(HTML_TPL, [ATitle, AError, ABody]);
+  Result := Format(HTML_TPL, [ATitle, AError, AMsg, ATrace]);
 end;
 
 initialization
@@ -33,9 +33,10 @@ initialization
   SetHeapTraceOutput(TmpDir + HEAP_FN);
   BrookSettings.Charset := BROOK_HTTP_CHARSET_UTF_8;
   BrookSettings.Page404 := HTML('Page not found', '404 - Page not found',
-    'Click <a href="%s">here</a> to go to home page ...');
+    'Click <a href="%s">here</a> to go to home page ...', ES);
   BrookSettings.Page500 := HTML('Internal server error',
-    '500 - Internal server error', '%s');
+    '500 - Internal server error', 'Error: @error',
+    '<br /><br />Trace: @trace');
 {$ENDIF}
 
 end.

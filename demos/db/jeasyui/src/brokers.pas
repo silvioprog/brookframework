@@ -14,6 +14,6 @@ initialization
   BrookSettings.Configuration := 'db.cfg';
   BrookSettings.ContentType := BROOK_HTTP_CONTENT_TYPE_APP_JSON;
   BrookSettings.Page404 := '{ "msg": "404 - Page not found." }';
-  BrookSettings.Page500 := '{ "msg": "500 - Internal server error: %s" }';
+  BrookSettings.Page500 := '{ "msg": "500 - Internal server error: @error" }';
 
 end.
