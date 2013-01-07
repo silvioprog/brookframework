@@ -170,7 +170,7 @@ const
     'padding:30px;font:12px/1.5 Helvetica,Arial,Verdana,sans-serif;}h1{mar'+
     'gin:0;font-size:48px;font-weight:normal;line-height:48px;}strong{disp'+
     'lay:inline-block;width:65px;}</style></head><body><h1>500 - Internal '+
-    'server error</h1><br />%s'+
+    'server error</h1><br />@error'+
     '</body></html>';
 
 procedure Register;
@@ -610,7 +610,7 @@ begin
     '  BrookSettings.Page500 :='+le+
     '    ''<html><head><title>Internal server error</title></head><body>'' +'+le+
     '    ''<h1>500 - Internal server error</h1>'' +'+le+
-    '    ''<p style="color: red;" >Error: %s</p></body></html>'';'+le+
+    '    ''<p style="color: red;" >Error: @error</p></body></html>'';'+le+
     ''+le+
     'end.';
   FAppType := 0;
