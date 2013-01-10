@@ -44,6 +44,12 @@ function BrookGetAcceptEncodingSet(
 { Returns a string of HTTP AcceptEnconding. }
 function BrookGetAcceptEncoding(
   const AAcceptEncoding: TBrookAcceptEncodingSet): string;
+{ Returns a MIME type by file extension. }
+function BrookMimeTypeFromFileExt(const AValue: string): string;
+{ Returns a MIME type by file name. }
+function BrookMimeTypeFromFileName(const AValue: string): string;
+{ Returns a file extension by MIME type. }
+function BrookFileExtFromMimeType(const AValue: string): string;
 
 implementation
 
@@ -266,6 +272,37 @@ begin
   if aeXGzip in AAcceptEncoding then
     Result += 'xgzip,';
   SetLength(Result, Length(Result) - 1);
+end;
+
+function BrookMimeTypeFromFileExt(const AValue: string): string;
+var
+  I: Integer;
+begin
+  for I := 0 to BROOK_MAX_MIME_TYPE do
+    if SameText(BROOK_MIME_TYPE[I, 2], AValue) then
+    begin
+      Result := BROOK_MIME_TYPE[I, 1];
+      Exit;
+    end;
+  Result := BROOK_HTTP_CONTENT_TYPE_APP_OCTET_STREAM;
+end;
+
+function BrookMimeTypeFromFileName(const AValue: string): string;
+begin
+  Result := BrookMimeTypeFromFileExt(ExtractFileExt(AValue));
+end;
+
+function BrookFileExtFromMimeType(const AValue: string): string;
+var
+  I: Integer;
+begin
+  for I := 0 to BROOK_MAX_MIME_TYPE do
+    if SameText(BROOK_MIME_TYPE[I, 1], AValue) then
+    begin
+      Result := BROOK_MIME_TYPE[I, 2];
+      Exit;
+    end;
+  Result := BROOK_HTTP_CONTENT_TYPE_APP_OCTET_STREAM;
 end;
 
 end.
