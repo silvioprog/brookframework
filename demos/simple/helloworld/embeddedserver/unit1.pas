@@ -17,7 +17,7 @@ implementation
 
 procedure TMyAction.Get;
 begin
-  Write('Your content here ...');
+  Write('Hello world!');
 end;
 
 initialization
