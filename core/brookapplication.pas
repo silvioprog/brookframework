@@ -42,6 +42,8 @@ type
 function BrookApp: IBrookApplication;
 { Register the application. }
 procedure BrookRegisterApp(AApp: IBrookApplication);
+{ Unregister the application. }
+procedure BrookUnregisterApp;
 
 implementation
 
@@ -62,6 +64,11 @@ begin
     raise EBrookApplication.Create('BrookRegisterApp',
       SBrookApplicationAlreadyRegisteredError);
   _BrookAppService := AApp;
+end;
+
+procedure BrookUnregisterApp;
+begin
+  _BrookAppService := nil;
 end;
 
 end.
