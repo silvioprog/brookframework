@@ -506,6 +506,8 @@ begin
       end
       else
         Break;
+    if VPt = AK + AK then
+      Exit;
     if VPt = AK then
       Continue;
     VIsVar := Pos(CO, VPt) <> 0;

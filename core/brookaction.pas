@@ -66,14 +66,34 @@ type
       @param(APattern Is an expression defining which URLs is allowed to call
        an action.
 
-        @bold(*) - Allows any path. Example:
+        @bold(*) -- Represents one single level in the current path. Examples:
 
          @code(TMyAction.Register('*');)
 
-         Can be called  as
-          http://localhost/cgi-bin/cgi1, http://localhost/cgi-bin/cgi1/foo/ etc;
+         Can be called  as:
 
-        @bold(/) - Adds an slash to the end of the URL if does not exist.
+         http://localhost/cgi-bin/cgi1 @br
+         http://localhost/cgi-bin/cgi1/foo/ etc;
+
+         @code(TMyAction.Register('/home/*/download');)
+
+         Means that between "home" and "download", there is one level. The
+          following replacements could be done:
+
+         http://localhost/cgi-bin/cgi1/home/file/download @br
+         http://localhost/cgi-bin/cgi1/home/news/download
+
+        @bold(**) -- Represents one or more levels in the current path. Example:
+
+         @code(TMyAction.Register('/home/**/download');)
+
+         Means that between "home" and "download", one or more levels can be set.
+         The following replacements can be done:
+
+         http://localhost/cgi-bin/cgi1/home/file/download @br
+         http://localhost/cgi-bin/cgi1/home/file/id/25/download
+
+        @bold(/) -- Adds an slash to the end of the URL if does not exist.
           Example:
 
          @code(TMyAction.Register('/foo/');)
@@ -84,7 +104,7 @@ type
          redirected to http://localhost/cgi-bin/cgi1/foo/.
          If the pathinfo is different from @code(/foo) a 404 page is returned;
 
-        @bold(:) - Creates variables URL. Their values can be read from the
+        @bold(:) -- Creates variables URL. Their values can be read from the
          property @link(Values). Example:
 
          @code(TMyAction.Register('/foo/:myvar');)
