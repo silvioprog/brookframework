@@ -342,19 +342,35 @@ Registers an action.
 <dt>APattern</dt>
 <dd>Is an expression defining which URLs is allowed to call an action.
 
-<p><b>*</b> - Allows any path. Example:
+<p><b>*</b> &ndash; Represents one single level in the current path. Examples:
 
 <p><code>TMyAction.Register('*');</code>
 
-<p>Can be called as <a  target="_parent" href="http://localhost/cgi-bin/cgi1">http://localhost/cgi-bin/cgi1</a>, <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a> etc;
+<p>Can be called as:
 
-<p><b>/</b> - Adds an slash to the end of the URL if does not exist. Example:
+<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1">http://localhost/cgi-bin/cgi1</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a> etc;
+
+<p><code>TMyAction.Register('/home/*/download');</code>
+
+<p>Means that between &quot;home&quot; and &quot;download&quot;, there is one level. The following replacements could be done:
+
+<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/file/download">http://localhost/cgi-bin/cgi1/home/file/download</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/news/download">http://localhost/cgi-bin/cgi1/home/news/download</a>
+
+<p><b>**</b> &ndash; Represents one or more levels in the current path. Example:
+
+<p><code>TMyAction.Register('/home/**/download');</code>
+
+<p>Means that between &quot;home&quot; and &quot;download&quot;, one or more levels can be set. The following replacements can be done:
+
+<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/file/download">http://localhost/cgi-bin/cgi1/home/file/download</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/file/id/25/download">http://localhost/cgi-bin/cgi1/home/file/id/25/download</a>
+
+<p><b>/</b> &ndash; Adds an slash to the end of the URL if does not exist. Example:
 
 <p><code>TMyAction.Register('/foo/');</code>
 
 <p>Can be called as <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo">http://localhost/cgi-bin/cgi1/foo</a> or <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a>. When called as <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo">http://localhost/cgi-bin/cgi1/foo</a>, it will automatically redirected to <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a>. If the pathinfo is different from <code>/foo</code> a 404 page is returned;
 
-<p><b>:</b> - Creates variables URL. Their values can be read from the property <a class="normal"  href="BrookAction.TBrookAction.html#Values">Values</a>. Example:
+<p><b>:</b> &ndash; Creates variables URL. Their values can be read from the property <a class="normal"  href="BrookAction.TBrookAction.html#Values">Values</a>. Example:
 
 <p><code>TMyAction.Register('/foo/:myvar');</code>
 

@@ -14,7 +14,7 @@
 <p>
 Brook HTTP Utils unit.
 
-<p>Copyright (C) 2012-2014 Silvio Clecio.
+<p>Copyright (C) 2012 Silvio Clecio.
 
 <p><a  target="_parent" href="http://brookframework.org">http://brookframework.org</a>
 
@@ -44,6 +44,15 @@ Brook HTTP Utils unit.
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookGetAcceptEncoding">BrookGetAcceptEncoding</a></b>( const AAcceptEncoding: <a   href="BrookHTTPUtils.html#TBrookAcceptEncodingSet">TBrookAcceptEncodingSet</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookMimeTypeFromFileExt">BrookMimeTypeFromFileExt</a></b>(const AValue: string): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookMimeTypeFromFileName">BrookMimeTypeFromFileName</a></b>(const AValue: string): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookFileExtFromMimeType">BrookFileExtFromMimeType</a></b>(const AValue: string): string;</code></td>
 </tr>
 </table>
 <a name="%40Types"></a><h3 class="summary">Types</h3>
@@ -106,6 +115,33 @@ Returns a set of HTTP AceptEnconding header.</p>
 <tr><td colspan="1">
 <p>
 Returns a string of HTTP AcceptEnconding.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookMimeTypeFromFileExt"></a><code>function <b>BrookMimeTypeFromFileExt</b>(const AValue: string): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns a MIME type by file extension.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookMimeTypeFromFileName"></a><code>function <b>BrookMimeTypeFromFileName</b>(const AValue: string): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns a MIME type by file name.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookFileExtFromMimeType"></a><code>function <b>BrookFileExtFromMimeType</b>(const AValue: string): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns a file extension by MIME type.</p>
 </td></tr>
 </table>
 <h3 class="detail">Types</h3>

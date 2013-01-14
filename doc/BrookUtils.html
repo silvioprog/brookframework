@@ -14,7 +14,7 @@
 <p>
 Brook Utils unit.
 
-<p>Copyright (C) 2012-2014 Silvio Clecio.
+<p>Copyright (C) 2012 Silvio Clecio.
 
 <p><a  target="_parent" href="http://brookframework.org">http://brookframework.org</a>
 
@@ -48,7 +48,7 @@ Brook Utils unit.
 <td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookGetPathLevels">BrookGetPathLevels</a></b>(const APath: string; const AIndex: SizeInt = 0; const ADelimiter: Char = <a   href="BrookConsts.html#US">US</a>): string;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookMacthMethod">BrookMacthMethod</a></b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const AMethod: string): Boolean;</code></td>
+<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookMatchMethod">BrookMatchMethod</a></b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const AMethod: string): Boolean;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>procedure <b><a   href="BrookUtils.html#BrookDeleteFiles">BrookDeleteFiles</a></b>(APath: string; const ABeforeOf: TDateTime; const ASkippedFile: TFileName = <a   href="BrookConsts.html#ES">ES</a>; const AContains: string = <a   href="BrookConsts.html#ES">ES</a>);</code></td>
@@ -61,6 +61,9 @@ Brook Utils unit.
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>procedure <b><a   href="BrookUtils.html#BrookJSONCopy">BrookJSONCopy</a></b>(ASrc, ADest: TJSONObject);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookDumpStack">BrookDumpStack</a></b>(const AEOL: ShortString = <a   href="BrookConsts.html#BR">BR</a>): string;</code></td>
 </tr>
 </table>
 <a name="%40Types"></a><h3 class="summary">Types</h3>
@@ -125,7 +128,7 @@ Get the path from the level correspondent to the index to the last level. Exempl
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BrookMacthMethod"></a><code>function <b>BrookMacthMethod</b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const AMethod: string): Boolean;</code></td>
+<td class="itemcode"><a name="BrookMatchMethod"></a><code>function <b>BrookMatchMethod</b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const AMethod: string): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -166,6 +169,15 @@ Set the datetime of a file.</p>
 <tr><td colspan="1">
 <p>
 Copy the content of a JSON Object to another.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookDumpStack"></a><code>function <b>BrookDumpStack</b>(const AEOL: ShortString = <a   href="BrookConsts.html#BR">BR</a>): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Writes a backtrace of the current exception.</p>
 </td></tr>
 </table>
 <h3 class="detail">Types</h3>
