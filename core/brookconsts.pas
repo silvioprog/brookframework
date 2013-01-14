@@ -95,7 +95,8 @@ const
   BROOK_DEFAULT_LANGUAGE = 'en-US';
   BROOK_SESS_ID = 'BRKSESSID';
   BROOK_SESS_PREFIX = 'brook_sess_';
-  BROOK_SESS_DEFAULT_TIMEOUT = 3 * 60; // 3 minutes
+  { 3 minutes. }
+  BROOK_SESS_DEFAULT_TIMEOUT = 3 * 60;
   BROOK_MAX_MIME_TYPE = 682;
   BROOK_MIME_TYPE: array[0..BROOK_MAX_MIME_TYPE, 0..2] of string = (
     ('3D Crossword Plugin', 'application/vnd.hzn-3d-crossword', '.x3d'),
