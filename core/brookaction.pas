@@ -376,8 +376,7 @@ end;
 
 class function TBrookAction.GetPath: string;
 begin
-  Result := IncludeHTTPPathDelimiter(
-    GetEnvironmentVariable(BROOK_SRV_ENV_SCRIPT_NAME)) +
+  Result := IncludeHTTPPathDelimiter(TBrookRouter.RootUrl) +
     LowerCase(Copy(ClassName, 2, MaxInt));
 end;
 

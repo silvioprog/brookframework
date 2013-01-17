@@ -60,6 +60,8 @@ type
     AcceptsJSONContent: Boolean;
     { Set a configuration for the application or for its object members. }
     Configuration: string;
+    { Set the default root URL. }
+    RootUrl: string;
     { Handles the application exceptions. }
     OnError: TOnShowRequestException;
   end;
@@ -77,6 +79,7 @@ var
     DeleteUploadedFiles: False;
     AcceptsJSONContent: False;
     Configuration: ES;
+    RootUrl: ES;
     OnError: nil;
   );
 
@@ -110,6 +113,8 @@ function BrookFileSetDate(const AFileName: TFileName;
 procedure BrookJSONCopy(ASrc, ADest: TJSONObject);
 { Writes a backtrace of the current exception. }
 function BrookDumpStack(const AEOL: ShortString = BR): string;
+{ Ensures URL ends with delimiter. }
+function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
 
 implementation
 
@@ -283,6 +288,16 @@ begin
   Result := BackTraceStrFunc(ExceptAddr) + AEOL;
   for I := 0 to Pred(ExceptFrameCount) do
     Result += BackTraceStrFunc(ExceptFrames[I]) + AEOL;
+end;
+
+function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
+var
+  L: SizeInt;
+begin
+  Result := AUrl;
+  L := Length(Result);
+  if (L > 0) and (Result[L] = US) then
+    Delete(Result, L, 1);
 end;
 
 end.

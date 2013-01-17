@@ -109,6 +109,8 @@ type
     class procedure UnregisterService;
     { Return a instance of this class. }
     class function Service: TBrookRouter;
+    { Return the root URL. }
+    class function RootUrl: string;
     { Sends the HTTP "NotAllowed" status code to the response. }
     class procedure MethodNotAllowed(AResponse: TResponse);
     { Creates an URL for an action informing an array of parameters. Exemple:
@@ -350,6 +352,14 @@ begin
   Result := _BrookRouterService;
 end;
 
+class function TBrookRouter.RootUrl: string;
+begin
+  if BrookSettings.RootUrl = ES then
+    Result := GetEnvironmentVariable(BROOK_SRV_ENV_SCRIPT_NAME)
+  else
+    Result := BrookSettings.RootUrl;
+end;
+
 class procedure TBrookRouter.MethodNotAllowed(AResponse: TResponse);
 begin
   AResponse.Code := BROOK_HTTP_STATUS_CODE_METHOD_NOT_ALLOWED;
@@ -390,7 +400,7 @@ begin
       end;
     end;
   end;
-  Result := GetEnvironmentVariable(BROOK_SRV_ENV_SCRIPT_NAME) + S;
+  Result := BrookExcludeHTTPPathDelimiter(TBrookRouter.RootUrl) + S;
 end;
 
 function TBrookRouter.UrlFor(AClassName: string;
@@ -438,7 +448,7 @@ begin
       end;
     end;
   end;
-  Result := GetEnvironmentVariable(BROOK_SRV_ENV_SCRIPT_NAME) + S;
+  Result := BrookExcludeHTTPPathDelimiter(TBrookRouter.RootUrl) + S;
 end;
 
 function TBrookRouter.UrlFor(AClassName: string;
