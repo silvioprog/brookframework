@@ -7,7 +7,7 @@ interface
 uses
   BrookDBAction, BrookUtils, BrookDBUtils, BrookHTTPConsts, BrookTable,
   BrookConsts, BrookActionHelper, Brokers, JTemplate, SysUtils, HTTPDefs, DB,
-  FPJSON;
+  FPJSON, RUtils;
 
 type
 
@@ -19,6 +19,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure FillFields(ARequest: TRequest); override;
     procedure DoRequest(ARequest: TRequest; AResponse: TResponse); override;
     procedure LoadHtml(const AHtml: string);
     property Template: TJTemplate read FTemplate;
@@ -72,6 +73,15 @@ destructor TActionView.Destroy;
 begin
   FTemplate.Free;
   inherited Destroy;
+end;
+
+procedure TActionView.FillFields(ARequest: TRequest);
+var
+  I: Integer;
+begin
+  for I := 0 to Pred(ARequest.ContentFields.Count) do
+    Fields.Add(ARequest.ContentFields.Names[I],
+      StripHTMLMarkup(ARequest.ContentFields.ValueFromIndex[I]));
 end;
 
 procedure TActionView.DoRequest(ARequest: TRequest; AResponse: TResponse);

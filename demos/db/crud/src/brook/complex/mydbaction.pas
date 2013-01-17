@@ -5,7 +5,8 @@ unit MyDBAction;
 interface
 
 uses
-  BrookAction, BrookDBAction, BrookDBUtils, JTemplate, DB, FPJSON, SysUtils;
+  BrookAction, BrookDBAction, BrookDBUtils, JTemplate, RUtils, DB, FPJSON,
+  HTTPDefs, SysUtils;
 
 type
 
@@ -22,6 +23,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure FillFields(ARequest: TRequest); override;
     procedure Load(const AFileName: TFileName);
     procedure Display;
     function Add(const AName: TJSONStringType; AValue: TJSONData): Integer; overload;
@@ -51,6 +53,15 @@ destructor TMyAction.Destroy;
 begin
   FTemplate.Free;
   inherited Destroy;
+end;
+
+procedure TMyAction.FillFields(ARequest: TRequest);
+var
+  I: Integer;
+begin
+  for I := 0 to Pred(ARequest.ContentFields.Count) do
+    Fields.Add(ARequest.ContentFields.Names[I],
+      StripHTMLMarkup(ARequest.ContentFields.ValueFromIndex[I]));
 end;
 
 function TMyAction.GridCallback(ADataSet: TDataSet;

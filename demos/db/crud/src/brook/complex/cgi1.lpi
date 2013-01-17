@@ -33,13 +33,16 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="JTemplatePkg"/>
+        <PackageName Value="RUtilsPkg"/>
       </Item1>
       <Item2>
-        <PackageName Value="BrookRT"/>
+        <PackageName Value="JTemplatePkg"/>
       </Item2>
+      <Item3>
+        <PackageName Value="BrookRT"/>
+      </Item3>
     </RequiredPackages>
     <Units Count="4">
       <Unit0>
