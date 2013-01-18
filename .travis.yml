@@ -1,4 +1,0 @@
-language: objectpascal
-branches:
-  only:
-    - master
