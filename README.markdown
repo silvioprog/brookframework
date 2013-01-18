@@ -36,6 +36,22 @@ The project documentation is available in two formats: [HTML](http://docs.brookf
 
 If you want to see Brook in action, then take a look at demos [here](http://brookframework.org/demos.html).
 
+##VERSIONING
+
+For transparency and insight into our release cycle, and for striving to maintain backward compatibility, Brook framework will be maintained under the Semantic Versioning guidelines as much as possible.
+
+Releases will be numbered with the following format:
+
+`<major>.<minor>.<release>`
+
+And constructed with the following guidelines:
+
+* Breaking backward compatibility bumps the major (and resets the minor and release);
+* New additions without breaking backward compatibility bumps the minor (and resets the release);
+* Bug fixes and misc changes bumps the release;
+
+For more information on SemVer, please visit [http://semver.org](http://semver.org).
+
 ##SUPPORT, BUGS, CONTACT
 
 Please use the [issues page](https://github.com/silvioprog/brookframework/issues). Your cooperation will be appreciated.
@@ -46,7 +62,9 @@ Book requires Free Pascal 2.6.1 or newer. If you prefer the Lazarus interface, c
 
 ## DOWNLOAD
 
-You can download a release [here](http://brookframework.org/download/release.bf). Alternatively, you can also follow the project's  GIT repository. The address is <code>git://github.com/silvioprog/brookframework.git</code>
+You can download a release [here](http://brookframework.org/download/release.bf). Alternatively, you can also follow the project's  GIT repository. The address is:
+
+`git://github.com/silvioprog/brookframework.git`
 
 ##CONTRIBUTORS
 
