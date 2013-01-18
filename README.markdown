@@ -1,9 +1,14 @@
-#Brook framework
+<a href="http://brookframework.org/">
+  <img src="http://brookframework.org/assets/img/brook-big-icon.png">
+</a>
+
+# [Brook framework](http://brookframework.org)
+
 ######Copyright (C) 2012 Silvio Clecio.
 
 ##INTRODUCTION
 
-**[Brook](http://brookframework.org)** is the perfect [Free Pascal](http://freepascal.org/) framework for your web applications. It's pure Pascal. You don't need to leave your preferred programming language.<br>
+**[Brook framework](http://brookframework.org)** is the perfect [Free Pascal](http://freepascal.org/) framework for your web applications. It's pure Pascal. You don't need to leave your preferred programming language.<br>
 It's complete: simple actions or configurable actions for database access, advanced routing features, wizard for [Lazarus](http://lazarus.freepascal.org), support for internationalization, high compatibility with [JSON](http://json.org) structures, eazy and elegant [REST](http://en.wikipedia.org/wiki/Representational_state_transfer) implementation, plugins for varied needs, extensible and decoupled brokers... In fact, you have several reasons to adopt Brook as your web development framework.
 
 ##FEATURES
