@@ -54,7 +54,7 @@ end;
 
 procedure TTestBrookUtils.TestMacthMethod;
 begin
-  AssertEquals(True, BrookMacthMethod(rmPost, 'POST'));
+  AssertEquals(True, BrookMatchMethod(rmPost, 'POST'));
 end;
 
 procedure TTestBrookUtils.TestDeleteFiles;
