@@ -212,12 +212,11 @@ initialization
     procedure Redirect(const AUrl: string); overload;
     { Redirects to an URL informing the (302, 307) status code. }
     procedure Redirect(const AUrl: string; const AStatusCode: Word); overload;
-    { Redirects to an URL informing the ScriptName. }
-    procedure Redirect(const AUrl: string;
-      const AUseScriptName: Boolean); overload;
+    { Redirects to an URL informing the root URL. }
+    procedure Redirect(const AUrl: string; const AUseRootUrl: Boolean); overload;
     { Redirects to an URL informing the (302, 307) status code and the
       ScriptName. }
-    procedure Redirect(const AUrl: string; const AUseScriptName: Boolean;
+    procedure Redirect(const AUrl: string; const AUseRootUrl: Boolean;
       const AStatusCode: Word); overload;
     { Raises a message for action exceptions. }
     procedure Error(const AMsg: string); overload;
@@ -376,8 +375,7 @@ end;
 
 class function TBrookAction.GetPath: string;
 begin
-  Result := IncludeHTTPPathDelimiter(
-    GetEnvironmentVariable(BROOK_SRV_ENV_SCRIPT_NAME)) +
+  Result := IncludeHTTPPathDelimiter(TBrookRouter.RootUrl) +
     LowerCase(Copy(ClassName, 2, MaxInt));
 end;
 
@@ -495,22 +493,22 @@ begin
   FResponse.SetCustomHeader(fieldLocation, AUrl);
 end;
 
-procedure TBrookAction.Redirect(const AUrl: string;
-  const AUseScriptName: Boolean);
+procedure TBrookAction.Redirect(const AUrl: string; const AUseRootUrl: Boolean);
 begin
-  if AUseScriptName then
-    FResponse.SendRedirect(FRequest.ScriptName + AUrl)
+  if AUseRootUrl then
+    FResponse.SendRedirect(TBrookRouter.RootUrl + AUrl)
   else
     FResponse.SendRedirect(AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string;
-  const AUseScriptName: Boolean; const AStatusCode: Word);
+  const AUseRootUrl: Boolean; const AStatusCode: Word);
 begin
   FResponse.Code := AStatusCode;
   FResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
-  if AUseScriptName then
-    FResponse.SetCustomHeader(fieldLocation, FRequest.ScriptName + AUrl)
+  if AUseRootUrl then
+    FResponse.SetCustomHeader(fieldLocation,
+      TBrookRouter.RootUrl(FRequest) + AUrl)
   else
     FResponse.SetCustomHeader(fieldLocation, AUrl);
 end;

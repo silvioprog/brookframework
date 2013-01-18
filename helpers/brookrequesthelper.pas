@@ -24,8 +24,8 @@ unit BrookRequestHelper;
 interface
 
 uses
-  BrookUtils, BrookConsts, BrookHTTPConsts, HttpDefs, SysUtils, Classes,
-  CustWeb;
+  BrookUtils, BrookRouter, BrookConsts, BrookHTTPConsts, HttpDefs, SysUtils,
+  Classes, CustWeb;
 
 type
   { Adds features to @code(TRequest) class. }
@@ -168,7 +168,7 @@ end;
 
 function TBrookRequestHelper.GetPath: string;
 begin
-  Result := ScriptName + PathInfo;
+  Result := BrookExcludeHTTPPathDelimiter(TBrookRouter.RootUrl(Self)) + PathInfo;
 end;
 
 function TBrookRequestHelper.GetFullURL: string;
