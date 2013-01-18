@@ -233,7 +233,7 @@ function TBrookCGIHandler.CreateRequest: TCGIRequest;
 begin
   Result := TBrookCGIRequest.CreateCGI(Self);
   if ApplicationURL = ES then
-    ApplicationURL := Result.ScriptName;
+    ApplicationURL := TBrookRouter.RootUrl;
 end;
 
 function TBrookCGIHandler.CreateResponse(AOutput: TStream): TCGIResponse;

@@ -219,7 +219,7 @@ function TBrookFCGIHandler.CreateRequest: TFCGIRequest;
 begin
   Result := TBrookFCGIRequest.Create;
   if ApplicationURL = ES then
-    ApplicationURL := Result.ScriptName;
+    ApplicationURL := TBrookRouter.RootUrl;
 end;
 
 function TBrookFCGIHandler.CreateResponse(ARequest: TFCGIRequest): TFCGIResponse;
