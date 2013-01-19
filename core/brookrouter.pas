@@ -313,6 +313,7 @@ end;
 
 procedure TBrookRouter.DoCreateAction(out AActionClass: TBrookActionClass);
 begin
+  FreeAndNil(FCurrentAction);
   FCurrentAction := AActionClass.Create;
 end;
 
