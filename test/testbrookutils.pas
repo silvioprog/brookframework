@@ -18,6 +18,7 @@ type
     procedure TestFileDate;
     procedure TestFileSetDate;
     procedure TestJSONCopy;
+    procedure TestExcludeHTTPPathDelimiter;
   end;
 
 implementation
@@ -128,6 +129,11 @@ begin
     J1.Free;
     J2.Free;
   end;
+end;
+
+procedure TTestBrookUtils.TestExcludeHTTPPathDelimiter;
+begin
+  AssertEquals('/foo', BrookExcludeHTTPPathDelimiter('/foo/'));
 end;
 
 initialization

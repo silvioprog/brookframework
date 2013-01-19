@@ -15,6 +15,12 @@ type
   TAction2 = class(TAction1)
   end;
 
+  TAction3 = class(TAction1)
+  end;
+
+  TAction4 = class(TAction1)
+  end;
+
   TRequest1 = class(TRequest)
   private
     FQueryString: string;
@@ -195,7 +201,9 @@ var
 begin
   VRouter := TBrookRouter.Service;
   VReq := TRequest1.Create;
+{$WARNINGS OFF}
   VRes := TResponse.Create(VReq);
+{$WARNINGS ON}
   try
     VReq.PathInfo := '/action';
     VRouter.Canonicalize(VReq, VRes);
@@ -265,7 +273,9 @@ var
   VRouter: TRouter;
 begin
   VReq := TRequest1.Create;
+{$WARNINGS OFF}
   VRes := TResponse.Create(VReq);
+{$WARNINGS ON}
   try
     BrookSettings.Mapped := False;
     ClearRoutes(TBrookRouter.Service.Routes);
@@ -274,9 +284,17 @@ begin
     VRouter := TRouter.Service as TRouter;
     TAction1.Register('/action1');
     TAction2.Register('/action2');
+    TAction3.Register('/action3/*/foo');
+    TAction4.Register('/action4/**/foo');
     VReq.PathInfo := '/action2';
     VRouter.Route(VReq, VRes);
     AssertEquals('TAction2', VRouter.CurrentAction.ClassName);
+    VReq.PathInfo := '/action3/name/foo';
+    VRouter.Route(VReq, VRes);
+    AssertEquals('TAction3', VRouter.CurrentAction.ClassName);
+    VReq.PathInfo := '/action4/name';
+    VRouter.Route(VReq, VRes);
+    AssertEquals('TAction4', VRouter.CurrentAction.ClassName);
   finally
     VRouter.CurrentAction.Free;
     VReq.Free;

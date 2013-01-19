@@ -16,6 +16,9 @@ type
     procedure TestReasonPhraseToStatusCode;
     procedure TestGetAcceptEncodingSet;
     procedure TestGetAcceptEncoding;
+    procedure TestMimeTypeFromFileExt;
+    procedure TestTypeFromFileName;
+    procedure TestFileExtFromMimeType;
   end;
 
 const
@@ -53,6 +56,21 @@ procedure TTestBrookHttpUtils.TestGetAcceptEncoding;
 begin
   AssertEquals(True, BrookGetAcceptEncodingSet('deflate,gzip') =
     [aeDeflate, aeGzip]);
+end;
+
+procedure TTestBrookHttpUtils.TestMimeTypeFromFileExt;
+begin
+  AssertEquals('text/plain', BrookMimeTypeFromFileExt('.txt'));
+end;
+
+procedure TTestBrookHttpUtils.TestTypeFromFileName;
+begin
+  AssertEquals('text/plain', BrookMimeTypeFromFileName('/foo/file.txt'));
+end;
+
+procedure TTestBrookHttpUtils.TestFileExtFromMimeType;
+begin
+  AssertEquals('.txt', BrookFileExtFromMimeType('text/plain'));
 end;
 
 initialization
