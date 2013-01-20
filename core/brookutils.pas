@@ -60,7 +60,10 @@ type
     AcceptsJSONContent: Boolean;
     { Set a configuration for the application or for its object members. }
     Configuration: string;
-    { Set the default root URL. }
+    { Set the default root URL. This is used by methods such as
+      @code(TBrookAction.UrlFor), @code(TBrookActionHelper.LinkTo),
+      @code(TBrookActionHelper.ButtonTo) etc. By default, Brook assumes
+      @code(SCRIPT_NAME) as root URL. }
     RootUrl: string;
     { Handles the application exceptions. }
     OnError: TOnShowRequestException;
