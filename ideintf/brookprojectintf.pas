@@ -176,9 +176,9 @@ const
 procedure Register;
 begin
   RegisterNewItemCategory(TNewIDEItemCategory.Create(SBrookIDEItemCategoryName));
-  RegisterProjectDescriptor(TBrookHTTPAppProjectDescriptor.Create,
-    SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookSimpleProjectDescriptor.Create,
+    SBrookIDEItemCategoryName);
+  RegisterProjectDescriptor(TBrookHTTPAppProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
