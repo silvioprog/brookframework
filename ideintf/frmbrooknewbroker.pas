@@ -1,5 +1,5 @@
 (*
-  Brook New Plugin unit.
+  Brook New Broker unit.
 
   Copyright (C) 2012 Silvio Clecio.
 
@@ -17,7 +17,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit frmBrookNewPlugin;
+unit frmBrookNewBroker;
 
 {$i brook.inc}
 
@@ -27,7 +27,7 @@ uses
   Forms, ExtCtrls, Buttons, Controls;
 
 type
-  TfrBrookNewPlugin = class(TForm)
+  TfrBrookNewBroker = class(TForm)
     btOK: TBitBtn;
     btCancel: TBitBtn;
     pnCliente: TPanel;
@@ -41,7 +41,7 @@ implementation
 
 {$R *.lfm}
 
-class function TfrBrookNewPlugin.Execute: Integer;
+class function TfrBrookNewBroker.Execute: Integer;
 begin
   with Self.Create(nil) do
     try

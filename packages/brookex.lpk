@@ -21,8 +21,8 @@
     </CompilerOptions>
     <Description Value="Brook experts package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
-    <Version Major="1" Minor="2"/>
-    <Files Count="9">
+    <Version Major="1" Minor="3"/>
+    <Files Count="8">
       <Item1>
         <Filename Value="..\ideintf\brookprojectintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -37,29 +37,25 @@
         <Type Value="LFM"/>
       </Item3>
       <Item4>
-        <Filename Value="..\ideintf\frmbrooknewplugin.pas"/>
-        <UnitName Value="frmBrookNewPlugin"/>
+        <Filename Value="..\ideintf\frmbrooknewbroker.pas"/>
+        <UnitName Value="frmbrooknewbroker"/>
       </Item4>
       <Item5>
-        <Filename Value="..\ideintf\frmbrooknewplugin.lfm"/>
-        <Type Value="LFM"/>
-      </Item5>
-      <Item6>
         <Filename Value="..\ideintf\frmbrooknewproject.pas"/>
         <UnitName Value="frmBrookNewProject"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="..\ideintf\frmbrooknewproject.lfm"/>
         <Type Value="LFM"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="..\ideintf\frmbrooktable2htmlform.pas"/>
         <UnitName Value="frmBrookTable2HTMLForm"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="..\ideintf\frmbrooktable2htmlform.lfm"/>
         <Type Value="LFM"/>
-      </Item9>
+      </Item8>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="2">

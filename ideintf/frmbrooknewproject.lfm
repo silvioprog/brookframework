@@ -176,7 +176,7 @@ object frBrookNewProject: TfrBrookNewProject
         Left = 16
         Height = 49
         Top = 18
-        Width = 384
+        Width = 393
         AutoFill = True
         AutoSize = True
         BorderSpacing.Left = 16
@@ -191,14 +191,14 @@ object frBrookNewProject: TfrBrookNewProject
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 4
         ClientHeight = 31
-        ClientWidth = 380
+        ClientWidth = 389
         Columns = 4
         ItemIndex = 0
         Items.Strings = (
-          '&Embedded server'
-          '&Embedded daemon server'
-          '&CGI'
-          '&FastCGI'
+          '&CGI '
+          '&FastCGI '
+          '&Embedded server '
+          'Embedded &daemon server'
         )
         TabOrder = 0
       end

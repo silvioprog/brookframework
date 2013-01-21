@@ -24,16 +24,16 @@ unit BrookProjectIntf;
 interface
 
 uses
-  frmBrookNewProject, frmBrookNewPlugin, frmBrookActEdit, frmBrookTable2HTMLForm,
+  frmBrookNewProject, frmBrookNewBroker, frmBrookActEdit, frmBrookTable2HTMLForm,
   ProjectIntf, NewItemIntf, LazIDEIntf, Classes, SysUtils, Controls, ComCtrls,
   Forms, Dialogs;
 
 type
   TBrookBrokersFileDescPascalUnit = class;
 
-  { TBrookCustomSimpleProjectDescriptor }
+  { TBrookCustomSimpleCGIProjectDescriptor }
 
-  TBrookCustomSimpleProjectDescriptor = class(TProjectDescriptor)
+  TBrookCustomSimpleCGIProjectDescriptor = class(TProjectDescriptor)
   public
     constructor Create; override;
     function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
@@ -42,9 +42,9 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
-  { TBrookSimpleProjectDescriptor }
+  { TBrookSimpleCGIProjectDescriptor }
 
-  TBrookSimpleProjectDescriptor = class(TBrookCustomSimpleProjectDescriptor)
+  TBrookSimpleCGIProjectDescriptor = class(TBrookCustomSimpleCGIProjectDescriptor)
   protected
     procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); virtual;
     procedure CreateProjectFile(AProject: TLazProject); virtual;
@@ -56,9 +56,21 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
+  { TBrookSimpleFastCGIProjectDescriptor }
+
+  TBrookSimpleFastCGIProjectDescriptor = class(TBrookSimpleCGIProjectDescriptor)
+  protected
+    procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); override;
+  public
+    constructor Create; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
   { TBrookHTTPAppProjectDescriptor }
 
-  TBrookHTTPAppProjectDescriptor = class(TBrookSimpleProjectDescriptor)
+  TBrookHTTPAppProjectDescriptor = class(TBrookSimpleCGIProjectDescriptor)
   protected
     procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); override;
     procedure CreateProjectFile(AProject: TLazProject); override;
@@ -157,8 +169,10 @@ resourcestring
   SBrookHTTPAppDesc = 'Create a embedded HTTP webserver.';
   SBrookHTTPDaemonName = 'Embedded daemon server';
   SBrookHTTPDaemonDesc = 'Create a embedded daemon HTTP webserver.';
-  SBrookSimpleAppName = 'Simple CGI application';
-  SBrookSimpleAppDesc = 'Create a simple CGI application.';
+  SBrookSimpleCGIAppName = 'Simple CGI application';
+  SBrookSimpleCGIAppDesc = 'Create a simple CGI application.';
+  SBrookSimpleFastCGIAppName = 'Simple FastCGI application';
+  SBrookSimpleFastCGIAppDesc = 'Create a simple FastCGI application.';
   SBrookTable2HTMLFormName = 'Table to HTML form';
   SBrookTable2HTMLFormDesc = 'Create a HTML form from a database table.';
   SBrookBrokersName = 'Brokers unit';
@@ -195,7 +209,9 @@ const
 procedure Register;
 begin
   RegisterNewItemCategory(TNewIDEItemCategory.Create(SBrookIDEItemCategoryName));
-  RegisterProjectDescriptor(TBrookSimpleProjectDescriptor.Create,
+  RegisterProjectDescriptor(TBrookSimpleCGIProjectDescriptor.Create,
+    SBrookIDEItemCategoryName);
+  RegisterProjectDescriptor(TBrookSimpleFastCGIProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookHTTPAppProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
@@ -236,15 +252,15 @@ begin
   Result := BrookGetExpertsConfigPath + 'brook.xml';
 end;
 
-{ TBrookCustomSimpleProjectDescriptor }
+{ TBrookCustomSimpleCGIProjectDescriptor }
 
-constructor TBrookCustomSimpleProjectDescriptor.Create;
+constructor TBrookCustomSimpleCGIProjectDescriptor.Create;
 begin
   inherited Create;
   Name := '';
 end;
 
-function TBrookCustomSimpleProjectDescriptor.CreateStartFiles(
+function TBrookCustomSimpleCGIProjectDescriptor.CreateStartFiles(
   AProject: TLazProject): TModalResult;
 var
   VActItem: TBrookActionFileDescPascalUnit;
@@ -260,11 +276,12 @@ begin
   Result := mrOK;
 end;
 
-function TBrookCustomSimpleProjectDescriptor.InitProject(
+function TBrookCustomSimpleCGIProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 begin
   AProject.AddPackageDependency('BrookRT');
-  AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements, pfRunnable];
+  AProject.Flags := AProject.Flags -
+    [pfMainUnitHasCreateFormStatements, pfRunnable];
   AProject.LazCompilerOptions.Win32GraphicApp := False;
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   AProject.SessionStorage := pssInProjectInfo;
@@ -273,25 +290,25 @@ begin
   Result := mrOK;
 end;
 
-function TBrookCustomSimpleProjectDescriptor.GetLocalizedName: string;
+function TBrookCustomSimpleCGIProjectDescriptor.GetLocalizedName: string;
 begin
   Result := '';
 end;
 
-function TBrookCustomSimpleProjectDescriptor.GetLocalizedDescription: string;
+function TBrookCustomSimpleCGIProjectDescriptor.GetLocalizedDescription: string;
 begin
   Result := '';
 end;
 
-{ TBrookSimpleProjectDescriptor }
+{ TBrookSimpleCGIProjectDescriptor }
 
-constructor TBrookSimpleProjectDescriptor.Create;
+constructor TBrookSimpleCGIProjectDescriptor.Create;
 begin
   inherited Create;
-  Name := SBrookSimpleAppName;
+  Name := SBrookSimpleCGIAppName;
 end;
 
-function TBrookSimpleProjectDescriptor.InitProject(
+function TBrookSimpleCGIProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 begin
   CreateProjectFile(AProject);
@@ -307,10 +324,10 @@ begin
     'begin'+le+
     '  BrookApp.Run;'+le+
     'end.');
-  AProject.LazCompilerOptions.TargetFileName := 'cgi1';
+  AProject.LazCompilerOptions.TargetFileName := 'cgi1.bf';
 end;
 
-function TBrookSimpleProjectDescriptor.CreateStartFiles(
+function TBrookSimpleCGIProjectDescriptor.CreateStartFiles(
   AProject: TLazProject): TModalResult;
 var
   VBrkItem: TBrookBrokersFileDescPascalUnit;
@@ -323,16 +340,17 @@ begin
     [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
 end;
 
-procedure TBrookSimpleProjectDescriptor.ConfigureBrokerItem(
+procedure TBrookSimpleCGIProjectDescriptor.ConfigureBrokerItem(
   AItem: TBrookBrokersFileDescPascalUnit);
 begin
   AItem.FQuiet := True;
   AItem.FFullBrk := False;
-  AItem.FAppType := 2;
+  AItem.FAppType := 0;
   AItem.FAppDefCharset := 0;
 end;
 
-procedure TBrookSimpleProjectDescriptor.CreateProjectFile(AProject: TLazProject);
+procedure TBrookSimpleCGIProjectDescriptor.CreateProjectFile(
+  AProject: TLazProject);
 var
   VProject: TLazProjectFile;
 begin
@@ -341,14 +359,47 @@ begin
   AProject.AddFile(VProject, False);
 end;
 
-function TBrookSimpleProjectDescriptor.GetLocalizedName: string;
+function TBrookSimpleCGIProjectDescriptor.GetLocalizedName: string;
 begin
-  Result := SBrookSimpleAppName;
+  Result := SBrookSimpleCGIAppName;
 end;
 
-function TBrookSimpleProjectDescriptor.GetLocalizedDescription: string;
+function TBrookSimpleCGIProjectDescriptor.GetLocalizedDescription: string;
 begin
-  Result := SBrookSimpleAppDesc;
+  Result := SBrookSimpleCGIAppDesc;
+end;
+
+{ TBrookSimpleFastCGIProjectDescriptor }
+
+constructor TBrookSimpleFastCGIProjectDescriptor.Create;
+begin
+  inherited Create;
+  Name := SBrookSimpleFastCGIAppName;
+end;
+
+function TBrookSimpleFastCGIProjectDescriptor.InitProject(
+  AProject: TLazProject): TModalResult;
+begin
+  Result := inherited InitProject(AProject);
+  AProject.Flags := AProject.Flags + [pfRunnable];
+  AProject.LazCompilerOptions.TargetFileName := 'cgi1.fbf';
+end;
+
+procedure TBrookSimpleFastCGIProjectDescriptor.ConfigureBrokerItem(
+  AItem: TBrookBrokersFileDescPascalUnit);
+begin
+  inherited;
+  AItem.FAppType := 1;
+end;
+
+function TBrookSimpleFastCGIProjectDescriptor.GetLocalizedName: string;
+begin
+  Result := SBrookSimpleFastCGIAppName;
+end;
+
+function TBrookSimpleFastCGIProjectDescriptor.GetLocalizedDescription: string;
+begin
+  Result := SBrookSimpleFastCGIAppDesc;
 end;
 
 { TBrookHTTPAppProjectDescriptor }
@@ -382,11 +433,12 @@ end;
 procedure TBrookHTTPAppProjectDescriptor.ConfigureBrokerItem(
   AItem: TBrookBrokersFileDescPascalUnit);
 begin
-  inherited ConfigureBrokerItem(AItem);
-  AItem.FAppType := 0;
+  inherited;
+  AItem.FAppType := 2;
 end;
 
-procedure TBrookHTTPAppProjectDescriptor.CreateProjectFile(AProject: TLazProject);
+procedure TBrookHTTPAppProjectDescriptor.CreateProjectFile(
+  AProject: TLazProject);
 var
   VProject: TLazProjectFile;
 begin
@@ -416,8 +468,8 @@ end;
 procedure TBrookHTTPDaemonProjectDescriptor.ConfigureBrokerItem(
   AItem: TBrookBrokersFileDescPascalUnit);
 begin
-  inherited ConfigureBrokerItem(AItem);
-  AItem.FAppType := 1;
+  inherited;
+  AItem.FAppType := 3;
 end;
 
 function TBrookHTTPDaemonProjectDescriptor.GetLocalizedName: string;
@@ -523,12 +575,20 @@ begin
   AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text;
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
-  case VDlg.rgAppType.ItemIndex of
-    1, 2: AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
-    3: AProject.Flags := AProject.Flags - [pfRunnable];
-    4: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fcgi';
-  end;
   AProject.LazCompilerOptions.Win32GraphicApp := False;
+  case VDlg.rgAppType.ItemIndex of
+    0:
+      begin
+        AProject.Flags := AProject.Flags - [pfRunnable];
+        AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.bf';
+      end;
+    1: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fbf';
+    2, 3:
+      begin
+        AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
+        AProject.LazCompilerOptions.Win32GraphicApp := True;
+      end;
+  end;
   AProject.SessionStorage := pssInProjectInfo;
   AProject.MainFileID := 0;
   S :=
@@ -597,7 +657,7 @@ begin
   Result := inherited Init(ANewFilename, ANewOwner, ANewSource, AQuiet);
   if AQuiet or FQuiet then
     Exit;
-  FAppType := TfrBrookNewPlugin.Execute;
+  FAppType := TfrBrookNewBroker.Execute;
   if FAppType = -1 then
     Result := mrCancel;
 end;
@@ -609,10 +669,10 @@ var
   VCharset, VBroker: string;
 begin
   case FAppType of
-    0: VBroker := 'BrookFCLHTTPAppBroker';
-    1: VBroker := 'BrookFCLHTTPDaemonBroker';
-    2: VBroker := 'BrookFCLCGIBroker';
-    3: VBroker := 'BrookFCLFCGIBroker';
+    0: VBroker := 'BrookFCLCGIBroker';
+    1: VBroker := 'BrookFCLFCGIBroker';
+    2: VBroker := 'BrookFCLHTTPAppBroker';
+    3: VBroker := 'BrookFCLHTTPDaemonBroker';
   end;
   case FAppDefCharset of
     0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';

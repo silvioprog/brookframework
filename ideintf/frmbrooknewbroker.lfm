@@ -1,10 +1,10 @@
-object frBrookNewPlugin: TfrBrookNewPlugin
+object frBrookNewBroker: TfrBrookNewBroker
   Left = 261
   Height = 200
   Top = 172
   Width = 280
   BorderStyle = bsDialog
-  Caption = 'Brook - New plugin'
+  Caption = 'Brook - New broker'
   ClientHeight = 200
   ClientWidth = 280
   Position = poDesktopCenter
@@ -24,10 +24,10 @@ object frBrookNewPlugin: TfrBrookNewPlugin
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = pnCliente
       AnchorSideTop.Side = asrCenter
-      Left = 83
-      Height = 49
-      Top = 58
-      Width = 115
+      Left = 53
+      Height = 106
+      Top = 29
+      Width = 174
       AutoFill = True
       AutoSize = True
       Caption = '&Type'
@@ -38,14 +38,15 @@ object frBrookNewPlugin: TfrBrookNewPlugin
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 2
-      ClientHeight = 31
-      ClientWidth = 111
-      Columns = 2
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 88
+      ClientWidth = 170
       ItemIndex = 0
       Items.Strings = (
         '&CGI'
         '&FastCGI'
+        '&Embedded server'
+        'Embedded &daemon server'
       )
       TabOrder = 0
     end
