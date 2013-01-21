@@ -2,11 +2,11 @@ object frBrookNewProject: TfrBrookNewProject
   Left = 263
   Height = 365
   Top = 148
-  Width = 430
+  Width = 433
   BorderStyle = bsDialog
   Caption = 'Brook - New project'
   ClientHeight = 365
-  ClientWidth = 430
+  ClientWidth = 433
   KeyPreview = True
   OnKeyDown = FormKeyDown
   OnShow = FormShow
@@ -17,14 +17,14 @@ object frBrookNewProject: TfrBrookNewProject
     Left = 0
     Height = 36
     Top = 329
-    Width = 430
+    Width = 433
     Align = alBottom
     AutoSize = True
     ClientHeight = 36
-    ClientWidth = 430
+    ClientWidth = 433
     TabOrder = 1
     object btNext: TBitBtn
-      Left = 206
+      Left = 209
       Height = 26
       Top = 5
       Width = 69
@@ -72,7 +72,7 @@ object frBrookNewProject: TfrBrookNewProject
       TabOrder = 1
     end
     object btCancel: TBitBtn
-      Left = 344
+      Left = 347
       Height = 26
       Top = 5
       Width = 81
@@ -86,7 +86,7 @@ object frBrookNewProject: TfrBrookNewProject
       TabOrder = 3
     end
     object btPrior: TBitBtn
-      Left = 132
+      Left = 135
       Height = 26
       Top = 5
       Width = 70
@@ -135,7 +135,7 @@ object frBrookNewProject: TfrBrookNewProject
       TabOrder = 0
     end
     object btOK: TBitBtn
-      Left = 279
+      Left = 282
       Height = 26
       Top = 5
       Width = 61
@@ -154,7 +154,7 @@ object frBrookNewProject: TfrBrookNewProject
     Left = 0
     Height = 254
     Top = 60
-    Width = 430
+    Width = 433
     ActivePage = tsApp
     Align = alClient
     ParentShowHint = False
@@ -168,18 +168,18 @@ object frBrookNewProject: TfrBrookNewProject
       ChildSizing.LeftRightSpacing = 4
       ChildSizing.TopBottomSpacing = 4
       ClientHeight = 246
-      ClientWidth = 422
+      ClientWidth = 425
       object rgAppType: TRadioGroup
         AnchorSideLeft.Control = tsApp
         AnchorSideTop.Control = tsApp
         AnchorSideRight.Side = asrBottom
-        Left = 38
+        Left = 16
         Height = 49
         Top = 18
-        Width = 226
+        Width = 384
         AutoFill = True
         AutoSize = True
-        BorderSpacing.Left = 38
+        BorderSpacing.Left = 16
         BorderSpacing.Top = 18
         Caption = '&Type *'
         ChildSizing.LeftRightSpacing = 6
@@ -189,13 +189,14 @@ object frBrookNewProject: TfrBrookNewProject
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
-        ChildSizing.ControlsPerLine = 3
+        ChildSizing.ControlsPerLine = 4
         ClientHeight = 31
-        ClientWidth = 222
-        Columns = 3
+        ClientWidth = 380
+        Columns = 4
         ItemIndex = 0
         Items.Strings = (
           '&Embedded server'
+          '&Embedded daemon server'
           '&CGI'
           '&FastCGI'
         )
@@ -205,7 +206,7 @@ object frBrookNewProject: TfrBrookNewProject
         AnchorSideLeft.Control = edAppName
         AnchorSideTop.Control = edAppName
         AnchorSideTop.Side = asrBottom
-        Left = 38
+        Left = 16
         Height = 15
         Top = 184
         Width = 119
@@ -218,7 +219,7 @@ object frBrookNewProject: TfrBrookNewProject
         AnchorSideLeft.Control = rgCharset
         AnchorSideTop.Control = rgCharset
         AnchorSideTop.Side = asrBottom
-        Left = 38
+        Left = 16
         Height = 15
         Top = 136
         Width = 40
@@ -233,7 +234,7 @@ object frBrookNewProject: TfrBrookNewProject
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = rgCharset
         AnchorSideRight.Side = asrBottom
-        Left = 38
+        Left = 16
         Height = 23
         Top = 151
         Width = 146
@@ -248,7 +249,7 @@ object frBrookNewProject: TfrBrookNewProject
         AnchorSideTop.Control = lbPubHTMLDir
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 38
+        Left = 16
         Height = 23
         Top = 199
         Width = 250
@@ -262,7 +263,7 @@ object frBrookNewProject: TfrBrookNewProject
         AnchorSideLeft.Control = rgAppType
         AnchorSideTop.Control = rgAppType
         AnchorSideTop.Side = asrBottom
-        Left = 38
+        Left = 16
         Height = 49
         Top = 77
         Width = 146
@@ -582,7 +583,7 @@ object frBrookNewProject: TfrBrookNewProject
     Left = 0
     Height = 15
     Top = 314
-    Width = 430
+    Width = 433
     Align = alBottom
     Alignment = taCenter
     Caption = '(*) Required'
@@ -594,7 +595,7 @@ object frBrookNewProject: TfrBrookNewProject
     Left = 0
     Height = 60
     Top = 0
-    Width = 430
+    Width = 433
     Align = alTop
     AutoSize = True
     Center = True

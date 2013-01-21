@@ -29,6 +29,7 @@ uses
   Forms, Dialogs;
 
 type
+  TBrookBrokersFileDescPascalUnit = class;
 
   { TBrookCustomSimpleProjectDescriptor }
 
@@ -44,21 +45,37 @@ type
   { TBrookSimpleProjectDescriptor }
 
   TBrookSimpleProjectDescriptor = class(TBrookCustomSimpleProjectDescriptor)
+  protected
+    procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); virtual;
+    procedure CreateProjectFile(AProject: TLazProject); virtual;
   public
     constructor Create; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
 
   { TBrookHTTPAppProjectDescriptor }
 
-  TBrookHTTPAppProjectDescriptor = class(TBrookCustomSimpleProjectDescriptor)
+  TBrookHTTPAppProjectDescriptor = class(TBrookSimpleProjectDescriptor)
+  protected
+    procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); override;
+    procedure CreateProjectFile(AProject: TLazProject); override;
   public
     constructor Create; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+  { TBrookHTTPDaemonProjectDescriptor }
+
+  TBrookHTTPDaemonProjectDescriptor = class(TBrookHTTPAppProjectDescriptor)
+  protected
+    procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); override;
+  public
+    constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
@@ -98,7 +115,7 @@ type
   private
     FAppType: Integer;
     FAppDefCharset: Integer;
-    FFullPlg: Boolean;
+    FFullBrk: Boolean;
   public
     constructor Create; override;
     function Init(var ANewFilename: string; ANewOwner: TObject;
@@ -138,6 +155,8 @@ resourcestring
   SBrookAppDesc = 'Create a full CGI or FastCGI application.';
   SBrookHTTPAppName = 'Embedded server';
   SBrookHTTPAppDesc = 'Create a embedded HTTP webserver.';
+  SBrookHTTPDaemonName = 'Embedded daemon server';
+  SBrookHTTPDaemonDesc = 'Create a embedded daemon HTTP webserver.';
   SBrookSimpleAppName = 'Simple CGI application';
   SBrookSimpleAppDesc = 'Create a simple CGI application.';
   SBrookTable2HTMLFormName = 'Table to HTML form';
@@ -179,6 +198,8 @@ begin
   RegisterProjectDescriptor(TBrookSimpleProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookHTTPAppProjectDescriptor.Create,
+    SBrookIDEItemCategoryName);
+  RegisterProjectDescriptor(TBrookHTTPDaemonProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
@@ -272,12 +293,8 @@ end;
 
 function TBrookSimpleProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
-var
-  VProject: TLazProjectFile;
 begin
-  VProject := AProject.CreateProjectFile('cgi1.lpr');
-  VProject.IsPartOfProject := True;
-  AProject.AddFile(VProject, False);
+  CreateProjectFile(AProject);
   Result := inherited InitProject(AProject);
   AProject.MainFile.SetSourceText(
     'program cgi1;'+le+
@@ -296,17 +313,32 @@ end;
 function TBrookSimpleProjectDescriptor.CreateStartFiles(
   AProject: TLazProject): TModalResult;
 var
-  VPlgItem: TBrookBrokersFileDescPascalUnit;
+  VBrkItem: TBrookBrokersFileDescPascalUnit;
 begin
   Result := inherited CreateStartFiles(AProject);
-  VPlgItem := ProjectFileDescriptors.FindByName(
+  VBrkItem := ProjectFileDescriptors.FindByName(
     SBrookBrokersName) as TBrookBrokersFileDescPascalUnit;
-  VPlgItem.FQuiet := True;
-  VPlgItem.FFullPlg := False;
-  VPlgItem.FAppType := 1;
-  VPlgItem.FAppDefCharset := 0;
-  LazarusIDE.DoNewEditorFile(VPlgItem, '', '',
+  ConfigureBrokerItem(VBrkItem);
+  LazarusIDE.DoNewEditorFile(VBrkItem, '', '',
     [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
+end;
+
+procedure TBrookSimpleProjectDescriptor.ConfigureBrokerItem(
+  AItem: TBrookBrokersFileDescPascalUnit);
+begin
+  AItem.FQuiet := True;
+  AItem.FFullBrk := False;
+  AItem.FAppType := 2;
+  AItem.FAppDefCharset := 0;
+end;
+
+procedure TBrookSimpleProjectDescriptor.CreateProjectFile(AProject: TLazProject);
+var
+  VProject: TLazProjectFile;
+begin
+  VProject := AProject.CreateProjectFile('cgi1.lpr');
+  VProject.IsPartOfProject := True;
+  AProject.AddFile(VProject, False);
 end;
 
 function TBrookSimpleProjectDescriptor.GetLocalizedName: string;
@@ -327,30 +359,9 @@ begin
   Name := SBrookHTTPAppName;
 end;
 
-function TBrookHTTPAppProjectDescriptor.CreateStartFiles(
-  AProject: TLazProject): TModalResult;
-var
-  VPlgItem: TBrookBrokersFileDescPascalUnit;
-begin
-  Result := inherited CreateStartFiles(AProject);
-  VPlgItem := ProjectFileDescriptors.FindByName(
-    SBrookBrokersName) as TBrookBrokersFileDescPascalUnit;
-  VPlgItem.FQuiet := True;
-  VPlgItem.FFullPlg := False;
-  VPlgItem.FAppType := 0;
-  VPlgItem.FAppDefCharset := 0;
-  LazarusIDE.DoNewEditorFile(VPlgItem, '', '',
-    [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
-end;
-
 function TBrookHTTPAppProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
-var
-  VProject: TLazProjectFile;
 begin
-  VProject := AProject.CreateProjectFile('project1.lpr');
-  VProject.IsPartOfProject := True;
-  AProject.AddFile(VProject, False);
   Result := inherited InitProject(AProject);
   AProject.Flags := AProject.Flags + [pfRunnable];
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
@@ -368,6 +379,22 @@ begin
   AProject.LazCompilerOptions.TargetFileName := 'project1';
 end;
 
+procedure TBrookHTTPAppProjectDescriptor.ConfigureBrokerItem(
+  AItem: TBrookBrokersFileDescPascalUnit);
+begin
+  inherited ConfigureBrokerItem(AItem);
+  AItem.FAppType := 0;
+end;
+
+procedure TBrookHTTPAppProjectDescriptor.CreateProjectFile(AProject: TLazProject);
+var
+  VProject: TLazProjectFile;
+begin
+  VProject := AProject.CreateProjectFile('project1.lpr');
+  VProject.IsPartOfProject := True;
+  AProject.AddFile(VProject, False);
+end;
+
 function TBrookHTTPAppProjectDescriptor.GetLocalizedName: string;
 begin
   Result := SBrookHTTPAppName;
@@ -376,6 +403,31 @@ end;
 function TBrookHTTPAppProjectDescriptor.GetLocalizedDescription: string;
 begin
   Result := SBrookHTTPAppDesc;
+end;
+
+{ TBrookHTTPDaemonProjectDescriptor }
+
+constructor TBrookHTTPDaemonProjectDescriptor.Create;
+begin
+  inherited Create;
+  Name := SBrookHTTPDaemonName;
+end;
+
+procedure TBrookHTTPDaemonProjectDescriptor.ConfigureBrokerItem(
+  AItem: TBrookBrokersFileDescPascalUnit);
+begin
+  inherited ConfigureBrokerItem(AItem);
+  AItem.FAppType := 1;
+end;
+
+function TBrookHTTPDaemonProjectDescriptor.GetLocalizedName: string;
+begin
+  Result := SBrookHTTPDaemonName;
+end;
+
+function TBrookHTTPDaemonProjectDescriptor.GetLocalizedDescription: string;
+begin
+  Result := SBrookHTTPDaemonDesc;
 end;
 
 { TBrookProjectDescriptor }
@@ -409,7 +461,7 @@ var
   VDlg: TfrBrookNewProject;
   VPage404, VPage500: TFileName;
   VActItem: TBrookActionFileDescPascalUnit;
-  VPlgItem: TBrookBrokersFileDescPascalUnit;
+  VBrkItem: TBrookBrokersFileDescPascalUnit;
 begin
   VDlg := BrookNewProjectDlg;
   VActItem := ProjectFileDescriptors.FindByName(
@@ -424,13 +476,13 @@ begin
     LazarusIDE.DoNewEditorFile(VActItem, '', '',
       [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
   end;
-  VPlgItem := ProjectFileDescriptors.FindByName(
+  VBrkItem := ProjectFileDescriptors.FindByName(
     SBrookBrokersName) as TBrookBrokersFileDescPascalUnit;
-  VPlgItem.FQuiet := True;
-  VPlgItem.FFullPlg := True;
-  VPlgItem.FAppType := VDlg.rgAppType.ItemIndex;
-  VPlgItem.FAppDefCharset := VDlg.rgCharset.ItemIndex;
-  LazarusIDE.DoNewEditorFile(VPlgItem, '', '',
+  VBrkItem.FQuiet := True;
+  VBrkItem.FFullBrk := True;
+  VBrkItem.FAppType := VDlg.rgAppType.ItemIndex;
+  VBrkItem.FAppDefCharset := VDlg.rgCharset.ItemIndex;
+  LazarusIDE.DoNewEditorFile(VBrkItem, '', '',
     [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
   if VDlg.edPubHTMLDir.Text <> '' then
   begin
@@ -472,9 +524,9 @@ begin
   AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text;
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   case VDlg.rgAppType.ItemIndex of
-    0: AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
-    1: AProject.Flags := AProject.Flags - [pfRunnable];
-    2: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fcgi';
+    1, 2: AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
+    3: AProject.Flags := AProject.Flags - [pfRunnable];
+    4: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fcgi';
   end;
   AProject.LazCompilerOptions.Win32GraphicApp := False;
   AProject.SessionStorage := pssInProjectInfo;
@@ -558,14 +610,15 @@ var
 begin
   case FAppType of
     0: VBroker := 'BrookFCLHTTPAppBroker';
-    1: VBroker := 'BrookFCLCGIBroker';
-    2: VBroker := 'BrookFCLFCGIBroker';
+    1: VBroker := 'BrookFCLHTTPDaemonBroker';
+    2: VBroker := 'BrookFCLCGIBroker';
+    3: VBroker := 'BrookFCLFCGIBroker';
   end;
   case FAppDefCharset of
     0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
     1: VCharset := 'BROOK_HTTP_CHARSET_ISO_8859_1';
   end;
-  if FFullPlg then
+  if FFullBrk then
   begin
     VDlg := BrookNewProjectDlg;
     Result :=
@@ -615,7 +668,7 @@ begin
     'end.';
   FAppType := 0;
   FAppDefCharset := 0;
-  FFullPlg := False;
+  FFullBrk := False;
   FQuiet := False;
 end;
 
