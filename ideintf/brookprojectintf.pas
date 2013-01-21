@@ -88,6 +88,7 @@ type
     procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); override;
   public
     constructor Create; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
@@ -465,6 +466,13 @@ begin
   Name := SBrookHTTPDaemonName;
 end;
 
+function TBrookHTTPDaemonProjectDescriptor.InitProject(
+  AProject: TLazProject): TModalResult;
+begin
+  Result := inherited InitProject(AProject);
+  AProject.LazCompilerOptions.Win32GraphicApp := True;
+end;
+
 procedure TBrookHTTPDaemonProjectDescriptor.ConfigureBrokerItem(
   AItem: TBrookBrokersFileDescPascalUnit);
 begin
@@ -583,7 +591,8 @@ begin
         AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.bf';
       end;
     1: AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text + '.fbf';
-    2, 3:
+    2: AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
+    3:
       begin
         AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
         AProject.LazCompilerOptions.Win32GraphicApp := True;
