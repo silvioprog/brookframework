@@ -6,7 +6,7 @@ interface
 
 uses
   Forms, ExtCtrls, Buttons, SysUtils, Controls, Dialogs, Grids, LJGridUtils,
-  FPJSON, HttpUtils;
+  FPJSON, HttpClient;
 
 type
   TfrCustomEdit = class(TForm)
@@ -144,8 +144,8 @@ class function TfrCustomEdit.Delete(const APattern, AMsg: string;
   const AArgs: TJSONObject): Boolean;
 begin
   Result := Self.Question('Deleting', AMsg) and
-    ProcessRequest(HttpRequest(TfrCustomEdit.FillPattern(APattern, AArgs),
-      '', nil, rmDelete));
+    ProcessRequest(HttpRequest(nil, TfrCustomEdit.FillPattern(APattern, AArgs),
+      rmDelete));
 end;
 
 class function TfrCustomEdit.Execute(var AData: TJSONObject): Boolean;

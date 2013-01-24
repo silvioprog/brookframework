@@ -5,8 +5,7 @@ unit frmMain;
 interface
 
 uses
-  Forms, StdCtrls, Grids, Buttons, Classes, LJGridUtils, HttpUtils,
-  BrookConfigurator;
+  Forms, StdCtrls, Grids, Buttons, Classes, LJGridUtils, BrookConfigurator;
 
 type
   TfrMain = class(TForm)
@@ -156,9 +155,6 @@ begin
   TfrCustomEdit.Refresh(grPhones, RootUrl + 'contacts/:id/phones',
     GetSelectedRow(grContacts));
 end;
-
-initialization
-  HttpSettings.Redirection := False;
 
 end.
 
