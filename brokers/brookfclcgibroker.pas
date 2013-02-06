@@ -255,7 +255,12 @@ begin
   AResponse.ContentType := FormatContentType;
   if BrookSettings.Language <> BROOK_DEFAULT_LANGUAGE then
     TBrookMessages.Service.SetLanguage(BrookSettings.Language);
-  TBrookRouter.Service.Route(ARequest, AResponse);
+  try
+    TBrookRouter.Service.Route(ARequest, AResponse);
+  except
+    on E: Exception do
+      ShowRequestException(AResponse, E);
+  end;
 end;
 
 procedure TBrookCGIHandler.ShowRequestException(R: TResponse; E: Exception);
