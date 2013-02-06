@@ -51,7 +51,7 @@ $(function() {
 		sortable: true,
 		filterable: true,
 		selectable: true,
-		height: 560,
+		height: 498,
 		toolbar: ["create"],
 		pageable: {
 			refresh: true,
