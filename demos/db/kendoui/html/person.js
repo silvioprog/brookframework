@@ -1,5 +1,5 @@
 $(function() {
-	var rootUrl = "http://localhost/cgi-bin/cgi1";
+	var rootUrl = "/cgi-bin/cgi1";
 	dataSource = new kendo.data.DataSource({
 		pageSize: 10,
 		serverPaging: true,
