@@ -1,3 +1,4 @@
+  SBrookItemNotFound_rst = 'Item "%s" não encontrado.';
   SBrookFileNotFoundError_rst = 'Arquivo não encontrado: %s';
   SBrookNoRequestMethodError_rst = 'REQUEST_METHOD não passado do servidor.';
   SBrookNoApplicationRegisteredError_rst = 'Application não registrada.';
@@ -11,8 +12,6 @@
   SBrookNoRouteRegisteredError_rst = 'Rota não registrada.';
   SBrookMessagesAlreadyRegisteredError_rst = 'O serviço de mensagens já está registrado.';
   SBrookNoMessagesRegisteredError_rst = 'Serviço de mensagens não registrado.';
-  SBrookDataBaseItemNotFound_rst = 'Item "%s" de database não encontrado.';
-  SBrookMessageItemNotFound_rst = 'Item "%s" de mensagem não encontrado.';
   SBrookCfgFileNotFoundError_rst = 'O arquivo de configuração não foi encontrado: "%s"';
   SBrookNilJSONParamError_rst = '"AJSON" não pode ser nulo.';
   SBrookNilParamError_rst = '"%s" não pode ser nulo.';

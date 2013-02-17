@@ -90,6 +90,7 @@ type
 var
   { Error msgs }
   { }
+  SBrookItemNotFound: string = ES;
   SBrookFileNotFoundError: string = ES;
   SBrookNoRequestMethodError: string = ES;
   SBrookNoApplicationRegisteredError: string = ES;
@@ -103,8 +104,6 @@ var
   SBrookMessagesAlreadyRegisteredError: string = ES;
   SBrookNoMessagesRegisteredError: string = ES;
   SBrookNoRouteRegisteredError: string = ES;
-  SBrookDataBaseItemNotFound: string = ES;
-  SBrookMessageItemNotFound: string = ES;
   SBrookCfgFileNotFoundError: string = ES;
   SBrookNilJSONParamError: string = ES;
   SBrookNilParamError: string = ES;
@@ -131,6 +130,7 @@ var
 
 procedure BrookSetDefaultLanguage;
 begin
+  SBrookItemNotFound := SBrookItemNotFound_rst;
   SBrookFileNotFoundError := SBrookFileNotFoundError_rst;
   SBrookNoRequestMethodError := SBrookNoRequestMethodError_rst;
   SBrookNoApplicationRegisteredError := SBrookNoApplicationRegisteredError_rst;
@@ -147,8 +147,6 @@ begin
     SBrookMessagesAlreadyRegisteredError_rst;
   SBrookNoMessagesRegisteredError := SBrookNoMessagesRegisteredError_rst;
   SBrookNoRouteRegisteredError := SBrookNoRouteRegisteredError_rst;
-  SBrookDataBaseItemNotFound := SBrookDataBaseItemNotFound_rst;
-  SBrookMessageItemNotFound := SBrookMessageItemNotFound_rst;
   SBrookCfgFileNotFoundError := SBrookCfgFileNotFoundError_rst;
   SBrookNilJSONParamError := SBrookNilJSONParamError_rst;
   SBrookNilParamError := SBrookNilParamError_rst;
@@ -260,8 +258,7 @@ begin
     raise EBrookMessages.Create(Self, SBrookEmptyCountryCodeError);
   Result := Find(ACountryCode);
   if not Assigned(Result) then
-    raise EBrookMessages.CreateFmt(Self,
-      SBrookMessageItemNotFound, [ACountryCode]);
+    raise EBrookMessages.CreateFmt(Self, SBrookItemNotFound, [ACountryCode]);
 end;
 
 initialization

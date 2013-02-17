@@ -41,6 +41,7 @@ resourcestring
 
 class procedure TBrookMessage_enUS.Translate;
 begin
+  SBrookItemNotFound := SBrookItemNotFound_rst;
   SBrookFileNotFoundError := SBrookFileNotFoundError_rst;
   SBrookNoRequestMethodError := SBrookNoRequestMethodError_rst;
   SBrookNoApplicationRegisteredError := SBrookNoApplicationRegisteredError_rst;
@@ -57,8 +58,6 @@ begin
     SBrookMessagesAlreadyRegisteredError_rst;
   SBrookNoMessagesRegisteredError := SBrookNoMessagesRegisteredError_rst;
   SBrookNoRouteRegisteredError := SBrookNoRouteRegisteredError_rst;
-  SBrookDataBaseItemNotFound := SBrookDataBaseItemNotFound_rst;
-  SBrookMessageItemNotFound := SBrookMessageItemNotFound_rst;
   SBrookCfgFileNotFoundError := SBrookCfgFileNotFoundError_rst;
   SBrookNilJSONParamError := SBrookNilJSONParamError_rst;
   SBrookNilParamError := SBrookNilParamError_rst;

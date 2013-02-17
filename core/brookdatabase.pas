@@ -296,8 +296,7 @@ begin
     raise EBrookDataBases.Create(Self, SBrookEmptyLibraryNameError);
   Result := Find(ALibrary);
   if not Assigned(Result) then
-    raise EBrookDataBases.CreateFmt(Self, SBrookDataBaseItemNotFound,
-      [ALibrary]);
+    raise EBrookDataBases.CreateFmt(Self, SBrookItemNotFound, [ALibrary]);
 end;
 
 procedure TBrookDataBases.Add(AClass: TBrookDataBaseClass);

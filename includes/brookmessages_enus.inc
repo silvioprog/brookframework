@@ -1,3 +1,4 @@
+  SBrookItemNotFound_rst = 'Item "%s" not found.';
   SBrookFileNotFoundError_rst = 'File not found: %s';
   SBrookNoRequestMethodError_rst = 'No REQUEST_METHOD passed from server.';
   SBrookNoApplicationRegisteredError_rst = 'No application registered.';
@@ -11,8 +12,6 @@
   SBrookMessagesAlreadyRegisteredError_rst = 'The messages service is already registered.';
   SBrookNoMessagesRegisteredError_rst = 'No messages service registered.';
   SBrookNoRouteRegisteredError_rst = 'No route registered.';
-  SBrookDataBaseItemNotFound_rst = 'Database item "%s" not found.';
-  SBrookMessageItemNotFound_rst = 'Message item "%s" not found.';
   SBrookCfgFileNotFoundError_rst = 'The config file was not found: "%s"';
   SBrookNilJSONParamError_rst = '"AJSON" must not be nil.';
   SBrookNilParamError_rst = '"%s" must not be nil.';
