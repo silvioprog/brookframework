@@ -5,7 +5,8 @@ unit testbrookhttputils;
 interface
 
 uses
-  BrookHTTPUtils, BrookUtils, fpcunit, testregistry;
+  BrookFCLHTTPClientBroker, BrookHTTPUtils, BrookUtils, BrookHTTPClient,
+  fpcunit, testregistry, fpjson,dialogs,sysutils;
 
 type
   TTestBrookHttpUtils = class(TTestCase)
@@ -22,10 +23,12 @@ type
     procedure TestExtractUrlFileName;
     procedure RequestMethodToStr;
     procedure StrToRequestMethod;
+    procedure HttpRequest;
   end;
 
 const
   TEST_DATETIME = 41233 + 0.6161111111;
+  URL = 'http://brookframework.org/demos/db/rest/addressbook/backend/addressbook.fbf/contacts/1';
 
 implementation
 
@@ -104,6 +107,24 @@ begin
   AssertEquals(True, BrookStrToRequestMethod('HEAD') = rmHead);
   AssertEquals(True, BrookStrToRequestMethod('OPTIONS') = rmOptions);
   AssertEquals(True, BrookStrToRequestMethod('TRACE') = rmTrace);
+end;
+
+procedure TTestBrookHttpUtils.HttpRequest;
+var
+  VContacts: TJSONArray;
+  VResult: TBrookHTTPResult;
+begin
+  VContacts := TJSONArray.Create([TJSONObject.Create(['name', 'Foo'])]);
+  try
+    VResult := BrookHttpRequest(VContacts, URL, rmPut);
+    AssertEquals(204, VResult.StatusCode);
+    VResult := BrookHttpRequest(URL);
+    AssertEquals('{ "id" : 1, "name" : "Foo" }', Trim(VResult.Content));
+    AssertEquals('OK', VResult.ReasonPhrase);
+    AssertEquals(200, VResult.StatusCode);
+  finally
+    VContacts.Free;
+  end;
 end;
 
 initialization
