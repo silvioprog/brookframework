@@ -33,7 +33,7 @@ type
 
   { Defines an enumerator to represent the HTTP request methods. }
   TBrookRequestMethod = (
-    rmAll, rmGet, rmPost, rmPut, rmDelete, rmHead, rmOptions, rmTrace
+    rmUnknown, rmAll, rmGet, rmPost, rmPut, rmDelete, rmHead, rmOptions, rmTrace
   );
 
   { Stores the Brook configurations. }
