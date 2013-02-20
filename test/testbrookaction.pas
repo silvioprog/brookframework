@@ -196,16 +196,13 @@ end;
 
 procedure TTestBrookAction.TestWrite;
 var
+  S: string;
+  D: double;
   VAct: TAction1;
   VRes: TResponse;
   VReq: TRequest;
   VRoutes: TBrookRoutes;
-  VArray: TJSONArray;
-  VObject: TJSONObject;
 begin
-  VArray := TJSONArray.Create(['abc', 123, 1.23, True]);
-  VObject := TJSONObject.Create(['field1', 'abc', 'field2', 123, 'field3', 1.23,
-    'field4', True]);
   VReq := TRequest.Create;
 {$WARNINGS OFF}
   VRes := TResponse.Create(VReq);
@@ -216,37 +213,24 @@ begin
     ClearRoutes(VRoutes);
     VReq.Method := 'GET';
     VAct.DoRequest(VReq, VRes);
-    AssertEquals(16, VRes.Contents.Count);
-    AssertEquals('Write string error,', 'abc', VRes.Contents.ValueFromIndex[0]);
-    AssertEquals('Write integer error,', IntToStr(123),
-      VRes.Contents.ValueFromIndex[1]);
-    AssertEquals('Write float error,', FloatToStr(1.23),
-      VRes.Contents.ValueFromIndex[2]);
-    AssertEquals('Write boolean error,', BoolToStr(True),
-      VRes.Contents.ValueFromIndex[3]);
-    AssertEquals('Write JSONArray error,', VArray.AsJSON,
-      VRes.Contents.ValueFromIndex[4]);
-    AssertEquals('Write JSONObject error,', VObject.AsJSON,
-      VRes.Contents.ValueFromIndex[5]);
-    AssertEquals('Write TStringList error,', 'abc',
-      VRes.Contents.ValueFromIndex[6]);
-    AssertEquals('WriteLn string error,', 'abc' + BR,
-      VRes.Contents.ValueFromIndex[8]);
-    AssertEquals('WriteLn integer error,', IntToStr(123) + BR,
-      VRes.Contents.ValueFromIndex[9]);
-    AssertEquals('WriteLn float error,', FloatToStr(1.23) + BR,
-      VRes.Contents.ValueFromIndex[10]);
-    AssertEquals('WriteLn boolean error,', BoolToStr(True) + BR,
-      VRes.Contents.ValueFromIndex[11]);
-    AssertEquals('WriteLn JSONArray error,', VArray.AsJSON + BR,
-      VRes.Contents.ValueFromIndex[12]);
-    AssertEquals('WriteLn JSONObject error,', VObject.AsJSON + BR,
-      VRes.Contents.ValueFromIndex[13]);
-    AssertEquals('WriteLn TStringList error,', 'abc' + BR,
-      VRes.Contents.ValueFromIndex[14]);
+    AssertEquals(30, VRes.Contents.Count);
+    AssertEquals('abc', VRes.Contents.ValueFromIndex[0]);
+    AssertEquals(IntToStr(123), VRes.Contents.ValueFromIndex[1]);
+    AssertEquals(FloatToStr(1.23), VRes.Contents.ValueFromIndex[2]);
+    AssertEquals(BoolToStr(True), VRes.Contents.ValueFromIndex[3]);
+    AssertEquals('abc', VRes.Contents.ValueFromIndex[4]);
+    AssertEquals(IntToStr(123), VRes.Contents.ValueFromIndex[5]);
+    D := 1.23;
+    Str(D, S);
+    AssertEquals(S, VRes.Contents.ValueFromIndex[6]);
+    AssertEquals('abc', VRes.Contents.ValueFromIndex[8]);
+    AssertEquals(IntToStr(123), VRes.Contents.ValueFromIndex[9]);
+    AssertEquals(S, VRes.Contents.ValueFromIndex[10]);
+    AssertEquals(True, StrToBool(VRes.Contents.ValueFromIndex[11]));
+    AssertEquals('abc', VRes.Contents.ValueFromIndex[12]);
+    AssertEquals(IntToStr(123), VRes.Contents.ValueFromIndex[13]);
+    AssertEquals('abc' + BR, VRes.Contents.ValueFromIndex[14]);
   finally
-    VArray.Free;
-    VObject.Free;
     VAct.Free;
     VRes.Free;
     VReq.Free;
