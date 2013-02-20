@@ -110,6 +110,7 @@ type
     function ItemByLibrary(const ALibrary: string): TBrookHTTPDefClass;
   end;
 
+  { Client to perform HTTP requests. }
   TBrookHTTPClient = class(TBrookObject)
   private
     class var _Library: string;
