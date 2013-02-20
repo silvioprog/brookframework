@@ -24,7 +24,7 @@ unit BrookHTTPUtils;
 interface
 
 uses
-  BrookHTTPConsts, BrookConsts, HTTPDefs, SysUtils;
+  BrookHTTPConsts, BrookConsts, BrookUtils, HTTPDefs, SysUtils;
 
 type
   { Defines a set to represent the AcceptEncoding HTTP header. }
@@ -55,6 +55,10 @@ function BrookExtractUrlFileName(const AUrl: string): string;
 { Extracts the file name of a URL and escapes it. }
 function BrookExtractUrlFileName(const AUrl: string;
   const AEscapeQueryString: Boolean): string;
+{ Returns the string corresponding to a @code(TBrookRequestMethod). }
+function BrookRequestMethodToStr(const AMethod: TBrookRequestMethod): string;
+{ Returns the @code(TBrookRequestMethod) corresponding to a string. }
+function BrookStrToRequestMethod(const AMethod: string): TBrookRequestMethod;
 
 implementation
 
@@ -336,6 +340,36 @@ begin
     Result := AUrl[I] + Result;
     Dec(I);
   until (AUrl[I] = US) or (I = 0);
+end;
+
+function BrookRequestMethodToStr(const AMethod: TBrookRequestMethod): string;
+begin
+  case AMethod of
+    rmGet: Result := BROOK_HTTP_REQUEST_METHOD_GET;
+    rmPost: Result := BROOK_HTTP_REQUEST_METHOD_POST;
+    rmPut: Result := BROOK_HTTP_REQUEST_METHOD_PUT;
+    rmDelete: Result := BROOK_HTTP_REQUEST_METHOD_DELETE;
+    rmHead: Result := BROOK_HTTP_REQUEST_METHOD_HEAD;
+    rmOptions: Result := BROOK_HTTP_REQUEST_METHOD_OPTIONS;
+    rmTrace: Result := BROOK_HTTP_REQUEST_METHOD_TRACE;
+  else
+    Result := 'Unknown';
+  end;
+end;
+
+function BrookStrToRequestMethod(const AMethod: string): TBrookRequestMethod;
+begin
+  case AMethod of
+    BROOK_HTTP_REQUEST_METHOD_GET: Result := rmGet;
+    BROOK_HTTP_REQUEST_METHOD_POST: Result := rmPost;
+    BROOK_HTTP_REQUEST_METHOD_PUT: Result := rmPut;
+    BROOK_HTTP_REQUEST_METHOD_DELETE: Result := rmDelete;
+    BROOK_HTTP_REQUEST_METHOD_HEAD: Result := rmHead;
+    BROOK_HTTP_REQUEST_METHOD_OPTIONS: Result := rmOptions;
+    BROOK_HTTP_REQUEST_METHOD_TRACE: Result := rmTrace;
+  else
+    Result := rmUnknown;
+  end;
 end;
 
 end.
