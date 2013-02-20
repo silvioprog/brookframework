@@ -5,7 +5,7 @@ unit testbrookhttputils;
 interface
 
 uses
-  BrookHTTPUtils, fpcunit, testregistry;
+  BrookHTTPUtils, BrookUtils, fpcunit, testregistry;
 
 type
   TTestBrookHttpUtils = class(TTestCase)
@@ -20,6 +20,8 @@ type
     procedure TestTypeFromFileName;
     procedure TestFileExtFromMimeType;
     procedure TestExtractUrlFileName;
+    procedure RequestMethodToStr;
+    procedure StrToRequestMethod;
   end;
 
 const
@@ -80,6 +82,28 @@ begin
     BrookExtractUrlFileName('http://localhost/dummy.txt'));
   AssertEquals('dummy.txt',
     BrookExtractUrlFileName('http://localhost/dummy.txt?foo=bah', True));
+end;
+
+procedure TTestBrookHttpUtils.RequestMethodToStr;
+begin
+  AssertEquals('GET', BrookRequestMethodToStr(rmGet));
+  AssertEquals('POST', BrookRequestMethodToStr(rmPost));
+  AssertEquals('PUT', BrookRequestMethodToStr(rmPut));
+  AssertEquals('DELETE', BrookRequestMethodToStr(rmDelete));
+  AssertEquals('HEAD', BrookRequestMethodToStr(rmHead));
+  AssertEquals('OPTIONS', BrookRequestMethodToStr(rmOptions));
+  AssertEquals('TRACE', BrookRequestMethodToStr(rmTrace));
+end;
+
+procedure TTestBrookHttpUtils.StrToRequestMethod;
+begin
+  AssertEquals(True, BrookStrToRequestMethod('GET') = rmGet);
+  AssertEquals(True, BrookStrToRequestMethod('POST') = rmPost);
+  AssertEquals(True, BrookStrToRequestMethod('PUT') = rmPut);
+  AssertEquals(True, BrookStrToRequestMethod('DELETE') = rmDelete);
+  AssertEquals(True, BrookStrToRequestMethod('HEAD') = rmHead);
+  AssertEquals(True, BrookStrToRequestMethod('OPTIONS') = rmOptions);
+  AssertEquals(True, BrookStrToRequestMethod('TRACE') = rmTrace);
 end;
 
 initialization
