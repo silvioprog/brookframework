@@ -19,6 +19,7 @@ type
     procedure TestMimeTypeFromFileExt;
     procedure TestTypeFromFileName;
     procedure TestFileExtFromMimeType;
+    procedure TestExtractUrlFileName;
   end;
 
 const
@@ -71,6 +72,14 @@ end;
 procedure TTestBrookHttpUtils.TestFileExtFromMimeType;
 begin
   AssertEquals('.txt', BrookFileExtFromMimeType('text/plain'));
+end;
+
+procedure TTestBrookHttpUtils.TestExtractUrlFileName;
+begin
+  AssertEquals('dummy.txt',
+    BrookExtractUrlFileName('http://localhost/dummy.txt'));
+  AssertEquals('dummy.txt',
+    BrookExtractUrlFileName('http://localhost/dummy.txt?foo=bah', True));
 end;
 
 initialization
