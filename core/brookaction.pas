@@ -589,13 +589,19 @@ begin
 end;
 
 procedure TBrookAction.Write(AJSON: TJSONObject);
+var
+  I: Integer;
 begin
-  FResponse.Contents.Add(AJSON.AsJSON);
+  for I := 0 to Pred(AJSON.Count) do
+    FResponse.Contents.Add(AJSON.Items[I].AsString);
 end;
 
 procedure TBrookAction.Write(AJSON: TJSONArray);
+var
+  I: Integer;
 begin
-  FResponse.Contents.Add(AJSON.AsJSON);
+  for I := 0 to Pred(AJSON.Count) do
+    FResponse.Contents.Add(AJSON[I].AsString);
 end;
 
 procedure TBrookAction.Write(S: TStrings);
@@ -733,12 +739,14 @@ end;
 
 procedure TBrookAction.WriteLn(AJSON: TJSONObject);
 begin
-  FResponse.Contents.Add(AJSON.AsJSON + BR);
+  Write(AJSON);
+  Write(BR);
 end;
 
 procedure TBrookAction.WriteLn(AJSON: TJSONArray);
 begin
-  FResponse.Contents.Add(AJSON.AsJSON + BR);
+  Write(AJSON);
+  Write(BR);
 end;
 
 procedure TBrookAction.WriteLn(S: TStrings);
