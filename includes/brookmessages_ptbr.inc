@@ -1,4 +1,5 @@
-  SBrookItemNotFound_rst = 'Item "%s" não encontrado.';
+  SBrookInvalidRequestMethodError_rst = 'Método de solicitação inválido: %s.';
+  SBrookItemNotFoundError_rst = 'Item "%s" não encontrado.';
   SBrookFileNotFoundError_rst = 'Arquivo não encontrado: %s';
   SBrookNoRequestMethodError_rst = 'REQUEST_METHOD não passado do servidor.';
   SBrookNoApplicationRegisteredError_rst = 'Application não registrada.';

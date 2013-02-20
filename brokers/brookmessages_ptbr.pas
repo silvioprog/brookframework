@@ -41,7 +41,8 @@ resourcestring
 
 class procedure TBrookMessage_ptBR.Translate;
 begin
-  SBrookItemNotFound := SBrookItemNotFound_rst;
+  SBrookInvalidRequestMethodError := SBrookInvalidRequestMethodError_rst;
+  SBrookItemNotFoundError := SBrookItemNotFoundError_rst;
   SBrookFileNotFoundError := SBrookFileNotFoundError_rst;
   SBrookNoRequestMethodError := SBrookNoRequestMethodError_rst;
   SBrookNoApplicationRegisteredError := SBrookNoApplicationRegisteredError_rst;

@@ -90,7 +90,8 @@ type
 var
   { Error msgs }
   { }
-  SBrookItemNotFound: string = ES;
+  SBrookInvalidRequestMethodError: string = ES;
+  SBrookItemNotFoundError: string = ES;
   SBrookFileNotFoundError: string = ES;
   SBrookNoRequestMethodError: string = ES;
   SBrookNoApplicationRegisteredError: string = ES;
@@ -130,7 +131,8 @@ var
 
 procedure BrookSetDefaultLanguage;
 begin
-  SBrookItemNotFound := SBrookItemNotFound_rst;
+  SBrookInvalidRequestMethodError := SBrookInvalidRequestMethodError_rst;
+  SBrookItemNotFoundError := SBrookItemNotFoundError_rst;
   SBrookFileNotFoundError := SBrookFileNotFoundError_rst;
   SBrookNoRequestMethodError := SBrookNoRequestMethodError_rst;
   SBrookNoApplicationRegisteredError := SBrookNoApplicationRegisteredError_rst;
@@ -258,7 +260,7 @@ begin
     raise EBrookMessages.Create(Self, SBrookEmptyCountryCodeError);
   Result := Find(ACountryCode);
   if not Assigned(Result) then
-    raise EBrookMessages.CreateFmt(Self, SBrookItemNotFound, [ACountryCode]);
+    raise EBrookMessages.CreateFmt(Self, SBrookItemNotFoundError, [ACountryCode]);
 end;
 
 initialization

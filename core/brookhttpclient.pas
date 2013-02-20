@@ -179,7 +179,7 @@ begin
     raise EBrookHTTPDefs.Create(Self, SBrookEmptyLibraryNameError);
   Result := Find(ALibrary);
   if not Assigned(Result) then
-    raise EBrookHTTPDefs.CreateFmt(Self, SBrookItemNotFound, [ALibrary]);
+    raise EBrookHTTPDefs.CreateFmt(Self, SBrookItemNotFoundError, [ALibrary]);
 end;
 
 { TBrookHTTPClient }
@@ -223,7 +223,7 @@ end;
 
 function TBrookHTTPClient.Request(const AUrl: string): TBrookHTTPResult;
 begin
-  Result := Request('GET', AUrl);
+  Result := Request(BROOK_HTTP_REQUEST_METHOD_GET, AUrl);
 end;
 
 finalization
