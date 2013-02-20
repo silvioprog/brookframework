@@ -157,7 +157,7 @@ initialization
   TMyAction1.Register('/foo1', rmPut);
   TMyAction2.Register('/foo1', rmPost);)) }
     class procedure Register(const APattern: string;
-      const AMethod: TBrookRequestMethods;
+      const AMethod: TBrookRequestMethod;
       const ADefault: Boolean = False); overload;
     { Returns the path of action. Exemple:
 
@@ -364,7 +364,7 @@ begin
 end;
 
 class procedure TBrookAction.Register(const APattern: string;
-  const AMethod: TBrookRequestMethods; const ADefault: Boolean);
+  const AMethod: TBrookRequestMethod; const ADefault: Boolean);
 begin
   if Self = TBrookAction then
     raise EBrookAction.Create(Self, SBrookRegiterTBrookActionError);

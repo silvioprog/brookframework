@@ -32,8 +32,8 @@ type
   TBrookArrayOfString = array of string;
 
   { Defines an enumerator to represent the HTTP request methods. }
-  TBrookRequestMethods = (
-    rmAll, rmGet, rmHead, rmOptions, rmPost, rmPut, rmDelete
+  TBrookRequestMethod = (
+    rmAll, rmGet, rmPost, rmPut, rmDelete, rmHead, rmOptions, rmTrace
   );
 
   { Stores the Brook configurations. }
@@ -102,7 +102,7 @@ function BrookGetPathLevels(const APath: string; const AIndex: SizeInt = 0;
   const ADelimiter: Char = US): string;
 { Checks if a string is equivalent a enumerator representing a HTTP request
   method. }
-function BrookMatchMethod(const ABrookMethod: TBrookRequestMethods;
+function BrookMatchMethod(const ABrookMethod: TBrookRequestMethod;
   const AMethod: string): Boolean;
 { Deletes files according to their creation dates and file names. }
 procedure BrookDeleteFiles(APath: string; const ABeforeOf: TDateTime;
@@ -196,7 +196,7 @@ begin
   SetLength(Result, L);
 end;
 
-function BrookMatchMethod(const ABrookMethod: TBrookRequestMethods;
+function BrookMatchMethod(const ABrookMethod: TBrookRequestMethod;
   const AMethod: string): Boolean;
 begin
   case ABrookMethod of

@@ -47,7 +47,7 @@ type
     { Checks if the action is default. }
     Default: Boolean;
     { Specifies a HTTP request method of the action to be called. }
-    Method: TBrookRequestMethods;
+    Method: TBrookRequestMethod;
     { Specifies the patter of the action to be called. }
     Pattern: string;
   end;
@@ -69,7 +69,7 @@ type
     function Count: Integer;
     { Adds a route item. }
     function Add(AActionClass: TBrookActionClass; const APattern: string;
-      const AMethod: TBrookRequestMethods; const ADefault: Boolean): Integer;
+      const AMethod: TBrookRequestMethod; const ADefault: Boolean): Integer;
     { Get the default action class. }
     procedure GetDefaultActionClass(out AClass: TBrookActionClass;
       out AIndex: Integer);
@@ -194,7 +194,7 @@ begin
 end;
 
 function TBrookRoutes.Add(AActionClass: TBrookActionClass;
-  const APattern: string; const AMethod: TBrookRequestMethods;
+  const APattern: string; const AMethod: TBrookRequestMethod;
   const ADefault: Boolean): Integer;
 var
   PRoute: PBrookRoute;

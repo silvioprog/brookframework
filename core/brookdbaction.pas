@@ -50,7 +50,7 @@ type
       const ADefault: Boolean = False); overload;
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
-      const AMethod: TBrookRequestMethods;
+      const AMethod: TBrookRequestMethod;
       const ADefault: Boolean = False); overload;
     { Defines the table name. }
     class procedure SetTableName(const ATableName: string);
@@ -123,7 +123,7 @@ begin
 end;
 
 class procedure TBrookCustomDBAction.Register(const ATableName,
-  APattern: string; const AMethod: TBrookRequestMethods;
+  APattern: string; const AMethod: TBrookRequestMethod;
   const ADefault: Boolean);
 begin
   inherited Register(APattern, AMethod, ADefault);
