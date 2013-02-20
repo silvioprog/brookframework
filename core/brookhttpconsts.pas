@@ -23,6 +23,9 @@ unit BrookHTTPConsts;
 
 interface
 
+uses
+  BrookConsts;
+
 const
   { - 1xx: Informational - Request received, continuing process }
   { }
@@ -259,6 +262,9 @@ const
   BROOK_CLT_ENV_HTTP_ACCEPT_CHARSET = 'HTTP_ACCEPT_CHARSET';
   BROOK_CLT_ENV_HTTP_IF_NONE_MATCH = 'HTTP_IF_NONE_MATCH';
   BROOK_CLT_ENV_HTTP_X_REQUESTED_WITH = 'HTTP_X_REQUESTED_WITH';
+
+var
+  BROOK_HTTP_CLIENT_DEFAULT_LIBRARY: string = ES;
 
 implementation
 

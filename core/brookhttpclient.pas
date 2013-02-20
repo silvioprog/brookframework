@@ -24,8 +24,8 @@ unit BrookHTTPClient;
 interface
 
 uses
-  BrookClasses, BrookException, BrookMessages, BrookConsts, Classes, SysUtils,
-  FGL;
+  BrookClasses, BrookException, BrookMessages, BrookConsts, BrookHTTPConsts,
+  Classes, SysUtils, FGL;
 
 type
   { Handles exceptions for @link(TBrookHTTPDef). }
@@ -142,6 +142,7 @@ implementation
 class procedure TBrookHTTPDef.Register;
 begin
   TBrookHTTPDefs.Service.Add(Self);
+  BROOK_HTTP_CLIENT_DEFAULT_LIBRARY := GetLibrary;
 end;
 
 class procedure TBrookHTTPDef.Unregister;
