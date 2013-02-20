@@ -34,11 +34,17 @@ type
   { Handles exceptions for @link(TBrookHTTPDefs). }
   EBrookHTTPDefs = class(EBrook);
 
+  { Handles exceptions for @link(EBrookHTTPClient). }
+  EBrookHTTPClient = class(EBrook);
+
   { Is a metaclass for @link(TBrookHTTPDef) class. }
   TBrookHTTPDefClass = class of TBrookHTTPDef;
 
   { Is a metaclass for @link(TBrookHTTPDefs) class. }
   TBrookHTTPDefsClass = class of TBrookHTTPDefs;
+
+  { Is a metaclass for @link(TBrookHTTPClient) class. }
+  TBrookHTTPClientClass = class of TBrookHTTPClient;
 
   { Information returned after a request. }
   TBrookHTTPResult = record
