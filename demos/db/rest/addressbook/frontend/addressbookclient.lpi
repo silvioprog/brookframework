@@ -39,7 +39,7 @@
         <PackageName Value="LJGridUtilsPkg"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="6">
       <Unit0>
         <Filename Value="addressbookclient.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -94,12 +94,6 @@
         <UnitName Value="frmContactEdit"/>
         <UsageCount Value="20"/>
       </Unit5>
-      <Unit6>
-        <Filename Value="httpclient.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="httpclient"/>
-        <UsageCount Value="20"/>
-      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

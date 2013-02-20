@@ -5,8 +5,8 @@ unit frmCustomEdit;
 interface
 
 uses
-  Forms, ExtCtrls, Buttons, SysUtils, Controls, Dialogs, Grids, LJGridUtils,
-  FPJSON, HttpClient;
+  BrookHTTPClient, BrookFCLHTTPClientBroker, BrookHTTPUtils, BrookUtils, Forms,
+  ExtCtrls, Buttons, SysUtils, Controls, Dialogs, Grids, LJGridUtils, FPJSON;
 
 type
   TfrCustomEdit = class(TForm)
@@ -15,7 +15,7 @@ type
     pnClient: TPanel;
     pnBottom: TPanel;
   protected
-    class function ProcessRequest(const AHttpResult: THttpResult): Boolean;
+    class function ProcessRequest(const AHttpResult: TBrookHTTPResult): Boolean;
     class function FillPattern(const APattern: string;
       AParams: TJSONObject): string;
   public
@@ -41,13 +41,13 @@ uses
   Serializer;
 
 class function TfrCustomEdit.ProcessRequest(
-  const AHttpResult: THttpResult): Boolean;
+  const AHttpResult: TBrookHTTPResult): Boolean;
 begin
-  Result := (AHttpResult.Code = 200) or (AHttpResult.Code = 201) or
-    (AHttpResult.Code = 204) or (AHttpResult.Code = 404);
+  Result := (AHttpResult.StatusCode = 200) or (AHttpResult.StatusCode = 201) or
+    (AHttpResult.StatusCode = 204) or (AHttpResult.StatusCode = 404);
   if not Result then
     ShowMessageFmt('ERROR: Text: %s; code: %d.',
-      [AHttpResult.Text, AHttpResult.Code]);
+      [AHttpResult.ReasonPhrase, AHttpResult.StatusCode]);
 end;
 
 class function TfrCustomEdit.FillPattern(const APattern: string;
@@ -68,34 +68,26 @@ end;
 class procedure TfrCustomEdit.Refresh(AGrid: TCustomStringGrid;
   const AUrl: string);
 var
-  VData: TJSONArray;
+  VData: TJSONArray = nil;
 begin
-  VData := TJSONArray.Create;
-  try
-    ClearGrid(AGrid);
-    ProcessRequest(HttpRequest(AUrl, VData));
-    LoadJSON(AGrid, VData, False, False);
-  finally
-    VData.Free;
-  end;
+  ClearGrid(AGrid);
+  ProcessRequest(BrookHttpRequest(AUrl, VData));
+  LoadJSON(AGrid, VData, False, False);
+  FreeAndNil(VData);
 end;
 
 class procedure TfrCustomEdit.Refresh(AGrid: TCustomStringGrid;
   const APattern: string; const AArgs: TJSONObject);
 var
-  VData: TJSONArray;
+  VData: TJSONArray = nil;
 begin
-  VData := TJSONArray.Create;
-  try
-    ClearGrid(AGrid);
-    if AArgs.Count = 0 then
-      Exit;
-    ProcessRequest(HttpRequest(TfrCustomEdit.FillPattern(
-      APattern, AArgs), VData));
-    LoadJSON(AGrid, VData, False, False);
-  finally
-    VData.Free;
-  end;
+  ClearGrid(AGrid);
+  if AArgs.Count = 0 then
+    Exit;
+  ProcessRequest(BrookHttpRequest(TfrCustomEdit.FillPattern(
+    APattern, AArgs), VData));
+  LoadJSON(AGrid, VData, False, False);
+  FreeAndNil(VData);
 end;
 
 class function TfrCustomEdit.Add(const AUrl: string): Boolean;
@@ -105,7 +97,7 @@ begin
   Result := Self.Execute(VData);
   if not Result then
     Exit;
-  Result := ProcessRequest(HttpRequest(VData, AUrl));
+  Result := ProcessRequest(BrookHttpRequest(VData, AUrl));
   if not Result then
     Exit;
   FreeAndNil(VData);
@@ -119,7 +111,7 @@ begin
   Result := Self.Execute(VData);
   if not Result then
     Exit;
-  Result := ProcessRequest(HttpRequest(VData,
+  Result := ProcessRequest(BrookHttpRequest(VData,
     TfrCustomEdit.FillPattern(APattern, AArgs)));
   if not Result then
     Exit;
@@ -133,7 +125,7 @@ var
 begin
   VRow := AArgs.Clone as TJSONObject;
   try
-    Result := Self.Execute(VRow) and ProcessRequest(HttpRequest(VRow,
+    Result := Self.Execute(VRow) and ProcessRequest(BrookHttpRequest(VRow,
       TfrCustomEdit.FillPattern(APattern, AArgs), rmPut));
   finally
     VRow.Free;
@@ -144,7 +136,7 @@ class function TfrCustomEdit.Delete(const APattern, AMsg: string;
   const AArgs: TJSONObject): Boolean;
 begin
   Result := Self.Question('Deleting', AMsg) and
-    ProcessRequest(HttpRequest(nil, TfrCustomEdit.FillPattern(APattern, AArgs),
+    ProcessRequest(BrookHttpRequest(TfrCustomEdit.FillPattern(APattern, AArgs),
       rmDelete));
 end;
 
