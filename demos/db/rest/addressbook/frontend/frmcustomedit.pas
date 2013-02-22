@@ -43,11 +43,17 @@ uses
 class function TfrCustomEdit.ProcessRequest(
   const AHttpResult: TBrookHTTPResult): Boolean;
 begin
+  Result := AHttpResult.StatusCode = 404;
+  if Result then
+  begin
+    ShowMessage('No record(s).');
+    Exit;
+  end;
   Result := (AHttpResult.StatusCode = 200) or (AHttpResult.StatusCode = 201) or
-    (AHttpResult.StatusCode = 204) or (AHttpResult.StatusCode = 404);
+    (AHttpResult.StatusCode = 204);
   if not Result then
-    ShowMessageFmt('ERROR: Text: %s; code: %d.',
-      [AHttpResult.ReasonPhrase, AHttpResult.StatusCode]);
+    ShowMessageFmt('ERROR: Text: %s; code: %d.', [AHttpResult.ReasonPhrase,
+      AHttpResult.StatusCode]);
 end;
 
 class function TfrCustomEdit.FillPattern(const APattern: string;
