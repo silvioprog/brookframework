@@ -160,15 +160,10 @@ begin
 end;
 
 function TBrookHTTPDefs.Find(const ALibrary: string): TBrookHTTPDefClass;
-var
-  I: Integer;
 begin
-  for I := 0 to Pred(Count) do
-  begin
-    Result := Get(I);
+  for Result in Self do
     if SameText(Result.GetLibrary, ALibrary) then
       Exit;
-  end;
   Result := nil;
 end;
 
