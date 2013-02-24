@@ -226,12 +226,12 @@ end;
 
 initialization
   RegisterTest(TTestRESTAction);
-  TPersonOptions.Register('person', '/person', rmOptions);
-  TPersonRetrieve.Register('person', '/person', rmGet);
-  TPersonShow.Register('person', '/person/:id', rmGet);
-  TPersonCreate.Register('person', '/person', rmPost);
-  TPersonUpdate.Register('person', '/person/:id', rmPut);
-  TPersonDestroy.Register('person', '/person/:id', rmDelete);
+  TPersonOptions.Register('person', '/person');
+  TPersonRetrieve.Register('person', '/person');
+  TPersonShow.Register('person', '/person/:id');
+  TPersonCreate.Register('person', '/person');
+  TPersonUpdate.Register('person', '/person/:id');
+  TPersonDestroy.Register('person', '/person/:id');
 
 end.
 
