@@ -30,6 +30,10 @@ type
   { Displays the schema of the resource. }
   TBrookOptionsAction = class(TBrookDBAction)
   public
+    { Registers an action linking the request to a database table. }
+    class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmOptions;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a OPTIONS HTTP request method. }
     procedure Options; override;
     (* Executes the action. If there are schema in the resource, they are
@@ -40,6 +44,10 @@ type
   { Displays all the contents of the resource. }
   TBrookRetrieveAction = class(TBrookDBAction)
   public
+    { Registers an action linking the request to a database table. }
+    class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmGet;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If there are contents in the resource, they are
@@ -50,6 +58,10 @@ type
   { Displays the content of a specific resource. }
   TBrookShowAction = class(TBrookDBAction)
   public
+    { Registers an action linking the request to a database table. }
+    class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmGet;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If there are contents in the resource, they are
@@ -60,6 +72,10 @@ type
   { Creates a new resource. }
   TBrookCreateAction = class(TBrookDBAction)
   public
+    { Registers an action linking the request to a database table. }
+    class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmPost;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. The 201 status code is always returned. }
@@ -69,6 +85,10 @@ type
   { Updates a specific resource. }
   TBrookUpdateAction = class(TBrookDBAction)
   public
+    { Registers an action linking the request to a database table. }
+    class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmPut;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If the edition is successful, the 204 status code is
@@ -79,6 +99,10 @@ type
   { Destroy a specific resource. }
   TBrookDestroyAction = class(TBrookDBAction)
   public
+    { Registers an action linking the request to a database table. }
+    class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmDelete;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If the deletion is successful, the 204 status code is
@@ -89,6 +113,12 @@ type
 implementation
 
 { TBrookOptionsAction }
+
+class procedure TBrookOptionsAction.Register(const ATableName,
+  APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
 
 procedure TBrookOptionsAction.Options;
 begin
@@ -104,6 +134,12 @@ begin
 end;
 
 { TBrookRetrieveAction }
+
+class procedure TBrookRetrieveAction.Register(const ATableName,
+  APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
 
 procedure TBrookRetrieveAction.Request(ARequest: TRequest;
   AResponse: TResponse);
@@ -127,6 +163,12 @@ begin
 end;
 
 { TBrookShowAction }
+
+class procedure TBrookShowAction.Register(const ATableName, APattern: string;
+  const AMethod: TBrookRequestMethod; const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
 
 procedure TBrookShowAction.Request(ARequest: TRequest;
   AResponse: TResponse);
@@ -166,6 +208,12 @@ end;
 
 { TBrookCreateAction }
 
+class procedure TBrookCreateAction.Register(const ATableName, APattern: string;
+  const AMethod: TBrookRequestMethod; const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
+
 procedure TBrookCreateAction.Request(ARequest: TRequest;
   AResponse: TResponse);
 begin
@@ -184,6 +232,12 @@ begin
 end;
 
 { TBrookUpdateAction }
+
+class procedure TBrookUpdateAction.Register(const ATableName, APattern: string;
+  const AMethod: TBrookRequestMethod; const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
 
 procedure TBrookUpdateAction.Request(ARequest: TRequest;
   AResponse: TResponse);
@@ -220,6 +274,12 @@ begin
 end;
 
 { TBrookDestroyAction }
+
+class procedure TBrookDestroyAction.Register(const ATableName,
+  APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
 
 procedure TBrookDestroyAction.Request(ARequest: TRequest;
   AResponse: TResponse);

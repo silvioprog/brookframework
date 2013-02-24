@@ -26,10 +26,10 @@ type
 implementation
 
 initialization
-  TPersonRetrieve.Register('person', '/person', rmGet);
-  TPersonShow.Register('person', '/person/:id', rmGet);
-  TPersonCreate.Register('person', '/person', rmPost);
-  TPersonUpdate.Register('person', '/person/:id', rmPut);
-  TPersonDestroy.Register('person', '/person/:id', rmDelete);
+  TPersonRetrieve.Register('person', '/person');
+  TPersonShow.Register('person', '/person/:id');
+  TPersonCreate.Register('person', '/person');
+  TPersonUpdate.Register('person', '/person/:id');
+  TPersonDestroy.Register('person', '/person/:id');
 
 end.

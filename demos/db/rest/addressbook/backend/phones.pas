@@ -29,11 +29,11 @@ type
 implementation
 
 initialization
-  TPhonesOptions.Register('phones', '/contacts/phones', rmOptions);
-  TPhonesRetrieve.Register('phones', '/contacts/:contactid/phones', rmGet);
-  TPhonesShow.Register('phones', '/contacts/:contactid/phones/:id', rmGet);
-  TPhonesCreate.Register('phones', '/contacts/:contactid/phones', rmPost);
-  TPhonesUpdate.Register('phones', '/contacts/:contactid/phones/:id', rmPut);
-  TPhonesDestroy.Register('phones', '/contacts/:contactid/phones/:id', rmDelete);
+  TPhonesOptions.Register('phones', '/contacts/phones');
+  TPhonesRetrieve.Register('phones', '/contacts/:contactid/phones');
+  TPhonesShow.Register('phones', '/contacts/:contactid/phones/:id');
+  TPhonesCreate.Register('phones', '/contacts/:contactid/phones');
+  TPhonesUpdate.Register('phones', '/contacts/:contactid/phones/:id');
+  TPhonesDestroy.Register('phones', '/contacts/:contactid/phones/:id');
 
 end.

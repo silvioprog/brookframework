@@ -29,11 +29,11 @@ type
 implementation
 
 initialization
-  TContactsOptions.Register('contacts', '/contacts', rmOptions);
-  TContactsRetrieve.Register('contacts', '/contacts', rmGet);
-  TContactsShow.Register('contacts', '/contacts/:id', rmGet);
-  TContactsCreate.Register('contacts', '/contacts', rmPost);
-  TContactsUpdate.Register('contacts', '/contacts/:id', rmPut);
-  TContactsDestroy.Register('contacts', '/contacts/:id', rmDelete);
+  TContactsOptions.Register('contacts', '/contacts');
+  TContactsRetrieve.Register('contacts', '/contacts');
+  TContactsShow.Register('contacts', '/contacts/:id');
+  TContactsCreate.Register('contacts', '/contacts');
+  TContactsUpdate.Register('contacts', '/contacts/:id');
+  TContactsDestroy.Register('contacts', '/contacts/:id');
 
 end.
