@@ -35,7 +35,7 @@ type
       const AMethod: TBrookRequestMethod = rmOptions;
       const ADefault: Boolean = False); overload;
     { Is triggered by a OPTIONS HTTP request method. }
-    procedure Options; override;
+    procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     (* Executes the action. If there are schema in the resource, they are
       returned, if not, it returns a @code('{ "error": "No schema." }') JSON. *)
     function Execute: Boolean; virtual;
@@ -120,17 +120,20 @@ begin
   inherited Register(ATableName, APattern, AMethod, ADefault);
 end;
 
-procedure TBrookOptionsAction.Options;
+procedure TBrookOptionsAction.Request(ARequest: TRequest; AResponse: TResponse);
 begin
   if Execute then
     Write(Table.GetSchema)
   else
-    Write('{ "error": "No schema." }');
+  begin
+    AResponse.Code := BROOK_HTTP_STATUS_CODE_NOT_FOUND;
+    AResponse.CodeText := BROOK_HTTP_REASON_PHRASE_NOT_FOUND;
+  end;
 end;
 
 function TBrookOptionsAction.Execute: Boolean;
 begin
-  Result := not Table.Open.Empty;
+  Result := Table.Open.FieldDefs.Count > 0;
 end;
 
 { TBrookRetrieveAction }
