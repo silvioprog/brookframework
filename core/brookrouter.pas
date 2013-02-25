@@ -118,7 +118,7 @@ type
     { Creates an URL for an action informing an array of parameters. Exemple:
 
       @longCode(
-      procedure TMyAction.Get(ARequest: TBrookRequest; AResponse: TBrookResponse);
+      procedure TMyAction.Get;
       begin
         // When calling with http://localhost/cgi-bin/cgi1/foo/myvalue
         // the output will be /cgi-bin/cgi1/foo/myvalue

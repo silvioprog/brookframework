@@ -137,17 +137,17 @@ type
        A typical example of use is:
 
        @longCode(
-procedure TMyAction1.Get(ARequest: TBrookRequest; AResponse: TBrookResponse);
+procedure TMyAction1.Get;
 begin
   Write('GET');
 end;
 
-procedure TMyAction1.Put(ARequest: TBrookRequest; AResponse: TBrookResponse);
+procedure TMyAction1.Put;
 begin
   Write('PUT');
 end;
 
-procedure TMyAction2.Post(ARequest: TBrookRequest; AResponse: TBrookResponse);
+procedure TMyAction2.Post;
 begin
   Write('POST');
 end;
@@ -170,7 +170,7 @@ initialization
     { Creates an URL for an action informing an array of parameters. Exemple:
 
       @longCode(
-      procedure TMyAction.Get(ARequest: TBrookRequest; AResponse: TBrookResponse);
+      procedure TMyAction.Get;
       begin
         // When calling with http://localhost/cgi-bin/cgi1/foo/myvalue
         // the output will be /cgi-bin/cgi1/foo/myvalue
