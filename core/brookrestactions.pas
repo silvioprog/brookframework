@@ -34,6 +34,11 @@ type
     class procedure Register(const ATableName, APattern: string;
       const AMethod: TBrookRequestMethod = rmOptions;
       const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
+      const AMethod: TBrookRequestMethod = rmOptions;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a OPTIONS HTTP request method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     (* Executes the action. If there are schema in the resource, they are
@@ -46,6 +51,11 @@ type
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmGet;
+      const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
       const AMethod: TBrookRequestMethod = rmGet;
       const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
@@ -62,6 +72,11 @@ type
     class procedure Register(const ATableName, APattern: string;
       const AMethod: TBrookRequestMethod = rmGet;
       const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
+      const AMethod: TBrookRequestMethod = rmGet;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If there are contents in the resource, they are
@@ -74,6 +89,11 @@ type
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmPost;
+      const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
       const AMethod: TBrookRequestMethod = rmPost;
       const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
@@ -89,6 +109,11 @@ type
     class procedure Register(const ATableName, APattern: string;
       const AMethod: TBrookRequestMethod = rmPut;
       const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
+      const AMethod: TBrookRequestMethod = rmPut;
+      const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If the edition is successful, the 204 status code is
@@ -101,6 +126,11 @@ type
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
+      const AMethod: TBrookRequestMethod = rmDelete;
+      const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
       const AMethod: TBrookRequestMethod = rmDelete;
       const ADefault: Boolean = False); overload;
     { Is triggered by a request of any HTTP method. }
@@ -118,6 +148,13 @@ class procedure TBrookOptionsAction.Register(const ATableName,
   APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
 begin
   inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
+
+class procedure TBrookOptionsAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const AMethod: TBrookRequestMethod;
+  const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AIgnoredFields, AMethod, ADefault);
 end;
 
 procedure TBrookOptionsAction.Request(ARequest: TRequest; AResponse: TResponse);
@@ -142,6 +179,13 @@ class procedure TBrookRetrieveAction.Register(const ATableName,
   APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
 begin
   inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
+
+class procedure TBrookRetrieveAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const AMethod: TBrookRequestMethod;
+  const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AIgnoredFields, AMethod, ADefault);
 end;
 
 procedure TBrookRetrieveAction.Request(ARequest: TRequest;
@@ -171,6 +215,13 @@ class procedure TBrookShowAction.Register(const ATableName, APattern: string;
   const AMethod: TBrookRequestMethod; const ADefault: Boolean);
 begin
   inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
+
+class procedure TBrookShowAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const AMethod: TBrookRequestMethod;
+  const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AIgnoredFields, AMethod, ADefault);
 end;
 
 procedure TBrookShowAction.Request(ARequest: TRequest;
@@ -217,6 +268,13 @@ begin
   inherited Register(ATableName, APattern, AMethod, ADefault);
 end;
 
+class procedure TBrookCreateAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const AMethod: TBrookRequestMethod;
+  const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AIgnoredFields, AMethod, ADefault);
+end;
+
 procedure TBrookCreateAction.Request(ARequest: TRequest;
   AResponse: TResponse);
 begin
@@ -240,6 +298,13 @@ class procedure TBrookUpdateAction.Register(const ATableName, APattern: string;
   const AMethod: TBrookRequestMethod; const ADefault: Boolean);
 begin
   inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
+
+class procedure TBrookUpdateAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const AMethod: TBrookRequestMethod;
+  const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AIgnoredFields, AMethod, ADefault);
 end;
 
 procedure TBrookUpdateAction.Request(ARequest: TRequest;
@@ -282,6 +347,13 @@ class procedure TBrookDestroyAction.Register(const ATableName,
   APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
 begin
   inherited Register(ATableName, APattern, AMethod, ADefault);
+end;
+
+class procedure TBrookDestroyAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const AMethod: TBrookRequestMethod;
+  const ADefault: Boolean);
+begin
+  inherited Register(ATableName, APattern, AIgnoredFields, AMethod, ADefault);
 end;
 
 procedure TBrookDestroyAction.Request(ARequest: TRequest;

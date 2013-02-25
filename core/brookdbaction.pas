@@ -25,7 +25,7 @@ interface
 
 uses
   BrookAction, BrookException, BrookDataBase, BrookTable, BrookUtils,
-  BrookMessages, BrookConsts, Classes, SysUtils;
+  BrookMessages, BrookConsts, DB, Classes, SysUtils;
 
 type
   { Handles exceptions for @link(TBrookDBAction). }
@@ -39,11 +39,16 @@ type
   TBrookCustomDBAction = class(TBrookAction)
   strict private class var
     _TableNames: TStrings;
+    _IgnoredFields: TStrings;
   protected
     class procedure CheckTableName(const ATableName: string);
+    class procedure IgnoreFields(ADataSet: TDataSet; const AFields: string);
     class function TableNames: TStrings;
     class procedure InitTableNames;
     class procedure DoneTableNames;
+    class function IgnoredFields: TStrings;
+    class procedure InitIgnoredFields;
+    class procedure DoneIgnoredFields;
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
@@ -52,10 +57,22 @@ type
     class procedure Register(const ATableName, APattern: string;
       const AMethod: TBrookRequestMethod;
       const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
+      const ADefault: Boolean = False); overload;
+    { Registers an action linking the request to a database table and defining
+      the fields that will be ignored for persistance purposes. }
+    class procedure Register(const ATableName, APattern, AIgnoredFields: string;
+      const AMethod: TBrookRequestMethod; const ADefault: Boolean = False); overload;
     { Defines the table name. }
     class procedure SetTableName(const ATableName: string);
     { Returns the table name. }
     class function GetTableName: string;
+    { Define the fields that will be ignored for persistance purposes. }
+    class procedure SetIgnoredFields(const AFields: string);
+    { Returns the fields were ignored for persistance purposes. }
+    class function GetIgnoredFields: string;
   end;
 
   { Manages HTTP requests and responses when data persistance is required. }
@@ -68,6 +85,10 @@ type
     procedure SetTable(AValue: TBrookTable);
   protected
     function CreateTable: TBrookTable; virtual;
+    procedure TableAfterOpen(DataSet: TDataSet); virtual;
+    procedure TableBeforeInsert(DataSet: TDataSet); virtual;
+    procedure TableBeforeEdit(DataSet: TDataSet); virtual;
+    procedure TableBeforeDelete(DataSet: TDataSet); virtual;
   public
     { Creates an instance of @code(TBrookDBAction). }
     constructor Create; override;
@@ -87,6 +108,29 @@ begin
     raise EBrookDBAction.Create(Self, SBrookEmptyTableNameError);
 end;
 
+class procedure TBrookCustomDBAction.IgnoreFields(ADataSet: TDataSet;
+  const AFields: string);
+var
+  I: Integer;
+  VField: TField;
+  VIgnoredFields: TStringList;
+begin
+  if (not Assigned(_IgnoredFields)) or (_IgnoredFields.Count = 0) then
+    Exit;
+  VIgnoredFields := TStringList.Create;
+  try
+    VIgnoredFields.CommaText := AFields;
+    for I := 0 to Pred(VIgnoredFields.Count) do
+    begin
+      VField := ADataSet.Fields.FindField(VIgnoredFields[I]);
+      if Assigned(VField) then
+        VField.Visible := False;
+    end;
+  finally
+    VIgnoredFields.Free;
+  end;
+end;
+
 class function TBrookCustomDBAction.TableNames: TStrings;
 begin
   if not Assigned(_TableNames) then
@@ -104,6 +148,23 @@ begin
   FreeAndNil(TBrookCustomDBAction._TableNames);
 end;
 
+class function TBrookCustomDBAction.IgnoredFields: TStrings;
+begin
+  if not Assigned(_IgnoredFields) then
+    TBrookCustomDBAction.InitIgnoredFields;
+  Result := TBrookCustomDBAction._IgnoredFields;
+end;
+
+class procedure TBrookCustomDBAction.InitIgnoredFields;
+begin
+  _IgnoredFields := TStringList.Create;
+end;
+
+class procedure TBrookCustomDBAction.DoneIgnoredFields;
+begin
+  FreeAndNil(TBrookCustomDBAction._IgnoredFields);
+end;
+
 class procedure TBrookCustomDBAction.SetTableName(const ATableName: string);
 begin
   CheckTableName(ATableName);
@@ -114,6 +175,16 @@ class function TBrookCustomDBAction.GetTableName: string;
 begin
   Result := TBrookCustomDBAction.TableNames.Values[ClassName];
   CheckTableName(Result);
+end;
+
+class procedure TBrookCustomDBAction.SetIgnoredFields(const AFields: string);
+begin
+  TBrookCustomDBAction.IgnoredFields.Add(ClassName + EQ + AFields);
+end;
+
+class function TBrookCustomDBAction.GetIgnoredFields: string;
+begin
+  Result := TBrookCustomDBAction.IgnoredFields.Values[ClassName];
 end;
 
 class procedure TBrookCustomDBAction.Register(const ATableName,
@@ -130,17 +201,55 @@ begin
   Self.SetTableName(ATableName);
 end;
 
+class procedure TBrookCustomDBAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const ADefault: Boolean);
+begin
+  Register(ATableName, APattern, AIgnoredFields, rmAll, ADefault);
+end;
+
+class procedure TBrookCustomDBAction.Register(const ATableName, APattern,
+  AIgnoredFields: string; const AMethod: TBrookRequestMethod;
+  const ADefault: Boolean);
+begin
+  Register(ATableName, APattern, AMethod, ADefault);
+  Self.SetIgnoredFields(AIgnoredFields);
+end;
+
 { TBrookDBAction }
 
 constructor TBrookDBAction.Create;
 begin
   inherited Create;
   FTable := CreateTable;
+  FTable.DataSet.AfterOpen := @TableAfterOpen;
+  FTable.DataSet.BeforeInsert := @TableBeforeInsert;
+  FTable.DataSet.BeforeEdit := @TableBeforeEdit;
+  FTable.DataSet.BeforeDelete := @TableBeforeDelete;
 end;
 
 function TBrookDBAction.CreateTable: TBrookTable;
 begin
   Result := TBrookTable.Create;
+end;
+
+procedure TBrookDBAction.TableAfterOpen(DataSet: TDataSet);
+begin
+  TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
+end;
+
+procedure TBrookDBAction.TableBeforeInsert(DataSet: TDataSet);
+begin
+  TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
+end;
+
+procedure TBrookDBAction.TableBeforeEdit(DataSet: TDataSet);
+begin
+  TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
+end;
+
+procedure TBrookDBAction.TableBeforeDelete(DataSet: TDataSet);
+begin
+  TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
 end;
 
 function TBrookDBAction.GetDataBase: TBrookDataBase;
@@ -167,5 +276,6 @@ end;
 
 finalization
   TBrookCustomDBAction.DoneTableNames;
+  TBrookCustomDBAction.DoneIgnoredFields;
 
 end.
