@@ -37,8 +37,8 @@ type
   { Custom class for manages HTTP requests and responses when data persistance
     is required. }
   TBrookCustomDBAction = class(TBrookAction)
-  strict private
-    class var _BrookTableNames: TStrings;
+  strict private class var
+    _TableNames: TStrings;
   protected
     class procedure CheckTableName(const ATableName: string);
     class function TableNames: TStrings;
@@ -89,19 +89,19 @@ end;
 
 class function TBrookCustomDBAction.TableNames: TStrings;
 begin
-  if not Assigned(_BrookTableNames) then
+  if not Assigned(_TableNames) then
     TBrookCustomDBAction.InitTableNames;
-  Result := TBrookCustomDBAction._BrookTableNames;
+  Result := TBrookCustomDBAction._TableNames;
 end;
 
 class procedure TBrookCustomDBAction.InitTableNames;
 begin
-  _BrookTableNames := TStringList.Create;
+  _TableNames := TStringList.Create;
 end;
 
 class procedure TBrookCustomDBAction.DoneTableNames;
 begin
-  FreeAndNil(TBrookCustomDBAction._BrookTableNames);
+  FreeAndNil(TBrookCustomDBAction._TableNames);
 end;
 
 class procedure TBrookCustomDBAction.SetTableName(const ATableName: string);
