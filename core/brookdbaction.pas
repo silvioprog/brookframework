@@ -168,7 +168,7 @@ end;
 class procedure TBrookCustomDBAction.SetTableName(const ATableName: string);
 begin
   CheckTableName(ATableName);
-  TBrookCustomDBAction.TableNames.Add(ClassName + EQ + ATableName);
+  TBrookCustomDBAction.TableNames.Values[ClassName] := ATableName;
 end;
 
 class function TBrookCustomDBAction.GetTableName: string;
@@ -179,7 +179,7 @@ end;
 
 class procedure TBrookCustomDBAction.SetIgnoredFields(const AFields: string);
 begin
-  TBrookCustomDBAction.IgnoredFields.Add(ClassName + EQ + AFields);
+  TBrookCustomDBAction.IgnoredFields.Values[ClassName] := AFields;
 end;
 
 class function TBrookCustomDBAction.GetIgnoredFields: string;
