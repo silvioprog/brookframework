@@ -47,6 +47,14 @@ Provides features for the route handling.</p>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookRouter.TBrookRouter.html#RootUrl">RootUrl</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookRouter.TBrookRouter.html#RootUrl">RootUrl</a></b>(ARequest: TRequest): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class procedure <b><a   href="BrookRouter.TBrookRouter.html#MethodNotAllowed">MethodNotAllowed</a></b>(AResponse: TResponse);</code></td>
 </tr>
 <tr class="list">
@@ -148,6 +156,26 @@ Return a instance of this class.</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RootUrl"></a><code>class function <b>RootUrl</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Return the root URL.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RootUrl"></a><code>class function <b>RootUrl</b>(ARequest: TRequest): string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Return the root URL passing <code>TRequest</code> as param.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="MethodNotAllowed"></a><code>class procedure <b>MethodNotAllowed</b>(AResponse: TResponse);</code></td>
 </tr>
 <tr><td colspan="2">
@@ -167,7 +195,7 @@ Creates an URL for an action informing an array of parameters. Exemple:
 <p></p>
 
 <pre class="longcode">
-      <span class="pascal_keyword">procedure</span> TMyAction.Get(ARequest: TBrookRequest; AResponse: TBrookResponse);
+      <span class="pascal_keyword">procedure</span> TMyAction.Get;
       <span class="pascal_keyword">begin</span>
         <span class="pascal_comment">// When calling with http://localhost/cgi-bin/cgi1/foo/myvalue</span>
         <span class="pascal_comment">// the output will be /cgi-bin/cgi1/foo/myvalue</span>

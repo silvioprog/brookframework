@@ -30,6 +30,14 @@ Displays all the contents of the resource.</p>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookRESTActions.TBrookRetrieveAction.html#Register">Register</a></b>(const ATableName, APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookRESTActions.TBrookRetrieveAction.html#Register">Register</a></b>(const ATableName, APattern, AIgnoredFields: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookRESTActions.TBrookRetrieveAction.html#Request">Request</a></b>(ARequest: TRequest; AResponse: TResponse); override;</code></td>
 </tr>
 <tr class="list2">
@@ -39,6 +47,26 @@ Displays all the contents of the resource.</p>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const ATableName, APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Registers an action linking the request to a database table.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const ATableName, APattern, AIgnoredFields: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Registers an action linking the request to a database table and defining the fields that will be ignored for persistance purposes.</p>
+</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>

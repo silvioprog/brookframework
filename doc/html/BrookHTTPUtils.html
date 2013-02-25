@@ -24,7 +24,7 @@ Brook HTTP Utils unit.
 
 <p>This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</p>
 <a name="%40Uses"></a><h2 class="uses">Uses</h2>
-<ul class="useslist"><li><a   href="BrookHTTPConsts.html">BrookHTTPConsts</a></li><li><a   href="BrookConsts.html">BrookConsts</a></li><li>HTTPDefs</li><li>SysUtils</li></ul><h2 class="overview">Overview</h2>
+<ul class="useslist"><li><a   href="BrookHTTPClient.html">BrookHTTPClient</a></li><li><a   href="BrookMessages.html">BrookMessages</a></li><li><a   href="BrookHTTPConsts.html">BrookHTTPConsts</a></li><li><a   href="BrookConsts.html">BrookConsts</a></li><li><a   href="BrookUtils.html">BrookUtils</a></li><li>HTTPDefs</li><li>SysUtils</li><li>FPJSON</li><li>JSONParser</li></ul><h2 class="overview">Overview</h2>
 <a name="%40FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
@@ -53,6 +53,39 @@ Brook HTTP Utils unit.
 </tr>
 <tr class="list">
 <td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookFileExtFromMimeType">BrookFileExtFromMimeType</a></b>(const AValue: string): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookExtractUrlFileName">BrookExtractUrlFileName</a></b>(const AUrl: string): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookExtractUrlFileName">BrookExtractUrlFileName</a></b>(const AUrl: string; const AEscapeQueryString: Boolean): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookRequestMethodToStr">BrookRequestMethodToStr</a></b>(const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookStrToRequestMethod">BrookStrToRequestMethod</a></b>(const AMethod: string): <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(const AUrl: string; out AResponse: TJSONData; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(const AUrl: string; out AResponse: TJSONArray; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(const AUrl: string; out AResponse: TJSONObject; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONData; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONArray; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONObject; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
 </tr>
 </table>
 <a name="%40Types"></a><h3 class="summary">Types</h3>
@@ -142,6 +175,105 @@ Returns a MIME type by file name.</p>
 <tr><td colspan="1">
 <p>
 Returns a file extension by MIME type.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookExtractUrlFileName"></a><code>function <b>BrookExtractUrlFileName</b>(const AUrl: string): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Extracts the file name of a URL.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookExtractUrlFileName"></a><code>function <b>BrookExtractUrlFileName</b>(const AUrl: string; const AEscapeQueryString: Boolean): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Extracts the file name of a URL and escapes it.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookRequestMethodToStr"></a><code>function <b>BrookRequestMethodToStr</b>(const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the string corresponding to a <code>TBrookRequestMethod</code>.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookStrToRequestMethod"></a><code>function <b>BrookStrToRequestMethod</b>(const AMethod: string): <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the <code>TBrookRequestMethod</code> corresponding to a string.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Perform HTTP requests. (allows all request methods)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(const AUrl: string; out AResponse: TJSONData; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Perform HTTP requests returning the response as <code>TJSONData</code>. (allows request methods: GET, HEAD, OPTIONS and TRACE)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(const AUrl: string; out AResponse: TJSONArray; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Perform HTTP requests returning the response as <code>TJSONArray</code>. (allows request methods: GET, HEAD, OPTIONS and TRACE)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(const AUrl: string; out AResponse: TJSONObject; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Perform HTTP requests returning the response as <code>TJSONObject</code>. (allows request methods: GET, HEAD, OPTIONS and TRACE)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONData; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Perform HTTP requests passing the data as <code>TJSONData</code>. (allows request methods: POST, PUT and DELETE)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONArray; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Perform HTTP requests passing the data as <code>TJSONArray</code>. (allows request methods: POST, PUT and DELETE)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONObject; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Perform HTTP requests passing the data as <code>TJSONObject</code>. (allows request methods: POST, PUT and DELETE)</p>
 </td></tr>
 </table>
 <h3 class="detail">Types</h3>

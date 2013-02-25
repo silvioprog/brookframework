@@ -48,7 +48,7 @@ Brook Utils unit.
 <td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookGetPathLevels">BrookGetPathLevels</a></b>(const APath: string; const AIndex: SizeInt = 0; const ADelimiter: Char = <a   href="BrookConsts.html#US">US</a>): string;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookMatchMethod">BrookMatchMethod</a></b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const AMethod: string): Boolean;</code></td>
+<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookMatchMethod">BrookMatchMethod</a></b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const AMethod: string): Boolean;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>procedure <b><a   href="BrookUtils.html#BrookDeleteFiles">BrookDeleteFiles</a></b>(APath: string; const ABeforeOf: TDateTime; const ASkippedFile: TFileName = <a   href="BrookConsts.html#ES">ES</a>; const AContains: string = <a   href="BrookConsts.html#ES">ES</a>);</code></td>
@@ -65,6 +65,9 @@ Brook Utils unit.
 <tr class="list">
 <td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookDumpStack">BrookDumpStack</a></b>(const AEOL: ShortString = <a   href="BrookConsts.html#BR">BR</a>): string;</code></td>
 </tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookExcludeHTTPPathDelimiter">BrookExcludeHTTPPathDelimiter</a></b>(const AUrl: string): string;</code></td>
+</tr>
 </table>
 <a name="%40Types"></a><h3 class="summary">Types</h3>
 <table class="summary wide_list">
@@ -72,7 +75,7 @@ Brook Utils unit.
 <td class="itemcode"><code><b><a   href="BrookUtils.html#TBrookArrayOfString">TBrookArrayOfString</a></b> = array of string;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a></b> = (...);</code></td>
+<td class="itemcode"><code><b><a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a></b> = (...);</code></td>
 </tr>
 </table>
 <a name="%40Variables"></a><h3 class="summary">Variables</h3>
@@ -89,6 +92,7 @@ Brook Utils unit.
     DeleteUploadedFiles: False;
     AcceptsJSONContent: False;
     Configuration: <a   href="BrookConsts.html#ES">ES</a>;
+    RootUrl: <a   href="BrookConsts.html#ES">ES</a>;
     OnError: nil;
   );</code></td>
 </tr>
@@ -128,7 +132,7 @@ Get the path from the level correspondent to the index to the last level. Exempl
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BrookMatchMethod"></a><code>function <b>BrookMatchMethod</b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const AMethod: string): Boolean;</code></td>
+<td class="itemcode"><a name="BrookMatchMethod"></a><code>function <b>BrookMatchMethod</b>(const ABrookMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const AMethod: string): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -180,6 +184,15 @@ Copy the content of a JSON Object to another.</p>
 Writes a backtrace of the current exception.</p>
 </td></tr>
 </table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookExcludeHTTPPathDelimiter"></a><code>function <b>BrookExcludeHTTPPathDelimiter</b>(const AUrl: string): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Ensures URL ends with delimiter.</p>
+</td></tr>
+</table>
 <h3 class="detail">Types</h3>
 <table class="detail wide_list">
 <tr class="list">
@@ -192,7 +205,7 @@ Defines a array of strings.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TBrookRequestMethods"></a><code><b>TBrookRequestMethods</b> = (...);</code></td>
+<td class="itemcode"><a name="TBrookRequestMethod"></a><code><b>TBrookRequestMethod</b> = (...);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -200,19 +213,23 @@ Defines an enumerator to represent the HTTP request methods.</p>
 <h6 class="description_section">Values</h6>
 <ul>
 <li>
+rmUnknown: &nbsp;</li>
+<li>
 rmAll: &nbsp;</li>
 <li>
 rmGet: &nbsp;</li>
-<li>
-rmHead: &nbsp;</li>
-<li>
-rmOptions: &nbsp;</li>
 <li>
 rmPost: &nbsp;</li>
 <li>
 rmPut: &nbsp;</li>
 <li>
 rmDelete: &nbsp;</li>
+<li>
+rmHead: &nbsp;</li>
+<li>
+rmOptions: &nbsp;</li>
+<li>
+rmTrace: &nbsp;</li>
 </ul>
 </td></tr>
 </table>
@@ -230,6 +247,7 @@ rmDelete: &nbsp;</li>
     DeleteUploadedFiles: False;
     AcceptsJSONContent: False;
     Configuration: <a   href="BrookConsts.html#ES">ES</a>;
+    RootUrl: <a   href="BrookConsts.html#ES">ES</a>;
     OnError: nil;
   );</code></td>
 </tr>

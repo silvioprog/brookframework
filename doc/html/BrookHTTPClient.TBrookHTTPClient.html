@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>Brook framework: BrookHTTPClient: Class TBrookHTTPClient</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TBrookHTTPClient"></a><h1 class="cio">Class TBrookHTTPClient</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td><a class="section"  href="#%40Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#%40Methods">Methods</a></td><td>Properties</td></tr></table>
+<a name="%40Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="BrookHTTPClient.html">BrookHTTPClient</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TBrookHTTPClient = class(<a class="normal"  href="BrookClasses.TBrookObject.html">TBrookObject</a>)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Client to perform HTTP requests.</p>
+<a name="%40Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="ancestor"><a class="normal"  href="BrookClasses.TBrookObject.html">TBrookObject</a></li>
+<li class="thisitem">TBrookHTTPClient</li></ul><h2 class="overview">Overview</h2>
+<a name="%40Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Create">Create</a></b>(const ALibrary: string);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#SetLibrary">SetLibrary</a></b>(const ALibrary: string);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Prepare">Prepare</a></b>(out AHttp: <a   href="BrookHTTPClient.TBrookHTTPDef.html">TBrookHTTPDef</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Request">Request</a></b>(AHttp: <a   href="BrookHTTPClient.TBrookHTTPDef.html">TBrookHTTPDef</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Request">Request</a></b>(const AMethod, AUrl: string): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Request">Request</a></b>(const AUrl: string): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(const ALibrary: string);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Creates an instance of a <a class="normal"  href="BrookHTTPClient.TBrookHTTPClient.html">TBrookHTTPClient</a> class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SetLibrary"></a><code>class procedure <b>SetLibrary</b>(const ALibrary: string);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Specifies the library to be used by this class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Prepare"></a><code>class procedure <b>Prepare</b>(out AHttp: <a   href="BrookHTTPClient.TBrookHTTPDef.html">TBrookHTTPDef</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Prepares an instance of <code>TBrookHTTPDef</code>.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Request"></a><code>function <b>Request</b>(AHttp: <a   href="BrookHTTPClient.TBrookHTTPDef.html">TBrookHTTPDef</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Performs the request, passing a <code>TBrookHTTPDef</code> as parameter.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Request"></a><code>function <b>Request</b>(const AMethod, AUrl: string): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Performs the request, passing the method and URL as parameter.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Request"></a><code>function <b>Request</b>(const AUrl: string): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Performs the request, passing URL as parameter.</p>
+</td></tr>
+</table>
+</body></html>

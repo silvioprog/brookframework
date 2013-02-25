@@ -32,7 +32,15 @@ Custom class for manages HTTP requests and responses when data persistance is re
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class procedure <b><a   href="BrookDBAction.TBrookCustomDBAction.html#Register">Register</a></b>(const ATableName, APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const ADefault: Boolean = False); overload;</code></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookDBAction.TBrookCustomDBAction.html#Register">Register</a></b>(const ATableName, APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookDBAction.TBrookCustomDBAction.html#Register">Register</a></b>(const ATableName, APattern, AIgnoredFields: string; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookDBAction.TBrookCustomDBAction.html#Register">Register</a></b>(const ATableName, APattern, AIgnoredFields: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const ADefault: Boolean = False); overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -41,6 +49,14 @@ Custom class for manages HTTP requests and responses when data persistance is re
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a   href="BrookDBAction.TBrookCustomDBAction.html#GetTableName">GetTableName</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookDBAction.TBrookCustomDBAction.html#SetIgnoredFields">SetIgnoredFields</a></b>(const AFields: string);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookDBAction.TBrookCustomDBAction.html#GetIgnoredFields">GetIgnoredFields</a></b>: string;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
@@ -58,11 +74,31 @@ Registers an action linking the request to a database table.</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const ATableName, APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const ADefault: Boolean = False); overload;</code></td>
+<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const ATableName, APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const ADefault: Boolean = False); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
 Registers an action linking the request to a database table.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const ATableName, APattern, AIgnoredFields: string; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Registers an action linking the request to a database table and defining the fields that will be ignored for persistance purposes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const ATableName, APattern, AIgnoredFields: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const ADefault: Boolean = False); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Registers an action linking the request to a database table and defining the fields that will be ignored for persistance purposes.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -83,6 +119,26 @@ Defines the table name.</p>
 <tr><td colspan="2">
 <p>
 Returns the table name.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SetIgnoredFields"></a><code>class procedure <b>SetIgnoredFields</b>(const AFields: string);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Define the fields that will be ignored for persistance purposes.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetIgnoredFields"></a><code>class function <b>GetIgnoredFields</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns the fields were ignored for persistance purposes.</p>
 </td></tr>
 </table>
 </body></html>

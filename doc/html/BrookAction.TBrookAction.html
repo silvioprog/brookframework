@@ -51,7 +51,7 @@ Provides features to handle with HTTP requests and responses.</p>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class procedure <b><a   href="BrookAction.TBrookAction.html#Register">Register</a></b>(const APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const ADefault: Boolean = False); overload;</code></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookAction.TBrookAction.html#Register">Register</a></b>(const APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const ADefault: Boolean = False); overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -123,11 +123,11 @@ Provides features to handle with HTTP requests and responses.</p>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a   href="BrookAction.TBrookAction.html#Redirect">Redirect</a></b>(const AUrl: string; const AUseScriptName: Boolean); overload;</code></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookAction.TBrookAction.html#Redirect">Redirect</a></b>(const AUrl: string; const AUseRootUrl: Boolean); overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a   href="BrookAction.TBrookAction.html#Redirect">Redirect</a></b>(const AUrl: string; const AUseScriptName: Boolean; const AStatusCode: Word); overload;</code></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookAction.TBrookAction.html#Redirect">Redirect</a></b>(const AUrl: string; const AUseRootUrl: Boolean; const AStatusCode: Word); overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -389,7 +389,7 @@ Registers an action.
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethods">TBrookRequestMethods</a>; const ADefault: Boolean = False); overload;</code></td>
+<td class="itemcode"><a name="Register"></a><code>class procedure <b>Register</b>(const APattern: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a>; const ADefault: Boolean = False); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
@@ -404,17 +404,17 @@ Registers an action specifying the HTTP request method.
 <p></p>
 
 <pre class="longcode">
-<span class="pascal_keyword">procedure</span> TMyAction1.Get(ARequest: TBrookRequest; AResponse: TBrookResponse);
+<span class="pascal_keyword">procedure</span> TMyAction1.Get;
 <span class="pascal_keyword">begin</span>
   <span class="pascal_keyword">Write</span>(<span class="pascal_string">'GET'</span>);
 <span class="pascal_keyword">end</span>;
 
-<span class="pascal_keyword">procedure</span> TMyAction1.Put(ARequest: TBrookRequest; AResponse: TBrookResponse);
+<span class="pascal_keyword">procedure</span> TMyAction1.Put;
 <span class="pascal_keyword">begin</span>
   <span class="pascal_keyword">Write</span>(<span class="pascal_string">'PUT'</span>);
 <span class="pascal_keyword">end</span>;
 
-<span class="pascal_keyword">procedure</span> TMyAction2.Post(ARequest: TBrookRequest; AResponse: TBrookResponse);
+<span class="pascal_keyword">procedure</span> TMyAction2.Post;
 <span class="pascal_keyword">begin</span>
   <span class="pascal_keyword">Write</span>(<span class="pascal_string">'POST'</span>);
 <span class="pascal_keyword">end</span>;
@@ -472,7 +472,7 @@ Creates an URL for an action informing an array of parameters. Exemple:
 <p></p>
 
 <pre class="longcode">
-      <span class="pascal_keyword">procedure</span> TMyAction.Get(ARequest: TBrookRequest; AResponse: TBrookResponse);
+      <span class="pascal_keyword">procedure</span> TMyAction.Get;
       <span class="pascal_keyword">begin</span>
         <span class="pascal_comment">// When calling with http://localhost/cgi-bin/cgi1/foo/myvalue</span>
         <span class="pascal_comment">// the output will be /cgi-bin/cgi1/foo/myvalue</span>
@@ -618,17 +618,17 @@ Redirects to an URL informing the (302, 307) status code.</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Redirect"></a><code>procedure <b>Redirect</b>(const AUrl: string; const AUseScriptName: Boolean); overload;</code></td>
+<td class="itemcode"><a name="Redirect"></a><code>procedure <b>Redirect</b>(const AUrl: string; const AUseRootUrl: Boolean); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-Redirects to an URL informing the ScriptName.</p>
+Redirects to an URL informing the root URL.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Redirect"></a><code>procedure <b>Redirect</b>(const AUrl: string; const AUseScriptName: Boolean; const AStatusCode: Word); overload;</code></td>
+<td class="itemcode"><a name="Redirect"></a><code>procedure <b>Redirect</b>(const AUrl: string; const AUseRootUrl: Boolean; const AStatusCode: Word); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>

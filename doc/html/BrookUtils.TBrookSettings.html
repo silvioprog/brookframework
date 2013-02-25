@@ -53,6 +53,9 @@ Stores the Brook configurations.</p>
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Configuration">Configuration</a></b>: string;</code></td>
 </tr>
 <tr class="list">
+<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#RootUrl">RootUrl</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#OnError">OnError</a></b>: TOnShowRequestException;</code></td>
 </tr>
 </table>
@@ -146,6 +149,15 @@ Defines if the application allows JSON formated requests.</p>
 <tr><td colspan="1">
 <p>
 Set a configuration for the application or for its object members.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RootUrl"></a><code><b>RootUrl</b>: string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Set the default root URL. This is used by methods such as <code>TBrookAction.UrlFor</code>, <code>TBrookActionHelper.LinkTo</code>, <code>TBrookActionHelper.ButtonTo</code> etc. By default, Brook assumes <code>SCRIPT_NAME</code> as root URL.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
