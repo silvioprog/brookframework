@@ -115,7 +115,8 @@ var
   VField: TField;
   VIgnoredFields: TStringList;
 begin
-  if (not Assigned(_IgnoredFields)) or (_IgnoredFields.Count = 0) then
+  if (not Assigned(_IgnoredFields)) or (_IgnoredFields.Count = 0) or
+    (AFields = ES) then
     Exit;
   VIgnoredFields := TStringList.Create;
   try
