@@ -283,6 +283,8 @@ begin
     VField := AFields.FindField(VName);
     if not Assigned(VField) then
       Continue;
+    if not VField.Visible then
+      Continue;
     VData := AJSON.Items[I];
     VField.Clear;
     if VData.IsNull then
@@ -315,6 +317,8 @@ begin
   for I := 0 to Pred(AFields.Count) do
   begin
     VField := AFields[I];
+    if not VField.Visible then
+      Continue;
     VFieldType := TBrookQuery.GetJSONType(VField);
     VFieldName := VField.FieldName;
     if (VFieldType = BROOK_FT_NULL) or VField.IsNull then
@@ -421,6 +425,8 @@ begin
       VObject.Booleans['required'] := True;
     if VFieldDef.Precision <> -1 then
       VObject.Integers['precision'] := VFieldDef.Precision;
+    if faHiddenCol in VFieldDef.Attributes then
+      VObject.Booleans['hidden'] := True;
   end;
 end;
 
@@ -449,6 +455,8 @@ begin
       ASchema += ', "required": true';
     if VFieldDef.Precision <> -1 then
       ASchema += ', "precision": ' + IntToStr(VFieldDef.Precision);
+    if faHiddenCol in VFieldDef.Attributes then
+      ASchema += ', "hidden": true';
     ASchema += ' }, ';
   end;
   SetLength(ASchema, Length(ASchema) - 2);
