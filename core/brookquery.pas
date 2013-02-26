@@ -272,7 +272,7 @@ end;
 class procedure TBrookQuery.JSONToFields(AJSON: TJSONObject; AFields: TFields;
   const ADateAsString: Boolean);
 var
-  I: Integer;
+  I, J: Integer;
   VName: string;
   VField: TField;
   VData: TJSONData;
@@ -280,7 +280,13 @@ begin
   for I := 0 to Pred(AJSON.Count) do
   begin
     VName := AJSON.Names[I];
-    VField := AFields.FindField(VName);
+    for J := 0 to Pred(AFields.Count) do
+    begin
+      VField := AFields[J];
+      if CompareText(VName, VField.FieldName) = 0 then
+        Break;
+      VField := nil;
+    end;
     if not Assigned(VField) then
       Continue;
     if not VField.Visible then
@@ -360,7 +366,7 @@ end;
 class procedure TBrookQuery.JSONToParams(AJSON: TJSONObject; AParams: TParams;
   AFieldDefs: TFieldDefs; const ADateAsString, AAutoCreateParams: Boolean);
 var
-  I: Integer;
+  I, J: Integer;
   VName: string;
   VParam: TParam;
   VData: TJSONData;
@@ -369,7 +375,13 @@ begin
   for I := 0 to Pred(AJSON.Count) do
   begin
     VName := AJSON.Names[I];
-    VParam := AParams.FindParam(VName);
+    for J := 0 to Pred(AParams.Count) do
+    begin
+      VParam := AParams[J];
+      if CompareText(VName, VParam.Name) = 0 then
+        Break;
+      VParam := nil;
+    end;
     if not Assigned(VParam) then
       if AAutoCreateParams then
       begin
