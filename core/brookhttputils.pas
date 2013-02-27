@@ -532,6 +532,7 @@ begin
       VJSON := AData.AsJSON;
       VHttp.Document.Write(Pointer(VJSON)^, Length(VJSON));
       VHttp.Document.Seek(0, 0);
+      AData.Clear;
     end;
     VHttp.AddHeader(fieldContentType, AContentType);
     VHttp.Method := VMethod;
