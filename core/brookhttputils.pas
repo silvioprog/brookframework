@@ -83,19 +83,16 @@ function BrookHttpRequest(const AUrl: string; out AResponse: TJSONObject;
   request methods: POST, PUT and DELETE) }
 function BrookHttpRequest(var AData: TJSONData; const AUrl: string;
   const AMethod: TBrookRequestMethod = rmPost;
-  const AContentType: string = BROOK_HTTP_CONTENT_TYPE_APP_JSON;
   const AHttpClientLibrary: string = ES): TBrookHTTPResult;
 { Perform HTTP requests passing the data as @code(TJSONArray). (allows
   request methods: POST, PUT and DELETE) }
 function BrookHttpRequest(var AData: TJSONArray; const AUrl: string;
   const AMethod: TBrookRequestMethod = rmPost;
-  const AContentType: string = BROOK_HTTP_CONTENT_TYPE_APP_JSON;
   const AHttpClientLibrary: string = ES): TBrookHTTPResult;
 { Perform HTTP requests passing the data as @code(TJSONObject). (allows
   request methods: POST, PUT and DELETE) }
 function BrookHttpRequest(var AData: TJSONObject; const AUrl: string;
   const AMethod: TBrookRequestMethod = rmPost;
-  const AContentType: string = BROOK_HTTP_CONTENT_TYPE_APP_JSON;
   const AHttpClientLibrary: string = ES): TBrookHTTPResult;
 
 implementation
@@ -503,7 +500,7 @@ begin
 end;
 
 function BrookHttpRequest(var AData: TJSONData; const AUrl: string;
-  const AMethod: TBrookRequestMethod; const AContentType: string;
+  const AMethod: TBrookRequestMethod;
   const AHttpClientLibrary: string): TBrookHTTPResult;
 var
   VParser: TJSONParser;
@@ -529,12 +526,12 @@ begin
     VClient.Prepare(VHttp);
     if Assigned(AData) then
     begin
-      VJSON := AData.AsJSON;
+      VJSON := HTTPEncode(AData.AsJSON);
       VHttp.Document.Write(Pointer(VJSON)^, Length(VJSON));
       VHttp.Document.Seek(0, 0);
       AData.Clear;
     end;
-    VHttp.AddHeader(fieldContentType, AContentType);
+    VHttp.AddHeader(fieldContentType, BROOK_HTTP_CONTENT_TYPE_APP_JSON);
     VHttp.Method := VMethod;
     VHttp.Url := AUrl;
     Result := VClient.Request(VHttp);
@@ -556,23 +553,21 @@ begin
 end;
 
 function BrookHttpRequest(var AData: TJSONArray; const AUrl: string;
-  const AMethod: TBrookRequestMethod; const AContentType: string;
+  const AMethod: TBrookRequestMethod;
   const AHttpClientLibrary: string): TBrookHTTPResult;
 var
   VData: TJSONData absolute AData;
 begin
-  Result := BrookHttpRequest(VData, AUrl, AMethod, AContentType,
-    AHttpClientLibrary);
+  Result := BrookHttpRequest(VData, AUrl, AMethod, AHttpClientLibrary);
 end;
 
 function BrookHttpRequest(var AData: TJSONObject; const AUrl: string;
-  const AMethod: TBrookRequestMethod; const AContentType: string;
+  const AMethod: TBrookRequestMethod;
   const AHttpClientLibrary: string): TBrookHTTPResult;
 var
   VData: TJSONData absolute AData;
 begin
-  Result := BrookHttpRequest(VData, AUrl, AMethod, AContentType,
-    AHttpClientLibrary);
+  Result := BrookHttpRequest(VData, AUrl, AMethod, AHttpClientLibrary);
 end;
 
 end.
