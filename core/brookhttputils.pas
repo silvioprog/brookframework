@@ -83,17 +83,14 @@ function BrookHttpRequest(const AUrl: string; out AResponse: TJSONObject;
   request methods: POST, PUT and DELETE) }
 function BrookHttpRequest(var AData: TJSONData; const AUrl: string;
   const AMethod: TBrookRequestMethod = rmPost;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
-{ Perform HTTP requests passing the data as @code(TJSONArray). (allows
-  request methods: POST, PUT and DELETE) }
-function BrookHttpRequest(var AData: TJSONArray; const AUrl: string;
-  const AMethod: TBrookRequestMethod = rmPost;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
+  const AHttpClientLibrary: string = ES;
+  const AEncodeData: Boolean = True): TBrookHTTPResult;
 { Perform HTTP requests passing the data as @code(TJSONObject). (allows
   request methods: POST, PUT and DELETE) }
 function BrookHttpRequest(var AData: TJSONObject; const AUrl: string;
   const AMethod: TBrookRequestMethod = rmPost;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
+  const AHttpClientLibrary: string = ES;
+  const AEncodeData: Boolean = True): TBrookHTTPResult;
 
 implementation
 
@@ -501,13 +498,16 @@ end;
 
 function BrookHttpRequest(var AData: TJSONData; const AUrl: string;
   const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string): TBrookHTTPResult;
+  const AHttpClientLibrary: string;
+  const AEncodeData: Boolean): TBrookHTTPResult;
 var
+  I: Integer;
   VParser: TJSONParser;
   VJSON: TJSONStringType;
   VMethod, VLibrary: string;
   VClient: TBrookHTTPClient;
   VHttp: TBrookHTTPDef = nil;
+  VObject: TJSONObject absolute AData;
 begin
   if AHttpClientLibrary <> ES then
     VLibrary := AHttpClientLibrary
@@ -526,12 +526,20 @@ begin
     VClient.Prepare(VHttp);
     if Assigned(AData) then
     begin
-      VJSON := HTTPEncode(AData.AsJSON);
+      VJSON := ES;
+      for I := 0 to Pred(VObject.Count) do
+        if AEncodeData then
+          VJSON += VObject.Names[I] + EQ +
+            HTTPEncode(VObject.Items[I].AsString) + AM
+        else
+          VJSON += VObject.Names[I] + EQ + VObject.Items[I].AsString + AM;
+      SetLength(VJSON, Length(VJSON) - Length(AM));
       VHttp.Document.Write(Pointer(VJSON)^, Length(VJSON));
       VHttp.Document.Seek(0, 0);
       AData.Clear;
     end;
-    VHttp.AddHeader(fieldContentType, BROOK_HTTP_CONTENT_TYPE_APP_JSON);
+    VHttp.AddHeader(fieldContentType,
+      BROOK_HTTP_CONTENT_TYPE_APP_X_WWW_FORM_URLENCODED);
     VHttp.Method := VMethod;
     VHttp.Url := AUrl;
     Result := VClient.Request(VHttp);
@@ -552,22 +560,15 @@ begin
   end;
 end;
 
-function BrookHttpRequest(var AData: TJSONArray; const AUrl: string;
-  const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string): TBrookHTTPResult;
-var
-  VData: TJSONData absolute AData;
-begin
-  Result := BrookHttpRequest(VData, AUrl, AMethod, AHttpClientLibrary);
-end;
-
 function BrookHttpRequest(var AData: TJSONObject; const AUrl: string;
   const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string): TBrookHTTPResult;
+  const AHttpClientLibrary: string;
+  const AEncodeData: Boolean): TBrookHTTPResult;
 var
   VData: TJSONData absolute AData;
 begin
-  Result := BrookHttpRequest(VData, AUrl, AMethod, AHttpClientLibrary);
+  Result := BrookHttpRequest(VData, AUrl, AMethod, AHttpClientLibrary,
+    AEncodeData);
 end;
 
 end.
