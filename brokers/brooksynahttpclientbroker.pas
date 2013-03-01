@@ -24,7 +24,7 @@ unit BrookSynaHTTPClientBroker;
 interface
 
 uses
-  BrookHTTPClient, HTTPSend, Classes;
+  BrookHTTPClient, BrookConsts, HTTPSend, Classes, SysUtils;
 
 type
   TBrookSynaHTTPSendDef = class(TBrookHTTPDef)
@@ -51,6 +51,18 @@ type
     constructor Create; override;
     destructor Destroy; override;
     class function GetLibrary: string; override;
+    class function Get(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Post(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Put(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Delete(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Options(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Head(const AUrl: string; AHeaders: TStrings): Boolean; override;
+    class function PostForm(const AUrl, AFormData: string; AResponse: TStream): Boolean; override;
+    class function PostForm(const AUrl: string; AFormData, AResponse: TStream): Boolean; override;
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AResponse: TStream): Boolean; override;
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AFile, AResponse: TStream): Boolean; override;
     procedure AddHeader(const AName, AValue: string); override;
     function Request: Boolean; override;
   end;
@@ -142,6 +154,173 @@ end;
 class function TBrookSynaHTTPSendDef.GetLibrary: string;
 begin
   Result := 'Synapse';
+end;
+
+class function TBrookSynaHTTPSendDef.Get(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VHttp.HTTPMethod('GET', AUrl);
+    if Assigned(AResponse) then
+      AResponse.CopyFrom(VHttp.Document, 0);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.Post(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VHttp.HTTPMethod('POST', AUrl);
+    if Assigned(AResponse) then
+      AResponse.CopyFrom(VHttp.Document, 0);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.Put(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VHttp.HTTPMethod('PUT', AUrl);
+    if Assigned(AResponse) then
+      AResponse.CopyFrom(VHttp.Document, 0);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.Delete(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VHttp.HTTPMethod('DELETE', AUrl);
+    if Assigned(AResponse) then
+      AResponse.CopyFrom(VHttp.Document, 0);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.Options(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VHttp.HTTPMethod('OPTIONS', AUrl);
+    if Assigned(AResponse) then
+      AResponse.CopyFrom(VHttp.Document, 0);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.Head(const AUrl: string;
+  AHeaders: TStrings): Boolean;
+var
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VHttp.HTTPMethod('HEAD', AUrl);
+    if Assigned(AHeaders) then
+      AHeaders.Assign(VHttp.Headers);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.PostForm(const AUrl, AFormData: string;
+  AResponse: TStream): Boolean;
+var
+  VFormData: TStringStream;
+begin
+  VFormData := TStringStream.Create(AFormData);
+  try
+    Result := PostForm(AUrl, VFormData, AResponse);
+  finally
+    VFormData.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.PostForm(const AUrl: string; AFormData,
+  AResponse: TStream): Boolean;
+var
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VHttp.Document.CopyFrom(AFormData, 0);
+    VHttp.MimeType := 'application/x-www-form-urlencoded';
+    VHttp.HTTPMethod('POST', AUrl);
+    if Assigned(AResponse) then
+      AResponse.CopyFrom(VHttp.Document, 0);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.PostFile(const AUrl, AFieldName,
+  AFileName: string; AResponse: TStream): Boolean;
+var
+  VFile: TFileStream;
+begin
+  VFile := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
+  try
+    Result := PostFile(AUrl, AFieldName, AFileName, VFile, AResponse);
+  finally
+    VFile.Free;
+  end;
+end;
+
+class function TBrookSynaHTTPSendDef.PostFile(const AUrl, AFieldName,
+  AFileName: string; AFile, AResponse: TStream): Boolean;
+var
+  S, VSep: string;
+  VHttp: THTTPSend;
+begin
+  VHttp := THTTPSend.Create;
+  try
+    VSep := Format('%.8x_multipart_boundary', [Random($FFFFFF)]);
+    S := '--' + VSep + CRLF;
+    S := S + Format('Content-Disposition: form-data; name="%s"; filename="%s"' +
+      CRLF, [AFieldName, ExtractFileName(AFileName)]);
+    S := S + 'Content-Type: application/octet-string' + CRLF + CRLF;
+    VHttp.Document.Write(Pointer(S)^, Length(S));
+    VHttp.Document.CopyFrom(AFile, 0);
+    S := CRLF + '--' + VSep + '--' + CRLF;
+    VHttp.Document.Write(Pointer(S)^, Length(S));
+    VHttp.MimeType := 'multipart/form-data; boundary=' + VSep;
+    VHttp.HTTPMethod('POST', AUrl);
+    if Assigned(AResponse) then
+      AResponse.CopyFrom(VHttp.Document, 0);
+    Result := VHttp.ResultCode = 200;
+  finally
+    VHttp.Free;
+  end;
 end;
 
 procedure TBrookSynaHTTPSendDef.AddHeader(const AName, AValue: string);
