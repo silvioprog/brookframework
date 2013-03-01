@@ -24,7 +24,7 @@ unit BrookFCLHTTPClientBroker;
 interface
 
 uses
-  BrookHTTPClient, FPHTTPClient, Classes;
+  BrookHTTPClient, BrookConsts, FPHTTPClient, Classes, SysUtils;
 
 type
   TBrookFPHTTPClientDef = class(TBrookHTTPDef)
@@ -52,6 +52,18 @@ type
     constructor Create; override;
     destructor Destroy; override;
     class function GetLibrary: string; override;
+    class function Get(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Post(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Put(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Delete(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Options(const AUrl: string; AResponse: TStream): Boolean; override;
+    class function Head(const AUrl: string; AHeaders: TStrings): Boolean; override;
+    class function PostForm(const AUrl, AFormData: string; AResponse: TStream): Boolean; override;
+    class function PostForm(const AUrl: string; AFormData, AResponse: TStream): Boolean; override;
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AResponse: TStream): Boolean; override;
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AFile, AResponse: TStream): Boolean; override;
     procedure AddHeader(const AName, AValue: string); override;
     function Request: Boolean; override;
   end;
@@ -146,6 +158,175 @@ end;
 class function TBrookFPHTTPClientDef.GetLibrary: string;
 begin
   Result := 'FCLWeb';
+end;
+
+class function TBrookFPHTTPClientDef.Get(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TFPHTTPClient;
+begin
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('GET', AUrl, AResponse, []);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.Post(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TFPHTTPClient;
+begin
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('POST', AUrl, AResponse, []);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.Put(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TFPHTTPClient;
+begin
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('PUT', AUrl, AResponse, []);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.Delete(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TFPHTTPClient;
+begin
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('DELETE', AUrl, AResponse, []);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.Options(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TFPHTTPClient;
+begin
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('OPTIONS', AUrl, AResponse, []);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.Head(const AUrl: string;
+  AHeaders: TStrings): Boolean;
+var
+  VHttp: TFPHTTPClient;
+begin
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('HEAD', AUrl, nil, [200]);
+    AHeaders.Assign(VHttp.ResponseHeaders);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.PostForm(const AUrl: string; AFormData,
+  AResponse: TStream): Boolean;
+var
+  VHttp: TFPHTTPClient;
+begin
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VHttp.RequestBody := AFormData;
+    VHttp.AddHeader('Content-Type', 'application/x-www-form-urlencoded');
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('POST', AUrl, AResponse, []);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.PostForm(const AUrl, AFormData: string;
+  AResponse: TStream): Boolean;
+var
+  VFormData: TStringStream;
+begin
+  VFormData := TStringStream.Create(AFormData);
+  try
+    VFormData.Seek(0, 0);
+    Result := PostForm(AUrl, VFormData, AResponse);
+  finally
+    VFormData.Free;
+    VFormData := nil;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.PostFile(const AUrl, AFieldName,
+  AFileName: string; AFile, AResponse: TStream): Boolean;
+Var
+  S, VSep: string;
+  VData: TMemoryStream;
+  VHttp: TFPHTTPClient;
+begin
+  VData := TMemoryStream.Create;
+  VHttp := TFPHTTPClient.Create(nil);
+  try
+    VSep := Format('%.8x_multipart_boundary', [Random($FFFFFF)]);
+    S := '--' + VSep + CRLF;
+    S := S + Format('Content-Disposition: form-data; name="%s"; filename="%s"' +
+      CRLF, [AFieldName, ExtractFileName(AFileName)]);
+    S := S + 'Content-Type: application/octet-string' + CRLF + CRLF;
+    VData.Write(Pointer(S)^, Length(S));
+    VData.CopyFrom(AFile, 0);
+    S := CRLF + '--' + VSep + '--' + CRLF;
+    VData.Write(Pointer(S)^, Length(S));
+    VHttp.AddHeader('Content-Type', 'multipart/form-data; boundary=' + VSep);
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VData.Seek(0, 0);
+    VHttp.RequestBody := VData;
+    VHttp.RequestHeaders.Add('Connection: Close');
+    VHttp.HTTPMethod('POST', AUrl, AResponse, []);
+    Result := VHttp.ResponseStatusCode = 200;
+  finally
+    VData.Free;
+    VHttp.RequestBody := nil;
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHTTPClientDef.PostFile(const AUrl, AFieldName,
+  AFileName: string; AResponse: TStream): Boolean;
+var
+  VFile: TFileStream;
+begin
+  VFile := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
+  try
+    Result := PostFile(AUrl, AFieldName, AFileName, VFile, AResponse);
+  finally
+    VFile.Free;
+  end;
 end;
 
 procedure TBrookFPHTTPClientDef.AddHeader(const AName, AValue: string);

@@ -81,6 +81,40 @@ type
     procedure AddHeader(const AName, AValue: string); virtual; abstract;
     { Sends request to server. }
     function Request: Boolean; virtual; abstract;
+    { Sends request by a GET HTTP request method. }
+    class function Get(const AUrl: string;
+      AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a POST HTTP request method. }
+    class function Post(const AUrl: string;
+      AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a PUT HTTP request method. }
+    class function Put(const AUrl: string;
+      AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a DELETE HTTP request method. }
+    class function Delete(const AUrl: string;
+      AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a OPTIONS HTTP request method. }
+    class function Options(const AUrl: string;
+      AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a HEAD HTTP request method. }
+    class function Head(const AUrl: string;
+      AHeaders: TStrings): Boolean; virtual; abstract;
+    { Sends request by a POST HTTP request method, passing a form-data as
+      parameter. }
+    class function PostForm(const AUrl: string;
+      AFormData, AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a POST HTTP request method, passing a form-data as
+      parameter. }
+    class function PostForm(const AUrl, AFormData: string;
+      AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a POST HTTP request method, passing a file as
+      parameter. }
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AFile, AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a POST HTTP request method, passing a file as
+      parameter. }
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AResponse: TStream): Boolean; virtual; abstract;
     { Content type of sending data. }
     property ContentType: string read GetContentType write SetContentType;
     { Strings received from the request. }
@@ -127,6 +161,34 @@ type
     class procedure SetLibrary(const ALibrary: string);
     { Prepares an instance of @code(TBrookHTTPDef). }
     class procedure Prepare(out AHttp: TBrookHTTPDef);
+    { Sends request by a GET HTTP request method. }
+    class function Get(const AUrl: string; AResponse: TStream): Boolean;
+    { Sends request by a POST HTTP request method. }
+    class function Post(const AUrl: string; AResponse: TStream): Boolean;
+    { Sends request by a PUT HTTP request method. }
+    class function Put(const AUrl: string; AResponse: TStream): Boolean;
+    { Sends request by a DELETE HTTP request method. }
+    class function Delete(const AUrl: string; AResponse: TStream): Boolean;
+    { Sends request by a OPTIONS HTTP request method. }
+    class function Options(const AUrl: string; AResponse: TStream): Boolean;
+    { Sends request by a HEAD HTTP request method. }
+    class function Head(const AUrl: string; AHeaders: TStrings): Boolean;
+    { Sends request by a POST HTTP request method, passing a form-data as
+      parameter. }
+    class function PostForm(const AUrl: string; AFormData,
+      AResponse: TStream): Boolean;
+    { Sends request by a POST HTTP request method, passing a form-data as
+      parameter. }
+    class function PostForm(const AUrl, AFormData: string;
+      AResponse: TStream): Boolean;
+    { Sends request by a POST HTTP request method, passing a file as
+      parameter. }
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AFile, AResponse: TStream): Boolean;
+    { Sends request by a POST HTTP request method, passing a file as
+      parameter. }
+    class function PostFile(const AUrl, AFieldName, AFileName: string;
+      AResponse: TStream): Boolean;
     { Performs the request, passing a @code(TBrookHTTPDef) as parameter. }
     function Request(AHttp: TBrookHTTPDef): TBrookHTTPResult;
     { Performs the request, passing the method and URL as parameter. }
@@ -192,6 +254,136 @@ end;
 class procedure TBrookHTTPClient.Prepare(out AHttp: TBrookHTTPDef);
 begin
   AHttp := TBrookHTTPDefs.Service.ItemByLibrary(_Library).Create;
+end;
+
+class function TBrookHTTPClient.Get(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.Get(AUrl, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.Post(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.Post(AUrl, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.Put(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.Put(AUrl, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.Delete(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.Delete(AUrl, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.Options(const AUrl: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.Options(AUrl, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.Head(const AUrl: string;
+  AHeaders: TStrings): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.Head(AUrl, AHeaders);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.PostForm(const AUrl: string; AFormData,
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.PostForm(AUrl, AFormData, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.PostForm(const AUrl, AFormData: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.PostForm(AUrl, AFormData, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.PostFile(const AUrl, AFieldName,
+  AFileName: string; AFile, AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.PostFile(AUrl, AFieldName, AFileName, AFile, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHTTPClient.PostFile(const AUrl, AFieldName,
+  AFileName: string; AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHTTPDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.PostFile(AUrl, AFieldName, AFileName, AResponse);
+  finally
+    VHttp.Free;
+  end;
 end;
 
 function TBrookHTTPClient.Request(AHttp: TBrookHTTPDef): TBrookHTTPResult;
