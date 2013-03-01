@@ -275,7 +275,6 @@ var
 begin
   VFormData := TStringStream.Create(AFormData);
   try
-    VFormData.Seek(0, 0);
     Result := PostForm(AUrl, VFormData, AResponse);
   finally
     VFormData.Free;
@@ -285,7 +284,7 @@ end;
 
 class function TBrookFPHTTPClientDef.PostFile(const AUrl, AFieldName,
   AFileName: string; AFile, AResponse: TStream): Boolean;
-Var
+var
   S, VSep: string;
   VData: TMemoryStream;
   VHttp: TFPHTTPClient;
