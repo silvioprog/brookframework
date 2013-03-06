@@ -452,7 +452,7 @@ begin
   C := AFieldDefs.Count;
   if C = 0 then
   begin
-    ASchema := '{}';
+    ASchema := '[]';
     Exit;
   end;
   for I := 0 to Pred(C) do
@@ -472,6 +472,7 @@ begin
     ASchema += ' }, ';
   end;
   SetLength(ASchema, Length(ASchema) - 2);
+  ASchema := LS + ASchema + RS;
 end;
 
 class procedure TBrookQuery.GetJSONAttributes(AJSON: TJSONObject; out
