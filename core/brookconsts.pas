@@ -84,6 +84,10 @@ const
   AT = #64;
   { \ }
   DS = #92;
+  { [ }
+  LS = #91;
+  { ] }
+  RS = #93;
 
   BROOK_GUID = '{D2BDD8EF-78C0-47CD-95C3-664CDFFDAA9E}';
   BROOK_APP_GUID = '{669B03B7-AA2D-4B64-AAFC-4FBD4A41267E}';
