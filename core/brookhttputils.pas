@@ -467,7 +467,13 @@ begin
       VHttp.Document.Seek(0, 0);
       VParser := TJSONParser.Create(VHttp.Document);
       try
-        AResponse := VParser.Parse;
+        try
+          AResponse := VParser.Parse;
+        except
+          on E: Exception do
+            raise EBrookHTTPClient.CreateFmt('BrookHttpRequest: %s' +
+              LineEnding + LineEnding + '%s', [E.Message, Result.Content]);
+        end;
       finally
         VParser.Free;
       end;
@@ -549,7 +555,13 @@ begin
       VHttp.Document.Seek(0, 0);
       VParser := TJSONParser.Create(VHttp.Document);
       try
-        AData := VParser.Parse;
+        try
+          AData := VParser.Parse;
+        except
+          on E: Exception do
+            raise EBrookHTTPClient.CreateFmt('BrookHttpRequest: %s' +
+              LineEnding + LineEnding + '%s', [E.Message, Result.Content]);
+        end;
       finally
         VParser.Free;
       end;
