@@ -76,10 +76,13 @@ class procedure TfrCustomEdit.Refresh(AGrid: TCustomStringGrid;
 var
   VData: TJSONArray = nil;
 begin
-  ClearGrid(AGrid);
-  ProcessRequest(BrookHttpRequest(AUrl, VData));
-  LoadJSON(AGrid, VData, False, False);
-  FreeAndNil(VData);
+  try
+    ClearGrid(AGrid);
+    ProcessRequest(BrookHttpRequest(AUrl, VData));
+    LoadJSON(AGrid, VData, False, False);
+  finally
+    FreeAndNil(VData);
+  end;
 end;
 
 class procedure TfrCustomEdit.Refresh(AGrid: TCustomStringGrid;
@@ -87,26 +90,30 @@ class procedure TfrCustomEdit.Refresh(AGrid: TCustomStringGrid;
 var
   VData: TJSONArray = nil;
 begin
-  ClearGrid(AGrid);
-  if AArgs.Count = 0 then
-    Exit;
-  ProcessRequest(BrookHttpRequest(TfrCustomEdit.FillPattern(
-    APattern, AArgs), VData));
-  LoadJSON(AGrid, VData, False, False);
-  FreeAndNil(VData);
+  try
+    ClearGrid(AGrid);
+    if AArgs.Count = 0 then
+      Exit;
+    ProcessRequest(BrookHttpRequest(TfrCustomEdit.FillPattern(
+      APattern, AArgs), VData));
+    LoadJSON(AGrid, VData, False, False);
+  finally
+    FreeAndNil(VData);
+  end;
 end;
 
 class function TfrCustomEdit.Add(const AUrl: string): Boolean;
 var
   VData: TJSONObject = nil;
 begin
-  Result := Self.Execute(VData);
-  if not Result then
-    Exit;
-  Result := ProcessRequest(BrookHttpRequest(VData, AUrl));
-  if not Result then
-    Exit;
-  FreeAndNil(VData);
+  try
+    Result := Self.Execute(VData);
+    if not Result then
+      Exit;
+    Result := ProcessRequest(BrookHttpRequest(VData, AUrl));
+  finally
+    FreeAndNil(VData);
+  end;
 end;
 
 class function TfrCustomEdit.Add(const APattern: string;
@@ -114,14 +121,15 @@ class function TfrCustomEdit.Add(const APattern: string;
 var
   VData: TJSONObject = nil;
 begin
-  Result := Self.Execute(VData);
-  if not Result then
-    Exit;
-  Result := ProcessRequest(BrookHttpRequest(VData,
-    TfrCustomEdit.FillPattern(APattern, AArgs)));
-  if not Result then
-    Exit;
-  FreeAndNil(VData);
+  try
+    Result := Self.Execute(VData);
+    if not Result then
+      Exit;
+    Result := ProcessRequest(BrookHttpRequest(VData,
+      TfrCustomEdit.FillPattern(APattern, AArgs)));
+  finally
+    FreeAndNil(VData);
+  end;
 end;
 
 class function TfrCustomEdit.Edit(const APattern: string;
