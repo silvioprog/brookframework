@@ -33,6 +33,7 @@ type
     pnCliente: TPanel;
     pnBottom: TPanel;
     rgType: TRadioGroup;
+    sbClient: TScrollBox;
   public
     class function Execute: Integer;
   end;

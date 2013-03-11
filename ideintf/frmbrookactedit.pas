@@ -38,6 +38,7 @@ type
     lbPattern: TLabel;
     pnClient: TPanel;
     pnBottom: TPanel;
+    sbClient: TScrollBox;
     procedure edNameExit(Sender: TObject);
     procedure edNameKeyPress(Sender: TObject; var Key: char);
     procedure edPatternKeyPress(Sender: TObject; var Key: char);

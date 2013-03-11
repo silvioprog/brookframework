@@ -13,36 +13,36 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
   LCLVersion = '1.1'
   object pnClient: TPanel
     Left = 0
-    Height = 364
+    Height = 360
     Top = 0
     Width = 600
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 364
+    ClientHeight = 360
     ClientWidth = 600
     TabOrder = 0
     object pnData: TPanel
       Left = 0
-      Height = 306
-      Top = 58
+      Height = 294
+      Top = 66
       Width = 600
       Align = alClient
       BevelOuter = bvLowered
-      ClientHeight = 306
+      ClientHeight = 294
       ClientWidth = 600
       TabOrder = 0
       object pnTable: TPanel
         Left = 1
-        Height = 304
+        Height = 292
         Top = 1
         Width = 312
         Align = alClient
-        ClientHeight = 304
+        ClientHeight = 292
         ClientWidth = 312
         TabOrder = 0
         object lbTables: TLabel
           Left = 3
-          Height = 15
+          Height = 20
           Top = 3
           Width = 306
           Align = alTop
@@ -56,8 +56,8 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
         end
         object liTables: TListBox
           Left = 3
-          Height = 246
-          Top = 55
+          Height = 224
+          Top = 65
           Width = 306
           Align = alClient
           BorderSpacing.Around = 2
@@ -67,17 +67,17 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
         end
         object pnFilterTable: TPanel
           Left = 1
-          Height = 33
-          Top = 20
+          Height = 38
+          Top = 25
           Width = 310
           Align = alTop
           AutoSize = True
-          ClientHeight = 33
+          ClientHeight = 38
           ClientWidth = 310
           TabOrder = 1
           object edFilterTables: TListFilterEdit
-            Left = 35
-            Height = 23
+            Left = 42
+            Height = 28
             Top = 5
             Width = 154
             ButtonWidth = 23
@@ -90,9 +90,9 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
           end
           object lbFilterTables: TLabel
             Left = 5
-            Height = 23
+            Height = 28
             Top = 5
-            Width = 26
+            Width = 33
             Align = alLeft
             BorderSpacing.Around = 4
             Caption = '&Filter'
@@ -104,16 +104,16 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
       end
       object pnFields: TPanel
         Left = 318
-        Height = 304
+        Height = 292
         Top = 1
         Width = 281
         Align = alRight
-        ClientHeight = 304
+        ClientHeight = 292
         ClientWidth = 281
         TabOrder = 1
         object lbFields: TLabel
           Left = 3
-          Height = 15
+          Height = 20
           Top = 3
           Width = 275
           Align = alTop
@@ -126,20 +126,20 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
           ParentFont = False
         end
         object pnAjFields: TPanel
-          Left = 211
-          Height = 264
-          Top = 20
-          Width = 69
+          Left = 200
+          Height = 242
+          Top = 25
+          Width = 80
           Align = alRight
           AutoSize = True
-          ClientHeight = 264
-          ClientWidth = 69
+          ClientHeight = 242
+          ClientWidth = 80
           TabOrder = 1
           object btUp: TBitBtn
             Left = 5
-            Height = 41
+            Height = 46
             Top = 5
-            Width = 59
+            Width = 70
             Align = alTop
             AutoSize = True
             BorderSpacing.Around = 4
@@ -188,9 +188,9 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
           end
           object btDown: TBitBtn
             Left = 5
-            Height = 41
-            Top = 50
-            Width = 59
+            Height = 46
+            Top = 55
+            Width = 70
             Align = alTop
             AutoSize = True
             BorderSpacing.Around = 4
@@ -239,9 +239,9 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
           end
           object btDelete: TBitBtn
             Left = 5
-            Height = 41
-            Top = 95
-            Width = 59
+            Height = 46
+            Top = 105
+            Width = 70
             Align = alTop
             AutoSize = True
             BorderSpacing.Around = 4
@@ -291,9 +291,9 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
         end
         object liFields: TCheckListBox
           Left = 3
-          Height = 264
-          Top = 20
-          Width = 206
+          Height = 242
+          Top = 25
+          Width = 195
           Align = alClient
           BorderSpacing.Around = 2
           ItemHeight = 0
@@ -304,8 +304,8 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
         end
         object lbInfo: TLabel
           Left = 3
-          Height = 15
-          Top = 286
+          Height = 20
+          Top = 269
           Width = 275
           Align = alBottom
           BorderSpacing.Around = 2
@@ -317,7 +317,7 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
       end
       object sp1: TSplitter
         Left = 313
-        Height = 304
+        Height = 292
         Top = 1
         Width = 5
         Align = alRight
@@ -326,17 +326,18 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
     end
     object pnConnection: TPanel
       Left = 4
-      Height = 50
+      Height = 58
       Top = 4
       Width = 592
       Align = alTop
+      AutoSize = True
       BorderSpacing.Around = 4
-      ClientHeight = 50
+      ClientHeight = 58
       ClientWidth = 592
       TabOrder = 1
       object lbConnection: TLabel
         Left = 5
-        Height = 15
+        Height = 20
         Top = 5
         Width = 582
         Align = alTop
@@ -348,10 +349,10 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
         ParentColor = False
       end
       object btOpen: TBitBtn
-        Left = 516
-        Height = 27
-        Top = 21
-        Width = 74
+        Left = 509
+        Height = 30
+        Top = 26
+        Width = 81
         Align = alRight
         AutoSize = True
         BorderSpacing.Around = 1
@@ -401,9 +402,9 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = btOpen
         Left = 5
-        Height = 23
-        Top = 23
-        Width = 510
+        Height = 28
+        Top = 27
+        Width = 503
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 4
         OnEditingDone = edConnectionEditingDone
@@ -413,19 +414,19 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
   end
   object pnBottom: TPanel
     Left = 0
-    Height = 36
-    Top = 364
+    Height = 40
+    Top = 360
     Width = 600
     Align = alBottom
     AutoSize = True
-    ClientHeight = 36
+    ClientHeight = 40
     ClientWidth = 600
     TabOrder = 1
     object btSave: TBitBtn
-      Left = 441
-      Height = 26
+      Left = 426
+      Height = 30
       Top = 5
-      Width = 69
+      Width = 76
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 4
@@ -472,10 +473,10 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
       TabOrder = 0
     end
     object btCancel: TBitBtn
-      Left = 514
-      Height = 26
+      Left = 506
+      Height = 30
       Top = 5
-      Width = 81
+      Width = 89
       Align = alRight
       AutoSize = True
       BorderSpacing.Around = 4
@@ -486,20 +487,20 @@ object frBrookTable2HTMLForm: TfrBrookTable2HTMLForm
       TabOrder = 1
     end
     object chFullHTML: TCheckBox
-      Left = 284
-      Height = 26
+      Left = 236
+      Height = 30
       Top = 5
-      Width = 75
+      Width = 90
       Align = alRight
       BorderSpacing.Around = 4
       Caption = '&Full HTML'
       TabOrder = 2
     end
     object chLineBreak: TCheckBox
-      Left = 363
-      Height = 26
+      Left = 330
+      Height = 30
       Top = 5
-      Width = 74
+      Width = 92
       Align = alRight
       BorderSpacing.Around = 4
       Caption = '&Line break'
