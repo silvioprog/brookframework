@@ -30,8 +30,8 @@ uses
 type
   TfrBrookNewProject = class(TForm)
     btAddAct: TBitBtn;
-    btEditAct: TBitBtn;
     btDeleteAct: TBitBtn;
+    btEditAct: TBitBtn;
     btHelp: TBitBtn;
     btOK: TBitBtn;
     btPrior: TBitBtn;
@@ -40,18 +40,20 @@ type
     edAppName: TEdit;
     edPubHTMLDir: TDirectoryEdit;
     imLogo: TImage;
+    lbActions: TLabel;
     lbAppName: TLabel;
     lbInfo2: TLabel;
     lbInfo1: TLabel;
-    lbPubHTMLDir: TLabel;
-    lbActions: TLabel;
     lbInfo3: TLabel;
+    lbPubHTMLDir: TLabel;
     lvActions: TListView;
-    pnActsBottom: TPanel;
     pcWizard: TPageControl;
+    pnActsBottom: TPanel;
     pnBottom: TPanel;
-    rgCharset: TRadioGroup;
     rgAppType: TRadioGroup;
+    rgCharset: TRadioGroup;
+    sbApp: TScrollBox;
+    sbActions: TScrollBox;
     tsFinish: TTabSheet;
     tsActions: TTabSheet;
     tsApp: TTabSheet;
