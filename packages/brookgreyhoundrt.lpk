@@ -38,10 +38,10 @@
     <Type Value="RunTimeOnly"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="BrookRT"/>
+        <PackageName Value="Greyhound"/>
       </Item1>
       <Item2>
-        <PackageName Value="gh_pack"/>
+        <PackageName Value="BrookRT"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
