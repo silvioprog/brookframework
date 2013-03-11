@@ -21,7 +21,7 @@
     </CompilerOptions>
     <Description Value="Brook experts package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
-    <Version Major="1" Minor="3"/>
+    <Version Major="1" Minor="3" Release="1"/>
     <Files Count="8">
       <Item1>
         <Filename Value="..\ideintf\brookprojectintf.pas"/>
@@ -38,7 +38,7 @@
       </Item3>
       <Item4>
         <Filename Value="..\ideintf\frmbrooknewbroker.pas"/>
-        <UnitName Value="frmbrooknewbroker"/>
+        <UnitName Value="frmBrookNewBroker"/>
       </Item4>
       <Item5>
         <Filename Value="..\ideintf\frmbrooknewproject.pas"/>
@@ -72,5 +72,8 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>
