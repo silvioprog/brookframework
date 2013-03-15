@@ -65,7 +65,7 @@ Book requires Free Pascal 2.6.1 or newer. If you prefer the Lazarus interface, c
 
 ## DOWNLOAD
 
-You can download a release [here](http://brookframework.org/download/release.bf). Alternatively, you can also follow the project's fGIT repository. The address is:
+You can download a release [here](http://brookframework.org/download/release.bf). Alternatively, you can also follow the project's GIT repository. The address is:
 
 `git://github.com/silvioprog/brookframework.git`
 
