@@ -1,9 +1,9 @@
-program Main;
+program cgi1;
 
 {$mode objfpc}{$H+}
 
 uses
-  BrookApplication, Brokers, actions;
+  BrookApplication, Actions, Brokers;
 
 begin
   BrookApp.Run;

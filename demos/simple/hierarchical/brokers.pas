@@ -5,12 +5,9 @@ unit Brokers;
 interface
 
 uses
-  BrookFCLHTTPAppBroker, BrookUtils;
+  BrookFCLCGIBroker, BrookUtils;
 
 implementation
-
-uses
-  BrookApplication;
 
 initialization
   BrookSettings.Page404 :=
@@ -20,7 +17,5 @@ initialization
     '<html><head><title>Internal server error</title></head><body>' +
     '<h1>500 - Internal server error</h1>' +
     '<p style="color: red;" >Error: @error</p></body></html>';
-  BrookSettings.RootUrl := 'http://localhost:12000';
-  (BrookApp.Instance as TBrookHTTPApplication).Port := 12000;
 
 end.
