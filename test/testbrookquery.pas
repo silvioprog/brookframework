@@ -257,9 +257,9 @@ var
 begin
   TestQuery.Open;
   TBrookQuery.FieldDefsToSchema(TestQuery.FieldDefs, S);
-  AssertEquals(S, '{ "name": "field1", "type": "int" }, { "name": "field2", ' +
+  AssertEquals(S, '[{ "name": "field1", "type": "int" }, { "name": "field2", ' +
     '"type": "string", "maxlen": 50 }, { "name": "field3", "type": "boolean" }, ' +
-    '{ "name": "field4", "type": "date" }, { "name": "field5", "type": "float" }');
+    '{ "name": "field4", "type": "date" }, { "name": "field5", "type": "float" }]');
 end;
 
 procedure TTestBrookQuery.TestFieldDefsToSchema2;
