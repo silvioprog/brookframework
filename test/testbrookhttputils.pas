@@ -111,10 +111,10 @@ end;
 
 procedure TTestBrookHttpUtils.HttpRequest;
 var
-  VContacts: TJSONArray;
+  VContacts: TJSONObject;
   VResult: TBrookHTTPResult;
 begin
-  VContacts := TJSONArray.Create([TJSONObject.Create(['name', 'Foo'])]);
+  VContacts := TJSONObject.Create(['name', 'Foo']);
   try
     VResult := BrookHttpRequest(VContacts, URL, rmPut);
     AssertEquals(204, VResult.StatusCode);
