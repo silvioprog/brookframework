@@ -48,6 +48,10 @@ type
     function CreateValues: TJSONObject; virtual;
     function GetRequest: TRequest;
     function GetResponse: TResponse;
+    procedure DoBeforeRequest({%H-}ARequest: TRequest;
+      {%H-}AResponse: TResponse); virtual;
+    procedure DoAfterRequest({%H-}ARequest: TRequest;
+      {%H-}AResponse: TResponse); virtual;
   public
     { Creates an instance of a @link(TBrookAction) class. }
     constructor Create; virtual;
@@ -350,11 +354,21 @@ begin
   Result := FResponse;
 end;
 
+procedure TBrookAction.DoBeforeRequest(ARequest: TRequest; AResponse: TResponse);
+begin
+end;
+
+procedure TBrookAction.DoAfterRequest(ARequest: TRequest; AResponse: TResponse);
+begin
+end;
+
 procedure TBrookAction.DoRequest(ARequest: TRequest; AResponse: TResponse);
 begin
   FRequest := ARequest;
   FResponse := AResponse;
+  DoBeforeRequest(ARequest, AResponse);
   Request(ARequest, AResponse);
+  DoAfterRequest(ARequest, AResponse);
 end;
 
 class procedure TBrookAction.Register(const APattern: string;
