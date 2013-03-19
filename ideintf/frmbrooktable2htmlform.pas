@@ -289,7 +289,13 @@ begin
   try
     dbs.Configurator.Configure;
     conn.GetTableNames(liTables.Items);
-    edFilterTables.Items.Assign(liTables.Items);
+    edFilterTables.
+{$IF FPC_FULlVERSION >= 20701}
+      Items
+{$ELSE}
+      Data
+{$ENDIF}
+      .Assign(liTables.Items);
   except
     edConnection.SelectAll;
     raise;

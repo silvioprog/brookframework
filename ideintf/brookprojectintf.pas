@@ -243,7 +243,9 @@ end;
 function BrookGetExpertsConfigPath: string;
 begin
   if Assigned(LazarusIDE) then
-    Result := IncludeTrailingPathDelimiter(LazarusIDE.GetPrimaryConfigPath)
+    Result := IncludeTrailingPathDelimiter(
+{$IFDEF MSWINDOWS}Utf8ToAnsi({$ENDIF}LazarusIDE.GetPrimaryConfigPath
+{$IFDEF MSWINDOWS}){$ENDIF})
   else
     Result := '';
 end;

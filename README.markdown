@@ -61,7 +61,7 @@ Please use the [issues page](https://github.com/silvioprog/brookframework/issues
 
 ##SYSTEM REQUIREMENTS
 
-Book requires Free Pascal 2.6.1 or newer. If you prefer the Lazarus interface, choose the 1.1 version or newer.
+Book requires Free Pascal 2.6.2 or newer. If you prefer the Lazarus interface, choose the 1.0.8 version or newer.
 
 ## DOWNLOAD
 
