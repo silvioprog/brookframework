@@ -290,7 +290,7 @@ begin
     dbs.Configurator.Configure;
     conn.GetTableNames(liTables.Items);
     edFilterTables.
-{$IF FPC_FULlVERSION >= 20701}
+{$IF FPC_FULLVERSION >= 20701}
       Items
 {$ELSE}
       Data
