@@ -120,6 +120,7 @@ begin
     AssertEquals(204, VResult.StatusCode);
     VResult := BrookHttpRequest(URL);
     AssertEquals('{ "id" : 1, "name" : "Foo" }', Trim(VResult.Content));
+    AssertEquals(True, VResult.Header <> '');
     AssertEquals('OK', VResult.ReasonPhrase);
     AssertEquals(200, VResult.StatusCode);
   finally

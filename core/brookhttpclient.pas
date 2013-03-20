@@ -49,7 +49,7 @@ type
   { Information returned after a request. }
   TBrookHTTPResult = record
     StatusCode: Integer;
-    ReasonPhrase, Content: string;
+    ReasonPhrase, Header, Content: string;
   end;
 
   { Offers general abstract features for HTTP handling. }
@@ -390,6 +390,7 @@ function TBrookHTTPClient.Request(AHttp: TBrookHTTPDef): TBrookHTTPResult;
 begin
   AHttp.Request;
   Result.Content := AHttp.Contents.Text;
+  Result.Header := AHttp.Headers.Text;
   Result.StatusCode := AHttp.StatusCode;
   Result.ReasonPhrase := AHttp.ReasonPhrase;
 end;
