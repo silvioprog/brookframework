@@ -325,20 +325,18 @@ end;
 function TBrookUpdateAction.Execute: Boolean;
 var
   VCount: Integer;
-  VLocate: Boolean;
 begin
   VCount := Values.Count;
   if VCount = 1 then
-    VLocate := Table.Open.Locate(Values)
+    Result := Table.Open.Locate(Values)
   else
-    VLocate := (VCount > 1) and Table.CreateFields(Values).Conditions(
+    Result := (VCount > 1) and Table.CreateFields(Values).Conditions(
       Values).Prepare.Bind(Values).Open.Locate(Values);
   BrookJSONCopy(Values, Fields);
-  if VLocate then
+  if Result then
     Table.Edit(Fields).Apply
   else
     Table.Insert(Fields).Apply;
-  Result := True;
 end;
 
 { TBrookDestroyAction }
