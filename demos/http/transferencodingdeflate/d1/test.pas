@@ -7,7 +7,7 @@ unit Test;
 interface
 
 uses
-  BrookAction, BrookConsts, BrookHTTPUtils, HTTPDefs, ZStream, Classes;
+  BrookAction, BrookConsts, BrookHTTPUtils, HTTPDefs, ZStream, Classes, SysUtils;
 
 const
   CONTENT =
@@ -18,15 +18,14 @@ const
     '	<title>Deflate</title>' + LF +
     '</head>' + LF +
     '<body>' + LF +
-    '	Hello world!' + LF +
+    '	Hello world! (%s)' + LF +
     '</body>' + LF +
     '</html>';
 
 type
   TMyAction = class(TBrookAction)
   public
-    procedure Request({%H-}ARequest: TRequest;
-      {%H-}AResponse: TResponse); override;
+    procedure Request(ARequest: TRequest; AResponse: TResponse); override;
   end;
 
 implementation
@@ -34,23 +33,29 @@ implementation
 procedure TMyAction.Request(ARequest: TRequest; AResponse: TResponse);
 var
   S: string;
-  VDeflateStream: TCompressionStream;
+  VOutput: TMemoryStream;
 begin
-  if aeDeflate in BrookGetAcceptEncodingSet(AResponse.HTTPAcceptEncoding) then
+  if aeDeflate in BrookGetAcceptEncodingSet(ARequest.AcceptEncoding) then
   begin
-    AResponse.ContentStream := TMemoryStream.Create;
-    VDeflateStream := TCompressionStream.Create(
-      clMax, AResponse.ContentStream, True);
+    VOutput := TMemoryStream.Create;
     try
-      S := CONTENT;
-      VDeflateStream.Write(Pointer(S)^, Length(S));
+      with TCompressionStream.Create(clMax, VOutput, True) do
+      try
+        S := Format(CONTENT, ['Compressed']);
+        Write(Pointer(S)^, Length(S));
+      finally
+        Free;
+      end;
+      VOutput.Seek(0, 0);
+      AResponse.SetCustomHeader(fieldContentEncoding, 'deflate');
+      AResponse.ContentStream := VOutput;
+      AResponse.SendContent;
     finally
-      AResponse.ContentStream.Free;
-      VDeflateStream.Free;
+      VOutput.Free;
     end;
   end
   else
-    Write(CONTENT);
+    Write(CONTENT, ['Uncompressed']);
 end;
 
 initialization
