@@ -25,7 +25,7 @@ interface
 
 uses
   BrookDataBase, BrookQuery, BrookTable, BrookException, BrookMessages,
-  BrookDBConsts, gh_SQL, DB, DBConst, FPJSON, JSONParser;
+  BrookDBConsts, ghSQL, DB, DBConst, FPJSON, JSONParser;
 
 type
   EBrookGhTable = class(EBrook);

@@ -24,7 +24,7 @@ unit BrookGhDBAction;
 interface
 
 uses
-  BrookDataBase, BrookDBAction, BrookGhBroker, gh_SQL, SysUtils;
+  BrookDataBase, BrookDBAction, BrookGhBroker, ghSQL, SysUtils;
 
 type
   EBrookDBAction = BrookDBAction.EBrookDBAction;

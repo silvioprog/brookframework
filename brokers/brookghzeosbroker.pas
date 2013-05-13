@@ -24,7 +24,7 @@ unit BrookGhZeosBroker;
 interface
 
 uses
-  BrookGhBroker, gh_SQL, gh_ZeosLib;
+  BrookGhBroker, ghSQL, ghZeosLib;
 
 type
   TBrookGhZeosDataBase = class(TBrookGhDataBase)
