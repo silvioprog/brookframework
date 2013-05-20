@@ -168,7 +168,11 @@ initialization
       @code(/cgi-bin/cgi1/myaction). }
     class function GetPath: string;
     { Calls the method @link(TBrookAction.Request). }
-    procedure DoRequest(ARequest: TRequest; AResponse: TResponse); virtual;
+    procedure DoRequest(ARequest: TRequest;
+      AResponse: TResponse); overload; virtual;
+    { Calls the method @link(TBrookAction.Request). }
+    procedure DoRequest(ARequest: TRequest; AResponse: TResponse;
+      var AHandled: Boolean); overload; virtual;
     { Creates an URL for action. }
     function UrlFor(AActionClass: TBrookActionClass): string; overload;
     { Creates an URL for an action informing an array of parameters. Exemple:
@@ -368,6 +372,17 @@ begin
   FResponse := AResponse;
   DoBeforeRequest(ARequest, AResponse);
   Request(ARequest, AResponse);
+  DoAfterRequest(ARequest, AResponse);
+end;
+
+procedure TBrookAction.DoRequest(ARequest: TRequest; AResponse: TResponse;
+  var AHandled: Boolean);
+begin
+  FRequest := ARequest;
+  FResponse := AResponse;
+  DoBeforeRequest(ARequest, AResponse);
+  if not AHandled then
+    Request(ARequest, AResponse);
   DoAfterRequest(ARequest, AResponse);
 end;
 
