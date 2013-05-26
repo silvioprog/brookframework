@@ -24,7 +24,7 @@ unit BrookGhSQLdbBroker;
 interface
 
 uses
-  BrookGhBroker, gh_SQL, gh_SQLdbLib, SysUtils;
+  BrookGhBroker, ghSQL, ghSQLdbLib, SysUtils;
 
 type
   TBrookGhSQLdbDataBase = class(TBrookGhDataBase)
