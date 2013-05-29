@@ -222,6 +222,8 @@ begin
     AssertEquals(IntToStr(123), VRes.Contents.ValueFromIndex[5]);
     D := 1.23;
     Str(D, S);
+    if (S <> '') and (S[1] = ' ') then
+      Delete(S, 1, 1);
     AssertEquals(S, VRes.Contents.ValueFromIndex[6]);
     AssertEquals('abc', VRes.Contents.ValueFromIndex[8]);
     AssertEquals(IntToStr(123), VRes.Contents.ValueFromIndex[9]);
