@@ -27,7 +27,7 @@ uses
   Classes, SysUtils;
 
 { This is the only thing that user may know from this unit. }
-procedure BrookRegisterDirectory(ARequestPath, ADirectory: string);
+procedure BrookStaticFileRegisterDirectory(ARequestPath, ADirectory: string);
 
 implementation
 
@@ -98,7 +98,7 @@ begin
   end;
 end;
 
-procedure BrookRegisterDirectory(ARequestPath, ADirectory: string);
+procedure BrookStaticFileRegisterDirectory(ARequestPath, ADirectory: string);
 begin
   if Length(ARequestPath) = 0 then
     raise Exception.Create(SEmptyRequestPathErrMsg);
