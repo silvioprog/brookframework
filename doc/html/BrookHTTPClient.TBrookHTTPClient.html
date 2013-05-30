@@ -39,6 +39,46 @@ Client to perform HTTP requests.</p>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Get">Get</a></b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Post">Post</a></b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Put">Put</a></b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Delete">Delete</a></b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Options">Options</a></b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Head">Head</a></b>(const AUrl: string; AHeaders: TStrings): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#PostForm">PostForm</a></b>(const AUrl: string; AFormData, AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#PostForm">PostForm</a></b>(const AUrl, AFormData: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#PostFile">PostFile</a></b>(const AUrl, AFieldName, AFileName: string; AFile, AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#PostFile">PostFile</a></b>(const AUrl, AFieldName, AFileName: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookHTTPClient.TBrookHTTPClient.html#Request">Request</a></b>(AHttp: <a   href="BrookHTTPClient.TBrookHTTPDef.html">TBrookHTTPDef</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
 </tr>
 <tr class="list">
@@ -80,6 +120,106 @@ Specifies the library to be used by this class.</p>
 <tr><td colspan="2">
 <p>
 Prepares an instance of <code>TBrookHTTPDef</code>.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Get"></a><code>class function <b>Get</b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a GET HTTP request method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Post"></a><code>class function <b>Post</b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a POST HTTP request method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Put"></a><code>class function <b>Put</b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a PUT HTTP request method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Delete"></a><code>class function <b>Delete</b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a DELETE HTTP request method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Options"></a><code>class function <b>Options</b>(const AUrl: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a OPTIONS HTTP request method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Head"></a><code>class function <b>Head</b>(const AUrl: string; AHeaders: TStrings): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a HEAD HTTP request method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PostForm"></a><code>class function <b>PostForm</b>(const AUrl: string; AFormData, AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a POST HTTP request method, passing a form-data as parameter.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PostForm"></a><code>class function <b>PostForm</b>(const AUrl, AFormData: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a POST HTTP request method, passing a form-data as parameter.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PostFile"></a><code>class function <b>PostFile</b>(const AUrl, AFieldName, AFileName: string; AFile, AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a POST HTTP request method, passing a file as parameter.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PostFile"></a><code>class function <b>PostFile</b>(const AUrl, AFieldName, AFileName: string; AResponse: TStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Sends request by a POST HTTP request method, passing a file as parameter.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">

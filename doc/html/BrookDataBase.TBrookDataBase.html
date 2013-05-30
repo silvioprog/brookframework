@@ -51,29 +51,33 @@ Offers general abstract features for databases handling.</p>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class function <b><a   href="BrookDataBase.TBrookDataBase.html#GetLibrary">GetLibrary</a></b>: string; virtual; abstract;</code></td>
+<td class="itemcode"><code>procedure <b><a   href="BrookDataBase.TBrookDataBase.html#RemoveObject">RemoveObject</a></b>(AObject: TObject);</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a   href="BrookDataBase.TBrookDataBase.html#GetLibrary">GetLibrary</a></b>: string; virtual; abstract;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookDataBase.TBrookDataBase.html#Connect">Connect</a></b>; virtual; abstract;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookDataBase.TBrookDataBase.html#Disconnect">Disconnect</a></b>; virtual; abstract;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookDataBase.TBrookDataBase.html#InTransaction">InTransaction</a></b>: Boolean; virtual; abstract;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookDataBase.TBrookDataBase.html#StartTransaction">StartTransaction</a></b>; virtual; abstract;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookDataBase.TBrookDataBase.html#Commit">Commit</a></b>; virtual; abstract;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookDataBase.TBrookDataBase.html#Rollback">Rollback</a></b>; virtual; abstract;</code></td>
 </tr>
@@ -173,6 +177,16 @@ Unregister the broker class.</p>
 <tr><td colspan="2">
 <p>
 Adds objects that will be automatically freed when the database object is destroyed.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RemoveObject"></a><code>procedure <b>RemoveObject</b>(AObject: TObject);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Removes objects that would be automatically freed when the database object is destroyed.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
