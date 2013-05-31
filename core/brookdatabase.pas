@@ -1,7 +1,7 @@
 (*
   Brook DataBase unit.
 
-  Copyright (C) 2012 Silvio Clecio.
+  Copyright (C) 2013 Silvio Clecio.
 
   http://brookframework.org
 
@@ -62,6 +62,7 @@ type
     function GetPort: Integer; virtual; abstract;
     procedure SetPort(AValue: Integer); virtual; abstract;
     procedure FreeObjects;
+    property Objects: TFPList read FObjects;
   public
     { Creates an instance of a @link(TBrookDataBase) class. }
     constructor Init; virtual;
@@ -76,6 +77,9 @@ type
     { Adds objects that will be automatically freed when the database object is
       destroyed. }
     procedure AddObject(AObject: TObject);
+    { Removes objects that would be automatically freed when the database object
+      is destroyed. }
+    procedure RemoveObject(AObject: TObject);
     { Get the broker library name, exemple: SQLdb, Zeos, UniDAC etc. }
     class function GetLibrary: string; virtual; abstract;
     { Connects to the data base. }
@@ -185,6 +189,11 @@ end;
 procedure TBrookDataBase.AddObject(AObject: TObject);
 begin
   FObjects.Add(AObject);
+end;
+
+procedure TBrookDataBase.RemoveObject(AObject: TObject);
+begin
+  FObjects.Remove(AObject);
 end;
 
 procedure TBrookDataBase.FreeObjects;

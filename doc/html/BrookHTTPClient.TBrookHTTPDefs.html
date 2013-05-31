@@ -15,12 +15,13 @@
 <a   href="BrookHTTPClient.html">BrookHTTPClient</a></p>
 <h2 class="declaration">Declaration</h2>
 <p class="declaration">
-<code>type TBrookHTTPDefs = class(<a class="normal"  href="BrookHTTPClient.html#TBrookHTTPDefClass">TBrookHTTPDefClass</a>)</code></p>
+<code>type TBrookHTTPDefs = class(specialize TFPGList&lt;TBrookHTTPDefClass&gt;)</code></p>
 <h2 class="description">Description</h2>
 <p>
 Registers HTTP definitions.</p>
 <a name="%40Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
-<ul class="hierarchy"><li class="thisitem">TBrookHTTPDefs</li></ul><h2 class="overview">Overview</h2>
+<ul class="hierarchy"><li class="ancestor">specialize TFPGList<TBrookHTTPDefClass></li>
+<li class="thisitem">TBrookHTTPDefs</li></ul><h2 class="overview">Overview</h2>
 <a name="%40Methods"></a><h3 class="summary">Methods</h3>
 <table class="summary wide_list">
 <tr class="list">

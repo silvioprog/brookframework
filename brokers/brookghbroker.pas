@@ -1,7 +1,7 @@
 (*
   Brook Greyhound Broker unit.
 
-  Copyright (C) 2012 Silvio Clecio.
+  Copyright (C) 2013 Silvio Clecio.
 
   http://brookframework.org
 
@@ -25,7 +25,7 @@ interface
 
 uses
   BrookDataBase, BrookQuery, BrookTable, BrookException, BrookMessages,
-  BrookDBConsts, gh_SQL, DB, DBConst, FPJSON, JSONParser;
+  BrookDBConsts, ghSQL, DB, DBConst, FPJSON, JSONParser;
 
 type
   EBrookGhTable = class(EBrook);

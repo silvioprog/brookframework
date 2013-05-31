@@ -1,7 +1,7 @@
 (*
   Brook Greyhound DB Action unit.
 
-  Copyright (C) 2012 Silvio Clecio.
+  Copyright (C) 2013 Silvio Clecio.
 
   http://brookframework.org
 
@@ -24,7 +24,7 @@ unit BrookGhDBAction;
 interface
 
 uses
-  BrookDataBase, BrookDBAction, BrookGhBroker, gh_SQL, SysUtils;
+  BrookDataBase, BrookDBAction, BrookGhBroker, ghSQL, SysUtils;
 
 type
   EBrookDBAction = BrookDBAction.EBrookDBAction;

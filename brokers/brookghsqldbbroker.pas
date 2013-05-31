@@ -1,7 +1,7 @@
 (*
   Brook Greyhound SQLdb Broker unit.
 
-  Copyright (C) 2012 Silvio Clecio.
+  Copyright (C) 2013 Silvio Clecio.
 
   http://brookframework.org
 
@@ -24,7 +24,7 @@ unit BrookGhSQLdbBroker;
 interface
 
 uses
-  BrookGhBroker, gh_SQL, gh_SQLdbLib, SysUtils;
+  BrookGhBroker, ghSQL, ghSQLdbLib, SysUtils;
 
 type
   TBrookGhSQLdbDataBase = class(TBrookGhDataBase)

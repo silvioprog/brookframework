@@ -153,7 +153,7 @@ begin
       R.Contents.LoadFromFile(BrookSettings.Page404)
     else
       R.Content := BrookSettings.Page404;
-    R.Content := Format(R.Content, [ApplicationURL]);
+    R.Content := Format(R.Content, [BrookSettings.RootUrl]);
     R.SendContent;
     Exit;
   end;

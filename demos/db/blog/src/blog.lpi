@@ -6,7 +6,6 @@
     <General>
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
-        <Runnable Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
       <UseAppBundle Value="False"/>
@@ -54,11 +53,10 @@
         <Filename Value="main.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="main"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
+        <CursorPos X="5" Y="7"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit1>
@@ -66,7 +64,12 @@
         <Filename Value="brokers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Brokers"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="51" Y="22"/>
         <UsageCount Value="20"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\html\404.html"/>

@@ -79,13 +79,10 @@ Brook HTTP Utils unit.
 <td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(const AUrl: string; out AResponse: TJSONObject; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmGet; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONData; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONData; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>; const AEncodeData: Boolean = True): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONArray; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONObject; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+<td class="itemcode"><code>function <b><a   href="BrookHTTPUtils.html#BrookHttpRequest">BrookHttpRequest</a></b>(var AData: TJSONObject; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>; const AEncodeData: Boolean = True): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
 </tr>
 </table>
 <a name="%40Types"></a><h3 class="summary">Types</h3>
@@ -251,7 +248,7 @@ Perform HTTP requests returning the response as <code>TJSONObject</code>. (allow
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONData; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONData; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>; const AEncodeData: Boolean = True): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -260,16 +257,7 @@ Perform HTTP requests passing the data as <code>TJSONData</code>. (allows reques
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONArray; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-<p>
-Perform HTTP requests passing the data as <code>TJSONArray</code>. (allows request methods: POST, PUT and DELETE)</p>
-</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONObject; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AContentType: string = <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_APP_JSON">BROOK_HTTP_CONTENT_TYPE_APP_JSON</a>; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
+<td class="itemcode"><a name="BrookHttpRequest"></a><code>function <b>BrookHttpRequest</b>(var AData: TJSONObject; const AUrl: string; const AMethod: <a   href="BrookUtils.html#TBrookRequestMethod">TBrookRequestMethod</a> = rmPost; const AHttpClientLibrary: string = <a   href="BrookConsts.html#ES">ES</a>; const AEncodeData: Boolean = True): <a   href="BrookHTTPClient.TBrookHTTPResult.html">TBrookHTTPResult</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
