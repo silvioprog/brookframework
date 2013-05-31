@@ -22,7 +22,7 @@
     <Description Value="Brook runtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Major="2" Minor="3" Release="8"/>
-    <Files Count="36">
+    <Files Count="37">
       <Item1>
         <Filename Value="..\brokers\brookfclcgibroker.pas"/>
         <UnitName Value="BrookFCLCGIBroker"/>
@@ -167,6 +167,10 @@
         <Filename Value="..\includes\brookmessages_ptbr.inc"/>
         <Type Value="Include"/>
       </Item36>
+      <Item37>
+        <Filename Value="..\brokers\brookstaticfilebroker.pp"/>
+        <UnitName Value="BrookStaticFileBroker"/>
+      </Item37>
     </Files>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
