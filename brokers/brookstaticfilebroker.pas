@@ -36,7 +36,7 @@ uses
 
 resourcestring
   SEmptyRequestPathErrMsg = 'Request path may not be empty.';
-  SRequestPathAlreadyRegisteredErrMsg = 'Request path "%s" already registered';
+  SRequestPathAlreadyRegisteredErrMsg = 'Request path "%s" already registered.';
   SDirectoryNotExistErrMsg = 'Directory not exists: %s.';
 
 type
