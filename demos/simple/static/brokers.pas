@@ -4,16 +4,23 @@ unit Brokers;
 
 interface
 
-uses
-  BrookFCLHTTPAppBroker, BrookHTTPConsts, BrookUtils, BrookStaticFileBroker,
-  BrookApplication, Classes, SysUtils;
-
 implementation
+
+uses
+  fpmimetypes,
+  BrookFCLHTTPAppBroker,
+  BrookHTTPConsts,
+  BrookUtils,
+  BrookStaticFileBroker,
+  BrookApplication,
+  Classes,
+  SysUtils;
 
 var
   PublicHTMLDir: string;
 
 initialization
+  MimeTypes.LoadFromFile('mime.types');
   PublicHTMLDir := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
   BrookSettings.Charset := BROOK_HTTP_CHARSET_UTF_8;
   BrookSettings.Page404 := PublicHTMLDir + '404.html';
