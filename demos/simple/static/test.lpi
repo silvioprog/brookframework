@@ -45,7 +45,7 @@
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
-        <Filename Value="unit1.pp"/>
+        <Filename Value="unit1.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
@@ -57,7 +57,7 @@
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="brokers.pp"/>
+        <Filename Value="brokers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Brokers"/>
         <UsageCount Value="20"/>
