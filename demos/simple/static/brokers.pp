@@ -5,28 +5,22 @@ unit Brokers;
 interface
 
 uses
-  BrookFCLHTTPAppBroker, BrookHTTPConsts, BrookUtils, Classes, SysUtils;
+  BrookFCLHTTPAppBroker, BrookHTTPConsts, BrookUtils, BrookStaticFileBroker,
+  BrookApplication, Classes, SysUtils;
 
 implementation
 
-uses
-  BrookStaticFileBroker, BrookApplication;
-
 var
-  PublicHTMLDir: String;
+  PublicHTMLDir: string;
+
 initialization
   PublicHTMLDir := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
-
   BrookSettings.Charset := BROOK_HTTP_CHARSET_UTF_8;
   BrookSettings.Page404 := PublicHTMLDir + '404.html';
   BrookSettings.Page500 := PublicHTMLDir + '500.html';
-
-  RegisterDirectory('/css/',PublicHTMLDir + 'css');
-  RegisterDirectory('/js/',PublicHTMLDir + 'js');
-  RegisterDirectory('/img/',PublicHTMLDir + 'img');
-
-  with BrookApp.Instance as TBrookHTTPApplication do begin
-    Port := 8000;
-  end;
+  BrookStaticFileRegisterDirectory('/css/', PublicHTMLDir + 'css');
+  BrookStaticFileRegisterDirectory('/js/', PublicHTMLDir + 'js');
+  BrookStaticFileRegisterDirectory('/img/', PublicHTMLDir + 'img');
+  (BrookApp.Instance as TBrookHTTPApplication).Port := 8000;
 
 end.
