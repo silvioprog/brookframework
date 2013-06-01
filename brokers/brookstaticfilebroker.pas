@@ -36,6 +36,7 @@ uses
 
 resourcestring
   SEmptyRequestPathErrMsg = 'Request path may not be empty.';
+  SRequestPathAlreadyRegisteredErrMsg = 'Request path "%s" already registered';
   SDirectoryNotExistErrMsg = 'Directory not exists: %s.';
 
 type
@@ -109,6 +110,8 @@ begin
     ARequestPath := '/' + ARequestPath;
   if ARequestPath[Length(ARequestPath)] <> '/' then
     ARequestPath := ARequestPath + '/';
+  if RequestDirectoryMap.Contains(ARequestPath) then
+    raise Exception.CreateFmt(SRequestPathAlreadyRegisteredErrMsg,[ARequestPath]);
   RequestDirectoryMap[ARequestPath] := IncludeTrailingPathDelimiter(ADirectory);
   TStaticFileAction.Register(ARequestPath + ':file');
 end;
