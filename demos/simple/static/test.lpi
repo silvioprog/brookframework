@@ -42,29 +42,25 @@
         <Filename Value="test.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="test"/>
-        <UsageCount Value="20"/>
-      </Unit0>
-      <Unit1>
-        <Filename Value="unit1.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Unit1"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="unit1.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Unit1"/>
+        <UsageCount Value="20"/>
       </Unit1>
       <Unit2>
         <Filename Value="brokers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Brokers"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="15"/>
-        <CursorPos X="38" Y="23"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="404.html"/>
@@ -84,14 +80,7 @@
       <Unit6>
         <Filename Value="css/style.css"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="2"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="26" Y="2"/>
         <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="None"/>
       </Unit6>
       <Unit7>
         <Filename Value="js/test.js"/>
