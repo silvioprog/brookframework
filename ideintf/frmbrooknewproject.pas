@@ -39,7 +39,9 @@ type
     btCancel: TBitBtn;
     edAppName: TEdit;
     edPubHTMLDir: TDirectoryEdit;
-    imLogo: TImage;
+    imLogoRight: TImage;
+    imLogoLeft: TImage;
+    imLogoClient: TImage;
     lbActions: TLabel;
     lbAppName: TLabel;
     lbInfo2: TLabel;
@@ -47,6 +49,7 @@ type
     lbInfo3: TLabel;
     lbPubHTMLDir: TLabel;
     lvActions: TListView;
+    pnTop: TPanel;
     pcWizard: TPageControl;
     pnActsBottom: TPanel;
     pnBottom: TPanel;
