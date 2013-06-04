@@ -5,11 +5,12 @@ unit person;
 interface
 
 uses
-  BrookDBAction, BrookRequestHelper, FPJSON, HTTPDefs;
+  BrookDBAction, BrookRequestHelper, FPJSON, HTTPDefs, RUtils;
 
 type
   TPerson = class(TBrookDBAction)
   public
+    procedure FillFields(ARequest: TRequest); override;
     procedure Request(ARequest: TRequest;{%H-}AResponse: TResponse); override;
   end;
 
@@ -17,6 +18,15 @@ const
   DB_SUCESS = '{ "success": true }';
 
 implementation
+
+procedure TPerson.FillFields(ARequest: TRequest);
+var
+  I: Integer;
+begin
+  for I := 0 to Pred(ARequest.ContentFields.Count) do
+    Fields.Add(ARequest.ContentFields.Names[I],
+      StripHTMLMarkup(ARequest.ContentFields.ValueFromIndex[I]));
+end;
 
 procedure TPerson.Request(ARequest: TRequest; AResponse: TResponse);
 var
