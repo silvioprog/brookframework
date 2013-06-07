@@ -178,10 +178,10 @@ var
 begin
   inherited Create(AOwner);
   VDaemonDef := DaemonDefs.Add as TDaemonDef;
-  VDaemonDef.Description := 'Brook HTTP daemon.';
-  VDaemonDef.DisplayName := 'Brook daemon';
+  VDaemonDef.Description := BROOK_HTTP_DAEMON_DESCRIPTION;
+  VDaemonDef.DisplayName := BROOK_HTTP_DAEMON_DISPLAYNAME;
   VDaemonDef.Name := BROOK_HTTP_DAEMON_NAME;
-  VDaemonDef.DaemonClassName := 'TBrookHTTPDaemon';
+  VDaemonDef.DaemonClassName := BROOK_HTTP_DAEMON_CLASSNAME;
   VDaemonDef.WinBindings.ServiceType := stWin32;
 end;
 

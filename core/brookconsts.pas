@@ -99,7 +99,6 @@ const
   BROOK_DEFAULT_LANGUAGE = 'en-US';
   BROOK_SESS_ID = 'BRKSESSID';
   BROOK_SESS_PREFIX = 'brook_sess_';
-  BROOK_HTTP_DAEMON_NAME = 'BrookHTTPDaemon';
   { 3 minutes. }
   BROOK_SESS_DEFAULT_TIMEOUT = 3 * 60;
   BROOK_MAX_MIME_TYPE = 682;
@@ -788,6 +787,12 @@ const
     ('ZVUE Media Manager', 'application/vnd.handheld-entertainment+xml', '.zmm'),
     ('Zzazz Deck', 'application/vnd.zzazz.deck+xml', '.zaz')
   );
+
+var
+  BROOK_HTTP_DAEMON_DESCRIPTION: string = 'Brook HTTP daemon.';
+  BROOK_HTTP_DAEMON_DISPLAYNAME: string = 'Brook daemon';
+  BROOK_HTTP_DAEMON_NAME: string = 'BrookHTTPDaemon';
+  BROOK_HTTP_DAEMON_CLASSNAME: string = 'TBrookHTTPDaemon';
 
 implementation
 
