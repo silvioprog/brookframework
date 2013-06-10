@@ -42,6 +42,8 @@ type
     function GetAsTrimStr: string;
     function GetAsUpperJS: string;
     function GetAsUpperStr: string;
+    function GetIsBlank: Boolean;
+    function GetIsEmpty: Boolean;
     procedure SetAsChar(AValue: Char);
     procedure SetAsDate(AValue: TDate);
     procedure SetAsDateTime(AValue: TDateTime);
@@ -79,6 +81,10 @@ type
     property AsUpperJS: string read GetAsUpperJS write SetAsUpperJS;
     { Get or set the JSONData as a quoted string. }
     property AsQuotedStr: string read GetAsQuotedStr write SetAsQuotedStr;
+    { Get if the JSONData is an empty string. }
+    property IsEmpty: Boolean read GetIsEmpty;
+    { Get if the JSONData is an blank string. }
+    property IsBlank: Boolean read GetIsBlank;
   end;
 
   { Adds features to the @code(TJSONObject) class. }
@@ -163,6 +169,16 @@ end;
 function TBrookJSONDataHelper.GetAsUpperStr: string;
 begin
   Result := UpperCase(AsString);
+end;
+
+function TBrookJSONDataHelper.GetIsBlank: Boolean;
+begin
+  Result := Trim(AsString) = '';
+end;
+
+function TBrookJSONDataHelper.GetIsEmpty: Boolean;
+begin
+  Result := AsString = '';
 end;
 
 procedure TBrookJSONDataHelper.SetAsChar(AValue: Char);
