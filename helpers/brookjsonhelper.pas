@@ -83,7 +83,7 @@ type
     property AsQuotedStr: string read GetAsQuotedStr write SetAsQuotedStr;
     { Get if the JSONData is an empty string. }
     property IsEmpty: Boolean read GetIsEmpty;
-    { Get if the JSONData is an blank string. }
+    { Get if the JSONData is a blank string. }
     property IsBlank: Boolean read GetIsBlank;
   end;
 
