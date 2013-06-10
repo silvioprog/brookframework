@@ -85,9 +85,9 @@ type
     property AsUpperJS: string read GetAsUpperJS write SetAsUpperJS;
     { Get or set the JSONData as a quoted string. }
     property AsQuotedStr: string read GetAsQuotedStr write SetAsQuotedStr;
-    { Get or set the JSONData as MD5 string. }
+    { Get or set the JSONData as a MD5 string. }
     property AsMD5: string read GetAsMD5 write SetAsMD5;
-    { Get or set the JSONData as SHA1 string. }
+    { Get or set the JSONData as a SHA1 string. }
     property AsSHA1: string read GetAsSHA1 write SetAsSHA1;
     { Get if the JSONData is an empty string. }
     property IsEmpty: Boolean read GetIsEmpty;
