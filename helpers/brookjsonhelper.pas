@@ -24,7 +24,7 @@ unit BrookJSONHelper;
 interface
 
 uses
-  BrookConsts, FPJSON, SysUtils;
+  BrookConsts, FPJSON, SysUtils, MD5, SHA1;
 
 type
   { Adds features to the @code(TJSONData) class. }
@@ -35,7 +35,9 @@ type
     function GetAsDateTime: TDateTime;
     function GetAsLowerJS: string;
     function GetAsLowerStr: string;
+    function GetAsMD5: string;
     function GetAsQuotedStr: string;
+    function GetAsSHA1: string;
     function GetAsSmallInt: SmallInt;
     function GetAsTime: TTime;
     function GetAsTrimJS: string;
@@ -49,7 +51,9 @@ type
     procedure SetAsDateTime(AValue: TDateTime);
     procedure SetAsLowerJS(AValue: string);
     procedure SetAsLowerStr(AValue: string);
+    procedure SetAsMD5(AValue: string);
     procedure SetAsQuotedStr(AValue: string);
+    procedure SetAsSHA1(AValue: string);
     procedure SetAsSmallInt(AValue: SmallInt);
     procedure SetAsTime(AValue: TTime);
     procedure SetAsTrimJS(AValue: string);
@@ -81,6 +85,10 @@ type
     property AsUpperJS: string read GetAsUpperJS write SetAsUpperJS;
     { Get or set the JSONData as a quoted string. }
     property AsQuotedStr: string read GetAsQuotedStr write SetAsQuotedStr;
+    { Get or set the JSONData as MD5 string. }
+    property AsMD5: string read GetAsMD5 write SetAsMD5;
+    { Get or set the JSONData as SHA1 string. }
+    property AsSHA1: string read GetAsSHA1 write SetAsSHA1;
     { Get if the JSONData is an empty string. }
     property IsEmpty: Boolean read GetIsEmpty;
     { Get if the JSONData is a blank string. }
@@ -181,6 +189,16 @@ begin
   Result := AsString = '';
 end;
 
+function TBrookJSONDataHelper.GetAsMD5: string;
+begin
+  Result := MD5Print(MD5String(AsString));
+end;
+
+function TBrookJSONDataHelper.GetAsSHA1: string;
+begin
+  Result := SHA1Print(SHA1String(AsString));
+end;
+
 procedure TBrookJSONDataHelper.SetAsChar(AValue: Char);
 begin
   AsString := AValue;
@@ -239,6 +257,16 @@ end;
 procedure TBrookJSONDataHelper.SetAsUpperStr(AValue: string);
 begin
   AsString := UpperCase(AValue);
+end;
+
+procedure TBrookJSONDataHelper.SetAsMD5(AValue: string);
+begin
+  AsString := MD5Print(MD5String(AValue));
+end;
+
+procedure TBrookJSONDataHelper.SetAsSHA1(AValue: string);
+begin
+  AsString := SHA1Print(SHA1String(AValue));
 end;
 
 { TBrookJSONObjectHelper }
