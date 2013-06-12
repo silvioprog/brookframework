@@ -27,6 +27,10 @@ It's complete: simple actions or configurable actions for database access, advan
 
 The source code of the Brook framework is distributed under the GNU Lesser General Public License. See the [project licence](https://github.com/silvioprog/brookframework/blob/master/LICENSE.txt) for copyright/license details.
 
+##SYSTEM REQUIREMENTS
+
+Book requires **Free Pascal 2.6.2 or newer**. If you prefer the Lazarus interface, choose the **1.0.8 version or newer**.
+
 ##GET STARTED
 
 Do you need some help to start? Whether you use the Lazarus IDE or purely the Free Pascal compiler, start [here](http://brookframework.org/get-started.html).
@@ -59,15 +63,15 @@ For more information on SemVer, please visit [http://semver.org](http://semver.o
 
 Please use the [issues page](https://github.com/silvioprog/brookframework/issues). Your cooperation will be appreciated.
 
-##SYSTEM REQUIREMENTS
-
-Book requires Free Pascal 2.6.2 or newer. If you prefer the Lazarus interface, choose the 1.0.8 version or newer.
-
 ## DOWNLOAD
 
 You can download a release [here](http://brookframework.org/download/release.bf). Alternatively, you can also follow the project's GIT repository. The address is:
 
 `git://github.com/silvioprog/brookframework.git`
+
+##DONORS
+
+[Make a donation to the project, it's extremely easy, free, fast and secure!](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GE9VT768TLP74&lc=GB&item_name=Brook%20framework&item_number=brookframework&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted) See the name of all donors [here](https://github.com/silvioprog/brookframework/blob/master/DONORS.txt).
 
 ##CONTRIBUTORS
 
