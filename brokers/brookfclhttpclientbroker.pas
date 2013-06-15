@@ -85,7 +85,6 @@ destructor TBrookFPHTTPClientDef.Destroy;
 begin
   FContents.Free;
   FDocument.Free;
-  FHttp.Cookies.Free;
   FHttp.Free;
   inherited Destroy;
 end;
