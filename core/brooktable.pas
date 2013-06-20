@@ -80,6 +80,8 @@ type
       const ATableName: string = ES); virtual;
     { Creates an instance of a @link(TBrookTable) class. }
     constructor Create(const ATableName: string = ES); reintroduce;
+    { Frees an instance of @link(TBrookTable) class. }
+    destructor Destroy; override;
     { Receives an JSON object with parameters and creates a "SQL where"
       condition. }
     class procedure GetConditions(AJSON: TJSONObject; out AConditions: string);
@@ -246,6 +248,13 @@ begin
     Create(TBrookDataBases.Service.Current, ATableName)
   else
     Create(TBrookDataBase.Create, ATableName);
+end;
+
+destructor TBrookTable.Destroy;
+begin
+  if Assigned(DataBase) then
+    DataBase.RemoveObject(Self);
+  inherited Destroy;
 end;
 
 class procedure TBrookTable.GetConditions(AJSON: TJSONObject; out
