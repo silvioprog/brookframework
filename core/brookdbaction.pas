@@ -85,6 +85,7 @@ type
     procedure SetTable(AValue: TBrookTable);
   protected
     function CreateTable: TBrookTable; virtual;
+    procedure FreeTable; virtual;
     procedure TableAfterOpen(DataSet: TDataSet); virtual;
     procedure TableBeforeInsert(DataSet: TDataSet); virtual;
     procedure TableBeforeEdit(DataSet: TDataSet); virtual;
@@ -92,6 +93,8 @@ type
   public
     { Creates an instance of @code(TBrookDBAction). }
     constructor Create; override;
+    { Frees an instance of @link(TBrookDBAction) class. }
+    destructor Destroy; override;
     { Defines the current database or return it. }
     property DataBase: TBrookDataBase read GetDataBase write SetDataBase;
     { Get de table linked to the action. }
@@ -228,9 +231,20 @@ begin
   FTable.DataSet.BeforeDelete := @TableBeforeDelete;
 end;
 
+destructor TBrookDBAction.Destroy;
+begin
+  FreeTable;
+  inherited Destroy;
+end;
+
 function TBrookDBAction.CreateTable: TBrookTable;
 begin
   Result := TBrookTable.Create;
+end;
+
+procedure TBrookDBAction.FreeTable;
+begin
+  FreeAndNil(FTable);
 end;
 
 procedure TBrookDBAction.TableAfterOpen(DataSet: TDataSet);
