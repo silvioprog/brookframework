@@ -46,6 +46,9 @@ type
     function CreateFields: TJSONObject; virtual;
     function CreateParams: TJSONObject; virtual;
     function CreateValues: TJSONObject; virtual;
+    procedure FreeFields; virtual;
+    procedure FreeParams; virtual;
+    procedure FreeValues; virtual;
     function GetRequest: TRequest;
     function GetResponse: TResponse;
     procedure DoBeforeRequest({%H-}ARequest: TRequest;
@@ -327,9 +330,9 @@ end;
 
 destructor TBrookAction.Destroy;
 begin
-  FreeAndNil(FFields);
-  FreeAndNil(FParams);
-  FreeAndNil(FValues);
+  FreeFields;
+  FreeParams;
+  FreeValues;
   inherited Destroy;
 end;
 
@@ -346,6 +349,21 @@ end;
 function TBrookAction.CreateValues: TJSONObject;
 begin
   Result := TJSONObject.Create;
+end;
+
+procedure TBrookAction.FreeFields;
+begin
+  FreeAndNil(FFields);
+end;
+
+procedure TBrookAction.FreeParams;
+begin
+  FreeAndNil(FParams);
+end;
+
+procedure TBrookAction.FreeValues;
+begin
+  FreeAndNil(FValues);
 end;
 
 function TBrookAction.GetRequest: TRequest;
