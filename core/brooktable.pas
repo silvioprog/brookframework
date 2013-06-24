@@ -254,6 +254,7 @@ destructor TBrookTable.Destroy;
 begin
   if Assigned(DataBase) then
     DataBase.RemoveObject(Self);
+  FQuery.Free;
   inherited Destroy;
 end;
 
