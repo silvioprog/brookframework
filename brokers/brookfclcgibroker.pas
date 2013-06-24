@@ -257,6 +257,7 @@ begin
     TBrookMessages.Service.SetLanguage(BrookSettings.Language);
   try
     TBrookRouter.Service.Route(ARequest, AResponse);
+    TBrookCGIRequest(ARequest).DeleteTempUploadedFiles;
   except
     on E: Exception do
       ShowRequestException(AResponse, E);
