@@ -13,21 +13,33 @@ type
   private
     FQuery: TSQLQuery;
   protected
+    procedure SetDataSource({%H-}AValue: TDataSource); override;
+    function GetDataSource: TDataSource; override;
+    function GetFields: TFields; override;
     function GetSQL: TStrings; override;
     function GetDataSet: TDataSet; override;
     function GetParams: TParams; override;
+    function GetDataBase: TBrookDataBase; override;
+    procedure SetDataBase({%H-}AValue: TBrookDataBase); override;
   public
-    constructor Init(ADataBase: TBrookDataBase); override;
+    constructor Init({%H-}ADataBase: TBrookDataBase); override;
+    function CancelUpdates: TBrookQuery; override;
     function Field(const AName: string): TField; override;
     function Param(const AName: string): TParam; override;
+    function FieldDef({%H-}const AName: string): TFieldDef; override;
+    function Execute: TBrookQuery; override;
+    function Apply({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
+    function Undo({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
+    function Commit({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
+    function Rollback({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
     function ApplyUpdates: TBrookQuery; override;
+    function RowsAffected: TRowsCount; override;
   end;
 
   TTable = class(TBrookTable)
   public
-    constructor Create(ADataBase: TBrookDataBase;
-      const ATableName: string = ''); override;
-    destructor Destroy; override;
+    constructor Create({%H-}ADataBase: TBrookDataBase;
+      {%H-}const ATableName: string = ''); override;
     property Query;
   end;
 
@@ -95,6 +107,11 @@ begin
   FQuery.Transaction := TestDatabase.Transaction;
 end;
 
+function TQueryBroker.CancelUpdates: TBrookQuery;
+begin
+  Result := Self;
+end;
+
 function TQueryBroker.Field(const AName: string): TField;
 begin
   Result := FQuery.Fields.FieldByName(AName);
@@ -105,10 +122,59 @@ begin
   Result := FQuery.Params.ParamByName(AName);
 end;
 
+function TQueryBroker.FieldDef(const AName: string): TFieldDef;
+begin
+  Result := nil;
+end;
+
+function TQueryBroker.Execute: TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Apply(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Undo(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Commit(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Rollback(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
 function TQueryBroker.ApplyUpdates: TBrookQuery;
 begin
   Result := Self;
   FQuery.ApplyUpdates;
+end;
+
+function TQueryBroker.RowsAffected: TRowsCount;
+begin
+  Result := -1;
+end;
+
+procedure TQueryBroker.SetDataSource(AValue: TDataSource);
+begin
+end;
+
+function TQueryBroker.GetDataSource: TDataSource;
+begin
+  Result := nil;
+end;
+
+function TQueryBroker.GetFields: TFields;
+begin
+  Result := nil;
 end;
 
 function TQueryBroker.GetSQL: TStrings;
@@ -126,18 +192,21 @@ begin
   Result := FQuery.Params;
 end;
 
+function TQueryBroker.GetDataBase: TBrookDataBase;
+begin
+  Result := nil;
+end;
+
+procedure TQueryBroker.SetDataBase(AValue: TBrookDataBase);
+begin
+end;
+
 { TTable }
 
 constructor TTable.Create(ADataBase: TBrookDataBase; const ATableName: string);
 begin
   Query := TQueryBroker.Init(nil);
   Name := 'testtable';
-end;
-
-destructor TTable.Destroy;
-begin
-  Query.Free;
-  inherited Destroy;
 end;
 
 { TTestBrookTable }

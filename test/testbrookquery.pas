@@ -1,8 +1,6 @@
 unit testbrookquery;
 
 {$mode objfpc}{$H+}
-{$HINTS OFF}
-{$WARNINGS OFF}
 
 interface
 
@@ -11,17 +9,34 @@ uses
   fpcunit, testregistry, sysutils, Classes;
 
 type
+
+  { TQueryBroker }
+
   TQueryBroker = class(TBrookQuery)
   private
     FQuery: TSQLQuery;
   protected
+    procedure SetDataBase({%H-}AValue: TBrookDataBase); override;
+    procedure SetDataSource({%H-}AValue: TDataSource); override;
+    function GetDataSource: TDataSource; override;
+    function GetFields: TFields; override;
     function GetSQL: TStrings; override;
     function GetDataSet: TDataSet; override;
     function GetParams: TParams; override;
+    function GetDataBase: TBrookDataBase; override;
   public
-    constructor Init(ADataBase: TBrookDataBase); override;
+    constructor Init({%H-}ADataBase: TBrookDataBase); override;
+    function FieldDef({%H-}const AName: string): TFieldDef; override;
+    function Execute: TBrookQuery; override;
+    function Apply({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
+    function ApplyUpdates: TBrookQuery; override;
+    function Commit({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
+    function Undo({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
+    function CancelUpdates: TBrookQuery; override;
+    function Rollback({%H-}const ARetaining: Boolean = False): TBrookQuery; override;
     function Field(const AName: string): TField; override;
     function Param(const AName: string): TParam; override;
+    function RowsAffected: TRowsCount; override;
   end;
 
   TTestBrookQuery = class(TTestCase)
@@ -116,6 +131,46 @@ begin
   FQuery.Transaction := TestDatabase.Transaction;
 end;
 
+function TQueryBroker.FieldDef(const AName: string): TFieldDef;
+begin
+  Result := nil;
+end;
+
+function TQueryBroker.Execute: TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Apply(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.ApplyUpdates: TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Commit(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Undo(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.CancelUpdates: TBrookQuery;
+begin
+  Result := Self;
+end;
+
+function TQueryBroker.Rollback(const ARetaining: Boolean): TBrookQuery;
+begin
+  Result := Self;
+end;
+
 function TQueryBroker.Field(const AName: string): TField;
 begin
   Result := FQuery.Fields.FieldByName(AName);
@@ -124,6 +179,29 @@ end;
 function TQueryBroker.Param(const AName: string): TParam;
 begin
   Result := FQuery.Params.ParamByName(AName);
+end;
+
+function TQueryBroker.RowsAffected: TRowsCount;
+begin
+  Result := -1;
+end;
+
+procedure TQueryBroker.SetDataBase(AValue: TBrookDataBase);
+begin
+end;
+
+procedure TQueryBroker.SetDataSource(AValue: TDataSource);
+begin
+end;
+
+function TQueryBroker.GetDataSource: TDataSource;
+begin
+  Result := nil;
+end;
+
+function TQueryBroker.GetFields: TFields;
+begin
+  Result := nil;
 end;
 
 function TQueryBroker.GetSQL: TStrings;
@@ -139,6 +217,11 @@ end;
 function TQueryBroker.GetParams: TParams;
 begin
   Result := FQuery.Params;
+end;
+
+function TQueryBroker.GetDataBase: TBrookDataBase;
+begin
+  Result := nil;
 end;
 
 { TTestBrookQuery }
