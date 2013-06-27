@@ -29,6 +29,8 @@ uses
 type
   { Displays the schema of the resource. }
   TBrookOptionsAction = class(TBrookDBAction)
+  protected
+    procedure InternalOpen; virtual;
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
@@ -48,6 +50,8 @@ type
 
   { Displays all the contents of the resource. }
   TBrookRetrieveAction = class(TBrookDBAction)
+  protected
+    procedure InternalOpen; virtual;
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
@@ -67,6 +71,8 @@ type
 
   { Displays the content of a specific resource. }
   TBrookShowAction = class(TBrookDBAction)
+  protected
+    procedure InternalOpen; virtual;
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
@@ -86,6 +92,8 @@ type
 
   { Creates a new resource. }
   TBrookCreateAction = class(TBrookDBAction)
+  protected
+    procedure InternalApply; virtual;
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
@@ -104,6 +112,9 @@ type
 
   { Updates a specific resource. }
   TBrookUpdateAction = class(TBrookDBAction)
+  protected
+    procedure InternalOpen; virtual;
+    procedure InternalApply({%H-}const AUpdating: Boolean); virtual;
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
@@ -123,6 +134,9 @@ type
 
   { Destroy a specific resource. }
   TBrookDestroyAction = class(TBrookDBAction)
+  protected
+    procedure InternalOpen; virtual;
+    procedure InternalApply; virtual;
   public
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
@@ -143,6 +157,11 @@ type
 implementation
 
 { TBrookOptionsAction }
+
+procedure TBrookOptionsAction.InternalOpen;
+begin
+  Table.Open;
+end;
 
 class procedure TBrookOptionsAction.Register(const ATableName,
   APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
@@ -170,10 +189,16 @@ end;
 
 function TBrookOptionsAction.Execute: Boolean;
 begin
-  Result := Table.Open.FieldDefs.Count > 0;
+  InternalOpen;
+  Result := Table.FieldDefs.Count > 0;
 end;
 
 { TBrookRetrieveAction }
+
+procedure TBrookRetrieveAction.InternalOpen;
+begin
+  Table.Open;
+end;
 
 class procedure TBrookRetrieveAction.Register(const ATableName,
   APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
@@ -203,13 +228,17 @@ end;
 function TBrookRetrieveAction.Execute: Boolean;
 begin
   if Values.Count > 0 then
-    Result := not Table.CreateFields(Values).Conditions(
-      Values).Prepare.Bind(Values).Open.Empty
-  else
-    Result := not Table.Open.Empty;
+    Table.CreateFields(Values).Conditions(Values).Prepare.Bind(Values);
+  InternalOpen;
+  Result := not Table.Empty;
 end;
 
 { TBrookShowAction }
+
+procedure TBrookShowAction.InternalOpen;
+begin
+  Table.Open;
+end;
 
 class procedure TBrookShowAction.Register(const ATableName, APattern: string;
   const AMethod: TBrookRequestMethod; const ADefault: Boolean);
@@ -253,14 +282,18 @@ begin
   Result := VCount > 0;
   if not Result then
     Exit;
-  if VCount = 1 then
-    Result := Table.Open.Locate(Values)
-  else
-    Result := Table.CreateFields(Values).Conditions(
-      Values).Prepare.Bind(Values).Open.Locate(Values);
+  if VCount > 1 then
+    Table.CreateFields(Values).Conditions(Values).Prepare.Bind(Values);
+  InternalOpen;
+  Result := Table.Locate(Values);
 end;
 
 { TBrookCreateAction }
+
+procedure TBrookCreateAction.InternalApply;
+begin
+  Table.Apply;
+end;
 
 class procedure TBrookCreateAction.Register(const ATableName, APattern: string;
   const AMethod: TBrookRequestMethod; const ADefault: Boolean);
@@ -288,11 +321,22 @@ end;
 function TBrookCreateAction.Execute: Boolean;
 begin
   BrookJSONCopy(Values, Fields);
-  Table.Insert(Fields).Apply;
+  Table.Insert(Fields);
+  InternalApply;
   Result := True;
 end;
 
 { TBrookUpdateAction }
+
+procedure TBrookUpdateAction.InternalOpen;
+begin
+  Table.Open;
+end;
+
+procedure TBrookUpdateAction.InternalApply(const AUpdating: Boolean);
+begin
+  Table.Apply;
+end;
 
 class procedure TBrookUpdateAction.Register(const ATableName, APattern: string;
   const AMethod: TBrookRequestMethod; const ADefault: Boolean);
@@ -328,18 +372,40 @@ var
 begin
   VCount := Values.Count;
   if VCount = 1 then
-    Result := Table.Open.Locate(Values)
+  begin
+    InternalOpen;
+    Result := Table.Locate(Values)
+  end
   else
-    Result := (VCount > 1) and Table.CreateFields(Values).Conditions(
-      Values).Prepare.Bind(Values).Open.Locate(Values);
+  begin
+    Table.CreateFields(Values).Conditions(Values).Prepare.Bind(Values);
+    InternalOpen;
+    Result := (VCount > 1) and Table.Locate(Values);
+  end;
   BrookJSONCopy(Values, Fields);
   if Result then
-    Table.Edit(Fields).Apply
+  begin
+    Table.Edit(Fields);
+    InternalApply(True);
+  end
   else
-    Table.Insert(Fields).Apply;
+  begin
+    Table.Insert(Fields);
+    InternalApply(False);
+  end;
 end;
 
 { TBrookDestroyAction }
+
+procedure TBrookDestroyAction.InternalOpen;
+begin
+  Table.Open;
+end;
+
+procedure TBrookDestroyAction.InternalApply;
+begin
+  Table.Apply;
+end;
 
 class procedure TBrookDestroyAction.Register(const ATableName,
   APattern: string; const AMethod: TBrookRequestMethod; const ADefault: Boolean);
@@ -375,12 +441,21 @@ var
 begin
   VCount := Values.Count;
   if VCount = 1 then
-    Result := Table.Open.Locate(Values)
+  begin
+    InternalOpen;
+    Result := Table.Locate(Values)
+  end
   else
-    Result := (VCount > 1) and Table.CreateFields(Values).Conditions(
-      Values).Prepare.Bind(Values).Open.Locate(Values);
+  begin
+    Table.CreateFields(Values).Conditions(Values).Prepare.Bind(Values);
+    InternalOpen;
+    Result := (VCount > 1) and Table.Locate(Values);
+  end;
   if Result then
-    Table.Delete.Apply;
+  begin
+    Table.Delete;
+    InternalApply;
+  end;
 end;
 
 end.
