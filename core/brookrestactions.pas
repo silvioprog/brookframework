@@ -93,6 +93,7 @@ type
   { Creates a new resource. }
   TBrookCreateAction = class(TBrookDBAction)
   protected
+    procedure InternalInsert; virtual;
     procedure InternalApply; virtual;
   public
     { Registers an action linking the request to a database table. }
@@ -113,6 +114,8 @@ type
   { Updates a specific resource. }
   TBrookUpdateAction = class(TBrookDBAction)
   protected
+    procedure InternalUpdate; virtual;
+    procedure InternalInsert; virtual;
     procedure InternalOpen; virtual;
     procedure InternalApply({%H-}const AUpdating: Boolean); virtual;
   public
@@ -135,6 +138,7 @@ type
   { Destroy a specific resource. }
   TBrookDestroyAction = class(TBrookDBAction)
   protected
+    procedure InternalDelete; virtual;
     procedure InternalOpen; virtual;
     procedure InternalApply; virtual;
   public
@@ -290,6 +294,11 @@ end;
 
 { TBrookCreateAction }
 
+procedure TBrookCreateAction.InternalInsert;
+begin
+  Table.Insert(Fields);
+end;
+
 procedure TBrookCreateAction.InternalApply;
 begin
   Table.Apply;
@@ -321,12 +330,22 @@ end;
 function TBrookCreateAction.Execute: Boolean;
 begin
   BrookJSONCopy(Values, Fields);
-  Table.Insert(Fields);
+  InternalInsert;
   InternalApply;
   Result := True;
 end;
 
 { TBrookUpdateAction }
+
+procedure TBrookUpdateAction.InternalUpdate;
+begin
+  Table.Edit(Fields);
+end;
+
+procedure TBrookUpdateAction.InternalInsert;
+begin
+  Table.Insert(Fields);
+end;
 
 procedure TBrookUpdateAction.InternalOpen;
 begin
@@ -385,17 +404,22 @@ begin
   BrookJSONCopy(Values, Fields);
   if Result then
   begin
-    Table.Edit(Fields);
+    InternalUpdate;
     InternalApply(True);
   end
   else
   begin
-    Table.Insert(Fields);
+    InternalInsert;
     InternalApply(False);
   end;
 end;
 
 { TBrookDestroyAction }
+
+procedure TBrookDestroyAction.InternalDelete;
+begin
+  Table.Delete;
+end;
 
 procedure TBrookDestroyAction.InternalOpen;
 begin
@@ -453,7 +477,7 @@ begin
   end;
   if Result then
   begin
-    Table.Delete;
+    InternalDelete;
     InternalApply;
   end;
 end;
