@@ -324,6 +324,11 @@ begin
   begin
     AResponse.Code := BROOK_HTTP_STATUS_CODE_CREATED;
     AResponse.CodeText := BROOK_HTTP_REASON_PHRASE_CREATED;
+  end
+  else
+  begin
+    AResponse.Code := BROOK_HTTP_STATUS_CODE_NO_CONTENT;
+    AResponse.CodeText := BROOK_HTTP_REASON_PHRASE_NO_CONTENT;
   end;
 end;
 
@@ -332,7 +337,7 @@ begin
   BrookJSONCopy(Values, Fields);
   InternalInsert;
   InternalApply;
-  Result := True;
+  Result := Fields.Count > 0;
 end;
 
 { TBrookUpdateAction }
