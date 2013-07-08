@@ -398,16 +398,22 @@ end;
 
 function TBrookTable.CreateFields(AJSON: TJSONObject): TBrookTable;
 var
-  I: Integer;
   VFields: string;
+  I, VCount: Integer;
 begin
   Result := Self;
   CheckTableName;
   CheckJSONParam(AJSON);
-  VFields := ES;
-  for I := 0 to Pred(AJSON.Count) do
-    VFields += AJSON.Names[I] + CS;
-  SetLength(VFields, Length(VFields) - 1);
+  VCount := AJSON.Count;
+  if VCount > 0 then
+  begin
+    VFields := ES;
+    for I := 0 to Pred(VCount) do
+      VFields += AJSON.Names[I] + CS;
+    SetLength(VFields, Length(VFields) - 1);
+  end
+  else
+    VFields := AK;
   FQuery.Close;
   FQuery.SQL.Text := BROOK_SQL_SELECT_TOKEN + SP + VFields + SP +
     BROOK_SQL_FROM_TOKEN + SP + FName + SP + BROOK_SQL_NOTHING_WHERE_TOKEN;
