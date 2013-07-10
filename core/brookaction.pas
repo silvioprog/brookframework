@@ -505,27 +505,49 @@ end;
 procedure TBrookAction.FillFields(ARequest: TRequest);
 var
   I: Integer;
+  S, N: TJSONStringType;
 begin
   for I := 0 to Pred(ARequest.ContentFields.Count) do
-    FFields.Add(ARequest.ContentFields.Names[I],
-      ARequest.ContentFields.ValueFromIndex[I]);
+  begin
+    S := ARequest.ContentFields.ValueFromIndex[I];
+    N := ARequest.ContentFields.Names[I];
+    if S = NU then
+      FFields.Add(N)
+    else
+      FFields.Add(N, S);
+  end;
 end;
 
 procedure TBrookAction.FillParams(ARequest: TRequest);
 var
   I: Integer;
+  S, N: TJSONStringType;
 begin
   for I := 0 to Pred(ARequest.QueryFields.Count) do
-    FParams.Add(ARequest.QueryFields.Names[I],
-      ARequest.QueryFields.ValueFromIndex[I]);
+  begin
+    S := ARequest.QueryFields.ValueFromIndex[I];
+    N := ARequest.QueryFields.Names[I];
+    if S = NU then
+      FParams.Add(N)
+    else
+      FParams.Add(N, S);
+  end;
 end;
 
 procedure TBrookAction.FillValues(ANames, AValues: TBrookArrayOfString);
 var
   I: Integer;
+  S, N: TJSONStringType;
 begin
   for I := 0 to High(ANames) do
-    FValues.Add(ANames[I], AValues[I]);
+  begin
+    S := AValues[I];
+    N := AValues[I];
+    if S = NU then
+      FValues.Add(N)
+    else
+      FValues.Add(N, S);
+  end;
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string);
