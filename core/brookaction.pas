@@ -49,8 +49,9 @@ type
     procedure FreeFields; virtual;
     procedure FreeParams; virtual;
     procedure FreeValues; virtual;
-    function GetRequest: TRequest;
-    function GetResponse: TResponse;
+    function GetFiles: TUploadedFiles; virtual;
+    function GetRequest: TRequest; virtual;
+    function GetResponse: TResponse; virtual;
     procedure DoBeforeRequest({%H-}ARequest: TRequest;
       {%H-}AResponse: TResponse); virtual;
     procedure DoAfterRequest({%H-}ARequest: TRequest;
@@ -308,6 +309,8 @@ initialization
     { Writes the content of a @code(TStrings) adding, for each item, the
       @code(BR) HTML tag to the end. }
     procedure WriteLn(S: TStrings); overload;
+    { The list of files coming from a request called by the POST method. }
+    property Files: TUploadedFiles read GetFiles;
     { The list of variables coming from a request called by the POST method. }
     property Fields: TJSONObject read FFields;
     { The list of variables coming from a request called by the GET method. }
@@ -334,6 +337,11 @@ begin
   FreeParams;
   FreeValues;
   inherited Destroy;
+end;
+
+function TBrookAction.GetFiles: TUploadedFiles;
+begin
+  Result := GetRequest.Files;
 end;
 
 function TBrookAction.CreateFields: TJSONObject;
