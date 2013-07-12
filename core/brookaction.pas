@@ -542,7 +542,7 @@ begin
   for I := 0 to High(ANames) do
   begin
     S := AValues[I];
-    N := AValues[I];
+    N := ANames[I];
     if S = NU then
       FValues.Add(N)
     else
