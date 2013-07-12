@@ -31,14 +31,12 @@ var
   I: Integer;
   VFiles, VSep: string;
   VFormItem: TUploadedFile;
-  VReqFiles: TUploadedFiles;
 begin
   VFiles := '';
   VSep := '||';
-  VReqFiles := GetRequest.Files;
-  for I := 0 to Pred(VReqFiles.Count) do
+  for I := 0 to Pred(Files.Count) do
   begin
-    VFormItem := VReqFiles[I];
+    VFormItem := Files[I];
     if VFormItem.FileName <> '' then
       VFiles += VFormItem.FileName + VSep;
   end;
