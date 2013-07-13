@@ -64,6 +64,7 @@ type
   TBrookADSDataBase = class(TBrookDataBase)
   private
     FConn: TAdsConnection;
+    FSettings: TAdsSettings;
   protected
     function GetConnected: Boolean; override;
     function GetDatabase: string; override;
@@ -81,6 +82,7 @@ type
     function GetConnection: TObject; override;
   public
     constructor Init; override;
+    destructor Destroy; override;
     class function GetLibrary: string; override;
     procedure Connect; override;
     procedure Disconnect; override;
@@ -236,6 +238,15 @@ begin
   inherited Init;
   FConn := TAdsConnection.Create(nil);
   FConn.AdsServerTypes := [stADS_LOCAL];
+  FSettings := TAdsSettings.Create(nil);
+  FSettings.AdsServerTypes:= [stADS_LOCAL];
+  FSettings.ShowDeleted:= false;
+end;
+
+destructor TBrookADSDataBase.Destroy;
+begin
+  FSettings.Free;
+  inherited Destroy;
 end;
 
 function TBrookADSDataBase.GetPort: Integer;
