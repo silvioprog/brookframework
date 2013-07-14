@@ -127,9 +127,9 @@ function TBrookFCGIRequest.GetTempUploadFileName(
   const AName, AFileName: string; ASize: Int64): string;
 begin
   if BrookSettings.KeepUploadedNames then
-    Result := inherited GetTempUploadFileName(AName, AFileName, ASize)
+    Result := RequestUploadDir + AFileName
   else
-    Result := RequestUploadDir + AFileName;
+    Result := inherited GetTempUploadFileName(AName, AFileName, ASize);
 end;
 
 function TBrookFCGIRequest.RequestUploadDir: string;
