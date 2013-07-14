@@ -56,6 +56,8 @@ type
     DirectoryForUploads: string;
     { Defines if the temporary uploaded files will be deleted. }
     DeleteUploadedFiles: Boolean;
+    { Keeps the original name of the uploaded files. }
+    KeepUploadedNames: Boolean;
     { Defines if the application allows JSON formated requests. }
     AcceptsJSONContent: Boolean;
     { Set a configuration for the application or for its object members. }
@@ -80,6 +82,7 @@ var
     Page500: ES;
     DirectoryForUploads: ES;
     DeleteUploadedFiles: False;
+    KeepUploadedNames: False;
     AcceptsJSONContent: False;
     Configuration: ES;
     RootUrl: ES;

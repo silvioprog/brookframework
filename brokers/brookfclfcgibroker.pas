@@ -126,12 +126,18 @@ end;
 function TBrookFCGIRequest.GetTempUploadFileName(
   const AName, AFileName: string; ASize: Int64): string;
 begin
-  Result := RequestUploadDir + AFileName;
+  if BrookSettings.KeepUploadedNames then
+    Result := inherited GetTempUploadFileName(AName, AFileName, ASize)
+  else
+    Result := RequestUploadDir + AFileName;
 end;
 
 function TBrookFCGIRequest.RequestUploadDir: string;
 begin
-  Result := IncludeTrailingPathDelimiter(BrookSettings.DirectoryForUploads);
+  Result := BrookSettings.DirectoryForUploads;
+  if Result = '' then
+    Result := GetTempDir;
+  Result := IncludeTrailingPathDelimiter(Result);
 end;
 
 procedure TBrookFCGIRequest.InitRequestVars;
