@@ -82,7 +82,7 @@ var
     Page500: ES;
     DirectoryForUploads: ES;
     DeleteUploadedFiles: False;
-    KeepUploadedNames: False;
+    KeepUploadedNames: True;
     AcceptsJSONContent: False;
     Configuration: ES;
     RootUrl: ES;
