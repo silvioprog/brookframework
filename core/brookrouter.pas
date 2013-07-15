@@ -150,9 +150,9 @@ type
     { List of available routes. }
     property Routes: TBrookRoutes read FRoutes write FRoutes;
     { The current action. }
-    property CurrentAction: TBrookAction read FCurrentAction;
+    property CurrentAction: TBrookAction read FCurrentAction; deprecated;
     { The current route. }
-    property CurrentRoute: TBrookRoute read FCurrentRoute;
+    property CurrentRoute: TBrookRoute read FCurrentRoute; deprecated;
   end;
 
 implementation
