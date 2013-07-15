@@ -104,7 +104,7 @@ type
     { Frees an instance of @link(TBrookRouter) class. }
     destructor Destroy; override;
     { Return the service class provided by this class. }
-    class function GetRegisterClass: TBrookRouterClass;
+    class function GetServiceClass: TBrookRouterClass;
     { Registers the service provided by this class. }
     class procedure RegisterService;
     { Unregisters the service  provided by this class. }
@@ -308,7 +308,7 @@ begin
   inherited Destroy;
 end;
 
-class function TBrookRouter.GetRegisterClass: TBrookRouterClass;
+class function TBrookRouter.GetServiceClass: TBrookRouterClass;
 begin
   Result := _BrookRouterServiceClass;
 end;
