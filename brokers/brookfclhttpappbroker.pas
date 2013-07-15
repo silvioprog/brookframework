@@ -50,6 +50,18 @@ type
     function InitializeWebHandler: TWebHandler; override;
   end;
 
+  { TBrookHTTPRouterThread }
+
+  TBrookHTTPRouterThread = class(TThread)
+  private
+    FRequest: TRequest;
+    FResponse: TResponse;
+  public
+    constructor Create(ARequest: TRequest;
+      AResponse: TResponse); overload; virtual;
+    procedure Execute; override;
+  end;
+
   { TBrookHTTPServerHandler }
 
   TBrookHTTPServerHandler = class(TFPHTTPServerHandler)
@@ -93,6 +105,26 @@ begin
   Result := TBrookHTTPServerHandler.Create(Self);
 end;
 
+{ TBrookHTTPRouterThread }
+
+constructor TBrookHTTPRouterThread.Create(ARequest: TRequest;
+  AResponse: TResponse);
+begin
+  FreeOnTerminate := True;
+  inherited Create(True);
+  FRequest := ARequest;
+  FResponse := AResponse;
+end;
+
+procedure TBrookHTTPRouterThread.Execute;
+begin
+  try
+    TBrookRouter.Service.Route(FRequest, FResponse);
+  except
+    // Silently ignore errors.
+  end;
+end;
+
 { TBrookHTTPServerHandler }
 
 function TBrookHTTPServerHandler.FormatContentType: string;
@@ -106,12 +138,21 @@ end;
 
 procedure TBrookHTTPServerHandler.HandleRequest(ARequest: TRequest;
   AResponse: TResponse);
+var
+  VThread: TBrookHTTPRouterThread;
 begin
   try
     AResponse.ContentType := FormatContentType;
     if BrookSettings.Language <> BROOK_DEFAULT_LANGUAGE then
       TBrookMessages.Service.SetLanguage(BrookSettings.Language);
-    TBrookRouter.Service.Route(ARequest, AResponse);
+    if Threaded then
+    begin
+      VThread := TBrookHTTPRouterThread.Create(ARequest, AResponse);
+      VThread.Start;
+      VThread.WaitFor;
+    end
+    else
+      TBrookRouter.Service.Route(ARequest, AResponse);
   except
     on E: Exception do
       ShowRequestException(AResponse, E);
