@@ -94,10 +94,10 @@ type
     FRoutes: TBrookRoutes;
   protected
     function CreateRoutes: TBrookRoutes; virtual;
-    procedure DoCreateAction(out AActionClass: TBrookActionClass); virtual;
-    procedure DoFreeAction; virtual;
+    procedure DoCreateAction(out AActionClass: TBrookActionClass); virtual; deprecated;
+    procedure DoFreeAction; virtual; deprecated;
     procedure DoExecuteAction(ARequest: TRequest; AResponse: TResponse;
-      ANames, AValues: TBrookArrayOfString); virtual;
+      ANames, AValues: TBrookArrayOfString); virtual; deprecated;
   public
     { Creates an instance of a @link(TBrookRouter) class. }
     constructor Create; virtual;
