@@ -89,15 +89,15 @@ type
   { Provides features for the route handling. }
   TBrookRouter = class(TBrookObject)
   private
-    FCurrentAction: TBrookAction;
-    FCurrentRoute: TBrookRoute;
     FRoutes: TBrookRoutes;
   protected
-    function CreateRoutes: TBrookRoutes; virtual;
-    procedure DoCreateAction(out AActionClass: TBrookActionClass); virtual; deprecated;
-    procedure DoFreeAction; virtual; deprecated;
-    procedure DoExecuteAction(ARequest: TRequest; AResponse: TResponse;
-      ANames, AValues: TBrookArrayOfString); virtual; deprecated;
+    class function CreateRoutes: TBrookRoutes; virtual;
+    class procedure FreeRoutes(ARoutes: TBrookRoutes); virtual;
+    class function DoCreateAction(
+      out AActionClass: TBrookActionClass): TBrookAction; virtual;
+    class procedure DoFreeAction(AAction: TBrookAction); virtual;
+    class procedure DoExecuteAction(AAction: TBrookAction; ARequest: TRequest;
+      AResponse: TResponse; ANames, AValues: TBrookArrayOfString); virtual;
   public
     { Creates an instance of a @link(TBrookRouter) class. }
     constructor Create; virtual;
@@ -151,10 +151,6 @@ type
     procedure Route(ARequest: TRequest; AResponse: TResponse); virtual;
     { List of available routes. }
     property Routes: TBrookRoutes read FRoutes write FRoutes;
-    { The current action. }
-    property CurrentAction: TBrookAction read FCurrentAction; deprecated;
-    { The current route. }
-    property CurrentRoute: TBrookRoute read FCurrentRoute; deprecated;
   end;
 
 implementation
@@ -304,7 +300,7 @@ end;
 
 destructor TBrookRouter.Destroy;
 begin
-  FreeAndNil(FRoutes);
+  FreeRoutes(FRoutes);
   inherited Destroy;
 end;
 
@@ -313,29 +309,34 @@ begin
   Result := _BrookRouterServiceClass;
 end;
 
-function TBrookRouter.CreateRoutes: TBrookRoutes;
+class function TBrookRouter.CreateRoutes: TBrookRoutes;
 begin
   Result := TBrookRoutes.Create;
 end;
 
-procedure TBrookRouter.DoCreateAction(out AActionClass: TBrookActionClass);
+class procedure TBrookRouter.FreeRoutes(ARoutes: TBrookRoutes);
 begin
-  FreeAndNil(FCurrentAction);
-  FCurrentAction := AActionClass.Create;
+  FreeAndNil(ARoutes);
 end;
 
-procedure TBrookRouter.DoFreeAction;
+class function TBrookRouter.DoCreateAction(
+  out AActionClass: TBrookActionClass): TBrookAction;
 begin
-  FreeAndNil(FCurrentAction);
+  Result := AActionClass.Create;
 end;
 
-procedure TBrookRouter.DoExecuteAction(ARequest: TRequest; AResponse: TResponse;
-  ANames, AValues: TBrookArrayOfString);
+class procedure TBrookRouter.DoFreeAction(AAction: TBrookAction);
 begin
-  FCurrentAction.FillFields(ARequest);
-  FCurrentAction.FillParams(ARequest);
-  FCurrentAction.FillValues(ANames, AValues);
-  FCurrentAction.DoRequest(ARequest, AResponse);
+  AAction.Free;
+end;
+
+class procedure TBrookRouter.DoExecuteAction(AAction: TBrookAction;
+  ARequest: TRequest; AResponse: TResponse; ANames, AValues: TBrookArrayOfString);
+begin
+  AAction.FillFields(ARequest);
+  AAction.FillParams(ARequest);
+  AAction.FillValues(ANames, AValues);
+  AAction.DoRequest(ARequest, AResponse);
 end;
 
 class procedure TBrookRouter.RegisterService;
@@ -567,6 +568,7 @@ var
   I, C: Integer;
   PRoute: PBrookRoute;
   VNames, VValues: TBrookArrayOfString;
+  VAct: TBrookAction;
   VActClass: TBrookActionClass = nil;
   VDefaultActClass: TBrookActionClass = nil;
   VRedirect, VMatchMethod, VMatchPattern: Boolean;
@@ -592,7 +594,6 @@ begin
           Continue;
         VMatchMethod := True;
         VActClass := PRoute^.ActionClass;
-        FCurrentRoute := PRoute^;
         if PRoute^.Method <> rmAll then
           Break;
       end;
@@ -622,7 +623,6 @@ begin
         if VRedirect and Canonicalize(ARequest, AResponse) then
           Exit;
         VActClass := PRoute^.ActionClass;
-        FCurrentRoute := PRoute^;
         Break;
       end;
     if not Assigned(VActClass) then
@@ -631,11 +631,11 @@ begin
       else
         raise EBrookHTTP404.Create(BROOK_HTTP_REASON_PHRASE_NOT_FOUND);
   end;
+  VAct := TBrookRouter.DoCreateAction(VActClass);
   try
-    DoCreateAction(VActClass);
-    DoExecuteAction(ARequest, AResponse, VNames, VValues);
+    TBrookRouter.DoExecuteAction(VAct, ARequest, AResponse, VNames, VValues);
   finally
-    DoFreeAction;
+    TBrookRouter.DoFreeAction(VAct);
   end;
 end;
 
