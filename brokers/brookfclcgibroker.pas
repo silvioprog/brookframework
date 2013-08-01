@@ -274,6 +274,55 @@ procedure TBrookCGIHandler.ShowRequestException(R: TResponse; E: Exception);
 var
   VStr: TStrings;
   VHandled: Boolean = False;
+
+  procedure HandleHTTP404;
+  begin
+    if not R.HeadersSent then begin
+      R.Code := BROOK_HTTP_STATUS_CODE_NOT_FOUND;
+      R.CodeText := BROOK_HTTP_REASON_PHRASE_NOT_FOUND;
+      R.ContentType := FormatContentType;
+
+      if FileExists(BrookSettings.Page404File) then
+        R.Contents.LoadFromFile(BrookSettings.Page404File)
+      else if BrookSettings.Page404 <> ES then
+        R.Content := BrookSettings.Page404;
+
+      R.Content := Format(R.Content, [BrookSettings.RootUrl]);
+      R.SendContent;
+      VHandled := true;
+    end;
+  end;
+
+  procedure HandleHTTP500;
+  var
+    ExceptionMessage,StackDumpString: TJSONStringType;
+  begin
+    if not R.HeadersSent then begin
+      R.Code := BROOK_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR;
+      R.CodeText := 'Application error ' + E.ClassName;
+      R.ContentType := FormatContentType;
+
+      if FileExists(BrookSettings.Page500File) then begin
+        R.Contents.LoadFromFile(BrookSettings.Page500File);
+        R.Content := StringsReplace(R.Content, ['@error', '@trace'],
+          [E.Message, BrookDumpStack], [rfIgnoreCase, rfReplaceAll]);
+      end else if BrookSettings.Page500 <> ES then begin
+        if BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_APP_JSON then begin
+          ExceptionMessage := StringToJSONString(E.Message);
+          StackDumpString  := StringToJSONString(BrookDumpStack(LE));
+        end else begin
+          ExceptionMessage := E.Message;
+          StackDumpString  := BrookDumpStack;
+        end;
+        R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
+          [ExceptionMessage, StackDumpString], [rfIgnoreCase, rfReplaceAll]);
+      end;
+
+      R.SendContent;
+      VHandled := true;
+    end;
+  end;
+
 begin
   if R.ContentSent then
     Exit;
@@ -295,42 +344,12 @@ begin
     R.SendContent;
     Exit;
   end;
-  if (BrookSettings.Page404 <> ES) and (E is EBrookHTTP404) and
-    (not R.HeadersSent) then
-  begin
-    R.Code := BROOK_HTTP_STATUS_CODE_NOT_FOUND;
-    R.CodeText := BROOK_HTTP_REASON_PHRASE_NOT_FOUND;
-    R.ContentType := FormatContentType;
-    if FileExists(BrookSettings.Page404) then
-      R.Contents.LoadFromFile(BrookSettings.Page404)
-    else
-      R.Content := BrookSettings.Page404;
-    R.Content := Format(R.Content, [ApplicationURL]);
-    R.SendContent;
-    Exit;
+  case E.ClassName of
+    'EBrookHTTP404': HandleHTTP404;
+    'EBrookHTTP500': HandleHTTP500;
   end;
-  if (BrookSettings.Page500 <> ES) and (not R.HeadersSent) then
-  begin
-    R.Code := BROOK_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR;
-    R.CodeText := 'Application error ' + E.ClassName;
-    R.ContentType := FormatContentType;
-    if FileExists(BrookSettings.Page500) then
-    begin
-      R.Contents.LoadFromFile(BrookSettings.Page500);
-      R.Content := StringsReplace(R.Content, ['@error', '@trace'],
-        [E.Message, BrookDumpStack], [rfIgnoreCase, rfReplaceAll]);
-    end
-    else
-      if BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_APP_JSON then
-        R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
-          [StringToJSONString(E.Message), StringToJSONString(BrookDumpStack(LE))],
-          [rfIgnoreCase, rfReplaceAll])
-      else
-        R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
-          [E.Message, BrookDumpStack], [rfIgnoreCase, rfReplaceAll]);
-    R.SendContent;
+  if VHandled then
     Exit;
-  end;
   if (R.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) or
     (BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) then
   begin

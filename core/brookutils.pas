@@ -46,12 +46,22 @@ type
     ContentType: ShortString;
     { Set the default application Language. }
     Language: ShortString;
-    { Set the 404 HTML page. It can be a HTML string, a file pack,
-      a JSON string, etc.}
+    { Set the 404 HTML page. The string will be sent as is. }
     Page404: string;
-    { Set the 500 HTML page. It can be a HTML string, a file pack,
-      a JSON string, etc.}
+    { Set the 404 HTML page file. The file content will be sent.
+      This has higher precedence than @code(TBrookSettings.Page404)
+      so when both are set, this will be processed first and only
+      if the file is not found or cannot be read the system will
+      fallback to @code(TBrookSettings.Page404) }
+    Page404File: string;
+    { Set the 500 HTML page. The string will be sent as is. }
     Page500: string;
+    { Set the 500 HTML page file. The file content will be sent.
+      This has higher precedence than @code(TBrookSettings.Page500)
+      so when both are set, this will be processed first and only
+      if the file is not found or cannot be read the system will
+      fallback to @code(TBrookSettings.Page500) }
+    Page500File: string;
     { Set the default directory for uploads. }
     DirectoryForUploads: string;
     { Defines if the temporary uploaded files will be deleted. }
@@ -79,7 +89,9 @@ var
     ContentType: BROOK_HTTP_CONTENT_TYPE_TEXT_HTML;
     Language: BROOK_DEFAULT_LANGUAGE;
     Page404: ES;
+    Page404File: ES;
     Page500: ES;
+    Page500File: ES;
     DirectoryForUploads: ES;
     DeleteUploadedFiles: False;
     KeepUploadedNames: True;
