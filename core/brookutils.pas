@@ -88,9 +88,9 @@ var
     Charset: BROOK_HTTP_CHARSET_UTF_8;
     ContentType: BROOK_HTTP_CONTENT_TYPE_TEXT_HTML;
     Language: BROOK_DEFAULT_LANGUAGE;
-    Page404: ES;
+    Page404: BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND;
     Page404File: ES;
-    Page500: ES;
+    Page500: BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR;
     Page500File: ES;
     DirectoryForUploads: ES;
     DeleteUploadedFiles: False;

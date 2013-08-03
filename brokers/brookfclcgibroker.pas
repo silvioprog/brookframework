@@ -272,7 +272,6 @@ end;
 
 procedure TBrookCGIHandler.ShowRequestException(R: TResponse; E: Exception);
 var
-  VStr: TStrings;
   VHandled: Boolean = False;
 
   procedure HandleHTTP404;
@@ -281,16 +280,19 @@ var
       R.Code := BROOK_HTTP_STATUS_CODE_NOT_FOUND;
       R.CodeText := BROOK_HTTP_REASON_PHRASE_NOT_FOUND;
       R.ContentType := FormatContentType;
-
-      if FileExists(BrookSettings.Page404File) then
-        R.Contents.LoadFromFile(BrookSettings.Page404File)
-      else if BrookSettings.Page404 <> ES then
-        R.Content := BrookSettings.Page404;
-
-      R.Content := Format(R.Content, [BrookSettings.RootUrl]);
-      R.SendContent;
-      VHandled := true;
     end;
+
+    if (BrookSettings.Page404File <> ES) and FileExists(BrookSettings.Page404File) then
+      R.Contents.LoadFromFile(BrookSettings.Page404File)
+    else
+      R.Content := BrookSettings.Page404;
+
+    R.Content := StringsReplace(R.Content, ['@root'],
+      [BrookSettings.RootUrl], [rfIgnoreCase, rfReplaceAll]);
+    // how I could find out path of requested file to insert into error message?
+
+    R.SendContent;
+    VHandled := true;
   end;
 
   procedure HandleHTTP500;
@@ -299,28 +301,35 @@ var
   begin
     if not R.HeadersSent then begin
       R.Code := BROOK_HTTP_STATUS_CODE_INTERNAL_SERVER_ERROR;
-      R.CodeText := 'Application error ' + E.ClassName;
+      R.CodeText := BROOK_HTTP_REASON_PHRASE_INTERNAL_SERVER_ERROR;
       R.ContentType := FormatContentType;
-
-      if FileExists(BrookSettings.Page500File) then begin
-        R.Contents.LoadFromFile(BrookSettings.Page500File);
-        R.Content := StringsReplace(R.Content, ['@error', '@trace'],
-          [E.Message, BrookDumpStack], [rfIgnoreCase, rfReplaceAll]);
-      end else if BrookSettings.Page500 <> ES then begin
-        if BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_APP_JSON then begin
-          ExceptionMessage := StringToJSONString(E.Message);
-          StackDumpString  := StringToJSONString(BrookDumpStack(LE));
-        end else begin
-          ExceptionMessage := E.Message;
-          StackDumpString  := BrookDumpStack;
-        end;
-        R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
-          [ExceptionMessage, StackDumpString], [rfIgnoreCase, rfReplaceAll]);
-      end;
-
-      R.SendContent;
-      VHandled := true;
     end;
+
+    if (BrookSettings.Page500File <> ES) and FileExists(BrookSettings.Page500File) then begin
+      R.Contents.LoadFromFile(BrookSettings.Page500File);
+      R.Content := StringsReplace(R.Content, ['@error'],
+        [E.Message], [rfIgnoreCase, rfReplaceAll]);
+      if Pos('@trace',LowerCase(R.Content))>0 then
+        R.Content := StringsReplace(R.Content, ['@trace'],
+          [BrookDumpStack], [rfIgnoreCase, rfReplaceAll]); // DumpStack is slow and not thread safe
+    end else begin
+      R.Content := BrookSettings.Page500;
+      StackDumpString := '';
+      if BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_APP_JSON then begin
+        ExceptionMessage := StringToJSONString(E.Message);
+        if Pos('@trace',LowerCase(R.Content))>0 then
+          StackDumpString  := StringToJSONString(BrookDumpStack(LF));
+      end else begin
+        ExceptionMessage := E.Message;
+        if Pos('@trace',LowerCase(R.Content))>0 then
+           StackDumpString  := BrookDumpStack;
+      end;
+      R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
+        [ExceptionMessage, StackDumpString], [rfIgnoreCase, rfReplaceAll]);
+    end;
+
+    R.SendContent;
+    VHandled := true;
   end;
 
 begin
@@ -344,24 +353,11 @@ begin
     R.SendContent;
     Exit;
   end;
-  case E.ClassName of
-    'EBrookHTTP404': HandleHTTP404;
-    'EBrookHTTP500': HandleHTTP500;
-  end;
-  if VHandled then
-    Exit;
-  if (R.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) or
-    (BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_TEXT_HTML) then
-  begin
-    VStr := TStringList.Create;
-    try
-      ExceptionToHTML(VStr, E, Title, Email, Administrator);
-      R.Content := VStr.Text;
-      R.SendContent;
-    finally
-      VStr.Free;
-    end;
-  end;
+  if E is EBrookHTTP404 then begin
+    HandleHTTP404;
+  end else begin
+    HandleHTTP500;
+  end
 end;
 
 initialization
