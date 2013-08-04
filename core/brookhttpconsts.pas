@@ -262,14 +262,19 @@ const
   BROOK_CLT_ENV_HTTP_ACCEPT_CHARSET = 'HTTP_ACCEPT_CHARSET';
   BROOK_CLT_ENV_HTTP_IF_NONE_MATCH = 'HTTP_IF_NONE_MATCH';
   BROOK_CLT_ENV_HTTP_X_REQUESTED_WITH = 'HTTP_X_REQUESTED_WITH';
-  { Default response templates }
+  { Default response templates. }
   { }
   BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND =
     '<html><head><title>Page not found</title></head><body>' +
     '<h1>404 - Page not found</h1></body></html>';
   BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR =
     '<html><head><title>Internal server error</title></head><body>' +
-    '<h1>500 - Internal server error</h1></body></html>';
+    '<h1>500 - Internal server error</h1>' +
+    '<p style="color: red;" >Error: @error</p>' +
+{$IFDEF BROOK_DEBUG}
+    '<pre style="color: gray;" >@trace</pre>' +
+{$ENDIF}
+    '</body></html>';
 
 var
   BROOK_HTTP_CLIENT_DEFAULT_LIBRARY: string = ES;
