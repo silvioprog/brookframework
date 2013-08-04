@@ -709,8 +709,8 @@ begin
     ''+le+
     'initialization'+le+
     '  BrookSettings.Charset := ' + VCharset + ';'+le+
-    '  BrookSettings.Page404:= PUBLIC_HTML + ''404.html'';'+le+
-    '  BrookSettings.Page500 := PUBLIC_HTML + ''500.html'';'+le+
+    '  BrookSettings.Page404File := PUBLIC_HTML + ''404.html'';'+le+
+    '  BrookSettings.Page500File := PUBLIC_HTML + ''500.html'';'+le+
     ''+le+
     'end.';
   end
