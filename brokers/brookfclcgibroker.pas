@@ -287,9 +287,8 @@ var
     else
       R.Content := BrookSettings.Page404;
 
-    R.Content := StringsReplace(R.Content, ['@root'],
-      [BrookSettings.RootUrl], [rfIgnoreCase, rfReplaceAll]);
-    // how I could find out path of requested file to insert into error message?
+    R.Content := StringsReplace(R.Content, ['@root', '@path'],
+      [BrookSettings.RootUrl, E.Message], [rfIgnoreCase, rfReplaceAll]);
 
     R.SendContent;
     VHandled := true;

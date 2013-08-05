@@ -612,7 +612,7 @@ begin
       end;
     end
     else
-      raise EBrookHTTP404.Create(BROOK_HTTP_REASON_PHRASE_NOT_FOUND);
+      raise EBrookHTTP404.Create(ARequest.PathInfo);
   end
   else
   begin
@@ -629,7 +629,7 @@ begin
       if Assigned(VDefaultActClass) then
         VActClass := VDefaultActClass
       else
-        raise EBrookHTTP404.Create(BROOK_HTTP_REASON_PHRASE_NOT_FOUND);
+        raise EBrookHTTP404.Create(ARequest.PathInfo);
   end;
   VAct := TBrookRouter.DoCreateAction(VActClass);
   try
