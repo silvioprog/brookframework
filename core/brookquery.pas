@@ -296,7 +296,7 @@ begin
     VData := AJSON.Items[I];
     VField.Clear;
     if VData.IsNull then
-      Exit;
+      Continue;
     if (VField is TStringField) or (VField is TBinaryField) or
       (VField is TBlobField) or (VField is TVariantField) then
       VField.AsString := VData.AsString;
@@ -395,7 +395,7 @@ begin
     VData := AJSON.Items[I];
     VParam.Clear;
     if VData.IsNull then
-      Exit;
+      Continue;
     VFieldClass := AFieldDefs.Find(VName).FieldClass;
     if (VFieldClass = TStringField) or (VFieldClass = TBinaryField) or
       (VFieldClass = TBlobField) or (VFieldClass = TVariantField) then
