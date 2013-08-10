@@ -709,8 +709,8 @@ begin
     ''+le+
     'initialization'+le+
     '  BrookSettings.Charset := ' + VCharset + ';'+le+
-    '  BrookSettings.Page404:= PUBLIC_HTML + ''404.html'';'+le+
-    '  BrookSettings.Page500 := PUBLIC_HTML + ''500.html'';'+le+
+    '  BrookSettings.Page404File := PUBLIC_HTML + ''404.html'';'+le+
+    '  BrookSettings.Page500File := PUBLIC_HTML + ''500.html'';'+le+
     ''+le+
     'end.';
   end
@@ -723,18 +723,9 @@ begin
     'interface'+le+
     ''+le+
     'uses'+le+
-    '  '+VBroker+', BrookUtils'+';'+le+
+    '  '+VBroker+';'+le+
     ''+le+
     'implementation'+le+
-    ''+le+
-    'initialization'+le+
-    '  BrookSettings.Page404 :='+le+
-    '    ''<html><head><title>Page not found</title></head><body>'' +'+le+
-    '    ''<h1>404 - Page not found</h1></body></html>'';'+le+
-    '  BrookSettings.Page500 :='+le+
-    '    ''<html><head><title>Internal server error</title></head><body>'' +'+le+
-    '    ''<h1>500 - Internal server error</h1>'' +'+le+
-    '    ''<p style="color: red;" >Error: @error</p></body></html>'';'+le+
     ''+le+
     'end.';
   FAppType := 0;
