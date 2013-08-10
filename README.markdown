@@ -76,4 +76,6 @@ Make a donation to the project, it's extremely easy, free, fast and secure!
 
 See the name of all donors [here](https://github.com/silvioprog/brookframework/blob/master/DONORS.txt).
 
+<br>
+
 **Welcome to world of Brook!** ![Welcome to the Brook's world!](http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/113.gif)
