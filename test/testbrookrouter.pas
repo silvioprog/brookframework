@@ -30,8 +30,11 @@ type
   end;
 
   TRouter = class(TBrookRouter)
+  private
+    class var ActionClassName: string;
   protected
-    procedure DoFreeAction; override;
+    class function DoCreateAction(out AActionClass: TBrookActionClass
+       ): TBrookAction; override;
   end;
 
   TTestBrookRoutes = class(TTestCase)
@@ -79,8 +82,11 @@ end;
 
 { TRouter }
 
-procedure TRouter.DoFreeAction;
+class function TRouter.DoCreateAction(out AActionClass: TBrookActionClass
+  ): TBrookAction;
 begin
+  Result := inherited DoCreateAction(AActionClass);
+  ActionClassName := AActionClass.ClassName;
 end;
 
 { TTestBrookRoutes }
@@ -288,15 +294,15 @@ begin
     TAction4.Register('/action4/**/foo');
     VReq.PathInfo := '/action2';
     VRouter.Route(VReq, VRes);
-    AssertEquals('TAction2', VRouter.CurrentAction.ClassName);
+    AssertEquals('TAction2', VRouter.ActionClassName);
     VReq.PathInfo := '/action3/name/foo';
     VRouter.Route(VReq, VRes);
-    AssertEquals('TAction3', VRouter.CurrentAction.ClassName);
+    AssertEquals('TAction3', VRouter.ActionClassName);
     VReq.PathInfo := '/action4/name';
     VRouter.Route(VReq, VRes);
-    AssertEquals('TAction4', VRouter.CurrentAction.ClassName);
+    AssertEquals('TAction4', VRouter.ActionClassName);
   finally
-    VRouter.CurrentAction.Free;
+    VRouter.Free;
     VReq.Free;
     VRes.Free;
   end;
