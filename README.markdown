@@ -62,16 +62,18 @@ You can download a release [here](http://brookframework.org/download/release.bf)
 
 `git://github.com/silvioprog/brookframework.git`
 
-##DONORS
-
-[Make a donation to the project, it's extremely easy, free, fast and secure!](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GE9VT768TLP74&lc=GB&item_name=Brook%20framework&item_number=brookframework&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted) See the name of all donors [here](https://github.com/silvioprog/brookframework/blob/master/DONORS.txt).
-
 ##CONTRIBUTORS
 
 Brook would not be possible without important and active contributors. See their names [here](https://github.com/silvioprog/brookframework/blob/master/CONTRIBUTORS.txt).
 
-**Welcome to world of Brook!** ![Welcome to the Brook's world!](http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/113.gif)
+##DONORS
+
+Make a donation to the project, it's extremely easy, free, fast and secure!
 
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GE9VT768TLP74&lc=GB&item_name=Brook%20framework&item_number=brookframework&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted">
   <img src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif">
 </a>
+
+See the name of all donors [here](https://github.com/silvioprog/brookframework/blob/master/DONORS.txt).
+
+**Welcome to world of Brook!** ![Welcome to the Brook's world!](http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/113.gif)
