@@ -77,6 +77,8 @@ type
       @code(TBrookActionHelper.ButtonTo) etc. By default, Brook assumes
       @code(SCRIPT_NAME) as root URL. }
     RootUrl: string;
+    { Set the default application port. }
+    Port: Word;
     { Handles the application exceptions. }
     OnError: TOnShowRequestException;
   end;
@@ -98,6 +100,7 @@ var
     AcceptsJSONContent: False;
     Configuration: ES;
     RootUrl: ES;
+    Port: 0;
     OnError: nil;
   );
 

@@ -83,6 +83,8 @@ end;
 
 procedure TBrookApplication.Run;
 begin
+  if BrookSettings.Port <> 0 then
+    FApp.Port := BrookSettings.Port;
   FApp.Run;
 end;
 
