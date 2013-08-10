@@ -302,7 +302,6 @@ begin
     VRouter.Route(VReq, VRes);
     AssertEquals('TAction4', VRouter.ActionClassName);
   finally
-    VRouter.Free;
     VReq.Free;
     VRes.Free;
   end;
