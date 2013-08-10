@@ -496,7 +496,7 @@ function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
 var
   VCount: Integer;
   VPt, VPa, VRPt, VRPa: string;
-  VPtDelim, VPaDelim, VIsVar: Boolean;
+  VPtDelim, VPaDelim, VIsVar, VIsSuf: Boolean;
 begin
   Result := False;
   ARedirect := False;
@@ -530,8 +530,10 @@ begin
     if VPa = ES then
       if VPt <> ES then
       begin
-        Result := False;
-        Exit;
+        if Pos(AK, VPt) <> 1 then begin
+          Result := False;
+          Exit;
+        end;
       end
       else
         Break;
@@ -539,9 +541,13 @@ begin
       Exit;
     if VPt = AK then
       Continue;
-    VIsVar := Pos(CO, VPt) <> 0;
+    VIsVar := Pos(CO, VPt) = 1;
+    VIsSuf := Pos(AK, VPt) = 1;
     if VIsVar then
       Result := not (((VPa = ES) and (VPt <> ES)) or ((VPa <> ES) and (VPt = ES)))
+    else
+    if VIsSuf then
+      Result := True
     else
       Result := VPa = VPt;
     if not Result then
@@ -549,13 +555,19 @@ begin
       ARedirect := False;
       Exit;
     end;
-    if not VIsVar then
+    if not VIsVar and not VIsSuf then
       Continue;
     SetLength(ANames, VCount);
     SetLength(AValues, VCount);
-    ANames[VCount - 1] := Copy(VPt, 2, MaxInt);
-    AValues[VCount - 1] := VPa;
-    Inc(VCount);
+    if VIsVar then begin
+      ANames[VCount - 1] := Copy(VPt, 2, MaxInt);
+      AValues[VCount - 1] := VPa;
+      Inc(VCount);
+    end else begin
+      ANames[VCount - 1] := Copy(VPt, 2, MaxInt);
+      AValues[VCount - 1] := Copy(APathInfo, 1+Length(VRPa)-Length(VPa)+1, MaxInt);
+      Exit;
+    end;
   end;
   if VPtDelim then
     ARedirect := not VPaDelim
