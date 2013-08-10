@@ -643,11 +643,11 @@ begin
       else
         raise EBrookHTTP404.Create(ARequest.PathInfo);
   end;
-  VAct := TBrookRouter.DoCreateAction(VActClass);
+  VAct := DoCreateAction(VActClass);
   try
-    TBrookRouter.DoExecuteAction(VAct, ARequest, AResponse, VNames, VValues);
+    DoExecuteAction(VAct, ARequest, AResponse, VNames, VValues);
   finally
-    TBrookRouter.DoFreeAction(VAct);
+    DoFreeAction(VAct);
   end;
 end;
 
