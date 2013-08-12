@@ -493,86 +493,159 @@ end;
 
 function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
   ARedirect: Boolean; out ANames, AValues: TBrookArrayOfString): Boolean;
+
+  procedure BrookExtractNextPathLevel(var ALeftPart: string;
+    var ALvl: string; var ARightPart: string; const ADelimiter: Char = US);
+  var
+    P: Integer;
+  begin
+    if ALvl<>ADelimiter then begin
+      ALeftPart := ALeftPart + ALvl;
+      if BrookStartsChar(ADelimiter, ARightPart) then begin
+        ALeftPart := ALeftPart + ADelimiter;
+        Delete(ARightPart, 1, 1);
+      end;
+    end;
+    P := Pos(ADelimiter, ARightPart);
+    if P = 0 then
+      P := Length(ARightPart) + 1;
+    ALvl := Copy(ARightPart, 1, P - 1);
+    ARightPart := Copy(ARightPart, P, MaxInt);
+  end;
+
+  procedure BrookExtractPrevPathLevel(var ALeftPart: string;
+    var ALvl: string; var ARightPart: string; const ADelimiter: Char = US);
+  var
+    P: Integer;
+  begin
+    if ALvl<>ADelimiter then begin
+      ARightPart := ALvl + ARightPart;
+      if BrookEndsChar(ADelimiter, ALeftPart) then begin
+        ARightPart := ADelimiter + ARightPart;
+        Delete(ALeftPart, Length(ALeftPart), 1);
+      end;
+    end;
+    P := RPos(ADelimiter, ALeftPart);
+    ALvl := Copy(ALeftPart, P + 1, MaxInt);
+    ALeftPart := Copy(ALeftPart, 1, P);
+  end;
 var
   VCount: Integer;
-  VPt, VPa, VRPt, VRPa: string;
-  VPtDelim, VPaDelim, VIsVar, VIsSuf: Boolean;
+  VLeftPat, VRightPat: string;
+  VLeftVal, VRightVal: string;
+  VVal, VPat: string;
+  VName: string;
 begin
   Result := False;
   ARedirect := False;
+  if APattern = ES then
+     Exit; // Maybe empty pattern should match any path?
   Delete(APattern, Pos(QU, APattern), MaxInt);
   Delete(APathInfo, Pos(QU, APathInfo), MaxInt);
-  if (APattern = '*/') or ((APathInfo = ES) and (APattern = US)) then
-  begin
-    Result := True;
-    ARedirect := True;
-    Exit;
-  end;
-  if ((APathInfo = ES) and (APattern = ES)) or
-    ((APathInfo = US) and (APattern = US)) or (APattern = AK) then
-  begin
-    Result := True;
-    Exit;
-  end;
-  if (APathInfo = US) and (APattern = ES) then
-    Exit;
-  VPa := ES;
-  VPt := ES;
-  VRPa := ES;
-  VRPt := ES;
-  VPaDelim := False;
-  VPtDelim := False;
+  if BrookStartsChar(US, APattern) then
+    Delete(APattern, 1, 1);
+  if BrookStartsChar(US, APathInfo) then
+    Delete(APathInfo, 1, 1);
+
+  VLeftPat := ES;
+  VLeftVal := ES;
+  VPat := US; // init value is '/', not ''
+  VVal := US; // init value is '/', not ''
+  VRightPat := APattern;
+  VRightVal := APathInfo;
   VCount := 1;
-  while True do
-  begin
-    BrookExtractPathLevels(APattern, VRPt, VPt, VPtDelim);
-    BrookExtractPathLevels(APathInfo, VRPa, VPa, VPaDelim);
-    if VPa = ES then
-      if VPt <> ES then
-      begin
-        if Pos(AK, VPt) <> 1 then begin
+  repeat
+    // Extract next part
+    BrookExtractNextPathLevel(VLeftPat, VPat, VRightPat);
+    BrookExtractNextPathLevel(VLeftVal, VVal, VRightVal);
+
+    if BrookStartsChar(CO, VPat) then begin
+      // :field
+      SetLength(ANames, VCount);
+      SetLength(AValues, VCount);
+      ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
+      AValues[VCount - 1] := VVal;
+      Inc(VCount);
+    end else
+    if BrookStartsChar(AK, VPat) then begin
+      // *path
+      VName := Copy(VPat, 2, MaxInt);
+
+      VLeftPat := VRightPat;
+      VLeftVal := VVal + VRightVal;
+      VPat := US; // init value is '/', not ''
+      VVal := US; // init value is '/', not ''
+      VRightPat := ES;
+      VRightVal := ES;
+
+      {if AutoAddSlash then begin}
+      if BrookEndsChar(US, VLeftPat) and not BrookEndsChar(US, VLeftVal) then begin
+        Delete(VLeftPat, Length(VLeftPat), 1);
+        ARedirect := True; // Will be Redirect if match
+      end;
+      {end;}
+
+      repeat
+
+        // Extract backwards
+        BrookExtractPrevPathLevel(VLeftPat, VPat, VRightPat);
+        BrookExtractPrevPathLevel(VLeftVal, VVal, VRightVal);
+
+        if BrookStartsChar(CO, VPat) then begin
+          // *path/:field
+          SetLength(ANames, VCount);
+          SetLength(AValues, VCount);
+          ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
+          AValues[VCount - 1] := VVal;
+          Inc(VCount);
+        end else begin
+          // *path/const
+          if not ((VPat=ES) and (VLeftPat=ES)) and (VPat <> VVal) then begin
+            Result := False;
+            Exit;
+          end;
+        end;
+
+        // Check if we already done
+        if (VLeftPat = ES) or (VLeftVal = ES) then begin
+          if (VLeftPat = ES) then begin
+            SetLength(ANames, VCount);
+            SetLength(AValues, VCount);
+            ANames[VCount - 1] := VName;
+            AValues[VCount - 1] := VLeftVal + VVal;
+            Inc(VCount);
+            Result := True;
+            Exit;
+          end;
           Result := False;
           Exit;
         end;
-      end
-      else
-        Break;
-    if VPt = AK + AK then
-      Exit;
-    if VPt = AK then
-      Continue;
-    VIsVar := Pos(CO, VPt) = 1;
-    VIsSuf := Pos(AK, VPt) = 1;
-    if VIsVar then
-      Result := not (((VPa = ES) and (VPt <> ES)) or ((VPa <> ES) and (VPt = ES)))
-    else
-    if VIsSuf then
-      Result := True
-    else
-      Result := VPa = VPt;
-    if not Result then
-    begin
-      ARedirect := False;
-      Exit;
-    end;
-    if not VIsVar and not VIsSuf then
-      Continue;
-    SetLength(ANames, VCount);
-    SetLength(AValues, VCount);
-    if VIsVar then begin
-      ANames[VCount - 1] := Copy(VPt, 2, MaxInt);
-      AValues[VCount - 1] := VPa;
-      Inc(VCount);
+      until False;
     end else begin
-      ANames[VCount - 1] := Copy(VPt, 2, MaxInt);
-      AValues[VCount - 1] := Copy(APathInfo, 1+Length(VRPa)-Length(VPa)+1, MaxInt);
+      // const
+      if VPat <> VVal then begin
+        Result := False;
+        Exit;
+      end;
+    end;
+
+    // Check if we already done
+    if (VRightPat = ES) or (VRightVal = ES) then begin
+      if (VRightPat = ES) and (VRightVal = ES) then begin
+        Result := True;
+        Exit;
+      end else
+      {if AutoAddSlash then begin}
+      if (VRightPat = US) then begin
+        Result := True;
+        ARedirect := True;
+        Exit;
+      end;
+      {end;}
+      Result := False;
       Exit;
     end;
-  end;
-  if VPtDelim then
-    ARedirect := not VPaDelim
-  else
-    Result := VPaDelim = VPtDelim;
+  until False;
 end;
 
 procedure TBrookRouter.Route(ARequest: TRequest; AResponse: TResponse);

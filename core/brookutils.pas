@@ -104,9 +104,10 @@ var
     OnError: nil;
   );
 
-{ Get the next pathinfo level. }
-procedure BrookExtractPathLevels(S: string; var R: string; out ALvl: string;
-  out AEndDelim: Boolean; const ADelimiter: Char = US);
+{ Check whether a string starts with a given character. }
+function BrookStartsChar(Ch: char; S: string): boolean;
+{ Check whether a string ends with a given character. }
+function BrookEndsChar(Ch: char; S: string): boolean;
 { Get the path level passing the respective index. Exemple:
 
   @code(BrookGetPathLavel('/a/b/c/', 1)) = b. }
@@ -139,23 +140,14 @@ function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
 
 implementation
 
-procedure BrookExtractPathLevels(S: string; var R: string; out ALvl: string;
-  out AEndDelim: Boolean; const ADelimiter: Char = US);
-var
-  P, L: Integer;
+function BrookStartsChar(Ch: char; S: string): boolean;
 begin
-  L := Length(S);
-  AEndDelim := (S <> ES) and (S[L] = ADelimiter);
-  if AEndDelim then
-    Delete(S, L, 1);
-  if (S <> ES) and (S[1] = ADelimiter) then
-    Delete(S, 1, 1);
-  Delete(S, 1, Length(IncludeHTTPPathDelimiter(R)));
-  P := Pos(ADelimiter, S);
-  if P = 0 then
-    P := Length(S) + 1;
-  ALvl := Copy(S, 1, P - 1);
-  R := IncludeHTTPPathDelimiter(R) + ALvl;
+  Result := (Length(S)>0) and (S[1]=Ch);
+end;
+
+function BrookEndsChar(Ch: char; S: string): boolean;
+begin
+  Result := (Length(S)>0) and (S[Length(S)]=Ch);
 end;
 
 function BrookGetPathLevel(const APath: string; const AIndex: SizeInt;
