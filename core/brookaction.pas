@@ -71,57 +71,66 @@ type
     procedure FillValues(ANames, AValues: TBrookArrayOfString); virtual;
     { Registers an action.
 
-      @param(APattern Is an expression defining which URLs is allowed to call
-       an action.
+      @param(APattern Is an expression defining which URLs is used to call
+       an action. It is possible to use variables inside URLs:
 
-        @bold(*) -- Represents one single level in the current path. Examples:
-
-         @code(TMyAction.Register('*');)
-
-         Can be called  as:
-
-         http://localhost/cgi-bin/cgi1 @br
-         http://localhost/cgi-bin/cgi1/foo/ etc;
-
-         @code(TMyAction.Register('/home/*/download');)
-
-         Means that between "home" and "download", there is one level. The
-          following replacements could be done:
-
-         http://localhost/cgi-bin/cgi1/home/file/download @br
-         http://localhost/cgi-bin/cgi1/home/news/download
-
-        @bold(**) -- Represents one or more levels in the current path. Example:
-
-         @code(TMyAction.Register('/home/**/download');)
-
-         Means that between "home" and "download", one or more levels can be set.
-         The following replacements can be done:
-
-         http://localhost/cgi-bin/cgi1/home/file/download @br
-         http://localhost/cgi-bin/cgi1/home/file/id/25/download
-
-        @bold(/) -- Adds an slash to the end of the URL if does not exist.
-          Example:
-
-         @code(TMyAction.Register('/foo/');)
-
-         Can be called as
-         http://localhost/cgi-bin/cgi1/foo or http://localhost/cgi-bin/cgi1/foo/.
-         When called as http://localhost/cgi-bin/cgi1/foo, it will automatically
-         redirected to http://localhost/cgi-bin/cgi1/foo/.
-         If the pathinfo is different from @code(/foo) a 404 page is returned;
-
-        @bold(:) -- Creates variables URL. Their values can be read from the
-         property @link(Values). Example:
+       @definitionList(
+        @itemLabel(@bold(:name) -- Represents a variable that spans single URL
+         component between slashes.)
+        @item(Examples:
 
          @code(TMyAction.Register('/foo/:myvar');)
 
-         Creates the @code("myvar"), that can be  read from the property
-         @link(Values), e.g:
+         Value of a variable @code("myvar") can be read from the property
+         @link(Values), e.g.:
 
          @code(Write(Values['myvar'].AsString);)
 
+         Any number of variables can be combined:
+
+         @code(TMyAction.Register('/foo/:cat/:id');)
+        )
+        @itemLabel(@bold(*name) -- Represents a variable that spans one or more
+         levels between slashes in the current URL.)
+        @item(Examples:
+
+         @code(TMyAction.Register('/home/*path');)
+
+         Any of the following URLs will match:
+
+         http://localhost/cgi-bin/cgi1/home/file @br
+         http://localhost/cgi-bin/cgi1/home/dir/file @br
+         http://localhost/cgi-bin/cgi1/home/dir/subdir/file etc.
+
+         Variable @code(Values['path']) will receive @code('file'),
+         @code('dir/file') or @code('dir/subdir/file') correspondingly.
+
+         You can also add static text after variable part:
+
+         @code(TMyAction.Register('/home/*path/download');)
+
+         http://localhost/cgi-bin/cgi1/home/dir/file/download -- This will match, @br
+         http://localhost/cgi-bin/cgi1/home/dir/file/info -- but not this, because ending is different.
+
+         Multi-level variable can be combined with any number of single-level
+         variables in any order:
+
+         @code(TMyAction.Register('/home/user/:uid/file/*fpath/version/:vid/info');)
+
+         @bold(@italic(NOTE:)) Only one multi-level variable can be specified per URL.
+        )
+        @itemLabel(@bold(url/) -- Adds a slash to the end of the URL if does not exist.)
+        @item(Example:
+
+         @code(TMyAction.Register('/foo/');)
+
+         An action can be accessed as
+         http://localhost/cgi-bin/cgi1/foo or http://localhost/cgi-bin/cgi1/foo/.
+         When called as http://localhost/cgi-bin/cgi1/foo, it will be automatically
+         redirected to http://localhost/cgi-bin/cgi1/foo/.
+         If the pathinfo is different from @code(/foo) a 404 page is returned;
+        )
+       )
         @bold(@italic(NOTE:)) Two actions can't be registered with the same
         pattern except when they are called by means of different HTTP methods.
       )
