@@ -26,7 +26,7 @@ interface
 uses
   BrookClasses, BrookApplication, BrookException, BrookMessages, BrookConsts,
   BrookHTTPConsts, BrookRouter, BrookUtils, HTTPDefs, CustWeb, CustHTTPApp,
-  FPJSON, Classes, SysUtils, StrUtils;
+  FPHTTPServer, FPJSON, JSONParser, Classes, SysUtils, StrUtils;
 
 type
   TBrookHTTPApplication = class;
@@ -50,15 +50,38 @@ type
     function InitializeWebHandler: TWebHandler; override;
   end;
 
+  { TBrookHTTPConnectionRequest }
+
+  TBrookHTTPConnectionRequest = class(TFPHTTPConnectionRequest)
+  protected
+    procedure HandleUnknownEncoding(
+      const AContentType: string; AStream: TStream); override;
+  end;
+
+  { TBrookHTTPConnectionResponse }
+
+  TBrookHTTPConnectionResponse = class(TFPHTTPConnectionResponse)
+  end;
+
+ { TBrookEmbeddedHttpServer }
+
+  TBrookEmbeddedHttpServer = class(TEmbeddedHttpServer)
+  protected
+    function CreateRequest: TFPHTTPConnectionRequest; override;
+    function CreateResponse(ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse; override;
+  end;
+
   { TBrookHTTPServerHandler }
 
   TBrookHTTPServerHandler = class(TFPHTTPServerHandler)
   protected
     function FormatContentType: string;
+    function CreateServer: TEmbeddedHttpServer; override;
   public
     procedure HandleRequest(ARequest: TRequest; AResponse: TResponse); override;
     procedure ShowRequestException(R: TResponse; E: Exception); override;
   end;
+
 
 implementation
 
@@ -95,7 +118,75 @@ begin
   Result := TBrookHTTPServerHandler.Create(Self);
 end;
 
+procedure TBrookHTTPConnectionRequest.HandleUnknownEncoding(const AContentType: string;
+  AStream: TStream);
+
+  procedure ProcessJSONObject(AJSON: TJSONObject);
+  var
+    I: Integer;
+  begin
+    for I := 0 to Pred(AJSON.Count) do
+      ContentFields.Add(AJSON.Names[I] + EQ + AJSON.Items[I].AsString);
+  end;
+
+  procedure ProcessJSONArray(AJSON: TJSONArray);
+  var
+    I: Integer;
+  begin
+    for I := 0 to Pred(AJSON.Count) do
+      if AJSON[I].JSONType = jtObject then
+        ProcessJSONObject(AJSON.Objects[I])
+      else
+        raise Exception.CreateFmt('%s: Unsupported JSON format.', [ClassName]);
+  end;
+
+var
+  VJSON: TJSONData;
+  VParser: TJSONParser;
+begin
+  if Copy(AContentType, 1, Length(BROOK_HTTP_CONTENT_TYPE_APP_JSON)) =
+    BROOK_HTTP_CONTENT_TYPE_APP_JSON then
+    if BrookSettings.AcceptsJSONContent then
+    begin
+      AStream.Position := 0;
+      VParser := TJSONParser.Create(AStream);
+      try
+        VJSON := VParser.Parse;
+        case VJSON.JSONType of
+          jtArray: ProcessJSONArray(TJSONArray(VJSON));
+          jtObject: ProcessJSONObject(TJSONObject(VJSON));
+        else
+          raise Exception.CreateFmt('%s: Unsupported JSON format.', [ClassName]);
+        end;
+      finally
+        VJSON.Free;
+        VParser.Free;
+      end;
+    end
+    else
+      ProcessURLEncoded(AStream, ContentFields)
+  else
+    inherited HandleUnknownEncoding(AContentType, AStream);
+end;
+
+{ TBrookEmbeddedHttpServer }
+
+function TBrookEmbeddedHttpServer.CreateRequest: TFPHTTPConnectionRequest;
+begin
+  Result := TBrookHTTPConnectionRequest.Create;
+end;
+
+function TBrookEmbeddedHttpServer.CreateResponse(ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse;
+begin
+  Result := TBrookHTTPConnectionResponse.Create(ARequest);
+end;
+
 { TBrookHTTPServerHandler }
+
+function TBrookHTTPServerHandler.CreateServer: TEmbeddedHttpServer;
+begin
+  Result:=TBrookEmbeddedHttpServer.Create(Self);
+end;
 
 function TBrookHTTPServerHandler.FormatContentType: string;
 begin

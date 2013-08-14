@@ -215,6 +215,7 @@ begin
           raise Exception.CreateFmt('%s: Unsupported JSON format.', [ClassName]);
         end;
       finally
+        VJSON.Free;
         VParser.Free;
       end;
     end
