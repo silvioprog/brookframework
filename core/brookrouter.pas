@@ -494,7 +494,7 @@ end;
 function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
   ARedirect: Boolean; out ANames, AValues: TBrookArrayOfString): Boolean;
 
-  procedure BrookExtractNextPathLevel(var ALeftPart: string;
+  procedure ExtractNextPathLevel(var ALeftPart: string;
     var ALvl: string; var ARightPart: string; const ADelimiter: Char = US);
   var
     P: Integer;
@@ -513,7 +513,7 @@ function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
     ARightPart := Copy(ARightPart, P, MaxInt);
   end;
 
-  procedure BrookExtractPrevPathLevel(var ALeftPart: string;
+  procedure ExtractPrevPathLevel(var ALeftPart: string;
     var ALvl: string; var ARightPart: string; const ADelimiter: Char = US);
   var
     P: Integer;
@@ -556,8 +556,8 @@ begin
   VCount := 1;
   repeat
     // Extract next part
-    BrookExtractNextPathLevel(VLeftPat, VPat, VRightPat);
-    BrookExtractNextPathLevel(VLeftVal, VVal, VRightVal);
+    ExtractNextPathLevel(VLeftPat, VPat, VRightPat);
+    ExtractNextPathLevel(VLeftVal, VVal, VRightVal);
 
     if BrookStartsChar(CO, VPat) then begin
       // :field
@@ -588,8 +588,8 @@ begin
       repeat
 
         // Extract backwards
-        BrookExtractPrevPathLevel(VLeftPat, VPat, VRightPat);
-        BrookExtractPrevPathLevel(VLeftVal, VVal, VRightVal);
+        ExtractPrevPathLevel(VLeftPat, VPat, VRightPat);
+        ExtractPrevPathLevel(VLeftVal, VVal, VRightVal);
 
         if BrookStartsChar(CO, VPat) then begin
           // *path/:field
