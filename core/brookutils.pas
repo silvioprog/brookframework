@@ -105,9 +105,9 @@ var
   );
 
 { Check whether a string starts with a given character. }
-function BrookStartsChar(Ch: char; S: string): boolean;
+function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 { Check whether a string ends with a given character. }
-function BrookEndsChar(Ch: char; S: string): boolean;
+function BrookEndsChar(const Ch: Char; const S: string): Boolean;
 { Get the next pathinfo level. }
 procedure BrookExtractPathLevels(S: string; var R: string; out ALvl: string;
   out AEndDelim: Boolean; const ADelimiter: Char = US);
@@ -143,14 +143,14 @@ function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
 
 implementation
 
-function BrookStartsChar(Ch: char; S: string): boolean;
+function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 begin
-  Result := (Length(S)>0) and (S[1]=Ch);
+  Result := (Length(S) > 0) and (S[1] = Ch);
 end;
 
-function BrookEndsChar(Ch: char; S: string): boolean;
+function BrookEndsChar(const Ch: Char; const S: string): Boolean;
 begin
-  Result := (Length(S)>0) and (S[Length(S)]=Ch);
+  Result := (Length(S) > 0) and (S[Length(S)] = Ch);
 end;
 
 procedure BrookExtractPathLevels(S: string; var R: string; out ALvl: string;
