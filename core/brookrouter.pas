@@ -499,9 +499,11 @@ function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
   var
     P: Integer;
   begin
-    if ALvl<>ADelimiter then begin
+    if ALvl <> ADelimiter then
+    begin
       ALeftPart := ALeftPart + ALvl;
-      if BrookStartsChar(ADelimiter, ARightPart) then begin
+      if BrookStartsChar(ADelimiter, ARightPart) then
+      begin
         ALeftPart := ALeftPart + ADelimiter;
         Delete(ARightPart, 1, 1);
       end;
@@ -518,9 +520,11 @@ function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
   var
     P: Integer;
   begin
-    if ALvl<>ADelimiter then begin
+    if ALvl <> ADelimiter then
+    begin
       ARightPart := ALvl + ARightPart;
-      if BrookEndsChar(ADelimiter, ALeftPart) then begin
+      if BrookEndsChar(ADelimiter, ALeftPart) then
+      begin
         ARightPart := ADelimiter + ARightPart;
         Delete(ALeftPart, Length(ALeftPart), 1);
       end;
@@ -529,12 +533,10 @@ function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
     ALvl := Copy(ALeftPart, P + 1, MaxInt);
     ALeftPart := Copy(ALeftPart, 1, P);
   end;
+
 var
   VCount: Integer;
-  VLeftPat, VRightPat: string;
-  VLeftVal, VRightVal: string;
-  VVal, VPat: string;
-  VName: string;
+  VLeftPat, VRightPat, VLeftVal, VRightVal, VVal, VPat, VName: string;
 begin
   Result := False;
   ARedirect := False;
@@ -546,7 +548,6 @@ begin
     Delete(APattern, 1, 1);
   if BrookStartsChar(US, APathInfo) then
     Delete(APathInfo, 1, 1);
-
   VLeftPat := ES;
   VLeftVal := ES;
   VPat := US; // init value is '/', not ''
@@ -558,90 +559,93 @@ begin
     // Extract next part
     ExtractNextPathLevel(VLeftPat, VPat, VRightPat);
     ExtractNextPathLevel(VLeftVal, VVal, VRightVal);
-
-    if BrookStartsChar(CO, VPat) then begin
+    if BrookStartsChar(CO, VPat) then
+    begin
       // :field
       SetLength(ANames, VCount);
       SetLength(AValues, VCount);
       ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
       AValues[VCount - 1] := VVal;
       Inc(VCount);
-    end else
-    if BrookStartsChar(AK, VPat) then begin
-      // *path
-      VName := Copy(VPat, 2, MaxInt);
-
-      VLeftPat := VRightPat;
-      VLeftVal := VVal + VRightVal;
-      VPat := US; // init value is '/', not ''
-      VVal := US; // init value is '/', not ''
-      VRightPat := ES;
-      VRightVal := ES;
-
-      {if AutoAddSlash then begin}
-      if BrookEndsChar(US, VLeftPat) and not BrookEndsChar(US, VLeftVal) then begin
-        Delete(VLeftPat, Length(VLeftPat), 1);
-        ARedirect := True; // Will be Redirect if match
-      end;
-      {end;}
-
-      repeat
-
-        // Extract backwards
-        ExtractPrevPathLevel(VLeftPat, VPat, VRightPat);
-        ExtractPrevPathLevel(VLeftVal, VVal, VRightVal);
-
-        if BrookStartsChar(CO, VPat) then begin
-          // *path/:field
-          SetLength(ANames, VCount);
-          SetLength(AValues, VCount);
-          ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
-          AValues[VCount - 1] := VVal;
-          Inc(VCount);
-        end else begin
-          // *path/const
-          if not ((VPat=ES) and (VLeftPat=ES)) and (VPat <> VVal) then begin
+    end
+    else
+      if BrookStartsChar(AK, VPat) then
+      begin
+        // *path
+        VName := Copy(VPat, 2, MaxInt);
+        VLeftPat := VRightPat;
+        VLeftVal := VVal + VRightVal;
+        VPat := US; // init value is '/', not ''
+        VVal := US; // init value is '/', not ''
+        VRightPat := ES;
+        VRightVal := ES;
+        // if AutoAddSlash ...
+        if BrookEndsChar(US, VLeftPat) and not BrookEndsChar(US, VLeftVal) then
+        begin
+          Delete(VLeftPat, Length(VLeftPat), 1);
+          ARedirect := True; // Will be Redirect if match
+        end;
+        repeat
+          // Extract backwards
+          ExtractPrevPathLevel(VLeftPat, VPat, VRightPat);
+          ExtractPrevPathLevel(VLeftVal, VVal, VRightVal);
+          if BrookStartsChar(CO, VPat) then
+          begin
+            // *path/:field
+            SetLength(ANames, VCount);
+            SetLength(AValues, VCount);
+            ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
+            AValues[VCount - 1] := VVal;
+            Inc(VCount);
+          end
+          else
+            // *path/const
+            if not ((VPat = ES) and (VLeftPat = ES)) and (VPat <> VVal) then
+            begin
+              Result := False;
+              Exit;
+            end;
+          // Check if we already done
+          if (VLeftPat = ES) or (VLeftVal = ES) then
+          begin
+            if VLeftPat = ES then
+            begin
+              SetLength(ANames, VCount);
+              SetLength(AValues, VCount);
+              ANames[VCount - 1] := VName;
+              AValues[VCount - 1] := VLeftVal + VVal;
+              Inc(VCount);
+              Result := True;
+              Exit;
+            end;
             Result := False;
             Exit;
           end;
-        end;
-
-        // Check if we already done
-        if (VLeftPat = ES) or (VLeftVal = ES) then begin
-          if (VLeftPat = ES) then begin
-            SetLength(ANames, VCount);
-            SetLength(AValues, VCount);
-            ANames[VCount - 1] := VName;
-            AValues[VCount - 1] := VLeftVal + VVal;
-            Inc(VCount);
-            Result := True;
-            Exit;
-          end;
+        until False;
+      end
+      else
+        // const
+        if VPat <> VVal then
+        begin
           Result := False;
           Exit;
         end;
-      until False;
-    end else begin
-      // const
-      if VPat <> VVal then begin
-        Result := False;
-        Exit;
-      end;
-    end;
-
     // Check if we already done
-    if (VRightPat = ES) or (VRightVal = ES) then begin
-      if (VRightPat = ES) and (VRightVal = ES) then begin
+    if (VRightPat = ES) or (VRightVal = ES) then
+    begin
+      if (VRightPat = ES) and (VRightVal = ES) then
+      begin
         Result := True;
         Exit;
-      end else
-      {if AutoAddSlash then begin}
-      if (VRightPat = US) then begin
+      end
+      else
+      // if AutoAddSlash ...
+      if VRightPat = US then
+      begin
         Result := True;
         ARedirect := True;
         Exit;
       end;
-      {end;}
       Result := False;
       Exit;
     end;
