@@ -24,9 +24,9 @@ unit BrookFCLFCGIBroker;
 interface
 
 uses
-  BrookClasses, BrookApplication, BrookException, BrookMessages, BrookConsts,
-  BrookHTTPConsts, BrookRouter, BrookUtils, BrookHTTPDefsBroker, HTTPDefs,
-  CustWeb, CustFCGI, Classes, SysUtils, StrUtils;
+  BrookClasses, BrookApplication, BrookMessages, BrookConsts, BrookHTTPConsts,
+  BrookRouter, BrookUtils, BrookHTTPDefsBroker, HTTPDefs, CustWeb, CustFCGI,
+  Classes, SysUtils;
 
 type
   TBrookFCGIApplication = class;
@@ -164,9 +164,8 @@ end;
 procedure TBrookFCGIRequest.HandleUnknownEncoding(const AContentType: string;
   AStream: TStream);
 begin
-  if not BrookHandleUnknownEncoding(Self, AContentType, AStream) then begin
+  if not BrookHandleUnknownEncoding(Self, AContentType, AStream) then
     inherited HandleUnknownEncoding(AContentType, AStream);
-  end;
 end;
 
 { TBrookFCGIResponse }

@@ -24,9 +24,9 @@ unit BrookFCLHTTPAppBroker;
 interface
 
 uses
-  BrookClasses, BrookApplication, BrookException, BrookMessages, BrookConsts,
-  BrookHTTPConsts, BrookRouter, BrookUtils, BrookHTTPDefsBroker, HttpDefs,
-  CustWeb, CustHTTPApp, FPHTTPServer, Classes, SysUtils, StrUtils;
+  BrookClasses, BrookApplication, BrookMessages, BrookConsts, BrookRouter,
+  BrookUtils, BrookHTTPDefsBroker, HttpDefs, CustWeb, CustHTTPApp, FPHTTPServer,
+  Classes, SysUtils;
 
 type
   TBrookHTTPApplication = class;
@@ -68,7 +68,8 @@ type
   TBrookEmbeddedHttpServer = class(TEmbeddedHttpServer)
   protected
     function CreateRequest: TFPHTTPConnectionRequest; override;
-    function CreateResponse(ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse; override;
+    function CreateResponse(
+      ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse; override;
   end;
 
   { TBrookHTTPServerHandler }
@@ -119,12 +120,11 @@ end;
 
 { TBrookHTTPConnectionRequest }
 
-procedure TBrookHTTPConnectionRequest.HandleUnknownEncoding(const AContentType: string;
-  AStream: TStream);
+procedure TBrookHTTPConnectionRequest.HandleUnknownEncoding(
+  const AContentType: string; AStream: TStream);
 begin
-  if not BrookHandleUnknownEncoding(Self, AContentType, AStream) then begin
+  if not BrookHandleUnknownEncoding(Self, AContentType, AStream) then
     inherited HandleUnknownEncoding(AContentType, AStream);
-  end;
 end;
 
 { TBrookEmbeddedHttpServer }
@@ -134,7 +134,8 @@ begin
   Result := TBrookHTTPConnectionRequest.Create;
 end;
 
-function TBrookEmbeddedHttpServer.CreateResponse(ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse;
+function TBrookEmbeddedHttpServer.CreateResponse(
+  ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse;
 begin
   Result := TBrookHTTPConnectionResponse.Create(ARequest);
 end;
