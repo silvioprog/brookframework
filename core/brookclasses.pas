@@ -35,6 +35,9 @@ type
   TBrookObject = class(TObject)
   end;
 
+  { Is the main class for Brook. }
+  TBrookClass = class of TBrookObject;
+
   { Is the main interfaced object for Brook. }
   TBrookInterfacedObject = class(TInterfacedObject)
   end;
