@@ -33,19 +33,19 @@ type
   { Handles general exception in Brook. }
   EBrook = class(Exception)
   public
-    { Creates an instance of @code(EBrook ). }
+    { Creates an instance of @code(EBrook). }
     constructor Create(AInstance: TObject; const AMsg: string); overload;
-    { Creates an instance of @code(EBrook ). }
+    { Creates an instance of @code(EBrook). }
     constructor Create(AClass: TClass; const AMsg: string); overload;
-    { Creates an instance of @code(EBrook ). }
+    { Creates an instance of @code(EBrook). }
     constructor Create(AName: string; const AMsg: string); overload;
-    { Creates an instance of @code(EBrook ) with a formated message. }
+    { Creates an instance of @code(EBrook) with a formated message. }
     constructor CreateFmt(AInstance: TObject; const AMsg: string;
       const AArgs: array of const); overload;
-    { Creates an instance of @code(EBrook ) with a formated message. }
+    { Creates an instance of @code(EBrook) with a formated message. }
     constructor CreateFmt(AClass: TClass; const AMsg: string;
       const AArgs: array of const); overload;
-    { Creates an instance of @code(EBrook ) with a formated message. }
+    { Creates an instance of @code(EBrook) with a formated message. }
     constructor CreateFmt(AName: string; const AMsg: string;
       const AArgs: array of const); overload;
   end;
