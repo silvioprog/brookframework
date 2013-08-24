@@ -59,13 +59,25 @@ type
 implementation
 
 constructor EBrook.Create(AInstance: TObject; const AMsg: string);
+var
+  VClassName: string;
 begin
-  inherited CreateFmt(BROOK_ERROR_MASK, [AInstance.ClassName, AMsg]);
+  if Assigned(AInstance) then
+    VClassName := AInstance.ClassName
+  else
+    VClassName := ES;
+  inherited CreateFmt(BROOK_ERROR_MASK, [VClassName, AMsg]);
 end;
 
 constructor EBrook.Create(AClass: TClass; const AMsg: string);
+var
+  VClassName: string;
 begin
-  inherited CreateFmt(BROOK_ERROR_MASK, [AClass.ClassName, AMsg]);
+  if Assigned(AClass) then
+    VClassName := AClass.ClassName
+  else
+    VClassName := ES;
+  inherited CreateFmt(BROOK_ERROR_MASK, [VClassName, AMsg]);
 end;
 
 constructor EBrook.Create(AName: string; const AMsg: string);
@@ -75,16 +87,26 @@ end;
 
 constructor EBrook.CreateFmt(AInstance: TObject; const AMsg: string;
   const AArgs: array of const);
+var
+  VClassName: string;
 begin
-  inherited CreateFmt(Format(BROOK_ERROR_MASK,
-    [AInstance.ClassName, AMsg]), AArgs);
+  if Assigned(AInstance) then
+    VClassName := AInstance.ClassName
+  else
+    VClassName := ES;
+  inherited CreateFmt(Format(BROOK_ERROR_MASK, [VClassName, AMsg]), AArgs);
 end;
 
 constructor EBrook.CreateFmt(AClass: TClass; const AMsg: string;
   const AArgs: array of const);
+var
+  VClassName: string;
 begin
-  inherited CreateFmt(Format(BROOK_ERROR_MASK,
-    [AClass.ClassName, AMsg]), AArgs);
+  if Assigned(AClass) then
+    VClassName := AClass.ClassName
+  else
+    VClassName := ES;
+  inherited CreateFmt(Format(BROOK_ERROR_MASK, [VClassName, AMsg]), AArgs);
 end;
 
 constructor EBrook.CreateFmt(AName: string; const AMsg: string;
