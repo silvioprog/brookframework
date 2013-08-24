@@ -42,6 +42,7 @@ type
     FValues: TJSONObject;
     FRequest: TRequest;
     FResponse: TResponse;
+    function GetMethod: string;
   protected
     function CreateFields: TJSONObject; virtual;
     function CreateParams: TJSONObject; virtual;
@@ -326,6 +327,8 @@ initialization
     property Params: TJSONObject read FParams;
     { The list of variables received from parametrized URLs. }
     property Values: TJSONObject read FValues;
+    { Returns the HTTP request method. }
+    property Method: string read GetMethod;
   end;
 
 implementation
@@ -351,6 +354,11 @@ end;
 function TBrookAction.GetFiles: TUploadedFiles;
 begin
   Result := GetRequest.Files;
+end;
+
+function TBrookAction.GetMethod: string;
+begin
+  Result := FRequest.Method;
 end;
 
 function TBrookAction.CreateFields: TJSONObject;
