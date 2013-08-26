@@ -51,6 +51,8 @@ type
     procedure FreeParams; virtual;
     procedure FreeValues; virtual;
     function GetFiles: TUploadedFiles; virtual;
+    procedure SetRequest(ARequest: TRequest); virtual;
+    procedure SetResponse(AResponse: TResponse); virtual;
     function GetRequest: TRequest; virtual;
     function GetResponse: TResponse; virtual;
     procedure DoBeforeRequest({%H-}ARequest: TRequest;
@@ -356,6 +358,16 @@ begin
   Result := GetRequest.Files;
 end;
 
+procedure TBrookAction.SetRequest(ARequest: TRequest);
+begin
+  FRequest := ARequest;
+end;
+
+procedure TBrookAction.SetResponse(AResponse: TResponse);
+begin
+  FResponse := AResponse;
+end;
+
 function TBrookAction.GetMethod: string;
 begin
   Result := FRequest.Method;
@@ -411,8 +423,6 @@ end;
 
 procedure TBrookAction.DoRequest(ARequest: TRequest; AResponse: TResponse);
 begin
-  FRequest := ARequest;
-  FResponse := AResponse;
   DoBeforeRequest(ARequest, AResponse);
   Request(ARequest, AResponse);
   DoAfterRequest(ARequest, AResponse);
@@ -421,8 +431,6 @@ end;
 procedure TBrookAction.DoRequest(ARequest: TRequest; AResponse: TResponse;
   var AHandled: Boolean);
 begin
-  FRequest := ARequest;
-  FResponse := AResponse;
   DoBeforeRequest(ARequest, AResponse);
   if not AHandled then
     Request(ARequest, AResponse);
