@@ -54,6 +54,20 @@ type
   { Defines a pointer to the route item.}
   PBrookRoute = ^TBrookRoute;
 
+  { Is a type to @code(*MatchPattern) event. }
+  TBrookMatchPatternEvent = procedure(ASender: TObject;
+    APattern, APathInfo: string; out ARedirect: Boolean;
+    out ANames, AValues: TBrookArrayOfString) of object;
+
+  { Is a type to @code(*Route) event. }
+  TBrookRouteEvent = procedure(ASender: TObject; ARequest: TRequest;
+    AResponse: TResponse) of object;
+
+  { Is a type to @code(*ExecuteAction) event. }
+  TBrookExecuteActionEvent = procedure(ASender: TObject;
+    AAction: TBrookAction; ARoute: TBrookRoute;
+    var AHandled: Boolean) of object;
+
   { Defines a list of routes. }
   TBrookRoutes = class(TBrookObject)
   private
@@ -89,15 +103,22 @@ type
   { Provides features for the route handling. }
   TBrookRouter = class(TBrookObject)
   private
+    FAfterExecuteAction: TBrookExecuteActionEvent;
+    FAfterMatchPattern: TBrookMatchPatternEvent;
+    FAfterRoute: TBrookRouteEvent;
+    FBeforeExecuteAction: TBrookExecuteActionEvent;
+    FBeforeMatchPattern: TBrookMatchPatternEvent;
+    FBeforeRoute: TBrookRouteEvent;
+    FOnExecuteAction: TBrookExecuteActionEvent;
     FRoutes: TBrookRoutes;
   protected
-    class function CreateRoutes: TBrookRoutes; virtual;
-    class procedure FreeRoutes(ARoutes: TBrookRoutes); virtual;
-    class function DoCreateAction(
-      out AActionClass: TBrookActionClass): TBrookAction; virtual;
-    class procedure DoFreeAction(AAction: TBrookAction); virtual;
-    class procedure DoExecuteAction(AAction: TBrookAction; ARequest: TRequest;
-      AResponse: TResponse; ANames, AValues: TBrookArrayOfString); virtual;
+    function CreateRoutes: TBrookRoutes; virtual;
+    procedure FreeRoutes(ARoutes: TBrookRoutes); virtual;
+    function CreateAction(out AActionClass: TBrookActionClass): TBrookAction; virtual;
+    procedure FreeAction(AAction: TBrookAction); virtual;
+    procedure ExecuteAction(AAction: TBrookAction; ARequest: TRequest;
+      AResponse: TResponse; ANames, AValues: TBrookArrayOfString;
+      ARoute: TBrookRoute); virtual;
   public
     { Creates an instance of a @link(TBrookRouter) class. }
     constructor Create; virtual;
@@ -151,6 +172,27 @@ type
     procedure Route(ARequest: TRequest; AResponse: TResponse); virtual;
     { List of available routes. }
     property Routes: TBrookRoutes read FRoutes write FRoutes;
+    { Is triggered after the router executes a action. }
+    property AfterExecuteAction: TBrookExecuteActionEvent
+      read FAfterExecuteAction write FAfterExecuteAction;
+    { Is triggered after the router matches a pattern. }
+    property AfterMatchPattern: TBrookMatchPatternEvent
+      read FAfterMatchPattern write FAfterMatchPattern;
+    { Is triggered after the router is routing. }
+    property AfterRoute: TBrookRouteEvent read FAfterRoute
+      write FAfterRoute;
+    { Is triggered before the router executes a action. }
+    property BeforeExecuteAction: TBrookExecuteActionEvent
+      read FBeforeExecuteAction write FBeforeExecuteAction;
+    { Is triggered before the router matches a pattern. }
+    property BeforeMatchPattern: TBrookMatchPatternEvent
+      read FBeforeMatchPattern write FBeforeMatchPattern;
+    { Is triggered before the router is routing. }
+    property BeforeRoute: TBrookRouteEvent read FBeforeRoute
+      write FBeforeRoute;
+    { Is triggered when the router executes a action. }
+    property OnExecuteAction: TBrookExecuteActionEvent
+      read FOnExecuteAction write FOnExecuteAction;
   end;
 
 implementation
@@ -328,36 +370,49 @@ begin
   Result := _BrookRouterServiceClass;
 end;
 
-class function TBrookRouter.CreateRoutes: TBrookRoutes;
+function TBrookRouter.CreateRoutes: TBrookRoutes;
 begin
   Result := TBrookRoutes.Create;
 end;
 
-class procedure TBrookRouter.FreeRoutes(ARoutes: TBrookRoutes);
+procedure TBrookRouter.FreeRoutes(ARoutes: TBrookRoutes);
 begin
   FreeAndNil(ARoutes);
 end;
 
-class function TBrookRouter.DoCreateAction(
+function TBrookRouter.CreateAction(
   out AActionClass: TBrookActionClass): TBrookAction;
 begin
   Result := AActionClass.Create;
 end;
 
-class procedure TBrookRouter.DoFreeAction(AAction: TBrookAction);
+procedure TBrookRouter.FreeAction(AAction: TBrookAction);
 begin
   AAction.Free;
 end;
 
-class procedure TBrookRouter.DoExecuteAction(AAction: TBrookAction;
-  ARequest: TRequest; AResponse: TResponse; ANames, AValues: TBrookArrayOfString);
+procedure TBrookRouter.ExecuteAction(AAction: TBrookAction; ARequest: TRequest;
+  AResponse: TResponse; ANames, AValues: TBrookArrayOfString;
+  ARoute: TBrookRoute);
+var
+  VHandled: Boolean = False;
 begin
-  TLocalBrookAction(AAction).SetRequest(ARequest);
-  TLocalBrookAction(AAction).SetResponse(AResponse);
-  AAction.FillFields(ARequest);
-  AAction.FillParams(ARequest);
-  AAction.FillValues(ANames, AValues);
-  AAction.DoRequest(ARequest, AResponse);
+  if Assigned(FBeforeExecuteAction) then
+    FBeforeExecuteAction(Self, AAction, ARoute, VHandled);
+  if not VHandled then
+  begin
+    TLocalBrookAction(AAction).SetRequest(ARequest);
+    TLocalBrookAction(AAction).SetResponse(AResponse);
+    AAction.FillFields(ARequest);
+    AAction.FillParams(ARequest);
+    AAction.FillValues(ANames, AValues);
+  end;
+  if Assigned(FOnExecuteAction) then
+    FOnExecuteAction(Self, AAction, ARoute, VHandled);
+  if not VHandled then
+    AAction.DoRequest(ARequest, AResponse);
+  if Assigned(FAfterExecuteAction) then
+    FAfterExecuteAction(Self, AAction, ARoute, VHandled);
 end;
 
 class procedure TBrookRouter.RegisterService;
@@ -559,6 +614,8 @@ var
   VCount: Integer;
   VLeftPat, VRightPat, VLeftVal, VRightVal, VVal, VPat, VName: string;
 begin
+  if Assigned(FBeforeMatchPattern) then
+    FBeforeMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues);
   Result := False;
   ARedirect := False;
   if APattern = ES then
@@ -671,6 +728,8 @@ begin
       Exit;
     end;
   until False;
+  if Assigned(FAfterMatchPattern) then
+    FAfterMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues);
 end;
 
 procedure TBrookRouter.Route(ARequest: TRequest; AResponse: TResponse);
@@ -683,6 +742,8 @@ var
   VDefaultActClass: TBrookActionClass = nil;
   VRedirect, VMatchMethod, VMatchPattern: Boolean;
 begin
+  if Assigned(FBeforeRoute) then
+    FBeforeRoute(Self, ARequest, AResponse);
   C := FRoutes.List.Count;
   if C = 0 then
     raise EBrookRouter.Create(Self, SBrookNoRouteRegisteredError);
@@ -741,11 +802,13 @@ begin
       else
         raise EBrookHTTP404.Create(ARequest.PathInfo);
   end;
-  VAct := DoCreateAction(VActClass);
+  if Assigned(FAfterRoute) then
+    FAfterRoute(Self, ARequest, AResponse);
+  VAct := CreateAction(VActClass);
   try
-    DoExecuteAction(VAct, ARequest, AResponse, VNames, VValues);
+    ExecuteAction(VAct, ARequest, AResponse, VNames, VValues, PRoute^);
   finally
-    DoFreeAction(VAct);
+    FreeAction(VAct);
   end;
 end;
 
