@@ -307,6 +307,16 @@ begin
       VField.AsFloat := VData.AsFloat;
     if VField is TBooleanField then
       VField.AsBoolean := VData.AsBoolean;
+    if VField is TDateField then
+      if ADateAsString then
+        VField.AsDateTime := StrToDate(VData.AsString)
+      else
+        VField.AsDateTime := Trunc(VData.AsFloat);
+    if VField is TTimeField then
+      if ADateAsString then
+        VField.AsDateTime := StrToTime(VData.AsString)
+      else
+        VField.AsDateTime := Frac(VData.AsFloat);
     if VField is TDateTimeField then
       if ADateAsString then
         VField.AsDateTime := StrToDateTime(VData.AsString)
@@ -407,6 +417,16 @@ begin
       VParam.AsFloat := VData.AsFloat;
     if VFieldClass = TBooleanField then
       VParam.AsBoolean := VData.AsBoolean;
+    if VFieldClass = TDateField then
+      if ADateAsString then
+        VParam.AsDate := StrToDate(VData.AsString)
+      else
+        VParam.AsDate := Trunc(VData.AsFloat);
+    if VFieldClass = TTimeField then
+      if ADateAsString then
+        VParam.AsTime := StrToTime(VData.AsString)
+      else
+        VParam.AsTime := Frac(VData.AsFloat);
     if VFieldClass = TDateTimeField then
       if ADateAsString then
         VParam.AsDateTime := StrToDateTime(VData.AsString)
