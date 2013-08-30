@@ -9,7 +9,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="..\includes"/>
-        <OtherUnitFiles Value="..\brokers;..\core;..\helpers;$(FPCSrcDir)\packages\fcl-stl\src"/>
+        <OtherUnitFiles Value="..\brokers;..\core;..\helpers"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
