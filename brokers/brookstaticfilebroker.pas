@@ -32,7 +32,13 @@ procedure BrookStaticFileRegisterDirectory(ARequestPath, ADirectory: string);
 implementation
 
 uses
-  StrUtils, ghashmap, fpmimetypes, HTTPDefs, BrookAction;
+  StrUtils, 
+  {$if fpc_fullversion >= 20701}
+  ghashmap
+  {$else fpc_fullversion >= 20701}
+  fgl
+  {$endif fpc_fullversion >= 20701}
+  ,fpmimetypes, HTTPDefs, BrookAction;
 
 resourcestring
   SEmptyRequestPathErrMsg = 'Request path may not be empty.';
@@ -41,6 +47,7 @@ resourcestring
 
 type
 
+  {$if fpc_fullversion >= 20701}
   { TStringHash }
 
   TStringHash = class
@@ -48,6 +55,17 @@ type
   end;
 
   TRequestDirectoryMap = specialize THashmap<string, string, TStringHash>;
+  
+  {$else fpc_fullversion >= 20701}
+  
+  TStrMap = specialize TFPGMap<string, string>;
+  
+  TRequestDirectoryMap = class(TStrMap)
+  public
+    function Contains(const s: String): Boolean;
+  end;
+  
+  {$endif fpc_fullversion >= 20701}
 
   { TStaticFileAction }
 
@@ -58,6 +76,8 @@ type
 
 var
   RequestDirectoryMap: TRequestDirectoryMap;
+
+{$if fpc_fullversion >= 20701}
 
 { TStringHash }
 
@@ -70,6 +90,17 @@ begin
     Inc(Result, Ord(C));
   Result := Result mod N;
 end;
+
+{$else fpc_fullversion >= 20701}
+
+function TRequestDirectoryMap.Contains(const s: String): Boolean;
+var
+  dummy: Integer;
+begin
+  Result := inherited Find(s,dummy);
+end;
+
+{$endif fpc_fullversion >= 20701}
 
 { TStaticFileAction }
 
