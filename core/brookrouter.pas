@@ -65,8 +65,8 @@ type
 
   { Is a type to @code(*ExecuteAction) event. }
   TBrookExecuteActionEvent = procedure(ASender: TObject;
-    AAction: TBrookAction; ARoute: TBrookRoute;
-    var AHandled: Boolean) of object;
+    AAction: TBrookAction; ARequest: TRequest; AResponse: TResponse;
+    ARoute: TBrookRoute; var AHandled: Boolean) of object;
 
   { Defines a list of routes. }
   TBrookRoutes = class(TBrookObject)
@@ -400,7 +400,7 @@ begin
   AAction.SetRequest(ARequest);
   AAction.SetResponse(AResponse);
   if Assigned(FBeforeExecuteAction) then
-    FBeforeExecuteAction(Self, AAction, ARoute, VHandled);
+    FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
   if not VHandled then
   begin
     AAction.FillFields(ARequest);
@@ -408,11 +408,11 @@ begin
     AAction.FillValues(ANames, AValues);
   end;
   if Assigned(FOnExecuteAction) then
-    FOnExecuteAction(Self, AAction, ARoute, VHandled);
+    FOnExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
   if not VHandled then
     AAction.DoRequest(ARequest, AResponse);
   if Assigned(FAfterExecuteAction) then
-    FAfterExecuteAction(Self, AAction, ARoute, VHandled);
+    FAfterExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
 end;
 
 class procedure TBrookRouter.RegisterService;
