@@ -198,24 +198,24 @@ type
 implementation
 
 type
-  TLocalBrookAction = class(TBrookAction)
+  TLocalHelperBrookAction = class helper for TBrookAction
   public
-    procedure SetRequest(ARequest: TRequest); override;
-    procedure SetResponse(AResponse: TResponse); override;
+    procedure SetRequest(ARequest: TRequest);
+    procedure SetResponse(AResponse: TResponse);
   end;
 
 var
   _BrookRouterService: TBrookRouter = nil;
   _BrookRouterServiceClass: TBrookRouterClass = nil;
 
-{ TLocalBrookAction }
+{ TLocalHelperBrookAction }
 
-procedure TLocalBrookAction.SetRequest(ARequest: TRequest);
+procedure TLocalHelperBrookAction.SetRequest(ARequest: TRequest);
 begin
   inherited SetRequest(ARequest);
 end;
 
-procedure TLocalBrookAction.SetResponse(AResponse: TResponse);
+procedure TLocalHelperBrookAction.SetResponse(AResponse: TResponse);
 begin
   inherited SetResponse(AResponse);
 end;
@@ -397,12 +397,12 @@ procedure TBrookRouter.ExecuteAction(AAction: TBrookAction; ARequest: TRequest;
 var
   VHandled: Boolean = False;
 begin
+  AAction.SetRequest(ARequest);
+  AAction.SetResponse(AResponse);
   if Assigned(FBeforeExecuteAction) then
     FBeforeExecuteAction(Self, AAction, ARoute, VHandled);
   if not VHandled then
   begin
-    TLocalBrookAction(AAction).SetRequest(ARequest);
-    TLocalBrookAction(AAction).SetResponse(AResponse);
     AAction.FillFields(ARequest);
     AAction.FillParams(ARequest);
     AAction.FillValues(ANames, AValues);
