@@ -41,6 +41,7 @@ type
     destructor Destroy; override;
     function Instance: TObject;
     procedure Run;
+    procedure Terminate;
   end;
 
   { TBrookFCGIApplication }
@@ -107,6 +108,11 @@ begin
   if BrookSettings.Port <> 0 then
     FApp.Port := BrookSettings.Port;
   FApp.Run;
+end;
+
+procedure TBrookApplication.Terminate;
+begin
+  FApp.Terminate;
 end;
 
 { TBrookFCGIApplication }

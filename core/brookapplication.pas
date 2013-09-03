@@ -36,6 +36,8 @@ type
     function Instance: TObject;
     { Initializes and runs the application. }
     procedure Run;
+    { Terminates the application. }
+    procedure Terminate;
   end;
 
 { Returns the application instance. }

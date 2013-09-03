@@ -41,6 +41,7 @@ type
     destructor Destroy; override;
     function Instance: TObject;
     procedure Run;
+    procedure Terminate;
   end;
 
   { TBrookCGIApplication }
@@ -105,6 +106,11 @@ end;
 procedure TBrookApplication.Run;
 begin
   FApp.Run;
+end;
+
+procedure TBrookApplication.Terminate;
+begin
+  FApp.Terminate;
 end;
 
 { TBrookCGIApplication }

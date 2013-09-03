@@ -39,6 +39,7 @@ type
     constructor Create;
     function Instance: TObject;
     procedure Run;
+    procedure Terminate;
   end;
 
   { TBrookDaemonThread }
@@ -95,6 +96,11 @@ end;
 procedure TBrookDaemonApplication.Run;
 begin
   Application.Run;
+end;
+
+procedure TBrookDaemonApplication.Terminate;
+begin
+  Application.Terminate;
 end;
 
 { TBrookDaemonThread }
