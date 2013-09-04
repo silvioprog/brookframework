@@ -44,11 +44,13 @@ type
     function GetEOF: Boolean;
     function GetFieldDefs: TFieldDefs;
     function GetModified: Boolean;
+    function GetPosition: LongInt;
     function GetRow: TJSONObject;
     function GetRows: TJSONArray;
     function GetState: TDataSetState;
     procedure SetActive(AValue: Boolean);
     procedure SetAsJSON(AValue: TJSONStringType);
+    procedure SetPosition(AValue: LongInt);
   protected
     function GetFields: TFields; virtual; abstract;
     function GetParams: TParams; virtual; abstract;
@@ -169,8 +171,6 @@ type
     function FieldDef(const AName: string): TFieldDef; virtual; abstract;
     { Get the number of registers. }
     function Count: Int64;
-    { Get the position of the current register. }
-    function Position: Int64;
     { Creates a bookmark. }
     function GetBookmark: TBookmark;
     { Goes to a bookmark. }
@@ -209,6 +209,8 @@ type
     property Rows: TJSONArray read GetRows;
     { Returns the current register in a JSON object. }
     property Row: TJSONObject read GetRow;
+    { Get the position of the current register. }
+    property Position: LongInt read GetPosition write SetPosition;
   end;
 
 implementation
@@ -571,6 +573,11 @@ begin
   Result := DataSet.Modified;
 end;
 
+function TBrookQuery.GetPosition: LongInt;
+begin
+  Result := DataSet.RecNo;
+end;
+
 function TBrookQuery.GetRow: TJSONObject;
 begin
   GetRow(Result);
@@ -606,6 +613,11 @@ begin
     VArray.Free;
     VParser.Free;
   end;
+end;
+
+procedure TBrookQuery.SetPosition(AValue: LongInt);
+begin
+  DataSet.RecNo := AValue;
 end;
 
 procedure TBrookQuery.CheckJSONParam(AJSON: TJSONData);
@@ -785,11 +797,6 @@ end;
 function TBrookQuery.Count: Int64;
 begin
   Result := DataSet.RecordCount;
-end;
-
-function TBrookQuery.Position: Int64;
-begin
-  Result := DataSet.RecNo;
 end;
 
 class function TBrookQuery.Locate(ADataSet: TDataSet; const AJSON: TJSONObject;

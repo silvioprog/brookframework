@@ -57,6 +57,7 @@ type
     function GetFields: TFields;
     function GetModified: Boolean;
     function GetParams: TParams;
+    function GetPosition: LongInt;
     function GetRow: TJSONObject;
     function GetRows: TJSONArray;
     function GetState: TDataSetState;
@@ -65,6 +66,7 @@ type
     procedure SetDataBase(AValue: TBrookDataBase);
     procedure SetDataSource(AValue: TDataSource);
     procedure SetDateAsString(AValue: Boolean);
+    procedure SetPosition(AValue: LongInt);
   protected
     procedure CheckTableName;
     procedure CheckJSONParam(AJSON: TJSONData);
@@ -168,8 +170,6 @@ type
     function Conditions(AJSON: TJSONObject): TBrookTable;
     { Get the number of registers. }
     function Count: Int64;
-    { Get the position of the current register. }
-    function Position: Int64;
     { Get the number of changed registers.}
     function RowsAffected: TRowsCount;
     { Composes a SQL statement. }
@@ -229,6 +229,8 @@ type
     property Fields: TFields read GetFields;
     { Are the table parameters. }
     property Params: TParams read GetParams;
+    { Get the position of the current register. }
+    property Position: LongInt read GetPosition write SetPosition;
   end;
 
 implementation
@@ -350,6 +352,11 @@ begin
   Result := FQuery.Params;
 end;
 
+function TBrookTable.GetPosition: LongInt;
+begin
+  Result := FQuery.Position;
+end;
+
 function TBrookTable.GetRow: TJSONObject;
 begin
   Result := FQuery.Row;
@@ -388,6 +395,11 @@ end;
 procedure TBrookTable.SetDateAsString(AValue: Boolean);
 begin
   FQuery.DateAsString := AValue;
+end;
+
+procedure TBrookTable.SetPosition(AValue: LongInt);
+begin
+  FQuery.Position := AValue;
 end;
 
 procedure TBrookTable.CheckTableName;
@@ -656,11 +668,6 @@ end;
 function TBrookTable.Count: Int64;
 begin
   Result := FQuery.Count;
-end;
-
-function TBrookTable.Position: Int64;
-begin
-  Result := FQuery.Position;
 end;
 
 function TBrookTable.RowsAffected: TRowsCount;
