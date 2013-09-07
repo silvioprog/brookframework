@@ -270,8 +270,11 @@ begin
   for I := 0 to Pred(AJSON.Count) do
   begin
     VName := AJSON.Names[I];
-    AConditions += VName + BROOK_SQL_EQ_PARAM_TOKEN + VName + SP +
-      BROOK_SQL_AND_TOKEN + SP;
+    if AJSON.Items[I].IsNull then
+      AConditions += VName + SP + EQ + SP + NS + SP + BROOK_SQL_AND_TOKEN + SP
+    else
+      AConditions += VName + BROOK_SQL_EQ_PARAM_TOKEN + VName + SP +
+        BROOK_SQL_AND_TOKEN + SP;
   end;
   SetLength(AConditions, Length(AConditions) -
     Length(SP + BROOK_SQL_AND_TOKEN + SP));
