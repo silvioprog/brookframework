@@ -26,6 +26,8 @@ interface
 const
   { Empty string. }
   ES = '';
+  { Null string. }
+  NS = 'null';
   { BR HTML tag. }
   BR = '<br />';
   { Param separator. }
