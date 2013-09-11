@@ -278,8 +278,8 @@ class procedure TBrookQuery.JSONToFields(AJSON: TJSONObject; AFields: TFields;
 var
   I, J: Integer;
   VName: string;
-  VField: TField;
   VData: TJSONData;
+  VField: TField = nil;
 begin
   for I := 0 to Pred(AJSON.Count) do
   begin
@@ -382,8 +382,9 @@ class procedure TBrookQuery.JSONToParams(AJSON: TJSONObject; AParams: TParams;
 var
   I, J: Integer;
   VName: string;
-  VParam: TParam;
   VData: TJSONData;
+  VParam: TParam = nil;
+  VFieldDef: TFieldDef;
   VFieldClass: TFieldClass;
 begin
   for I := 0 to Pred(AJSON.Count) do
@@ -408,7 +409,11 @@ begin
     VParam.Clear;
     if VData.IsNull then
       Continue;
-    VFieldClass := AFieldDefs.Find(VName).FieldClass;
+    VFieldDef := AFieldDefs.Find(VName);
+    if Assigned(VFieldDef) then
+      VFieldClass := VFieldDef.FieldClass
+    else
+      Continue;
     if (VFieldClass = TStringField) or (VFieldClass = TBinaryField) or
       (VFieldClass = TBlobField) or (VFieldClass = TVariantField) then
       VParam.AsString := VData.AsString;
