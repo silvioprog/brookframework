@@ -14,7 +14,7 @@
 <p>
 Brook Router unit.
 
-<p>Copyright (C) 2012 Silvio Clecio.
+<p>Copyright (C) 2013 Silvio Clecio.
 
 <p><a  target="_parent" href="http://brookframework.org">http://brookframework.org</a>
 
@@ -63,6 +63,15 @@ Brook Router unit.
 <tr class="list">
 <td class="itemcode"><code><b><a   href="BrookRouter.html#PBrookRoute">PBrookRoute</a></b> = &circ;<a   href="BrookRouter.TBrookRoute.html">TBrookRoute</a>;</code></td>
 </tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookRouter.html#TBrookMatchPatternEvent">TBrookMatchPatternEvent</a></b> = procedure(ASender: TObject; APattern, APathInfo: string; out ARedirect: Boolean; out ANames, AValues: <a   href="BrookUtils.html#TBrookArrayOfString">TBrookArrayOfString</a>) of object;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookRouter.html#TBrookRouteEvent">TBrookRouteEvent</a></b> = procedure(ASender: TObject; ARequest: TRequest; AResponse: TResponse) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookRouter.html#TBrookExecuteActionEvent">TBrookExecuteActionEvent</a></b> = procedure(ASender: TObject; AAction: <a   href="BrookAction.TBrookAction.html">TBrookAction</a>; ARequest: TRequest; AResponse: TResponse; ARoute: <a   href="BrookRouter.TBrookRoute.html">TBrookRoute</a>; var AHandled: Boolean) of object;</code></td>
+</tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Types</h3>
@@ -91,6 +100,33 @@ Is a metaclass for <a class="normal"  href="BrookRouter.TBrookRouter.html">TBroo
 <tr><td colspan="1">
 <p>
 Defines a pointer to the route item.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TBrookMatchPatternEvent"></a><code><b>TBrookMatchPatternEvent</b> = procedure(ASender: TObject; APattern, APathInfo: string; out ARedirect: Boolean; out ANames, AValues: <a   href="BrookUtils.html#TBrookArrayOfString">TBrookArrayOfString</a>) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Is a type to <code>*MatchPattern</code> event.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TBrookRouteEvent"></a><code><b>TBrookRouteEvent</b> = procedure(ASender: TObject; ARequest: TRequest; AResponse: TResponse) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Is a type to <code>*Route</code> event.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TBrookExecuteActionEvent"></a><code><b>TBrookExecuteActionEvent</b> = procedure(ASender: TObject; AAction: <a   href="BrookAction.TBrookAction.html">TBrookAction</a>; ARequest: TRequest; AResponse: TResponse; ARoute: <a   href="BrookRouter.TBrookRoute.html">TBrookRoute</a>; var AHandled: Boolean) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Is a type to <code>*ExecuteAction</code> event.</p>
 </td></tr>
 </table>
 </body></html>

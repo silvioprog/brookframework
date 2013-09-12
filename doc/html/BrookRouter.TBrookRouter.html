@@ -35,53 +35,57 @@ Provides features for the route handling.</p>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class procedure <b><a   href="BrookRouter.TBrookRouter.html#RegisterService">RegisterService</a></b>;</code></td>
+<td class="itemcode"><code>class function <b><a   href="BrookRouter.TBrookRouter.html#GetServiceClass">GetServiceClass</a></b>: <a   href="BrookRouter.html#TBrookRouterClass">TBrookRouterClass</a>;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookRouter.TBrookRouter.html#RegisterService">RegisterService</a></b>;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class procedure <b><a   href="BrookRouter.TBrookRouter.html#UnregisterService">UnregisterService</a></b>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a   href="BrookRouter.TBrookRouter.html#Service">Service</a></b>: <a   href="BrookRouter.TBrookRouter.html">TBrookRouter</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a   href="BrookRouter.TBrookRouter.html#RootUrl">RootUrl</a></b>: string;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a   href="BrookRouter.TBrookRouter.html#RootUrl">RootUrl</a></b>(ARequest: TRequest): string;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class procedure <b><a   href="BrookRouter.TBrookRouter.html#MethodNotAllowed">MethodNotAllowed</a></b>(AResponse: TResponse);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookRouter.TBrookRouter.html#UrlFor">UrlFor</a></b>(AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: array of string): string; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookRouter.TBrookRouter.html#UrlFor">UrlFor</a></b>(AClassName: string; const AParams: array of string): string; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookRouter.TBrookRouter.html#UrlFor">UrlFor</a></b>(AActionClass: <a   href="BrookAction.html#TBrookActionClass">TBrookActionClass</a>; const AParams: TJSONData): string; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookRouter.TBrookRouter.html#UrlFor">UrlFor</a></b>(AClassName: string; const AParams: TJSONData): string; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookRouter.TBrookRouter.html#Canonicalize">Canonicalize</a></b>(ARequest: TRequest; AResponse: TResponse): Boolean;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookRouter.TBrookRouter.html#MatchPattern">MatchPattern</a></b>(APattern, APathInfo: string; out ARedirect: Boolean; out ANames, AValues: <a   href="BrookUtils.html#TBrookArrayOfString">TBrookArrayOfString</a>): Boolean; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookRouter.TBrookRouter.html#Route">Route</a></b>(ARequest: TRequest; AResponse: TResponse); virtual;</code></td>
 </tr>
@@ -94,11 +98,38 @@ Provides features for the route handling.</p>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#CurrentAction">CurrentAction</a></b>: <a   href="BrookAction.TBrookAction.html">TBrookAction</a> read FCurrentAction;</code></td>
+<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#AfterExecuteAction">AfterExecuteAction</a></b>: <a   href="BrookRouter.html#TBrookExecuteActionEvent">TBrookExecuteActionEvent</a>
+      read FAfterExecuteAction write FAfterExecuteAction;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#CurrentRoute">CurrentRoute</a></b>: <a   href="BrookRouter.TBrookRoute.html">TBrookRoute</a> read FCurrentRoute;</code></td>
+<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#AfterMatchPattern">AfterMatchPattern</a></b>: <a   href="BrookRouter.html#TBrookMatchPatternEvent">TBrookMatchPatternEvent</a>
+      read FAfterMatchPattern write FAfterMatchPattern;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#AfterRoute">AfterRoute</a></b>: <a   href="BrookRouter.html#TBrookRouteEvent">TBrookRouteEvent</a> read FAfterRoute
+      write FAfterRoute;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#BeforeExecuteAction">BeforeExecuteAction</a></b>: <a   href="BrookRouter.html#TBrookExecuteActionEvent">TBrookExecuteActionEvent</a>
+      read FBeforeExecuteAction write FBeforeExecuteAction;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#BeforeMatchPattern">BeforeMatchPattern</a></b>: <a   href="BrookRouter.html#TBrookMatchPatternEvent">TBrookMatchPatternEvent</a>
+      read FBeforeMatchPattern write FBeforeMatchPattern;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#BeforeRoute">BeforeRoute</a></b>: <a   href="BrookRouter.html#TBrookRouteEvent">TBrookRouteEvent</a> read FBeforeRoute
+      write FBeforeRoute;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookRouter.TBrookRouter.html#OnExecuteAction">OnExecuteAction</a></b>: <a   href="BrookRouter.html#TBrookExecuteActionEvent">TBrookExecuteActionEvent</a>
+      read FOnExecuteAction write FOnExecuteAction;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
@@ -121,6 +152,16 @@ Creates an instance of a <a class="normal"  href="BrookRouter.TBrookRouter.html"
 <tr><td colspan="2">
 <p>
 Frees an instance of <a class="normal"  href="BrookRouter.TBrookRouter.html">TBrookRouter</a> class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetServiceClass"></a><code>class function <b>GetServiceClass</b>: <a   href="BrookRouter.html#TBrookRouterClass">TBrookRouterClass</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Return the service class provided by this class.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -282,21 +323,78 @@ List of available routes.</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="CurrentAction"></a><code>property <b>CurrentAction</b>: <a   href="BrookAction.TBrookAction.html">TBrookAction</a> read FCurrentAction;</code></td>
+<td class="itemcode"><a name="AfterExecuteAction"></a><code>property <b>AfterExecuteAction</b>: <a   href="BrookRouter.html#TBrookExecuteActionEvent">TBrookExecuteActionEvent</a>
+      read FAfterExecuteAction write FAfterExecuteAction;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-The current action.</p>
+Is triggered after the router executes a action.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="CurrentRoute"></a><code>property <b>CurrentRoute</b>: <a   href="BrookRouter.TBrookRoute.html">TBrookRoute</a> read FCurrentRoute;</code></td>
+<td class="itemcode"><a name="AfterMatchPattern"></a><code>property <b>AfterMatchPattern</b>: <a   href="BrookRouter.html#TBrookMatchPatternEvent">TBrookMatchPatternEvent</a>
+      read FAfterMatchPattern write FAfterMatchPattern;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
-The current route.</p>
+Is triggered after the router matches a pattern.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AfterRoute"></a><code>property <b>AfterRoute</b>: <a   href="BrookRouter.html#TBrookRouteEvent">TBrookRouteEvent</a> read FAfterRoute
+      write FAfterRoute;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is triggered after the router is routing.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="BeforeExecuteAction"></a><code>property <b>BeforeExecuteAction</b>: <a   href="BrookRouter.html#TBrookExecuteActionEvent">TBrookExecuteActionEvent</a>
+      read FBeforeExecuteAction write FBeforeExecuteAction;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is triggered before the router executes a action.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="BeforeMatchPattern"></a><code>property <b>BeforeMatchPattern</b>: <a   href="BrookRouter.html#TBrookMatchPatternEvent">TBrookMatchPatternEvent</a>
+      read FBeforeMatchPattern write FBeforeMatchPattern;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is triggered before the router matches a pattern.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="BeforeRoute"></a><code>property <b>BeforeRoute</b>: <a   href="BrookRouter.html#TBrookRouteEvent">TBrookRouteEvent</a> read FBeforeRoute
+      write FBeforeRoute;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is triggered before the router is routing.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OnExecuteAction"></a><code>property <b>OnExecuteAction</b>: <a   href="BrookRouter.html#TBrookExecuteActionEvent">TBrookExecuteActionEvent</a>
+      read FOnExecuteAction write FOnExecuteAction;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Is triggered when the router executes a action.</p>
 </td></tr>
 </table>
 </body></html>

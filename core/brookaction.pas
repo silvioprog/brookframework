@@ -206,7 +206,7 @@ initialization
     function UrlFor(AActionClass: TBrookActionClass;
       const AParams: array of string): string; overload;
     { Creates an URL for an action passing an array of parameters however
-      informing the class name as string }
+      informing the class name as string. }
     function UrlFor(AClassName: string;
       const AParams: array of string): string; overload;
     { Creates an URL for an action informing the class name as string. }

@@ -38,7 +38,13 @@ Stores the Brook configurations.</p>
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Page404">Page404</a></b>: string;</code></td>
 </tr>
 <tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Page404File">Page404File</a></b>: string;</code></td>
+</tr>
+<tr class="list">
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Page500">Page500</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Page500File">Page500File</a></b>: string;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#DirectoryForUploads">DirectoryForUploads</a></b>: string;</code></td>
@@ -47,13 +53,19 @@ Stores the Brook configurations.</p>
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#DeleteUploadedFiles">DeleteUploadedFiles</a></b>: Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#AcceptsJSONContent">AcceptsJSONContent</a></b>: Boolean;</code></td>
+<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#KeepUploadedNames">KeepUploadedNames</a></b>: Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Configuration">Configuration</a></b>: string;</code></td>
+<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#AcceptsJSONContent">AcceptsJSONContent</a></b>: Boolean;</code></td>
 </tr>
 <tr class="list">
+<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Configuration">Configuration</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#RootUrl">RootUrl</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#Port">Port</a></b>: Word;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><b><a   href="BrookUtils.TBrookSettings.html#OnError">OnError</a></b>: TOnShowRequestException;</code></td>
@@ -103,7 +115,16 @@ Set the default application Language.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Set the 404 HTML page. It can be a HTML string, a file pack, a JSON string, etc.</p>
+Set the 404 HTML page. The string will be sent as is.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Page404File"></a><code><b>Page404File</b>: string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Set the 404 HTML page file. The file content will be sent. This has higher precedence than <code>TBrookSettings.Page404</code> so when both are set, this will be processed first and only if the file is not found or cannot be read the system will fallback to <code>TBrookSettings.Page404</code></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -112,7 +133,16 @@ Set the 404 HTML page. It can be a HTML string, a file pack, a JSON string, etc.
 </tr>
 <tr><td colspan="1">
 <p>
-Set the 500 HTML page. It can be a HTML string, a file pack, a JSON string, etc.</p>
+Set the 500 HTML page. The string will be sent as is.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Page500File"></a><code><b>Page500File</b>: string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Set the 500 HTML page file. The file content will be sent. This has higher precedence than <code>TBrookSettings.Page500</code> so when both are set, this will be processed first and only if the file is not found or cannot be read the system will fallback to <code>TBrookSettings.Page500</code></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -131,6 +161,15 @@ Set the default directory for uploads.</p>
 <tr><td colspan="1">
 <p>
 Defines if the temporary uploaded files will be deleted.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="KeepUploadedNames"></a><code><b>KeepUploadedNames</b>: Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Keeps the original name of the uploaded files.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -158,6 +197,15 @@ Set a configuration for the application or for its object members.</p>
 <tr><td colspan="1">
 <p>
 Set the default root URL. This is used by methods such as <code>TBrookAction.UrlFor</code>, <code>TBrookActionHelper.LinkTo</code>, <code>TBrookActionHelper.ButtonTo</code> etc. By default, Brook assumes <code>SCRIPT_NAME</code> as root URL.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="Port"></a><code><b>Port</b>: Word;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Set the default application port.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">

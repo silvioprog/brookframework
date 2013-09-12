@@ -14,7 +14,7 @@
 <p>
 Brook HTTP consts.
 
-<p>Copyright (C) 2012 Silvio Clecio.
+<p>Copyright (C) 2013 Silvio Clecio.
 
 <p><a  target="_parent" href="http://brookframework.org">http://brookframework.org</a>
 
@@ -599,6 +599,19 @@ Brook HTTP consts.
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a   href="BrookHTTPConsts.html#BROOK_CLT_ENV_HTTP_X_REQUESTED_WITH">BROOK_CLT_ENV_HTTP_X_REQUESTED_WITH</a></b> = 'HTTP_X_REQUESTED_WITH';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="BrookHTTPConsts.html#BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND">BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND</a></b> =
+    '&lt;html&gt;&lt;head&gt;&lt;title&gt;Page not found&lt;/title&gt;&lt;/head&gt;&lt;body&gt;' +
+    '&lt;h1&gt;404 - Page not found&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="BrookHTTPConsts.html#BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR">BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR</a></b> =
+    '&lt;html&gt;&lt;head&gt;&lt;title&gt;Internal server error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;' +
+    '&lt;h1&gt;500 - Internal server error&lt;/h1&gt;' +
+    '&lt;p style=&quot;color: red;&quot; &gt;Error: @error&lt;/p&gt;' +
+
+    '&lt;/body&gt;&lt;/html&gt;';</code></td>
 </tr>
 </table>
 <a name="%40Variables"></a><h3 class="summary">Variables</h3>
@@ -1942,6 +1955,27 @@ Brook HTTP consts.
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="BROOK_CLT_ENV_HTTP_X_REQUESTED_WITH"></a><code><b>BROOK_CLT_ENV_HTTP_X_REQUESTED_WITH</b> = 'HTTP_X_REQUESTED_WITH';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND"></a><code><b>BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND</b> =
+    '&lt;html&gt;&lt;head&gt;&lt;title&gt;Page not found&lt;/title&gt;&lt;/head&gt;&lt;body&gt;' +
+    '&lt;h1&gt;404 - Page not found&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR"></a><code><b>BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR</b> =
+    '&lt;html&gt;&lt;head&gt;&lt;title&gt;Internal server error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;' +
+    '&lt;h1&gt;500 - Internal server error&lt;/h1&gt;' +
+    '&lt;p style=&quot;color: red;&quot; &gt;Error: @error&lt;/p&gt;' +
+
+    '&lt;/body&gt;&lt;/html&gt;';</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>

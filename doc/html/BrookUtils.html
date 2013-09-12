@@ -14,7 +14,7 @@
 <p>
 Brook Utils unit.
 
-<p>Copyright (C) 2012 Silvio Clecio.
+<p>Copyright (C) 2013 Silvio Clecio.
 
 <p><a  target="_parent" href="http://brookframework.org">http://brookframework.org</a>
 
@@ -38,6 +38,12 @@ Brook Utils unit.
 </table>
 <a name="%40FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookStartsChar">BrookStartsChar</a></b>(const Ch: Char; const S: string): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="BrookUtils.html#BrookEndsChar">BrookEndsChar</a></b>(const Ch: Char; const S: string): Boolean;</code></td>
+</tr>
 <tr class="list">
 <td class="itemcode"><code>procedure <b><a   href="BrookUtils.html#BrookExtractPathLevels">BrookExtractPathLevels</a></b>(S: string; var R: string; out ALvl: string; out AEndDelim: Boolean; const ADelimiter: Char = <a   href="BrookConsts.html#US">US</a>);</code></td>
 </tr>
@@ -86,19 +92,41 @@ Brook Utils unit.
     Charset: <a   href="BrookHTTPConsts.html#BROOK_HTTP_CHARSET_UTF_8">BROOK_HTTP_CHARSET_UTF_8</a>;
     ContentType: <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_TEXT_HTML">BROOK_HTTP_CONTENT_TYPE_TEXT_HTML</a>;
     Language: <a   href="BrookConsts.html#BROOK_DEFAULT_LANGUAGE">BROOK_DEFAULT_LANGUAGE</a>;
-    Page404: <a   href="BrookConsts.html#ES">ES</a>;
-    Page500: <a   href="BrookConsts.html#ES">ES</a>;
+    Page404: <a   href="BrookHTTPConsts.html#BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND">BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND</a>;
+    Page404File: <a   href="BrookConsts.html#ES">ES</a>;
+    Page500: <a   href="BrookHTTPConsts.html#BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR">BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR</a>;
+    Page500File: <a   href="BrookConsts.html#ES">ES</a>;
     DirectoryForUploads: <a   href="BrookConsts.html#ES">ES</a>;
     DeleteUploadedFiles: False;
+    KeepUploadedNames: True;
     AcceptsJSONContent: False;
     Configuration: <a   href="BrookConsts.html#ES">ES</a>;
     RootUrl: <a   href="BrookConsts.html#ES">ES</a>;
+    Port: 0;
     OnError: nil;
   );</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookStartsChar"></a><code>function <b>BrookStartsChar</b>(const Ch: Char; const S: string): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Check whether a string starts with a given character.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="BrookEndsChar"></a><code>function <b>BrookEndsChar</b>(const Ch: Char; const S: string): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Check whether a string ends with a given character.</p>
+</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="BrookExtractPathLevels"></a><code>procedure <b>BrookExtractPathLevels</b>(S: string; var R: string; out ALvl: string; out AEndDelim: Boolean; const ADelimiter: Char = <a   href="BrookConsts.html#US">US</a>);</code></td>
@@ -241,13 +269,17 @@ rmTrace: &nbsp;</li>
     Charset: <a   href="BrookHTTPConsts.html#BROOK_HTTP_CHARSET_UTF_8">BROOK_HTTP_CHARSET_UTF_8</a>;
     ContentType: <a   href="BrookHTTPConsts.html#BROOK_HTTP_CONTENT_TYPE_TEXT_HTML">BROOK_HTTP_CONTENT_TYPE_TEXT_HTML</a>;
     Language: <a   href="BrookConsts.html#BROOK_DEFAULT_LANGUAGE">BROOK_DEFAULT_LANGUAGE</a>;
-    Page404: <a   href="BrookConsts.html#ES">ES</a>;
-    Page500: <a   href="BrookConsts.html#ES">ES</a>;
+    Page404: <a   href="BrookHTTPConsts.html#BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND">BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND</a>;
+    Page404File: <a   href="BrookConsts.html#ES">ES</a>;
+    Page500: <a   href="BrookHTTPConsts.html#BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR">BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR</a>;
+    Page500File: <a   href="BrookConsts.html#ES">ES</a>;
     DirectoryForUploads: <a   href="BrookConsts.html#ES">ES</a>;
     DeleteUploadedFiles: False;
+    KeepUploadedNames: True;
     AcceptsJSONContent: False;
     Configuration: <a   href="BrookConsts.html#ES">ES</a>;
     RootUrl: <a   href="BrookConsts.html#ES">ES</a>;
+    Port: 0;
     OnError: nil;
   );</code></td>
 </tr>

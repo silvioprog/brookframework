@@ -266,15 +266,23 @@ Provides features to handle with HTTP requests and responses.</p>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a   href="BrookAction.TBrookAction.html#Fields">Fields</a></b>: TJSONObject read FFields;</code></td>
+<td class="itemcode"><code>property <b><a   href="BrookAction.TBrookAction.html#Files">Files</a></b>: TUploadedFiles read GetFiles;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a   href="BrookAction.TBrookAction.html#Params">Params</a></b>: TJSONObject read FParams;</code></td>
+<td class="itemcode"><code>property <b><a   href="BrookAction.TBrookAction.html#Fields">Fields</a></b>: TJSONObject read FFields;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookAction.TBrookAction.html#Params">Params</a></b>: TJSONObject read FParams;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>property <b><a   href="BrookAction.TBrookAction.html#Values">Values</a></b>: TJSONObject read FValues;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookAction.TBrookAction.html#Method">Method</a></b>: string read GetMethod;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
@@ -344,45 +352,54 @@ Registers an action.
 <h6 class="description_section">Parameters</h6>
 <dl class="parameters">
 <dt>APattern</dt>
-<dd>Is an expression defining which URLs is allowed to call an action.
+<dd>Is an expression defining which URLs is used to call an action. It is possible to use variables inside URLs:
 
-<p><b>*</b> &ndash; Represents one single level in the current path. Examples:
+<p></p>
 
-<p><code>TMyAction.Register('*');</code>
-
-<p>Can be called as:
-
-<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1">http://localhost/cgi-bin/cgi1</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a> etc;
-
-<p><code>TMyAction.Register('/home/*/download');</code>
-
-<p>Means that between &quot;home&quot; and &quot;download&quot;, there is one level. The following replacements could be done:
-
-<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/file/download">http://localhost/cgi-bin/cgi1/home/file/download</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/news/download">http://localhost/cgi-bin/cgi1/home/news/download</a>
-
-<p><b>**</b> &ndash; Represents one or more levels in the current path. Example:
-
-<p><code>TMyAction.Register('/home/**/download');</code>
-
-<p>Means that between &quot;home&quot; and &quot;download&quot;, one or more levels can be set. The following replacements can be done:
-
-<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/file/download">http://localhost/cgi-bin/cgi1/home/file/download</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/file/id/25/download">http://localhost/cgi-bin/cgi1/home/file/id/25/download</a>
-
-<p><b>/</b> &ndash; Adds an slash to the end of the URL if does not exist. Example:
-
-<p><code>TMyAction.Register('/foo/');</code>
-
-<p>Can be called as <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo">http://localhost/cgi-bin/cgi1/foo</a> or <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a>. When called as <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo">http://localhost/cgi-bin/cgi1/foo</a>, it will automatically redirected to <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a>. If the pathinfo is different from <code>/foo</code> a 404 page is returned;
-
-<p><b>:</b> &ndash; Creates variables URL. Their values can be read from the property <a class="normal"  href="BrookAction.TBrookAction.html#Values">Values</a>. Example:
+<dl class="paragraph_spacing">
+  <dt><b>:name</b> &ndash; Represents a variable that spans single URL component between slashes.</dt>
+  <dd><p>Examples:
 
 <p><code>TMyAction.Register('/foo/:myvar');</code>
 
-<p>Creates the <code>&quot;myvar&quot;</code>, that can be read from the property <a class="normal"  href="BrookAction.TBrookAction.html#Values">Values</a>, e.g:
+<p>Value of a variable <code>&quot;myvar&quot;</code> can be read from the property <a class="normal"  href="BrookAction.TBrookAction.html#Values">Values</a>, e.g.:
 
 <p><code>Write(Values['myvar'].AsString);</code>
 
-<p><b><i>NOTE:</i></b> Two actions can't be registered with the same pattern except when they are called by means of different HTTP methods.</dd>
+<p>Any number of variables can be combined:
+
+<p><code>TMyAction.Register('/foo/:cat/:id');</code> </p></dd>
+  <dt><b>*name</b> &ndash; Represents a variable that spans one or more levels between slashes in the current URL.</dt>
+  <dd><p>Examples:
+
+<p><code>TMyAction.Register('/home/*path');</code>
+
+<p>Any of the following URLs will match:
+
+<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/file">http://localhost/cgi-bin/cgi1/home/file</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/dir/file">http://localhost/cgi-bin/cgi1/home/dir/file</a> <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/dir/subdir/file">http://localhost/cgi-bin/cgi1/home/dir/subdir/file</a> etc.
+
+<p>Variable <code>Values['path']</code> will receive <code>'file'</code>, <code>'dir/file'</code> or <code>'dir/subdir/file'</code> correspondingly.
+
+<p>You can also add static text after variable part:
+
+<p><code>TMyAction.Register('/home/*path/download');</code>
+
+<p><a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/dir/file/download">http://localhost/cgi-bin/cgi1/home/dir/file/download</a> &ndash; This will match, <br> <a  target="_parent" href="http://localhost/cgi-bin/cgi1/home/dir/file/info">http://localhost/cgi-bin/cgi1/home/dir/file/info</a> &ndash; but not this, because ending is different.
+
+<p>Multi-level variable can be combined with any number of single-level variables in any order:
+
+<p><code>TMyAction.Register('/home/user/:uid/file/*fpath/version/:vid/info');</code>
+
+<p><b><i>NOTE:</i></b> Only one multi-level variable can be specified per URL. </p></dd>
+  <dt><b>url/</b> &ndash; Adds a slash to the end of the URL if does not exist.</dt>
+  <dd><p>Example:
+
+<p><code>TMyAction.Register('/foo/');</code>
+
+<p>An action can be accessed as <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo">http://localhost/cgi-bin/cgi1/foo</a> or <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a>. When called as <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo">http://localhost/cgi-bin/cgi1/foo</a>, it will be automatically redirected to <a  target="_parent" href="http://localhost/cgi-bin/cgi1/foo/">http://localhost/cgi-bin/cgi1/foo/</a>. If the pathinfo is different from <code>/foo</code> a 404 page is returned; </p></dd>
+</dl>
+
+<p> <b><i>NOTE:</i></b> Two actions can't be registered with the same pattern except when they are called by means of different HTTP methods.</dd>
 <dt>ADefault</dt>
 <dd>A action registered as <i>Default</i> will be called automatically if the URL does not match with <i>Pattern</i> of any registered actions. It is not allowed to register more than one action as default. A typical example of use is:
 
@@ -506,7 +523,7 @@ Creates an URL for an action informing an array of parameters. Exemple:
 </tr>
 <tr><td colspan="2">
 <p>
-Creates an URL for an action passing an array of parameters however informing the class name as string</p>
+Creates an URL for an action passing an array of parameters however informing the class name as string.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -975,6 +992,16 @@ Writes the content of a <code>TStrings</code> adding, for each item, the <code>B
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Files"></a><code>property <b>Files</b>: TUploadedFiles read GetFiles;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+The list of files coming from a request called by the POST method.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Fields"></a><code>property <b>Fields</b>: TJSONObject read FFields;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -1000,6 +1027,16 @@ The list of variables coming from a request called by the GET method.</p>
 <tr><td colspan="2">
 <p>
 The list of variables received from parametrized URLs.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Method"></a><code>property <b>Method</b>: string read GetMethod;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Returns the HTTP request method.</p>
 </td></tr>
 </table>
 </body></html>

@@ -35,167 +35,167 @@ Handles database tables.</p>
 </tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class procedure <b><a   href="BrookTable.TBrookTable.html#GetConditions">GetConditions</a></b>(AJSON: TJSONObject; out AConditions: string);</code></td>
+<td class="itemcode"><code>destructor <b><a   href="BrookTable.TBrookTable.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a   href="BrookTable.TBrookTable.html#GetConditions">GetConditions</a></b>(AJSON: TJSONObject; out AConditions: string);</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookTable.TBrookTable.html#GetSchema">GetSchema</a></b>(out ASchema: TJSONObject); overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#GetSchema">GetSchema</a></b>: TJSONStringType; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#CreateFields">CreateFields</a></b>(AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#GetRows">GetRows</a></b>(out AJSON: TJSONArray): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#GetRow">GetRow</a></b>(out AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#SetRows">SetRows</a></b>(AJSON: TJSONArray): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#SetRow">SetRow</a></b>(AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Bind">Bind</a></b>(AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#ApplyUpdates">ApplyUpdates</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#CancelUpdates">CancelUpdates</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Apply">Apply</a></b>(const ARetaining: Boolean = False): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Undo">Undo</a></b>(const ARetaining: Boolean = False): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Commit">Commit</a></b>(const ARetaining: Boolean = False): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Rollback">Rollback</a></b>(const ARetaining: Boolean = False): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Append">Append</a></b>(AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Insert">Insert</a></b>(AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Edit">Edit</a></b>(AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Cancel">Cancel</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Delete">Delete</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Open">Open</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Close">Close</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Refresh">Refresh</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#First">First</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Prior">Prior</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Next">Next</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Last">Last</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Clear">Clear</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Reset">Reset</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Post">Post</a></b>: <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Locate">Locate</a></b>(AJSON: TJSONObject; const AOptions: TLocateOptions = []): Boolean; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Locate">Locate</a></b>(const AKeyFields: string; const AKeyValues: Variant; const AOptions: TLocateOptions = []): Boolean; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Find">Find</a></b>(AJSON: TJSONObject; const AOptions: TLocateOptions = []): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Get">Get</a></b>(const AKeyValue: Variant): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Get">Get</a></b>(const AKeyName: string; const AKeyValue: Variant): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Field">Field</a></b>(const AName: string): TField;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Param">Param</a></b>(const AName: string): TParam;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#FieldDef">FieldDef</a></b>(const AName: string): TFieldDef;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Conditions">Conditions</a></b>(AJSON: TJSONObject): <a   href="BrookTable.TBrookTable.html">TBrookTable</a>;</code></td>
 </tr>
-<tr class="list2">
-<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Count">Count</a></b>: Int64;</code></td>
-</tr>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Position">Position</a></b>: Int64;</code></td>
+<td class="itemcode"><code>function <b><a   href="BrookTable.TBrookTable.html#Count">Count</a></b>: Int64;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -316,6 +316,10 @@ Handles database tables.</p>
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>property <b><a   href="BrookTable.TBrookTable.html#Params">Params</a></b>: TParams read GetParams;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookTable.TBrookTable.html#Position">Position</a></b>: LongInt read GetPosition write SetPosition;</code></td>
+</tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Methods</h3>
@@ -337,6 +341,16 @@ Creates an instance of a <a class="normal"  href="BrookTable.TBrookTable.html">T
 <tr><td colspan="2">
 <p>
 Creates an instance of a <a class="normal"  href="BrookTable.TBrookTable.html">TBrookTable</a> class.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Frees an instance of <a class="normal"  href="BrookTable.TBrookTable.html">TBrookTable</a> class.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -742,16 +756,6 @@ Get the number of registers.</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Position"></a><code>function <b>Position</b>: Int64;</code></td>
-</tr>
-<tr><td colspan="2">
-<p>
-Get the position of the current register.</p>
-</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="RowsAffected"></a><code>function <b>RowsAffected</b>: TRowsCount;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -1038,6 +1042,16 @@ Are the table fields.</p>
 <tr><td colspan="2">
 <p>
 Are the table parameters.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Position"></a><code>property <b>Position</b>: LongInt read GetPosition write SetPosition;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the position of the current register.</p>
 </td></tr>
 </table>
 </body></html>

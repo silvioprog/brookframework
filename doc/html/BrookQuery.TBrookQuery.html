@@ -223,13 +223,9 @@ Handles database queries.</p>
 </tr>
 <tr class="list2">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#Position">Position</a></b>: Int64;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a   href="BrookQuery.TBrookQuery.html#GetBookmark">GetBookmark</a></b>: TBookmark;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a   href="BrookQuery.TBrookQuery.html#GotoBookmark">GotoBookmark</a></b>(ABookmark: TBookmark);</code></td>
 </tr>
@@ -303,6 +299,10 @@ Handles database queries.</p>
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Row">Row</a></b>: TJSONObject read <a   href="BrookQuery.TBrookQuery.html#GetRow">GetRow</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="BrookQuery.TBrookQuery.html#Position">Position</a></b>: LongInt read GetPosition write SetPosition;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
@@ -800,16 +800,6 @@ Get the number of registers.</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Position"></a><code>function <b>Position</b>: Int64;</code></td>
-</tr>
-<tr><td colspan="2">
-<p>
-Get the position of the current register.</p>
-</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="GetBookmark"></a><code>function <b>GetBookmark</b>: TBookmark;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -996,6 +986,16 @@ Returns a JSON array with the query registers.</p>
 <tr><td colspan="2">
 <p>
 Returns the current register in a JSON object.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Position"></a><code>property <b>Position</b>: LongInt read GetPosition write SetPosition;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Get the position of the current register.</p>
 </td></tr>
 </table>
 </body></html>
