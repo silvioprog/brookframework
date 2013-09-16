@@ -58,15 +58,21 @@ type
   TBrookMatchPatternEvent = procedure(ASender: TObject;
     APattern, APathInfo: string; out ARedirect: Boolean;
     out ANames, AValues: TBrookArrayOfString) of object;
+  { Defines a pointer to the match pattern event.}
+  PBrookMatchPatternEvent = ^TBrookMatchPatternEvent;
 
   { Is a type to @code(*Route) event. }
   TBrookRouteEvent = procedure(ASender: TObject; ARequest: TRequest;
     AResponse: TResponse) of object;
+  { Defines a pointer to the route event.}
+  PBrookRouteEvent = ^TBrookRouteEvent;
 
   { Is a type to @code(*ExecuteAction) event. }
   TBrookExecuteActionEvent = procedure(ASender: TObject;
     AAction: TBrookAction; ARequest: TRequest; AResponse: TResponse;
     ARoute: TBrookRoute; var AHandled: Boolean) of object;
+  { Defines a pointer to the execute action event.}
+  PBrookExecuteActionEvent = ^TBrookExecuteActionEvent;
 
   { Defines a list of routes. }
   TBrookRoutes = class(TBrookObject)
