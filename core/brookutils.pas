@@ -25,7 +25,7 @@ interface
 
 uses
   BrookException, BrookMessages, BrookConsts, BrookHTTPConsts, HTTPDefs, FPJSON,
-  CustWeb, SysUtils;
+  CustWeb, Classes, SysUtils;
 
 type
   { Defines a array of strings. }
@@ -104,6 +104,8 @@ var
     OnError: nil;
   );
 
+{ Get the content string from a file. }
+function BrookFileToStr(const AFileName: TFileName): string;
 { Check whether a string starts with a given character. }
 function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 { Check whether a string ends with a given character. }
@@ -142,6 +144,17 @@ function BrookDumpStack(const AEOL: ShortString = BR): string;
 function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
 
 implementation
+
+function BrookFileToStr(const AFileName: TFileName): string;
+begin
+  with TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite) do
+    try
+      SetLength(Result, Size);
+      Read(Result[1], Length(Result));
+    finally
+      Free;
+    end;
+end;
 
 function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 begin
