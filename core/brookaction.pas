@@ -37,6 +37,7 @@ type
   { Provides features to handle with HTTP requests and responses. }
   TBrookAction = class(TBrookObject)
   private
+    FContentStream: TStream;
     FFields: TJSONObject;
     FParams: TJSONObject;
     FValues: TJSONObject;
@@ -59,6 +60,7 @@ type
       {%H-}AResponse: TResponse); virtual;
     procedure DoAfterRequest({%H-}ARequest: TRequest;
       {%H-}AResponse: TResponse); virtual;
+    property ContentStream: TStream read FContentStream write FContentStream;
   public
     { Creates an instance of a @link(TBrookAction) class. }
     constructor Create; virtual;
@@ -286,6 +288,9 @@ initialization
     procedure Write(const AArgs: array of const); overload;
     { Writes a variant. }
     procedure Write(const AValue: Variant); overload;
+    { Writes a string adding a suffix to the end. Used by @code(Write) and
+      @code(WriteLn), avoiding code duplication. }
+    procedure Write(const AArgs: array of const; const ASuffix: string);
     { Writes a string adding the @code(BR) HTML tag to the end. }
     procedure WriteLn(const AString: string = ES); overload;
     { Writes a boolean adding the @code(BR) HTML tag to the end. }
@@ -644,34 +649,37 @@ end;
 
 procedure TBrookAction.Write(const AString: string);
 begin
-  FResponse.Contents.Add(AString);
+  if Assigned(FContentStream) then
+    FContentStream.Write(Pointer(AString)^, Length(AString))
+  else
+    FResponse.Contents.Add(AString);
 end;
 
 procedure TBrookAction.Write(const ABoolean: Boolean);
 begin
-  FResponse.Contents.Add(BoolToStr(ABoolean));
+  Write(BoolToStr(ABoolean));
 end;
 
 procedure TBrookAction.Write(const ABoolean: Boolean; const ATrueStr,
   AFalseStr: string);
 begin
-  FResponse.Contents.Add(BoolToStr(ABoolean, ATrueStr, AFalseStr));
+  Write(BoolToStr(ABoolean, ATrueStr, AFalseStr));
 end;
 
 procedure TBrookAction.Write(const AInteger: Integer);
 begin
-  FResponse.Contents.Add(IntToStr(AInteger));
+  Write(IntToStr(AInteger));
 end;
 
 procedure TBrookAction.Write(const AFloat: Double);
 begin
-  FResponse.Contents.Add(FloatToStr(AFloat));
+  Write(FloatToStr(AFloat));
 end;
 
 procedure TBrookAction.Write(const AFloat: Double;
   const AFormatSettings: TFormatSettings);
 begin
-  FResponse.Contents.Add(FloatToStr(AFloat, AFormatSettings));
+  Write(FloatToStr(AFloat, AFormatSettings));
 end;
 
 procedure TBrookAction.Write(AStream: TStream);
@@ -681,13 +689,13 @@ end;
 
 procedure TBrookAction.Write(const AFmt: string; const AArgs: array of const);
 begin
-  FResponse.Contents.Add(Format(AFmt, AArgs));
+  Write(Format(AFmt, AArgs));
 end;
 
 procedure TBrookAction.Write(const AFmt: string; const AArgs: array of const;
   const AFormatSettings: TFormatSettings);
 begin
-  FResponse.Contents.Add(Format(AFmt, AArgs, AFormatSettings));
+  Write(Format(AFmt, AArgs, AFormatSettings));
 end;
 
 procedure TBrookAction.Write(AJSON: TJSONObject);
@@ -695,7 +703,7 @@ var
   I: Integer;
 begin
   for I := 0 to Pred(AJSON.Count) do
-    FResponse.Contents.Add(AJSON.Items[I].AsString);
+    Write(AJSON.Items[I].AsString);
 end;
 
 procedure TBrookAction.Write(AJSON: TJSONArray);
@@ -703,7 +711,7 @@ var
   I: Integer;
 begin
   for I := 0 to Pred(AJSON.Count) do
-    FResponse.Contents.Add(AJSON[I].AsString);
+    Write(AJSON[I].AsString);
 end;
 
 procedure TBrookAction.Write(S: TStrings);
@@ -711,132 +719,101 @@ var
   X: string;
 begin
   for X in S do
-    FResponse.Contents.Add(X);
+    Write(X);
 end;
 
 procedure TBrookAction.Write(const AValue: Variant);
 begin
-  FResponse.Contents.Add(VarToStr(AValue));
+  Write(VarToStr(AValue));
+end;
+
+procedure TBrookAction.Write(const AArgs: array of const; const ASuffix: string);
+var
+  I: Integer;
+begin
+  for I := 0 to High(AArgs) do
+    with AArgs[I] do
+      case VType of
+        vtInteger: Write(IntToStr(VInteger) + ASuffix);
+        vtInt64: Write(IntToStr(VInt64^) + ASuffix);
+        vtQWord: Write(IntToStr(VQWord^) + ASuffix);
+        vtBoolean: Write(BoolToStr(VBoolean) + ASuffix);
+        vtExtended: Write(FloatToStr(VExtended^) + ASuffix);
+        vtCurrency: Write(FloatToStr(VCurrency^) + ASuffix);
+        vtString: Write(VString^);
+        vtAnsiString: Write(AnsiString(VAnsiString) + ASuffix);
+        vtChar: Write(VChar + ASuffix);
+        vtPChar: Write(VPChar + ASuffix);
+        vtPWideChar: Write(AnsiString(VPWideChar) + ASuffix);
+        vtWideChar: Write(AnsiString(VWideChar) + ASuffix);
+        vtWidestring: Write(AnsiString(WideString(VWideString)) + ASuffix);
+        vtObject:
+           if VObject is TJSONArray then
+             Write(TJSONObject(VObject).AsJSON + ASuffix)
+           else
+             if VObject is TJSONObject then
+               Write(TJSONObject(VObject).AsJSON + ASuffix);
+      else
+        Write('?unknown variant?' + ASuffix);
+      end;
 end;
 
 procedure TBrookAction.Write(const AArgs: array of const);
-var
-  I: Integer;
-  VArg: TVarRec;
-  VCts: TStrings;
 begin
-  VCts := FResponse.Contents;
-  for I := 0 to High(AArgs) do
-  begin
-    VArg := AArgs[I];
-    case VArg.VType of
-      vtInteger: VCts.Add(IntToStr(VArg.VInteger));
-      vtInt64: VCts.Add(IntToStr(VArg.VInt64^));
-      vtQWord: VCts.Add(IntToStr(VArg.VQWord^));
-      vtBoolean: VCts.Add(BoolToStr(VArg.VBoolean));
-      vtExtended: VCts.Add(FloatToStr(VArg.VExtended^));
-      vtCurrency: VCts.Add(FloatToStr(VArg.VCurrency^));
-      vtString: VCts.Add(VArg.VString^);
-      vtAnsiString: VCts.Add(AnsiString(VArg.VAnsiString));
-      vtChar: VCts.Add(VArg.VChar);
-      vtPChar: VCts.Add(VArg.VPChar);
-      vtPWideChar: VCts.Add(VArg.VPWideChar);
-      vtWideChar: VCts.Add(AnsiString(VArg.VWideChar));
-      vtWidestring: VCts.Add(AnsiString(WideString(VArg.VWideString)));
-      vtObject:
-         if VArg.VObject is TJSONArray then
-           VCts.Add(TJSONObject(VArg.VObject).AsJSON)
-         else
-           if VArg.VObject is TJSONObject then
-             VCts.Add(TJSONObject(VArg.VObject).AsJSON);
-    else
-      VCts.Add('?unknown variant?');
-    end;
-  end;
+  Write(AArgs, ES);
 end;
 
 procedure TBrookAction.WriteLn(const AString: string);
 begin
-  FResponse.Contents.Add(AString + BR);
+  Write(AString + BR);
 end;
 
 procedure TBrookAction.WriteLn(const ABoolean: Boolean);
 begin
-  FResponse.Contents.Add(BoolToStr(ABoolean) + BR);
+  Write(BoolToStr(ABoolean) + BR);
 end;
 
 procedure TBrookAction.WriteLn(const ABoolean: Boolean; const ATrueStr,
   AFalseStr: string);
 begin
-  FResponse.Contents.Add(BoolToStr(ABoolean, ATrueStr, AFalseStr) + BR);
+  Write(BoolToStr(ABoolean, ATrueStr, AFalseStr) + BR);
 end;
 
 procedure TBrookAction.WriteLn(const AInteger: Integer);
 begin
-  FResponse.Contents.Add(IntToStr(AInteger) + BR);
+  Write(IntToStr(AInteger) + BR);
 end;
 
 procedure TBrookAction.WriteLn(const AFloat: Double);
 begin
-  FResponse.Contents.Add(FloatToStr(AFloat) + BR);
+  Write(FloatToStr(AFloat) + BR);
 end;
 
 procedure TBrookAction.WriteLn(const AFloat: Double;
   const AFormatSettings: TFormatSettings);
 begin
-  FResponse.Contents.Add(FloatToStr(AFloat, AFormatSettings) + BR);
+  Write(FloatToStr(AFloat, AFormatSettings) + BR);
 end;
 
 procedure TBrookAction.WriteLn(const AFmt: string; const AArgs: array of const);
 begin
-  FResponse.Contents.Add(Format(AFmt, AArgs) + BR);
+  Write(Format(AFmt, AArgs) + BR);
 end;
 
 procedure TBrookAction.WriteLn(const AFmt: string; const AArgs: array of const;
   const AFormatSettings: TFormatSettings);
 begin
-  FResponse.Contents.Add(Format(AFmt, AArgs, AFormatSettings) + BR);
+  Write(Format(AFmt, AArgs, AFormatSettings) + BR);
 end;
 
 procedure TBrookAction.WriteLn(const AArgs: array of const);
-var
-  I: Integer;
-  VArg: TVarRec;
-  VCts: TStrings;
 begin
-  VCts := FResponse.Contents;
-  for I := 0 to High(AArgs) do
-  begin
-    VArg := AArgs[I];
-    case VArg.VType of
-      vtInteger: VCts.Add(IntToStr(VArg.VInteger) + BR);
-      vtInt64: VCts.Add(IntToStr(VArg.VInt64^) + BR);
-      vtQWord: VCts.Add(IntToStr(VArg.VQWord^) + BR);
-      vtBoolean: VCts.Add(BoolToStr(VArg.VBoolean) + BR);
-      vtExtended: VCts.Add(FloatToStr(VArg.VExtended^) + BR);
-      vtCurrency: VCts.Add(FloatToStr(VArg.VCurrency^) + BR);
-      vtString: VCts.Add(VArg.VString^);
-      vtAnsiString: VCts.Add(AnsiString(VArg.VAnsiString) + BR);
-      vtChar: VCts.Add(VArg.VChar + BR);
-      vtPChar: VCts.Add(VArg.VPChar + BR);
-      vtPWideChar: VCts.Add(AnsiString(VArg.VPWideChar) + BR);
-      vtWideChar: VCts.Add(AnsiString(VArg.VWideChar) + BR);
-      vtWidestring: VCts.Add(AnsiString(WideString(VArg.VWideString)) + BR);
-      vtObject:
-         if VArg.VObject is TJSONArray then
-           VCts.Add(TJSONObject(VArg.VObject).AsJSON)
-         else
-           if VArg.VObject is TJSONObject then
-             VCts.Add(TJSONObject(VArg.VObject).AsJSON);
-    else
-      VCts.Add('?unknown variant?' + BR);
-    end;
-  end;
+  Write(AArgs, BR);
 end;
 
 procedure TBrookAction.WriteLn(const AValue: Variant);
 begin
-  FResponse.Contents.Add(VarToStr(AValue) + BR);
+  Write(VarToStr(AValue) + BR);
 end;
 
 procedure TBrookAction.WriteLn(AJSON: TJSONObject);
@@ -856,7 +833,7 @@ var
   VVal: string;
 begin
   for VVal in S do
-    FResponse.Contents.Add(VVal + BR);
+    Write(VVal + BR);
 end;
 
 end.
