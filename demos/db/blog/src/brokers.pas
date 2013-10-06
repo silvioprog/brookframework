@@ -14,7 +14,7 @@ const
 implementation
 
 initialization
-  TBrookHTTPApplication(BrookApp.Instance).Port := 2015;
+  BrookSettings.Port := 2015;
   BrookSettings.Configuration := 'db.cfg';
   BrookSettings.Charset := BROOK_HTTP_CHARSET_UTF_8;
   BrookSettings.Page404File := PUBLIC_HTML + '404.html';

@@ -28,6 +28,6 @@ initialization
   BrookStaticFileRegisterDirectory('/css/', PublicHTMLDir + 'css');
   BrookStaticFileRegisterDirectory('/js/', PublicHTMLDir + 'js');
   BrookStaticFileRegisterDirectory('/img/', PublicHTMLDir + 'img');
-  (BrookApp.Instance as TBrookHTTPApplication).Port := 8000;
+  BrookSettings.Port := 8000;
 
 end.
