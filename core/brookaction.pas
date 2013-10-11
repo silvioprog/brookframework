@@ -52,8 +52,8 @@ type
     procedure FreeParams; virtual;
     procedure FreeValues; virtual;
     function GetFiles: TUploadedFiles; virtual;
-    procedure SetRequest(ARequest: TRequest); virtual;
-    procedure SetResponse(AResponse: TResponse); virtual;
+    procedure SetRequest(ARequest: TRequest); virtual; deprecated;
+    procedure SetResponse(AResponse: TResponse); virtual; deprecated;
     function GetRequest: TRequest; virtual;
     function GetResponse: TResponse; virtual;
     procedure DoBeforeRequest({%H-}ARequest: TRequest;
