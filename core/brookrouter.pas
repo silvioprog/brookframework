@@ -120,7 +120,8 @@ type
   protected
     function CreateRoutes: TBrookRoutes; virtual;
     procedure FreeRoutes(ARoutes: TBrookRoutes); virtual;
-    function CreateAction(out AActionClass: TBrookActionClass): TBrookAction; virtual;
+    function CreateAction(out AActionClass: TBrookActionClass;
+      ARequest: TRequest; AResponse: TResponse): TBrookAction; virtual;
     procedure FreeAction(AAction: TBrookAction); virtual;
     procedure ExecuteAction(AAction: TBrookAction; ARequest: TRequest;
       AResponse: TResponse; ANames, AValues: TBrookArrayOfString;
@@ -203,28 +204,9 @@ type
 
 implementation
 
-type
-  TLocalHelperBrookAction = class helper for TBrookAction
-  public
-    procedure SetRequest(ARequest: TRequest);
-    procedure SetResponse(AResponse: TResponse);
-  end;
-
 var
   _BrookRouterService: TBrookRouter = nil;
   _BrookRouterServiceClass: TBrookRouterClass = nil;
-
-{ TLocalHelperBrookAction }
-
-procedure TLocalHelperBrookAction.SetRequest(ARequest: TRequest);
-begin
-  inherited SetRequest(ARequest);
-end;
-
-procedure TLocalHelperBrookAction.SetResponse(AResponse: TResponse);
-begin
-  inherited SetResponse(AResponse);
-end;
 
 { TBrookRoutes }
 
@@ -386,10 +368,10 @@ begin
   FreeAndNil(ARoutes);
 end;
 
-function TBrookRouter.CreateAction(
-  out AActionClass: TBrookActionClass): TBrookAction;
+function TBrookRouter.CreateAction(out AActionClass: TBrookActionClass;
+  ARequest: TRequest; AResponse: TResponse): TBrookAction;
 begin
-  Result := AActionClass.Create;
+  Result := AActionClass.Create(ARequest, AResponse);
 end;
 
 procedure TBrookRouter.FreeAction(AAction: TBrookAction);
@@ -403,8 +385,6 @@ procedure TBrookRouter.ExecuteAction(AAction: TBrookAction; ARequest: TRequest;
 var
   VHandled: Boolean = False;
 begin
-  AAction.SetRequest(ARequest);
-  AAction.SetResponse(AResponse);
   if Assigned(FBeforeExecuteAction) then
     FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
   if not VHandled then
@@ -810,7 +790,7 @@ begin
   end;
   if Assigned(FAfterRoute) then
     FAfterRoute(Self, ARequest, AResponse);
-  VAct := CreateAction(VActClass);
+  VAct := CreateAction(VActClass, ARequest, AResponse);
   try
     ExecuteAction(VAct, ARequest, AResponse, VNames, VValues, PRoute^);
   finally

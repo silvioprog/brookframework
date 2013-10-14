@@ -52,8 +52,6 @@ type
     procedure FreeParams; virtual;
     procedure FreeValues; virtual;
     function GetFiles: TUploadedFiles; virtual;
-    procedure SetRequest(ARequest: TRequest); virtual; deprecated;
-    procedure SetResponse(AResponse: TResponse); virtual; deprecated;
     function GetRequest: TRequest; virtual;
     function GetResponse: TResponse; virtual;
     procedure DoBeforeRequest({%H-}ARequest: TRequest;
@@ -63,7 +61,10 @@ type
     property ContentStream: TStream read FContentStream write FContentStream;
   public
     { Creates an instance of a @link(TBrookAction) class. }
-    constructor Create; virtual;
+    constructor Create; overload; virtual;
+    { Creates an instance of a @link(TBrookAction) class passing params to
+      request/response. }
+    constructor Create(ARequest: TRequest; AResponse: TResponse); overload; virtual;
     { Frees an instance of @link(TBrookAction) class. }
     destructor Destroy; override;
     { Fills the @link(Fields) with data coming from a request called by means
@@ -345,9 +346,17 @@ uses
 
 constructor TBrookAction.Create;
 begin
+  inherited Create;
   FFields := CreateFields;
   FParams := CreateParams;
   FValues := CreateValues;
+end;
+
+constructor TBrookAction.Create(ARequest: TRequest; AResponse: TResponse);
+begin
+  FRequest := ARequest;
+  FResponse := AResponse;
+  Create;
 end;
 
 destructor TBrookAction.Destroy;
@@ -361,16 +370,6 @@ end;
 function TBrookAction.GetFiles: TUploadedFiles;
 begin
   Result := GetRequest.Files;
-end;
-
-procedure TBrookAction.SetRequest(ARequest: TRequest);
-begin
-  FRequest := ARequest;
-end;
-
-procedure TBrookAction.SetResponse(AResponse: TResponse);
-begin
-  FResponse := AResponse;
 end;
 
 function TBrookAction.GetMethod: string;
