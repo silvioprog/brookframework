@@ -21,7 +21,7 @@
     </CompilerOptions>
     <Description Value="Brook runtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
-    <Version Major="2" Minor="4" Release="7"/>
+    <Version Major="2" Minor="4" Release="8"/>
     <Files Count="38">
       <Item1>
         <Filename Value="..\brokers\brookfclcgibroker.pas"/>

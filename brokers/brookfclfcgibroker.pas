@@ -36,12 +36,14 @@ type
   TBrookApplication = class(TBrookInterfacedObject, IBrookApplication)
   private
     FApp: TBrookFCGIApplication;
+    function GetTerminated: Boolean;
   public
     constructor Create; virtual;
     destructor Destroy; override;
     function Instance: TObject;
     procedure Run;
     procedure Terminate;
+    property Terminated: Boolean read GetTerminated;
   end;
 
   { TBrookFCGIApplication }
@@ -85,6 +87,11 @@ type
 implementation
 
 { TBrookApplication }
+
+function TBrookApplication.GetTerminated: Boolean;
+begin
+  Result := FApp.Terminated;
+end;
 
 constructor TBrookApplication.Create;
 begin

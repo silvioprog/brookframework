@@ -35,11 +35,14 @@ type
   { TBrookDaemonApplication }
 
   TBrookDaemonApplication = class(TInterfacedObject, IBrookApplication)
+  private
+    function GetTerminated: Boolean;
   public
     constructor Create;
     function Instance: TObject;
     procedure Run;
     procedure Terminate;
+    property Terminated: Boolean read GetTerminated;
   end;
 
   { TBrookDaemonThread }
@@ -82,6 +85,11 @@ begin
 end;
 
 { TBrookDaemonApplication }
+
+function TBrookDaemonApplication.GetTerminated: Boolean;
+begin
+  Result := Application.Terminated;
+end;
 
 constructor TBrookDaemonApplication.Create;
 begin

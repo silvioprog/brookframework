@@ -32,12 +32,16 @@ type
 
   { Interface of the application. }
   IBrookApplication = interface(IBrookInterface)[BROOK_APP_GUID]
+    { Gets whether the application is terminated. }
+    function GetTerminated: Boolean;
     { Returns the instance of broker application. }
     function Instance: TObject;
     { Initializes and runs the application. }
     procedure Run;
     { Terminates the application. }
     procedure Terminate;
+    { Checks whether the application is terminated. }
+    property Terminated: Boolean read GetTerminated;
   end;
 
 { Returns the application instance. }
