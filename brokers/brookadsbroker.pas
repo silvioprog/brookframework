@@ -46,6 +46,7 @@ type
     procedure SetDataSource(AValue: TDataSource); override;
   public
     constructor Init(ADataBase: TBrookDataBase); override;
+    destructor Destroy; override;
     function Execute: TBrookQuery; override;
     function RowsAffected: TRowsCount; override;
     function Param(const AName: string): TParam; override;
@@ -109,6 +110,12 @@ begin
   FQuery := TAdsQuery.Create(nil);
   SetDataBase(ADataBase);
   FQuery.RequestLive := True;
+end;
+
+destructor TBrookADSQuery.Destroy;
+begin
+  FreeAndNil(FQuery);
+  inherited Destroy;
 end;
 
 function TBrookADSQuery.Execute: TBrookQuery;
@@ -246,6 +253,7 @@ end;
 destructor TBrookADSDataBase.Destroy;
 begin
   FSettings.Free;
+  FreeAndNil(FConn);
   inherited Destroy;
 end;
 

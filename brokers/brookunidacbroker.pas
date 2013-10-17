@@ -45,6 +45,7 @@ type
     procedure SetDataSource({%H-}AValue: TDataSource); override;
   public
     constructor Init(ADataBase: TBrookDataBase); override;
+    destructor Destroy; override;
     function Execute: TBrookQuery; override;
     function RowsAffected: TRowsCount; override;
     function Param(const AName: string): TParam; override;
@@ -80,6 +81,7 @@ type
     function GetConnection: TObject; override;
   public
     constructor Init; override;
+    destructor Destroy; override;
     class function GetLibrary: string; override;
     procedure Connect; override;
     procedure Disconnect; override;
@@ -106,6 +108,12 @@ begin
   FQuery := TUniQuery.Create(nil);
   SetDataBase(ADataBase);
   FQuery.CachedUpdates := True;
+end;
+
+destructor TBrookUniDACQuery.Destroy;
+begin
+  FreeAndNil(FQuery);
+  inherited Destroy;
 end;
 
 function TBrookUniDACQuery.Execute: TBrookQuery;
@@ -245,6 +253,12 @@ begin
   inherited Init;
   FConn := TUniConnection.Create(nil);
   FConn.LoginPrompt := False;
+end;
+
+destructor TBrookUniDACDataBase.Destroy;
+begin
+  FreeAndNil(FConn);
+  inherited Destroy;
 end;
 
 function TBrookUniDACDataBase.GetPort: Integer;

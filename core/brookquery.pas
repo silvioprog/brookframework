@@ -227,7 +227,6 @@ end;
 
 destructor TBrookQuery.Destroy;
 begin
-  DataSet.Free;
   if Assigned(DataBase) then
     DataBase.RemoveObject(Self);
   inherited Destroy;

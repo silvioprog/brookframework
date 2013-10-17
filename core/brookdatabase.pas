@@ -173,7 +173,6 @@ destructor TBrookDataBase.Destroy;
 begin
   FreeObjects;
   FObjects.Free;
-  Connection.Free;
   inherited Destroy;
 end;
 

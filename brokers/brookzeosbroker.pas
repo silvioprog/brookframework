@@ -45,6 +45,7 @@ type
     procedure SetDataSource(AValue: TDataSource); override;
   public
     constructor Init(ADataBase: TBrookDataBase); override;
+    destructor Destroy; override;
     function Execute: TBrookQuery; override;
     function RowsAffected: TRowsCount; override;
     function Param(const AName: string): TParam; override;
@@ -80,6 +81,7 @@ type
     function GetConnection: TObject; override;
   public
     constructor Init; override;
+    destructor Destroy; override;
     class function GetLibrary: string; override;
     procedure Connect; override;
     procedure Disconnect; override;
@@ -106,6 +108,12 @@ begin
   FQuery := TZQuery.Create(nil);
   SetDataBase(ADataBase);
   FQuery.CachedUpdates := True;
+end;
+
+destructor TBrookZeosQuery.Destroy;
+begin
+  FreeAndNil(FQuery);
+  inherited Destroy;
 end;
 
 function TBrookZeosQuery.Execute: TBrookQuery;
@@ -238,6 +246,12 @@ begin
   inherited Init;
   FConn := TZConnection.Create(nil);
   FConn.AutoCommit := False;
+end;
+
+destructor TBrookZeosDataBase.Destroy;
+begin
+  FreeAndNil(FConn);
+  inherited Destroy;
 end;
 
 function TBrookZeosDataBase.GetPort: Integer;

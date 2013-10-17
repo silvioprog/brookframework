@@ -49,6 +49,7 @@ type
     function GetConnection: TObject; override;
   public
     constructor Init; override;
+    destructor Destroy; override;
     procedure Connect; override;
     procedure Disconnect; override;
     function InTransaction: Boolean; override;
@@ -143,6 +144,12 @@ constructor TBrookGhDataBase.Init;
 begin
   inherited Init;
   FConn := TghSQLConnector.Create(GetSQLLibClass);
+end;
+
+destructor TBrookGhDataBase.Destroy;
+begin
+  FreeAndNil(FConn);
+  inherited Destroy;
 end;
 
 function TBrookGhDataBase.GetConnected: Boolean;
