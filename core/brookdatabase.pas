@@ -123,7 +123,7 @@ type
     procedure SetItems(const AIndex: Integer; AValue: TBrookDataBaseClass);
   public
     { Creates an instance of a @link(TBrookDataBases) class. }
-    constructor Create;
+    constructor Create; virtual;
     { Frees an instance of @link(TBrookDataBases) class. }
     destructor Destroy; override;
     { Registers the service provided by this class. }
@@ -217,6 +217,7 @@ end;
 
 constructor TBrookDataBases.Create;
 begin
+  inherited Create;
   FList := TFPList.Create;
   FConfigurator := TBrookConfigurator.Create;
   FConfigurator.AutoLoaded := False;
