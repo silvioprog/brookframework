@@ -9,7 +9,7 @@ uses
   BrookApplication;
 
 const
-  PUBLIC_HTML ={$IFDEF MSWINDOWS}'C:\websrv\htdocs\'{$ENDIF}'/var/www/'{$ELSE};
+  PUBLIC_HTML ={$IFDEF MSWINDOWS}'C:\websrv\htdocs\'{$ELSE}'/var/www/'{$ENDIF};
 
 implementation
 

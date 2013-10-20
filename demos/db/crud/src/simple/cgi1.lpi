@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -35,23 +35,17 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="BrookGreyhoundRT"/>
+        <PackageName Value="JTemplateRT"/>
       </Item1>
       <Item2>
-        <PackageName Value="JTemplatePkg"/>
+        <PackageName Value="BrookRT"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="3">
       <Unit0>
         <Filename Value="cgi1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="cgi1"/>
-        <UsageCount Value="20"/>
-      </Unit0>
-      <Unit1>
-        <Filename Value="person.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Person"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
@@ -59,6 +53,12 @@
         <CursorPos X="1" Y="1"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="person.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Person"/>
+        <UsageCount Value="20"/>
       </Unit1>
       <Unit2>
         <Filename Value="brokers.pas"/>
@@ -66,12 +66,6 @@
         <UnitName Value="Brokers"/>
         <UsageCount Value="20"/>
       </Unit2>
-      <Unit3>
-        <Filename Value="mydbaction.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mydbaction"/>
-        <UsageCount Value="20"/>
-      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

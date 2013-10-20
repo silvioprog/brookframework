@@ -15,14 +15,14 @@ type
 
   TActionView = class(TBrookDBAction)
   private
-    FTemplate: TJTemplate;
+    FTemplate: TJTemplateStream;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure FillFields(ARequest: TRequest); override;
     procedure DoRequest(ARequest: TRequest; AResponse: TResponse); override;
     procedure LoadHtml(const AHtml: string);
-    property Template: TJTemplate read FTemplate;
+    property Template: TJTemplateStream read FTemplate;
   end;
 
   { THome }
@@ -65,8 +65,8 @@ implementation
 constructor TActionView.Create;
 begin
   inherited Create;
-  FTemplate := TJTemplate.Create;
-  FTemplate.HTMLSupports := False;
+  FTemplate := TJTemplateStream.Create;
+  FTemplate.Parser.HtmlSupports := False;
 end;
 
 destructor TActionView.Destroy;
@@ -87,8 +87,8 @@ end;
 procedure TActionView.DoRequest(ARequest: TRequest; AResponse: TResponse);
 begin
   inherited DoRequest(ARequest, AResponse);
-  FTemplate.Replace;
-  Write(FTemplate.Content);
+  FTemplate.Parser.Replace;
+  Write(FTemplate.Parser.Content);
 end;
 
 procedure TActionView.LoadHtml(const AHtml: string);
@@ -123,9 +123,9 @@ end;
 procedure THome.Get;
 begin
   LoadHtml('home');
-  Template.Fields.Add('menu', UrlFor(TPostAdd, ['new']));
-  Template.Fields.Add('post', BrookDataSetToHTMLTable(Table.Open.DataSet, [],
-    'table table-bordered table-hover', 1, [], @GridCallback));
+  Template.Parser.Fields.Add('menu', UrlFor(TPostAdd, ['new']));
+  Template.Parser.Fields.Add('post', BrookDataSetToHTMLTable(Table.Open.DataSet,
+    [], 'table table-bordered table-hover', 1, [], @GridCallback));
 end;
 
 { TPostAdd }
@@ -133,10 +133,10 @@ end;
 procedure TPostAdd.Get;
 begin
   LoadHtml('newpost');
-  Template.Fields.Add('title', ES);
-  Template.Fields.Add('author', ES);
-  Template.Fields.Add('post', ES);
-  Template.Fields.Add('action', UrlFor(TPostAdd));
+  Template.Parser.Fields.Add('title', ES);
+  Template.Parser.Fields.Add('author', ES);
+  Template.Parser.Fields.Add('post', ES);
+  Template.Parser.Fields.Add('action', UrlFor(TPostAdd));
 end;
 
 procedure TPostAdd.Post;
@@ -154,8 +154,8 @@ begin
   Table.Find(Values).GetRow(Row);
   try
     LoadHtml('newpost');
-    BrookJSONCopy(Row, Template.Fields);
-    Template.Fields.Add('action', UrlFor(TPostEdit, Row));
+    BrookJSONCopy(Row, Template.Parser.Fields);
+    Template.Parser.Fields.Add('action', UrlFor(TPostEdit, Row));
   finally
     FreeAndNil(Row);
   end;

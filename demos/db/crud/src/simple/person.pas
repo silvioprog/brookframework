@@ -108,17 +108,19 @@ end;
 
 procedure TPersonList.Get;
 var
-  VTemplate: TJTemplate;
+  VTemplate: TJTemplateStream;
 begin
-  VTemplate := TJTemplate.Create;
+  VTemplate := TJTemplateStream.Create;
   try
-    VTemplate.HTMLSupports := False;
+    VTemplate.Parser.HtmlSupports := False;
     VTemplate.LoadFromFile('index.html');
-    VTemplate.Fields.Add('grid', BrookDataSetToHTML5Table(Table.Open.DataSet,
-      [], '', '', 'table table-bordered table-hover', 1, [], @GridCallback));
-    VTemplate.Fields.Add('new', LinkTo('New', TPersonNew, 'btn btn-large'));
-    VTemplate.Replace;
-    Write(VTemplate.Content);
+    VTemplate.Parser.Fields.Add('grid', BrookDataSetToHTML5Table(
+      Table.Open.DataSet, [], '', '', 'table table-bordered table-hover', 1, [],
+      @GridCallback));
+    VTemplate.Parser.Fields.Add('new', LinkTo('New', TPersonNew,
+      'btn btn-large'));
+    VTemplate.Parser.Replace;
+    Write(VTemplate.Parser.Content);
   finally
     VTemplate.Free;
   end;
@@ -128,18 +130,18 @@ end;
 
 procedure TPersonNew.Get;
 var
-  VTemplate: TJTemplate;
+  VTemplate: TJTemplateStream;
 begin
-  VTemplate := TJTemplate.Create;
+  VTemplate := TJTemplateStream.Create;
   try
-    VTemplate.HTMLSupports := False;
+    VTemplate.Parser.HtmlSupports := False;
     VTemplate.LoadFromFile('new.html');
-    VTemplate.Fields.Add('form', BrookFieldDefsToHTMLForm(
+    VTemplate.Parser.Fields.Add('form', BrookFieldDefsToHTMLForm(
       Table.Select('name').Open.FieldDefs, UrlFor(TPersonCreate), 'post',
       False, 'form'));
-    VTemplate.Fields.Add('index', LinkTo('Index', TIndex, 'btn'));
-    VTemplate.Replace;
-    Write(VTemplate.Content);
+    VTemplate.Parser.Fields.Add('index', LinkTo('Index', TIndex, 'btn'));
+    VTemplate.Parser.Replace;
+    Write(VTemplate.Parser.Content);
   finally
     VTemplate.Free;
   end;
@@ -157,16 +159,17 @@ end;
 
 procedure TPersonShow.Get;
 var
-  VTemplate: TJTemplate;
+  VTemplate: TJTemplateStream;
 begin
-  VTemplate := TJTemplate.Create;
+  VTemplate := TJTemplateStream.Create;
   try
-    VTemplate.HTMLSupports := False;
+    VTemplate.Parser.HtmlSupports := False;
     VTemplate.LoadFromFile('show.html');
-    VTemplate.Fields.Add('name', Table.Find(Values).Field('name').AsString);
-    VTemplate.Fields.Add('index', LinkTo('Index', TPersonList, 'btn'));
-    VTemplate.Replace;
-    Write(VTemplate.Content);
+    VTemplate.Parser.Fields.Add('name',
+      Table.Find(Values).Field('name').AsString);
+    VTemplate.Parser.Fields.Add('index', LinkTo('Index', TPersonList, 'btn'));
+    VTemplate.Parser.Replace;
+    Write(VTemplate.Parser.Content);
   finally
     VTemplate.Free;
   end;
@@ -176,17 +179,18 @@ end;
 
 procedure TPersonEdit.Get;
 var
-  VTemplate: TJTemplate;
+  VTemplate: TJTemplateStream;
 begin
-  VTemplate := TJTemplate.Create;
+  VTemplate := TJTemplateStream.Create;
   try
-    VTemplate.HTMLSupports := False;
+    VTemplate.Parser.HtmlSupports := False;
     VTemplate.LoadFromFile('edit.html');
-    VTemplate.Fields.Add('action', UrlFor(TPersonUpdate, Values));
-    VTemplate.Fields.Add('name', StrToHtml(Table.Find(Values).Field('name').AsString));
-    VTemplate.Fields.Add('index', LinkTo('Index', TIndex, 'btn'));
-    VTemplate.Replace;
-    Write(VTemplate.Content);
+    VTemplate.Parser.Fields.Add('action', UrlFor(TPersonUpdate, Values));
+    VTemplate.Parser.Fields.Add('name',
+      StrToHtml(Table.Find(Values).Field('name').AsString));
+    VTemplate.Parser.Fields.Add('index', LinkTo('Index', TIndex, 'btn'));
+    VTemplate.Parser.Replace;
+    Write(VTemplate.Parser.Content);
   finally
     VTemplate.Free;
   end;
@@ -204,17 +208,19 @@ end;
 
 procedure TPersonDelete.Get;
 var
-  VTemplate: TJTemplate;
+  VTemplate: TJTemplateStream;
 begin
-  VTemplate := TJTemplate.Create;
+  VTemplate := TJTemplateStream.Create;
   try
-    VTemplate.HTMLSupports := False;
+    VTemplate.Parser.HtmlSupports := False;
     VTemplate.LoadFromFile('delete.html');
-    VTemplate.Fields.Add('name', Table.Find(Values).Field('name').AsString);
-    VTemplate.Fields.Add('button', ButtonTo('Yes, delete!', TPersonDestroy, Values));
-    VTemplate.Fields.Add('index', LinkTo('Index', TIndex, 'btn'));
-    VTemplate.Replace;
-    Write(VTemplate.Content);
+    VTemplate.Parser.Fields.Add('name',
+      Table.Find(Values).Field('name').AsString);
+    VTemplate.Parser.Fields.Add('button',
+      ButtonTo('Yes, delete!', TPersonDestroy, Values));
+    VTemplate.Parser.Fields.Add('index', LinkTo('Index', TIndex, 'btn'));
+    VTemplate.Parser.Replace;
+    Write(VTemplate.Parser.Content);
   finally
     VTemplate.Free;
   end;

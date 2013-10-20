@@ -5,7 +5,8 @@ unit MyDBAction;
 interface
 
 uses
-  BrookAction, BrookGhDBAction, BrookDBUtils, JTemplate, DB, FPJSON, SysUtils;
+  BrookAction, BrookDBAction, BrookDBUtils, JTemplate, RUtils, DB, FPJSON,
+  HTTPDefs, SysUtils;
 
 type
 
@@ -13,7 +14,7 @@ type
 
   TMyAction = class(TBrookDBAction)
   private
-    FTemplate: TJTemplate;
+    FTemplate: TJTemplateStream;
   protected
     function GridCallback({%H-}ADataSet: TDataSet;
       {%H-}const AWritingType: TBrookHTMLTableWritingState;
@@ -22,6 +23,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure FillFields(ARequest: TRequest); override;
     procedure Load(const AFileName: TFileName);
     procedure Display;
     function Add(const AName: TJSONStringType; AValue: TJSONData): Integer; overload;
@@ -35,7 +37,7 @@ type
     function FormTo(AFieldsDef: TFieldDefs;
       AActionClass: TBrookActionClass): string;
     function GridTo(ADataSet: TDataSet): string;
-    property Template: TJTemplate read FTemplate;
+    property Template: TJTemplateStream read FTemplate;
   end;
 
 implementation
@@ -43,8 +45,8 @@ implementation
 constructor TMyAction.Create;
 begin
   inherited Create;
-  FTemplate := TJTemplate.Create;
-  FTemplate.HTMLSupports := False;
+  FTemplate := TJTemplateStream.Create;
+  FTemplate.Parser.HtmlSupports := False;
 end;
 
 destructor TMyAction.Destroy;
@@ -53,9 +55,18 @@ begin
   inherited Destroy;
 end;
 
+procedure TMyAction.FillFields(ARequest: TRequest);
+var
+  I: Integer;
+begin
+  for I := 0 to Pred(ARequest.ContentFields.Count) do
+    Fields.Add(ARequest.ContentFields.Names[I],
+      StripHTMLMarkup(ARequest.ContentFields.ValueFromIndex[I]));
+end;
+
 function TMyAction.GridCallback(ADataSet: TDataSet;
-  const AWritingType: TBrookHTMLTableWritingState; const APosition,
-  AMax: Integer; var AData: string): string;
+  const AWritingType: TBrookHTMLTableWritingState;
+  const APosition, AMax: Integer; var AData: string): string;
 begin
   Result := AData;
 end;
@@ -67,54 +78,54 @@ end;
 
 procedure TMyAction.Display;
 begin
-  FTemplate.Replace;
-  Write(FTemplate.Content);
+  FTemplate.Parser.Replace;
+  Write(FTemplate.Parser.Content);
 end;
 
 function TMyAction.Add(const AName: TJSONStringType;
   AValue: TJSONData): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName, AValue);
+  Result := FTemplate.Parser.Fields.Add(AName, AValue);
 end;
 
 function TMyAction.Add(const AName: TJSONStringType;
   AValue: Boolean): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName, AValue);
+  Result := FTemplate.Parser.Fields.Add(AName, AValue);
 end;
 
 function TMyAction.Add(const AName: TJSONStringType;
   AValue: TJSONFloat): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName, AValue);
+  Result := FTemplate.Parser.Fields.Add(AName, AValue);
 end;
 
 function TMyAction.Add(const AName, AValue: TJSONStringType): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName, AValue);
+  Result := FTemplate.Parser.Fields.Add(AName, AValue);
 end;
 
 function TMyAction.Add(const AName: TJSONStringType;
   AValue: Integer): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName, AValue);
+  Result := FTemplate.Parser.Fields.Add(AName, AValue);
 end;
 
 function TMyAction.Add(const AName: TJSONStringType;
   AValue: Int64): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName, AValue);
+  Result := FTemplate.Parser.Fields.Add(AName, AValue);
 end;
 
 function TMyAction.Add(const AName: TJSONStringType): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName);
+  Result := FTemplate.Parser.Fields.Add(AName);
 end;
 
 function TMyAction.Add(const AName: TJSONStringType;
   AValue: TJSONArray): Integer;
 begin
-  Result := FTemplate.Fields.Add(AName, AValue);
+  Result := FTemplate.Parser.Fields.Add(AName, AValue);
 end;
 
 function TMyAction.FormTo(AFieldsDef: TFieldDefs;
