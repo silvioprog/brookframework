@@ -1,5 +1,5 @@
-create table person ( 
-	id integer primary key not null,
+﻿create table person ( 
+	id serial primary key not null,
 	active boolean not null,
 	name varchar(50) not null unique,
 	age integer not null,
