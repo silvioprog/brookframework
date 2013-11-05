@@ -24,7 +24,7 @@ unit BrookStaticFileBroker;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, BrookUtils;
 
 { This is the only thing that user may know from this unit. }
 procedure BrookStaticFileRegisterDirectory(ARequestPath, ADirectory: string);
@@ -144,7 +144,7 @@ begin
   if RequestDirectoryMap.Contains(ARequestPath) then
     raise Exception.CreateFmt(SRequestPathAlreadyRegisteredErrMsg,[ARequestPath]);
   RequestDirectoryMap[ARequestPath] := IncludeTrailingPathDelimiter(ADirectory);
-  TStaticFileAction.Register(ARequestPath + ':file');
+  TStaticFileAction.Register(ARequestPath + ':file', rmGet);
 end;
 
 initialization
