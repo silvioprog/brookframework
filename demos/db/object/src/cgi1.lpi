@@ -38,7 +38,7 @@
         <PackageName Value="BrookRT"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="4">
       <Unit0>
         <Filename Value="cgi1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -66,15 +66,9 @@
       <Unit3>
         <Filename Value="person.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="person"/>
+        <UnitName Value="Person"/>
         <UsageCount Value="20"/>
       </Unit3>
-      <Unit4>
-        <Filename Value="jsonrttiutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="jsonrttiutils"/>
-        <UsageCount Value="20"/>
-      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
