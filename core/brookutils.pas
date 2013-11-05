@@ -25,7 +25,7 @@ interface
 
 uses
   BrookException, BrookMessages, BrookConsts, BrookHTTPConsts, HTTPDefs, FPJSON,
-  CustWeb, Classes, SysUtils;
+  FPJSONRTTI, CustWeb, Classes, SysUtils;
 
 type
   { Defines a array of strings. }
@@ -142,6 +142,10 @@ procedure BrookJSONCopy(ASrc, ADest: TJSONObject);
 function BrookDumpStack(const AEOL: ShortString = BR): string;
 { Ensures URL ends with delimiter. }
 function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
+{ Get the JSON from a object. }
+function BrookObjectToJson(AObject: TObject): TJSONObject;
+{ Get the object from a JSON. }
+procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject);
 
 implementation
 
@@ -345,6 +349,38 @@ begin
   L := Length(Result);
   if (L > 0) and (Result[L] = US) then
     Delete(Result, L, 1);
+end;
+
+function BrookObjectToJson(AObject: TObject): TJSONObject;
+var
+  VStreamer: TJSONStreamer;
+begin
+  VStreamer := TJSONStreamer.Create(nil);
+  try
+    try
+      Result := VStreamer.ObjectToJSON(AObject);
+    except
+      FreeAndNil(Result);
+      raise;
+    end;
+  finally
+    VStreamer.Free;
+  end;
+end;
+
+procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject);
+var
+  VDeStreamer: TJSONDeStreamer;
+begin
+  VDeStreamer := TJSONDeStreamer.Create(nil);
+  try
+{$IF FPC_FULLVERSION >= 20701}
+    VDeStreamer.CaseInsensitive := True;
+{$ENDIF}
+    VDeStreamer.JSONToObject(AJSON, AObject);
+  finally
+    VDeStreamer.Free;
+  end;
 end;
 
 end.
