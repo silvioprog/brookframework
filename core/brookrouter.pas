@@ -751,7 +751,7 @@ begin
           Continue;
         VMatchMethod := True;
         VActClass := PRoute^.ActionClass;
-        if PRoute^.Method <> rmAll then
+//        if PRoute^.Method <> rmAll then Please see issue #64
           Break;
       end;
     if VMatchPattern then
