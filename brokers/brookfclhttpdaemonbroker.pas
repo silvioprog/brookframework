@@ -49,6 +49,7 @@ type
 
   TBrookDaemonThread = class(TThread)
   public
+    constructor Create; virtual;
     procedure Execute; override;
   end;
 
@@ -113,6 +114,12 @@ end;
 
 { TBrookDaemonThread }
 
+constructor TBrookDaemonThread.Create;
+begin
+  inherited Create(True);
+  FreeOnTerminate := True;
+end;
+
 procedure TBrookDaemonThread.Execute;
 begin
   BrookHTTPApp.Run;
@@ -123,7 +130,7 @@ end;
 function TBrookHTTPDaemon.Start: Boolean;
 begin
   Result := inherited Start;
-  FThread := TBrookDaemonThread.Create(True);
+  FThread := TBrookDaemonThread.Create;
   FThread.Start;
   Log('Start.');
 end;
