@@ -58,7 +58,7 @@ Please use the [issues page](https://github.com/silvioprog/brookframework/issues
 
 ## DOWNLOAD
 
-You can download a release [here](http://brookframework.org/download/release.bf). Alternatively, you can also follow the project's GIT repository. The address is:
+You can download a release [here](https://github.com/silvioprog/brookframework/archive/master.zip). Alternatively, you can also follow the project's GIT repository. The address is:
 
 `git://github.com/silvioprog/brookframework.git`
 
