@@ -28,11 +28,16 @@ uses
   BrookMessages, BrookConsts, DB, Classes, SysUtils;
 
 type
+  TBrookDBAction = class;
+
   { Handles exceptions for @link(TBrookDBAction). }
   EBrookDBAction = class(EBrook);
 
   { Is a metaclass for @link(TBrookDBAction) class. }
   TBrookDBActionClass = class of TBrookDBAction;
+
+  { Is a type to @code(*TBrookDBAction) notify event. }
+  TBrookDBActionNotifyEvent = procedure(AAction: TBrookDBAction) of object;
 
   { Custom class for manages HTTP requests and responses when data persistance
     is required. }
@@ -78,6 +83,12 @@ type
   { Manages HTTP requests and responses when data persistance is required. }
   TBrookDBAction = class(TBrookCustomDBAction)
   private
+    FAfterDelete: TBrookDBActionNotifyEvent;
+    FAfterEdit: TBrookDBActionNotifyEvent;
+    FAfterInsert: TBrookDBActionNotifyEvent;
+    FBeforeDelete: TBrookDBActionNotifyEvent;
+    FBeforeEdit: TBrookDBActionNotifyEvent;
+    FBeforeInsert: TBrookDBActionNotifyEvent;
     FTable: TBrookTable;
     function GetDataBase: TBrookDataBase;
     function GetTable: TBrookTable;
@@ -87,6 +98,9 @@ type
     function CreateTable: TBrookTable; virtual;
     procedure FreeTable; virtual;
     procedure TableAfterOpen(DataSet: TDataSet); virtual;
+    procedure TableAfterInsert({%H-}DataSet: TDataSet); virtual;
+    procedure TableAfterEdit({%H-}DataSet: TDataSet); virtual;
+    procedure TableAfterDelete({%H-}DataSet: TDataSet); virtual;
     procedure TableBeforeInsert(DataSet: TDataSet); virtual;
     procedure TableBeforeEdit(DataSet: TDataSet); virtual;
     procedure TableBeforeDelete(DataSet: TDataSet); virtual;
@@ -99,6 +113,24 @@ type
     property DataBase: TBrookDataBase read GetDataBase write SetDataBase;
     { Get de table linked to the action. }
     property Table: TBrookTable read GetTable write SetTable;
+    { Is triggered after insert a record. }
+    property AfterInsert: TBrookDBActionNotifyEvent read FAfterInsert
+      write FAfterInsert;
+    { Is triggered before insert a record. }
+    property BeforeInsert: TBrookDBActionNotifyEvent read FBeforeInsert
+      write FBeforeInsert;
+    { Is triggered after edit a record. }
+    property AfterEdit: TBrookDBActionNotifyEvent read FAfterEdit
+      write FAfterEdit;
+    { Is triggered before edit a record. }
+    property BeforeEdit: TBrookDBActionNotifyEvent read FBeforeEdit
+      write FBeforeEdit;
+    { Is triggered after delete a record. }
+    property AfterDelete: TBrookDBActionNotifyEvent read FAfterDelete
+      write FAfterDelete;
+    { Is triggered before delete a record. }
+    property BeforeDelete: TBrookDBActionNotifyEvent read FBeforeDelete
+      write FBeforeDelete;
   end;
 
 implementation
@@ -226,6 +258,9 @@ begin
   inherited Create;
   FTable := CreateTable;
   FTable.DataSet.AfterOpen := @TableAfterOpen;
+  FTable.DataSet.AfterInsert := @TableAfterInsert;
+  FTable.DataSet.AfterEdit := @TableAfterEdit;
+  FTable.DataSet.AfterDelete := @TableAfterDelete;
   FTable.DataSet.BeforeInsert := @TableBeforeInsert;
   FTable.DataSet.BeforeEdit := @TableBeforeEdit;
   FTable.DataSet.BeforeDelete := @TableBeforeDelete;
@@ -252,19 +287,43 @@ begin
   TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
 end;
 
+procedure TBrookDBAction.TableAfterInsert(DataSet: TDataSet);
+begin
+  if Assigned(FAfterInsert) then
+    FAfterInsert(Self);
+end;
+
+procedure TBrookDBAction.TableAfterEdit(DataSet: TDataSet);
+begin
+  if Assigned(FAfterEdit) then
+    FAfterEdit(Self);
+end;
+
+procedure TBrookDBAction.TableAfterDelete(DataSet: TDataSet);
+begin
+  if Assigned(FAfterDelete) then
+    FAfterDelete(Self);
+end;
+
 procedure TBrookDBAction.TableBeforeInsert(DataSet: TDataSet);
 begin
   TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
+  if Assigned(FBeforeInsert) then
+    FBeforeInsert(Self);
 end;
 
 procedure TBrookDBAction.TableBeforeEdit(DataSet: TDataSet);
 begin
   TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
+  if Assigned(FBeforeEdit) then
+    FBeforeEdit(Self);
 end;
 
 procedure TBrookDBAction.TableBeforeDelete(DataSet: TDataSet);
 begin
   TBrookCustomDBAction.IgnoreFields(DataSet, GetIgnoredFields);
+  if Assigned(FBeforeDelete) then
+    FBeforeDelete(Self);
 end;
 
 function TBrookDBAction.GetDataBase: TBrookDataBase;
