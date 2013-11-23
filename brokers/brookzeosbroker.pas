@@ -101,6 +101,9 @@ type
 
 implementation
 
+uses
+  SysUtils;
+
 { TBrookZeosQuery }
 
 constructor TBrookZeosQuery.Init(ADataBase: TBrookDataBase);
