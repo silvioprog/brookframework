@@ -92,6 +92,11 @@ type
 
   { Creates a new resource. }
   TBrookCreateAction = class(TBrookDBAction)
+  private
+    FAfterApply: TBrookDBActionNotifyEvent;
+    FAfterInsert: TBrookDBActionNotifyEvent;
+    FBeforeApply: TBrookDBActionNotifyEvent;
+    FBeforeInsert: TBrookDBActionNotifyEvent;
   protected
     procedure InternalInsert; virtual;
     procedure InternalApply; virtual;
@@ -109,12 +114,33 @@ type
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. The 201 status code is always returned. }
     function Execute: Boolean; virtual;
+    { Is triggered after insert a record. }
+    property AfterInsert: TBrookDBActionNotifyEvent read FAfterInsert
+      write FAfterInsert;
+    { Is triggered before insert a record. }
+    property BeforeInsert: TBrookDBActionNotifyEvent read FBeforeInsert
+      write FBeforeInsert;
+    { Is triggered after apply updates. }
+    property AfterApply: TBrookDBActionNotifyEvent read FAfterApply
+      write FAfterApply;
+    { Is triggered before apply updates. }
+    property BeforeApply: TBrookDBActionNotifyEvent read FBeforeApply
+      write FBeforeApply;
   end;
 
   { Updates a specific resource. }
   TBrookUpdateAction = class(TBrookDBAction)
+  private
+    FAfterApply: TBrookDBActionNotifyEvent;
+    FAfterInsert: TBrookDBActionNotifyEvent;
+    FAfterOpen: TBrookDBActionNotifyEvent;
+    FAfterEdit: TBrookDBActionNotifyEvent;
+    FBeforeApply: TBrookDBActionNotifyEvent;
+    FBeforeInsert: TBrookDBActionNotifyEvent;
+    FBeforeOpen: TBrookDBActionNotifyEvent;
+    FBeforeEdit: TBrookDBActionNotifyEvent;
   protected
-    procedure InternalUpdate; virtual;
+    procedure InternalEdit; virtual;
     procedure InternalInsert; virtual;
     procedure InternalOpen; virtual;
     procedure InternalApply({%H-}const AUpdating: Boolean); virtual;
@@ -133,10 +159,41 @@ type
     { Executes the action. If the edition is successful, the 204 status code is
       returned, if not, the code is 201. }
     function Execute: Boolean; virtual;
+    { Is triggered after edit a record. }
+    property AfterEdit: TBrookDBActionNotifyEvent read FAfterEdit
+      write FAfterEdit;
+    { Is triggered before edit a record. }
+    property BeforeEdit: TBrookDBActionNotifyEvent read FBeforeEdit
+      write FBeforeEdit;
+    { Is triggered after insert a record. }
+    property AfterInsert: TBrookDBActionNotifyEvent read FAfterInsert
+      write FAfterInsert;
+    { Is triggered before insert a record. }
+    property BeforeInsert: TBrookDBActionNotifyEvent read FBeforeInsert
+      write FBeforeInsert;
+    { Is triggered after open dataset. }
+    property AfterOpen: TBrookDBActionNotifyEvent read FAfterOpen
+      write FAfterOpen;
+    { Is triggered before open dataset. }
+    property BeforeOpen: TBrookDBActionNotifyEvent read FBeforeOpen
+      write FBeforeOpen;
+    { Is triggered after apply changes. }
+    property AfterApply: TBrookDBActionNotifyEvent read FAfterApply
+      write FAfterApply;
+    { Is triggered before apply changes. }
+    property BeforeApply: TBrookDBActionNotifyEvent read FBeforeApply
+      write FBeforeApply;
   end;
 
   { Destroy a specific resource. }
   TBrookDestroyAction = class(TBrookDBAction)
+  private
+    FAfterApply: TBrookDBActionNotifyEvent;
+    FAfterDelete: TBrookDBActionNotifyEvent;
+    FAfterOpen: TBrookDBActionNotifyEvent;
+    FBeforeApply: TBrookDBActionNotifyEvent;
+    FBeforeDelete: TBrookDBActionNotifyEvent;
+    FBeforeOpen: TBrookDBActionNotifyEvent;
   protected
     procedure InternalDelete; virtual;
     procedure InternalOpen; virtual;
@@ -156,6 +213,24 @@ type
     { Executes the action. If the deletion is successful, the 204 status code is
       returned, if not, the code is 404. }
     function Execute: Boolean; virtual;
+    { Is triggered after delete a record. }
+    property AfterDelete: TBrookDBActionNotifyEvent read FAfterDelete
+      write FAfterDelete;
+    { Is triggered before delete a record. }
+    property BeforeDelete: TBrookDBActionNotifyEvent read FBeforeDelete
+      write FBeforeDelete;
+    { Is triggered after open dataset. }
+    property AfterOpen: TBrookDBActionNotifyEvent read FAfterOpen
+      write FAfterOpen;
+    { Is triggered before open dataset. }
+    property BeforeOpen: TBrookDBActionNotifyEvent read FBeforeOpen
+      write FBeforeOpen;
+    { Is triggered after apply changes. }
+    property AfterApply: TBrookDBActionNotifyEvent read FAfterApply
+      write FAfterApply;
+    { Is triggered before apply changes. }
+    property BeforeApply: TBrookDBActionNotifyEvent read FBeforeApply
+      write FBeforeApply;
   end;
 
 implementation
@@ -296,12 +371,20 @@ end;
 
 procedure TBrookCreateAction.InternalInsert;
 begin
+  if Assigned(FBeforeInsert) then
+    FBeforeInsert(Self);
   Table.Insert(Fields);
+  if Assigned(FAfterInsert) then
+    FAfterInsert(Self);
 end;
 
 procedure TBrookCreateAction.InternalApply;
 begin
+  if Assigned(FBeforeApply) then
+    FBeforeApply(Self);
   Table.Apply;
+  if Assigned(FAfterApply) then
+    FAfterApply(Self);
 end;
 
 class procedure TBrookCreateAction.Register(const ATableName, APattern: string;
@@ -342,24 +425,40 @@ end;
 
 { TBrookUpdateAction }
 
-procedure TBrookUpdateAction.InternalUpdate;
+procedure TBrookUpdateAction.InternalEdit;
 begin
+  if Assigned(FBeforeEdit) then
+    FBeforeEdit(Self);
   Table.Edit(Fields);
+  if Assigned(FAfterEdit) then
+    FAfterEdit(Self);
 end;
 
 procedure TBrookUpdateAction.InternalInsert;
 begin
+  if Assigned(FBeforeInsert) then
+    FBeforeInsert(Self);
   Table.Insert(Fields);
+  if Assigned(FAfterInsert) then
+    FAfterInsert(Self);
 end;
 
 procedure TBrookUpdateAction.InternalOpen;
 begin
+  if Assigned(FBeforeOpen) then
+    FBeforeOpen(Self);
   Table.Open;
+  if Assigned(FAfterOpen) then
+    FAfterOpen(Self);
 end;
 
 procedure TBrookUpdateAction.InternalApply(const AUpdating: Boolean);
 begin
+  if Assigned(FBeforeApply) then
+    FBeforeApply(Self);
   Table.Apply;
+  if Assigned(FAfterApply) then
+    FAfterApply(Self);
 end;
 
 class procedure TBrookUpdateAction.Register(const ATableName, APattern: string;
@@ -409,7 +508,7 @@ begin
   BrookJSONCopy(Values, Fields);
   if Result then
   begin
-    InternalUpdate;
+    InternalEdit;
     InternalApply(True);
   end
   else
@@ -423,17 +522,29 @@ end;
 
 procedure TBrookDestroyAction.InternalDelete;
 begin
+  if Assigned(FBeforeDelete) then
+    FBeforeDelete(Self);
   Table.Delete;
+  if Assigned(FAfterDelete) then
+    FAfterDelete(Self);
 end;
 
 procedure TBrookDestroyAction.InternalOpen;
 begin
+  if Assigned(FBeforeOpen) then
+    FBeforeOpen(Self);
   Table.Open;
+  if Assigned(FAfterOpen) then
+    FAfterOpen(Self);
 end;
 
 procedure TBrookDestroyAction.InternalApply;
 begin
+  if Assigned(FBeforeApply) then
+    FBeforeApply(Self);
   Table.Apply;
+  if Assigned(FAfterApply) then
+    FAfterApply(Self);
 end;
 
 class procedure TBrookDestroyAction.Register(const ATableName,
