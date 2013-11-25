@@ -414,7 +414,8 @@ begin
     else
       Continue;
     if (VFieldClass = TStringField) or (VFieldClass = TBinaryField) or
-      (VFieldClass = TBlobField) or (VFieldClass = TVariantField) then
+      (VFieldClass = TBlobField) or (VFieldClass = TVariantField) or
+      (VFieldClass = TGuidField) then
       VParam.AsString := VData.AsString;
     if (VFieldClass = TLongintField) or (VFieldClass = TLargeintField) then
       VParam.AsInteger := VData.AsInteger;
