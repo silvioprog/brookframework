@@ -31,6 +31,7 @@ type
   TBrookJSONDataHelper = class helper for TJSONData
   private
     function GetAsChar: Char;
+    function GetAsCurrency: Currency;
     function GetAsDate: TDate;
     function GetAsDateTime: TDateTime;
     function GetAsLowerJS: string;
@@ -47,6 +48,7 @@ type
     function GetIsBlank: Boolean;
     function GetIsEmpty: Boolean;
     procedure SetAsChar(AValue: Char);
+    procedure SetAsCurrency(AValue: Currency);
     procedure SetAsDate(AValue: TDate);
     procedure SetAsDateTime(AValue: TDateTime);
     procedure SetAsLowerJS(AValue: string);
@@ -71,6 +73,8 @@ type
     property AsDate: TDate read GetAsDate write SetAsDate;
     { Get or set the JSONData as a TDateTime. }
     property AsDateTime: TDateTime read GetAsDateTime write SetAsDateTime;
+    { Get or set the JSONData as a Currency. }
+    property AsCurrency: Currency read GetAsCurrency write SetAsCurrency;
     { Get or set the JSONData as a trimmed string. }
     property AsTrimStr: string read GetAsTrimStr write SetAsTrimStr;
     { Get or set the JSONData as a trimmed JSON string. }
@@ -98,9 +102,11 @@ type
   { Adds features to the @code(TJSONObject) class. }
   TBrookJSONObjectHelper = class helper for TJSONObject
   private
+    function GetCurrencies(AName: string): Currency;
     function GetDates(AName: string): TTime;
     function GetDateTimes(AName: string): TTime;
     function GetTimes(AName: string): TTime;
+    procedure SetCurrencies(AName: string; AValue: Currency);
     procedure SetDates(AName: string; AValue: TTime);
     procedure SetDateTimes(AName: string; AValue: TTime);
     procedure SetTimes(AName: string; AValue: TTime);
@@ -113,6 +119,8 @@ type
     property Dates[AName: string]: TTime read GetDates write SetDates;
     { Get or set a value as TDateTime. }
     property DateTimes[AName: string]: TTime read GetDateTimes write SetDateTimes;
+    { Get or set a value as Currency. }
+    property Currencies[AName: string]: Currency read GetCurrencies write SetCurrencies;
   end;
 
 implementation
@@ -122,6 +130,11 @@ implementation
 function TBrookJSONDataHelper.GetAsChar: Char;
 begin
   Result := PChar(AsString)^;
+end;
+
+function TBrookJSONDataHelper.GetAsCurrency: Currency;
+begin
+  Result := FloatToCurr(AsFloat);
 end;
 
 function TBrookJSONDataHelper.GetAsDate: TDate;
@@ -204,6 +217,11 @@ begin
   AsString := AValue;
 end;
 
+procedure TBrookJSONDataHelper.SetAsCurrency(AValue: Currency);
+begin
+  AsFloat := AValue;
+end;
+
 procedure TBrookJSONDataHelper.SetAsDate(AValue: TDate);
 begin
   AsFloat := Trunc(AValue);
@@ -271,6 +289,11 @@ end;
 
 { TBrookJSONObjectHelper }
 
+function TBrookJSONObjectHelper.GetCurrencies(AName: string): Currency;
+begin
+  Result := FloatToCurr(Floats[AName]);
+end;
+
 function TBrookJSONObjectHelper.GetDates(AName: string): TTime;
 begin
   Result := Trunc(Floats[AName]);
@@ -284,6 +307,11 @@ end;
 function TBrookJSONObjectHelper.GetTimes(AName: string): TTime;
 begin
   Result := Frac(Floats[AName]);
+end;
+
+procedure TBrookJSONObjectHelper.SetCurrencies(AName: string; AValue: Currency);
+begin
+  Floats[AName] := AValue;
 end;
 
 procedure TBrookJSONObjectHelper.SetDates(AName: string; AValue: TTime);
