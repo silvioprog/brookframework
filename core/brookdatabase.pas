@@ -28,6 +28,8 @@ uses
   BrookConfigurator, Classes, SysUtils;
 
 type
+  TBrookDataBases = class;
+
   { Handles exceptions for @link(TBrookDataBase). }
   EBrookDataBase = class(EBrook);
 
@@ -39,8 +41,6 @@ type
 
   { Is a metaclass for @link(TBrookDataBases) class. }
   TBrookDataBasesClass = class of TBrookDataBases;
-
-  TBrookDataBases = class;
 
   { Offers general abstract features for databases handling. }
   TBrookDataBase = class(TBrookObject)
