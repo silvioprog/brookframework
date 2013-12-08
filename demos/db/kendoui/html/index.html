@@ -15,6 +15,15 @@
 </div>
 <script src="http://brookframework.org/assets/js/jquery.js"></script>
 <script src="http://cdn.kendostatic.com/2012.3.1315/js/kendo.all.min.js"></script>
-<script src="person.js"></script>
+<script src="kendoutils.js"></script>
+<script>
+	grid({
+		grid: $("#grid"),
+		columns: [ { field: "name", title: "Name" } ],
+		fields: { name: { validation: { required: true } } },
+		apiUrl: "/cgi-bin/cgi1",
+		path: "/person"
+	});
+</script>
 </body>
 </html>
