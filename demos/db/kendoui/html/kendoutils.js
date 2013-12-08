@@ -2,10 +2,10 @@ function refresh(grid) {
 	grid.data("kendoGrid").dataSource.read();
 }
 
-function customize() {
+function customize(grid) {
 	$(".k-grid-edit").on("click", function() {
 		event.preventDefault();
-		var dt = $("#grid").data("kendoGrid");
+		var dt = grid.data("kendoGrid");
 		var select = dt.select();
 		var row = dt.dataItem(select);
 		if (row !== null)
@@ -14,7 +14,7 @@ function customize() {
 
 	$(".k-grid-delete").on("click", function() {
 		event.preventDefault();
-		var dt = $("#grid").data("kendoGrid");
+		var dt = grid.data("kendoGrid");
 		var select = dt.select();
 		var row = dt.dataItem(select);
 		if (row !== null)
@@ -96,10 +96,14 @@ function grid(params) {
 			refresh: true,
 			pageSizes: true
 		},
+		edit: function (obj) {
+			$(".k-grid-update").html("<span class='k-icon k-update'></span>OK");
+			$(".k-grid-cancel").html("<span class='k-icon k-cancel'></span>Cancel");
+		},
 		columns: params.columns,
 		height: 400,
 		scrollable: true,
 		selectable: true
 	});
-	customize();
+	customize(params.grid);
 }
