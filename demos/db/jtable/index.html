@@ -15,10 +15,10 @@ $(function() {
 	//Prepare jTable
 	$("#grid").jtable({
 		actions: {
-			listAction: "/cgi-bin/cgi1.bf/person?action=list",
-			createAction: "/cgi-bin/cgi1.bf/person?action=create",
-			updateAction: "/cgi-bin/cgi1.bf/person?action=update",
-			deleteAction: "/cgi-bin/cgi1.bf/person?action=delete"
+			listAction: "/cgi-bin/cgi1.bf/personlist",
+			createAction: "/cgi-bin/cgi1.bf/personcreate",
+			updateAction: "/cgi-bin/cgi1.bf/personupdate",
+			deleteAction: "/cgi-bin/cgi1.bf/persondelete"
 		},
 		fields: {
 			id: {
@@ -35,7 +35,7 @@ $(function() {
 		paging: true,
 		pageSize: 10,
 		sorting: true,
-		defaultSorting: "name asc"
+		defaultSorting: "id desc"
 	});
 	//Load person list from server
 	$("#grid").jtable("load");
