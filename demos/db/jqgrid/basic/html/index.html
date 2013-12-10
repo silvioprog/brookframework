@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<title>Person</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/assets/jqgrid/css/redmond/jquery-ui-1.10.3.custom.min.css"/>
+<link rel="stylesheet" href="/assets/jqgrid/css/ui.jqgrid.css"/>
+<script src="/assets/js/jquery-1.9.0.min.js"></script>
+<script src="/assets/jqgrid/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="/assets/jqgrid/js/i18n/grid.locale-en.js"></script>
+<script src="/assets/jqgrid/js/jquery.jqGrid.min.js"></script>
+</head>
+<body>
+<table id="grid"></table>
+<div id="pager"></div>
+<script>
+	$("#grid").jqGrid({
+		prmNames: { filters: null, nd: null },
+		colNames:["ID", "Name"],
+		colModel:[
+			{ name: "id", width: 60, editoptions: { readonly: true } },
+			{ name: "name", width: 460, editable: true }
+		],
+		rowList:[10, 20, 30],
+		rowNum: 10,
+		url: "/cgi-bin/cgi1.bf/person",
+		editurl: "/cgi-bin/cgi1.bf/person",
+		datatype: "json",
+		pager: "#pager",
+		sortname: "id",
+		sortorder: "desc",
+		viewrecords: true,
+		caption: "Person CRUD"
+	}).jqGrid("navGrid", "#pager", {});
+</script>
+</body>
+</html>

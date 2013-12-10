@@ -5,7 +5,7 @@ unit Brokers;
 interface
 
 uses
-  BrookFCLCGIBroker, BrookHTTPConsts, BrookUtils, BrookSQLdbBroker, PQConnection;
+  BrookFCLCGIBroker, BrookHTTPConsts, BrookUtils, BrookSQLdbBroker, SQLite3Conn;
 
 implementation
 
