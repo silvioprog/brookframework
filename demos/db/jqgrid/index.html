@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<title>Person</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="./css/redmond/jquery-ui-1.10.3.custom.min.css"/>
+<link rel="stylesheet" href="./css/ui.jqgrid.css"/>
+<script src="./js/jquery-1.9.1.js"></script>
+<script src="./js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="./js/i18n/grid.locale-en.js"></script>
+<script src="./js/jquery.jqGrid.min.js"></script>
+<script src="./js/jqgridutils.js"></script>
+<style type="text/css">
+html, body {
+	font-size: 75%;
+}
+.ui-jqgrid .ui-pg-table td {
+	padding: 1px;
+}
+.ui-jqgrid .ui-jqgrid-toppager .ui-pg-div {
+	margin-top: 2px;
+}
+.ui-jqgrid .ui-jqgrid-toppager .ui-pg-div span.ui-icon {
+	margin-top: -2px;
+}
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div {
+	margin-top: 2px;
+}
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div span.ui-icon,
+.ui-jqgrid .ui-jqgrid-toppager .ui-pg-div span.ui-icon {
+	float: none;
+	display: inline-block;
+	margin-top: -2px;
+}
+.ui-jqgrid .ui-jqgrid-toppager .ui-pg-div span.ui-pg-button-text,
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div span.ui-pg-button-text {
+	padding-left: 4px;
+	padding-right: 4px;
+	margin-top: 0px;
+	float: none;
+}
+.ui-jqgrid .ui-paging-info {
+	height: auto;
+	margin-top: 0px;
+}
+.ui-jqgrid .ui-jqgrid-pager {
+	height: auto;
+}
+.ui-jqgrid .ui-jqgrid-toppager {
+	height: auto !important; /* remove default 25px !important setting */
+}
+.ui-jqgrid .ui-pg-table {
+	padding-bottom: 0px;
+}
+.ui-jqgrid .ui-pg-button {
+	height: auto !important; /* remove default 19px !important setting */
+}
+.ui-jqgrid .ui-pg-div {
+	text-align: center;
+	display: inline-block;
+	white-space: pre;
+}
+</style>
+</head>
+<body>
+<table id="grid"></table>
+<div id="pager"></div>
+<script>
+	grid({
+		grid: $("#grid"),
+		apiUrl: "/cgi-bin/cgi1",
+		path: "/person"
+	});
+</script>
+</body>
+</html>
