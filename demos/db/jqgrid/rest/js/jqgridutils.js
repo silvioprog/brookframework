@@ -53,7 +53,7 @@ function grid(params) {
 			contentType: "application/json; charset=utf-8"
 		},
 		//cmTemplate: { sortable: false },
-		prmNames: { filters: null, search: null, nd: null/*, order: null, sort: null*/ },
+		prmNames: { filters: null, search: null/*, nd: null, order: null, sort: null*/ },
 		colNames: [ "ID", "Name" ],
 		colModel: [
 			{ name: "id", index: "id", label: "ID", key: true, formatter: "integer", width: 4, editable: false, editoptions: { readonly: true, size: 5 } },
