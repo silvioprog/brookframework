@@ -38,7 +38,7 @@
         <PackageName Value="BrookRT"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="cgi1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -63,6 +63,12 @@
         <UnitName Value="Brokers"/>
         <UsageCount Value="20"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="jtableactns.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="jtableactns"/>
+        <UsageCount Value="20"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
