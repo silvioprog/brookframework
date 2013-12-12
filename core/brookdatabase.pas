@@ -68,8 +68,12 @@ type
     constructor Init; virtual;
     { Frees an instance of @link(TBrookDataBase) class. }
     destructor Destroy; override;
-    { Creates an instance of a @link(TBrookDataBase) class. }
-    class function Create: TBrookDataBase;
+    { Creates an instance of a @link(TBrookDataBase) class, initializing the
+      internal configuration. }
+    class function Create: TBrookDataBase; overload;
+    { Creates an instance of a @link(TBrookDataBase) class passing the library
+      as parameter, without initialize the internal configuration. }
+    class function Create(const ALibrary: string): TBrookDataBase; overload;
     { Register the broker class. }
     class procedure Register;
     { Unregister the broker class. }
@@ -183,6 +187,11 @@ begin
   VDbs := TBrookDataBases.Service;
   Result := VDbs.CreateDataBase;
   VDbs.Configurator.Configure;
+end;
+
+class function TBrookDataBase.Create(const ALibrary: string): TBrookDataBase;
+begin
+  Result := TBrookDataBases.Service.ItemByLibrary(ALibrary).Init;
 end;
 
 procedure TBrookDataBase.AddObject(AObject: TObject);
