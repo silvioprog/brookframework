@@ -37,7 +37,10 @@ type
   { Defines features to the section handling. }
   TBrookSession = class(TBrookObject)
   private
+    FCookieDomain: string;
     FCookieName: string;
+    FCookiePath: string;
+    FCookieSecure: Boolean;
     FData: TMemoryStream;
     FDirectory: string;
     FFields: TJSONObject;
@@ -79,6 +82,12 @@ type
     procedure DeleteOldFiles(const ABeforeOf: TDateTime);
     { Set the session cookie name. }
     property CookieName: string read FCookieName write FCookieName;
+    { Set the session cookie domain. }
+    property CookieDomain: string read FCookieDomain write FCookieDomain;
+    { Set the session cookie path. }
+    property CookiePath: string read FCookiePath write FCookiePath;
+    { Set the session cookie secure. }
+    property CookieSecure: Boolean read FCookieSecure write FCookieSecure;
     { Set the name of directory session. }
     property Directory: string read FDirectory write FDirectory;
     { Returns @code(True) if the session has expired.}
@@ -172,6 +181,9 @@ begin
   begin
     VCookie := AResponse.Cookies.Add;
     VCookie.Name := FCookieName;
+    VCookie.Domain := FCookieDomain;
+    VCookie.Path := FCookiePath;
+    VCookie.Secure := FCookieSecure;
     VCookie.HttpOnly := FHttpOnly;
   end;
   VCookie.Value := SID;
