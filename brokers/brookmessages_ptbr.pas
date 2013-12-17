@@ -67,6 +67,7 @@ begin
   SBrookNoDataBaseRegisteredError := SBrookNoDataBaseRegisteredError_rst;
   SBrookNoQueryBrokerClassRegisteredError :=
     SBrookNoQueryBrokerClassRegisteredError_rst;
+  SBrookNoQueryInstantiatedError := SBrookNoQueryInstantiatedError_rst;
   SBrookEmptyTableNameError := SBrookEmptyTableNameError_rst;
   SBrookEmptyLibraryNameError := SBrookEmptyLibraryNameError_rst;
   SBrookEmptyCountryCodeError := SBrookEmptyCountryCodeError_rst;

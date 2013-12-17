@@ -111,6 +111,7 @@ var
   SBrookDataBaseAlreadyRegisteredError: string = ES;
   SBrookNoDataBaseRegisteredError: string = ES;
   SBrookNoQueryBrokerClassRegisteredError: string = ES;
+  SBrookNoQueryInstantiatedError: string = ES;
   SBrookEmptyTableNameError: string = ES;
   SBrookEmptyLibraryNameError: string = ES;
   SBrookEmptyCountryCodeError: string = ES;
@@ -154,6 +155,7 @@ begin
   SBrookNilParamError := SBrookNilParamError_rst;
   SBrookDataBaseAlreadyRegisteredError :=
     SBrookDataBaseAlreadyRegisteredError_rst;
+  SBrookNoQueryInstantiatedError := SBrookNoQueryInstantiatedError_rst;
   SBrookNoDataBaseRegisteredError := SBrookNoDataBaseRegisteredError_rst;
   SBrookNoQueryBrokerClassRegisteredError :=
     SBrookNoQueryBrokerClassRegisteredError_rst;

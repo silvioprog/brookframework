@@ -68,6 +68,7 @@ type
     procedure SetDateAsString(AValue: Boolean);
     procedure SetPosition(AValue: LongInt);
   protected
+    procedure CheckQuery;
     procedure CheckTableName;
     procedure CheckJSONParam(AJSON: TJSONData);
     function IsPrepared: Boolean;
@@ -239,7 +240,7 @@ constructor TBrookTable.Create(ADataBase: TBrookDataBase;
   const ATableName: string);
 begin
   FQuery := TBrookQuery.BrokerClass.Create(ADataBase);
-  if Assigned(ADataBase) then
+  if Assigned(ADataBase) and Assigned(FQuery) then
     ADataBase.AddObject(Self);
   FName := ATableName;
 end;
@@ -254,7 +255,7 @@ end;
 
 destructor TBrookTable.Destroy;
 begin
-  if Assigned(DataBase) then
+  if Assigned(DataBase) and Assigned(FQuery) then
     DataBase.RemoveObject(Self);
   FQuery.Free;
   inherited Destroy;
@@ -282,16 +283,19 @@ end;
 
 procedure TBrookTable.GetSchema(out ASchema: TJSONObject);
 begin
+  CheckQuery;
   FQuery.GetSchema(ASchema);
 end;
 
 function TBrookTable.GetSchema: TJSONStringType;
 begin
+  CheckQuery;
   Result := FQuery.GetSchema;
 end;
 
 function TBrookTable.GetAsJSON: TJSONStringType;
 begin
+  CheckQuery;
   Result := FQuery.AsJSON;
 end;
 
@@ -307,26 +311,31 @@ end;
 
 function TBrookTable.GetColumns(const AName: string): TField;
 begin
+  CheckQuery;
   Result := FQuery.Field(AName);
 end;
 
 function TBrookTable.GetDataBase: TBrookDataBase;
 begin
+  CheckQuery;
   Result := FQuery.DataBase;
 end;
 
 function TBrookTable.GetDataSet: TDataSet;
 begin
+  CheckQuery;
   Result := FQuery.DataSet;
 end;
 
 function TBrookTable.GetDataSource: TDataSource;
 begin
+  CheckQuery;
   Result := FQuery.DataSource;
 end;
 
 function TBrookTable.GetDateAsString: Boolean;
 begin
+  CheckQuery;
   Result := FQuery.DateAsString;
 end;
 
@@ -342,6 +351,7 @@ end;
 
 function TBrookTable.GetFields: TFields;
 begin
+  CheckQuery;
   Result := FQuery.Fields;
 end;
 
@@ -352,21 +362,25 @@ end;
 
 function TBrookTable.GetParams: TParams;
 begin
+  CheckQuery;
   Result := FQuery.Params;
 end;
 
 function TBrookTable.GetPosition: LongInt;
 begin
+  CheckQuery;
   Result := FQuery.Position;
 end;
 
 function TBrookTable.GetRow: TJSONObject;
 begin
+  CheckQuery;
   Result := FQuery.Row;
 end;
 
 function TBrookTable.GetRows: TJSONArray;
 begin
+  CheckQuery;
   Result := FQuery.Rows;
 end;
 
@@ -382,27 +396,38 @@ end;
 
 procedure TBrookTable.SetAsJSON(AValue: TJSONStringType);
 begin
+  CheckQuery;
   FQuery.AsJSON := AValue;
 end;
 
 procedure TBrookTable.SetDataBase(AValue: TBrookDataBase);
 begin
+  CheckQuery;
   FQuery.DataBase := AValue;
 end;
 
 procedure TBrookTable.SetDataSource(AValue: TDataSource);
 begin
+  CheckQuery;
   FQuery.DataSource := AValue;
 end;
 
 procedure TBrookTable.SetDateAsString(AValue: Boolean);
 begin
+  CheckQuery;
   FQuery.DateAsString := AValue;
 end;
 
 procedure TBrookTable.SetPosition(AValue: LongInt);
 begin
+  CheckQuery;
   FQuery.Position := AValue;
+end;
+
+procedure TBrookTable.CheckQuery;
+begin
+  if not Assigned(FQuery) then
+    raise EBrookTable.Create(Self, SBrookNoQueryInstantiatedError);
 end;
 
 procedure TBrookTable.CheckTableName;
@@ -417,6 +442,7 @@ var
   I, VCount: Integer;
 begin
   Result := Self;
+  CheckQuery;
   CheckTableName;
   CheckJSONParam(AJSON);
   VCount := AJSON.Count;
@@ -444,24 +470,28 @@ end;
 function TBrookTable.GetRows(out AJSON: TJSONArray): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.GetRows(AJSON);
 end;
 
 function TBrookTable.GetRow(out AJSON: TJSONObject): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.GetRow(AJSON);
 end;
 
 function TBrookTable.SetRows(AJSON: TJSONArray): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.SetRows(AJSON);
 end;
 
 function TBrookTable.SetRow(AJSON: TJSONObject): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.SetRow(AJSON);
 end;
 
@@ -473,48 +503,56 @@ end;
 function TBrookTable.Bind(AJSON: TJSONObject): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Bind(AJSON);
 end;
 
 function TBrookTable.ApplyUpdates: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.ApplyUpdates;
 end;
 
 function TBrookTable.CancelUpdates: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.CancelUpdates;
 end;
 
 function TBrookTable.Apply(const ARetaining: Boolean): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Apply(ARetaining);
 end;
 
 function TBrookTable.Undo(const ARetaining: Boolean): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Undo(ARetaining);
 end;
 
 function TBrookTable.Commit(const ARetaining: Boolean): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Commit(ARetaining);
 end;
 
 function TBrookTable.Rollback(const ARetaining: Boolean): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Rollback(ARetaining);
 end;
 
 function TBrookTable.Append(AJSON: TJSONObject): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   if FQuery.DataSet.FieldDefs.Count = 0 then
     CreateFields(AJSON);
   FQuery.Append(AJSON);
@@ -523,6 +561,7 @@ end;
 function TBrookTable.Insert(AJSON: TJSONObject): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   if FQuery.DataSet.FieldDefs.Count = 0 then
     CreateFields(AJSON);
   FQuery.Insert(AJSON);
@@ -531,24 +570,28 @@ end;
 function TBrookTable.Edit(AJSON: TJSONObject): TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Edit(AJSON);
 end;
 
 function TBrookTable.Cancel: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Cancel;
 end;
 
 function TBrookTable.Delete: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Delete;
 end;
 
 function TBrookTable.Open: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   if not FPrepared then
     Prepare;
   FQuery.Open;
@@ -557,42 +600,49 @@ end;
 function TBrookTable.Close: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Close;
 end;
 
 function TBrookTable.Refresh: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Refresh;
 end;
 
 function TBrookTable.First: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.First;
 end;
 
 function TBrookTable.Prior: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Prior;
 end;
 
 function TBrookTable.Next: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Next;
 end;
 
 function TBrookTable.Last: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Last;
 end;
 
 function TBrookTable.Clear: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FConditionsStr := ES;
   FFieldsStr := ES;
   FWhereStr := ES;
@@ -611,30 +661,35 @@ end;
 function TBrookTable.Post: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FQuery.Post;
 end;
 
 function TBrookTable.Locate(AJSON: TJSONObject;
   const AOptions: TLocateOptions): Boolean;
 begin
+  CheckQuery;
   Result := FQuery.Locate(AJSON, AOptions);
 end;
 
 function TBrookTable.Locate(const AKeyFields: string;
   const AKeyValues: Variant; const AOptions: TLocateOptions): Boolean;
 begin
+  CheckQuery;
   Result := FQuery.Locate(AKeyFields, AKeyValues, AOptions);
 end;
 
 function TBrookTable.Find(AJSON: TJSONObject;
   const AOptions: TLocateOptions): TBrookTable;
 begin
+  CheckQuery;
   Result := Open;
   FQuery.Locate(AJSON, AOptions);
 end;
 
 function TBrookTable.Get(const AKeyValue: Variant): TBrookTable;
 begin
+  CheckQuery;
   Result := Open;
   FQuery.Locate(BROOK_DEFAULT_KEY_NAME, AKeyValue);
 end;
@@ -642,22 +697,26 @@ end;
 function TBrookTable.Get(const AKeyName: string;
   const AKeyValue: Variant): TBrookTable;
 begin
+  CheckQuery;
   Result := Open;
   FQuery.Locate(AKeyName, AKeyValue);
 end;
 
 function TBrookTable.Field(const AName: string): TField;
 begin
+  CheckQuery;
   Result := FQuery.Field(AName);
 end;
 
 function TBrookTable.Param(const AName: string): TParam;
 begin
+  CheckQuery;
   Result := FQuery.Param(AName);
 end;
 
 function TBrookTable.FieldDef(const AName: string): TFieldDef;
 begin
+  CheckQuery;
   Result := FQuery.FieldDef(AName);
 end;
 
@@ -670,11 +729,13 @@ end;
 
 function TBrookTable.Count: Int64;
 begin
+  CheckQuery;
   Result := FQuery.Count;
 end;
 
 function TBrookTable.RowsAffected: TRowsCount;
 begin
+  CheckQuery;
   Result := FQuery.RowsAffected;
 end;
 
@@ -683,6 +744,7 @@ var
   VIsWhere: Boolean;
 begin
   Result := Self;
+  CheckQuery;
   CheckTableName;
   if FFieldsStr = ES then
     FFieldsStr := AK;
@@ -706,6 +768,7 @@ end;
 function TBrookTable.Unprepare: TBrookTable;
 begin
   Result := Self;
+  CheckQuery;
   FPrepared := False;
   FConditionsStr := ES;
   FFieldsStr := ES;

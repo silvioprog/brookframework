@@ -19,6 +19,7 @@
   SBrookDataBaseAlreadyRegisteredError_rst = 'The database service is already registered.';
   SBrookNoDataBaseRegisteredError_rst = 'No database service registered.';
   SBrookNoQueryBrokerClassRegisteredError_rst = 'No query broker class registered.';
+  SBrookNoQueryInstantiatedError_rst = 'No query instantiated.';
   SBrookEmptyTableNameError_rst = 'The table name must not be empty.';
   SBrookEmptyLibraryNameError_rst = 'The library name must not be empty.';
   SBrookEmptyCountryCodeError_rst = 'The country code must not be empty.';

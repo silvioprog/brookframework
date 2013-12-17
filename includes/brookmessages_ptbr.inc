@@ -19,6 +19,7 @@
   SBrookDataBaseAlreadyRegisteredError_rst = 'O serviço de database já está registrado.';
   SBrookNoDataBaseRegisteredError_rst = 'Serviço de database não registrado.';
   SBrookNoQueryBrokerClassRegisteredError_rst = 'Classe de broker da query não registrada.';
+  SBrookNoQueryInstantiatedError_rst = 'Query não instanciada.';
   SBrookEmptyTableNameError_rst = 'O nome da tabela não pode ser vazio.';
   SBrookEmptyLibraryNameError_rst = 'O nome da biblioteca não pode ser vazio.';
   SBrookEmptyCountryCodeError_rst = 'O código do país não pode ser vazio.';
