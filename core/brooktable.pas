@@ -240,22 +240,24 @@ constructor TBrookTable.Create(ADataBase: TBrookDataBase;
   const ATableName: string);
 begin
   FQuery := TBrookQuery.BrokerClass.Create(ADataBase);
-  if Assigned(ADataBase) and Assigned(FQuery) then
+  if Assigned(FQuery) and Assigned(ADataBase) then
     ADataBase.AddObject(Self);
   FName := ATableName;
 end;
 
 constructor TBrookTable.Create(const ATableName: string);
+var
+  VDb: TBrookDataBase;
 begin
-  if Assigned(TBrookDataBases.Service.Current) then
-    Create(TBrookDataBases.Service.Current, ATableName)
-  else
-    Create(TBrookDataBase.Create, ATableName);
+  VDb := TBrookDataBases.Service.Current;
+  if not Assigned(VDb) then
+    VDb := TBrookDataBase.Create;
+  Create(VDb, ATableName)
 end;
 
 destructor TBrookTable.Destroy;
 begin
-  if Assigned(DataBase) and Assigned(FQuery) then
+  if Assigned(FQuery) and Assigned(DataBase) then
     DataBase.RemoveObject(Self);
   FQuery.Free;
   inherited Destroy;
