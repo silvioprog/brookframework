@@ -249,6 +249,10 @@ initialization
     procedure Error(const AMsg: string); overload;
     { Raises a formated message for action exceptions. }
     procedure Error(const AMsg: string; const AArgs: array of const); overload;
+    { Stops the action showing a exception message. }
+    procedure Stop(const AMsg: string); overload;
+    { Stops the action showing a formatted exception message. }
+    procedure Stop(const AMsg: string; const AArgs: array of const); overload;
     { Writes the content of a file. }
     procedure Render(const AFileName: TFileName); overload;
     { Writes the content of a file passing parameters to the output. }
@@ -627,6 +631,16 @@ end;
 procedure TBrookAction.Error(const AMsg: string; const AArgs: array of const);
 begin
   raise EBrookAction.CreateFmt(Self, AMsg, AArgs);
+end;
+
+procedure TBrookAction.Stop(const AMsg: string);
+begin
+  raise EBrookAction.Create(AMsg);
+end;
+
+procedure TBrookAction.Stop(const AMsg: string; const AArgs: array of const);
+begin
+  raise EBrookAction.CreateFmt(AMsg, AArgs);
 end;
 
 procedure TBrookAction.Render(const AFileName: TFileName);
