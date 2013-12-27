@@ -12,15 +12,15 @@ uses
 type
   TMyAction = class(TBrookAction)
   public
-    procedure Request({%H-}ARequest: TRequest;
-      {%H-}AResponse: TResponse); override;
+    procedure Get; override;
   end;
 
 implementation
 
-procedure TMyAction.Request(ARequest: TRequest; AResponse: TResponse);
+procedure TMyAction.Get;
 begin
-  AResponse.AddContentDisposition(BROOK_HTTP_CONTENT_TYPE_IMAGE_PNG, 'img.png',
+  GetResponse.AddContentDisposition(BROOK_HTTP_CONTENT_TYPE_IMAGE_PNG,
+    'C:\repository\git\brookframework\demos\http\contentdisposition\img.png',
     BROOK_HTTP_CONTENT_DISPOSITION_INLINE);
 end;
 
