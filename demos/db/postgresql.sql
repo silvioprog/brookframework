@@ -5,6 +5,15 @@ create table person (
 		primary key(id)
 );
 
+create table people ( 
+	id serial primary key not null,
+	active boolean not null,
+	name varchar(50) not null unique,
+	age integer not null,
+	weight numeric not null,
+	lastupdate timestamp not null
+);
+
 create table post (
 	id serial not null,
 	title varchar(500) not null,
