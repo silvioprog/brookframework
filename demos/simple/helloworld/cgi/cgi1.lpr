@@ -3,7 +3,7 @@ program cgi1;
 {$mode objfpc}{$H+}
 
 uses
-  BrookApplication, Brokers, Unit1;
+  BrookApplication, Unit1, brokers;
 
 begin
   BrookApp.Run;

@@ -14,8 +14,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure Request({%H-}ARequest: TRequest;
-      {%H-}AResponse: TResponse); override;
+    procedure Get; override;
   end;
 
 implementation
@@ -32,11 +31,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TMyAction.Request(ARequest: TRequest; AResponse: TResponse);
+procedure TMyAction.Get;
 var
   I: Integer;
 begin
-  FSession.Start(ARequest);
+  FSession.Start(GetRequest);
   Write('<!DOCTYPE HTML>');
   Write('<html lang="en-US">');
   Write('<head>');
@@ -61,7 +60,7 @@ begin
   end;
   Write('</body>');
   Write('</html>');
-  FSession.Finish(AResponse);
+  FSession.Finish(GetResponse);
 end;
 
 initialization

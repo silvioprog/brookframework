@@ -43,12 +43,6 @@
         <Filename Value="cgi1.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="cgi1"/>
-        <UsageCount Value="20"/>
-      </Unit0>
-      <Unit1>
-        <Filename Value="test.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Test"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
@@ -56,11 +50,17 @@
         <CursorPos X="1" Y="1"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="test.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Test"/>
+        <UsageCount Value="20"/>
       </Unit1>
       <Unit2>
-        <Filename Value="brokers.pas"/>
+        <Filename Value="..\..\brokers.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Brokers"/>
+        <UnitName Value="brokers"/>
         <UsageCount Value="20"/>
       </Unit2>
     </Units>
@@ -69,10 +69,11 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="cgi1" ApplyConventions="False"/>
+      <Filename Value="cgi1.bf" ApplyConventions="False"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\.."/>
     </SearchPaths>
     <CodeGeneration>
       <Optimizations>
@@ -99,5 +100,4 @@
       </Item3>
     </Exceptions>
   </Debugging>
-  <EditorMacros Count="0"/>
 </CONFIG>
