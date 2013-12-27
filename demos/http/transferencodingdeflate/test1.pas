@@ -1,6 +1,6 @@
 // Please see: http://en.wikipedia.org/wiki/HTTP_compression
 
-unit Test;
+unit test1;
 
 {$mode objfpc}{$H+}
 
@@ -23,19 +23,19 @@ const
     '</html>';
 
 type
-  TMyAction = class(TBrookAction)
+  TTest1Action = class(TBrookAction)
   public
-    procedure Request(ARequest: TRequest; AResponse: TResponse); override;
+    procedure Get; override;
   end;
 
 implementation
 
-procedure TMyAction.Request(ARequest: TRequest; AResponse: TResponse);
+procedure TTest1Action.Get;
 var
   S: string;
   VOutput: TMemoryStream;
 begin
-  if aeDeflate in BrookGetAcceptEncodingSet(ARequest.AcceptEncoding) then
+  if aeDeflate in BrookGetAcceptEncodingSet(GetRequest.AcceptEncoding) then
   begin
     VOutput := TMemoryStream.Create;
     try
@@ -47,9 +47,9 @@ begin
         Free;
       end;
       VOutput.Seek(0, 0);
-      AResponse.SetCustomHeader(fieldContentEncoding, 'deflate');
-      AResponse.ContentStream := VOutput;
-      AResponse.SendContent;
+      GetResponse.SetCustomHeader(fieldContentEncoding, 'deflate');
+      GetResponse.ContentStream := VOutput;
+      GetResponse.SendContent;
     finally
       VOutput.Free;
     end;
@@ -59,6 +59,6 @@ begin
 end;
 
 initialization
-  TMyAction.Register('*');
+  TTest1Action.Register('/test1');
 
 end.
