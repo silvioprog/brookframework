@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>My blog - New post</title>
+	<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/135304375/cdn/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/135304375/cdn/css/bootstrap-theme.min.css">
+</head>
+<body>
+<div class="container" >
+	<fieldset>
+		<form action="@action" method="post" class="form-horizontal" >
+			<div class="form-group">
+				<h1>New post</h1>
+			</div>
+			<div class="form-group">
+				<label for="title">Title</label>
+				<input class="form-control" type="text" name="title" id="title" value="@title" required />
+			</div>
+			<div class="form-group">
+				<label for="author">Author</label>
+				<input class="form-control" type="text" name="author" id="author" value="@author" required />
+			</div>
+			<div class="form-group">
+				<label for="post">Post</label>
+				<textarea class="form-control" name="post" id="post" cols="30" rows="10">@post</textarea>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Post" class="btn btn-lg btn-primary" />
+			</div>
+		</form>
+	</fieldset>
+</div>
+</body>
+</html>
