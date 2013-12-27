@@ -1,3 +1,0 @@
-jQuery: http://jquery.com
-jEasyUI: http://www.jeasyui.com
-RUtils: https://github.com/silvioprog/rutils
