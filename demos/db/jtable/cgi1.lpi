@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -38,7 +38,7 @@
         <PackageName Value="BrookRT"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="3">
       <Unit0>
         <Filename Value="cgi1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -63,12 +63,6 @@
         <UnitName Value="Brokers"/>
         <UsageCount Value="20"/>
       </Unit2>
-      <Unit3>
-        <Filename Value="jtableactns.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="jtableactns"/>
-        <UsageCount Value="20"/>
-      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -100,5 +94,4 @@
       </Item3>
     </Exceptions>
   </Debugging>
-  <EditorMacros Count="0"/>
 </CONFIG>
