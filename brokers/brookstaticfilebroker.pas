@@ -3,7 +3,7 @@
 
   Copyright (C) 2013 Mario Ray Mahardhika.
 
-  http://brookframework.org
+  http://silvioprog.github.io/brookframework
 
   All contributors:
   Plase see the file CONTRIBUTORS.txt, included in this
