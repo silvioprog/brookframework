@@ -131,7 +131,7 @@ The project documentation is available in two formats: [HTML](https://dl.dropbox
 
 ##DEMOS
 
-If you want to see Brook in action, then take a look a database demo [here](https://dl.dropboxusercontent.com/u/135304375/brookframework/demos/index.html) and a simple chat [here](http://brookframework.org/cgi-bin/chat.bf).
+If you want to see Brook in action, then take a look a database demo [here](https://dl.dropboxusercontent.com/u/135304375/brookframework/demos/index.html) and a simple chat [here](https://brookframework.org/cgi-bin/chat.bf).
 
 ##VERSIONING
 
