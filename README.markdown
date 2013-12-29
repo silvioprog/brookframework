@@ -1,20 +1,121 @@
-<a href="http://brookframework.org/"><img src="http://brookframework.org/assets/img/brook-big-icon.png"></a>
-
-# [Brook framework](http://brookframework.org)
-
 ##INTRODUCTION
 
-**[Brook framework](http://brookframework.org)** is the perfect [Free Pascal](http://freepascal.org/) framework for your web applications. It's pure Pascal. You don't need to leave your preferred programming language.<br>
+**Brook framework** is the perfect [Free Pascal](http://freepascal.org/) framework for your web applications. It's pure Pascal. You don't need to leave your preferred programming language.
+
 It's complete: simple actions or configurable actions for database access, advanced routing features, wizard for [Lazarus](http://lazarus.freepascal.org), support for internationalization, high compatibility with [JSON](http://json.org) structures, easy and elegant [REST](http://en.wikipedia.org/wiki/Representational_state_transfer) implementation, plugins for varied needs, extensible and decoupled brokers... In fact, you have several reasons to adopt Brook as your web development framework.
 
 ##FEATURES
 
-* **Advanced routes management** - Actions are performed by means of routes. The application replies to requests that pass information through routes. Implementing this could involve a bunch of boring tests, but Brook knows how to receive a request and choose the correct URL and the correct method to reply to it. Using Brook, you have shorter and friendlier code to handle your routes.
-* **Integrated data persistance** - Brook can work together well with other frameworks. Brook offers a table object where data can be handled. Less instantiations, less coding, with an elegant syntax. These are advantages of Brook, but in this case, it's a special virtue of [Greyhound](https://github.com/mdbs99/Greyhound), the partner project responsible for handling databases. Within Brook, scope, there are other database layers available for specific usages but for most cases, Greyhound is the best one.
-* **JSON native support** - [JSON](http://json.org) structures are largely used by JavaScript. JSON is widespred in the web for data exchange purposes. You will really appreciate Brooks' good JSON support.
-* **REST architecture support** - If you didn't come from the web development world, you won't understand the power of [REST](http://en.wikipedia.org/wiki/Representational_state_transfer). REST is not a software component or a tool kit, but an idea. An idea able to simplify and standardize data requests and replies. Brook is powerful even if you don't use REST -- but you will want to use it.
-* **Lazarus wizards for installation and usage** - No, Brook didn't forget [Lazarus](http://www.lazarus.freepascal.org) users. With Lazarus, development is easier; with the Brook wizards, only a few clicks are required to start and configure your Brook projects.
-* **Plugins for varied needs** - In the full Brook package, everything is included: mail sending, HTTP utilities, templating, algebraic expression processing, RSS reading and writing and much more. You can see the whole list of plugins [here](https://github.com/silvioprog).
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_083_random.png">&nbsp;**Advanced routes management** – Actions are performed by means of routes. Brook knows how to receive a request and choose the correct URL and the correct method to reply to it.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_141_database_plus.png">&nbsp;**Integrated data persistance** – Brook offers a table object where data can be handled. Less instantiations, less coding, with an elegant syntax.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_198_ok.png">&nbsp;**JSON native support** – [JSON](http://json.org) is widespred in the web for data exchange purposes. You will really appreciate Brooks' good JSON support.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_340_globe.png">&nbsp;**REST architecture support** – [REST](http://en.wikipedia.org/wiki/Representational_state_transfer) is an architecture able to simplify and standardize data requests and replies. Brook is powerful even if you don't use REST – but you will want to use it.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_009_magic.png">&nbsp;**Lazarus wizards for installation and usage** - With [Lazarus](http://www.lazarus.freepascal.org), development is easier; with the Brook wizards, only a few clicks are required to start and configure your Brook projects.
+
+##GET STARTED
+
+#### <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_137_cogwheels.png">&nbsp; If you use Free Pascal only:
+
+Create three files:
+
+* `cgi1.lpr`;
+* `unit1.pas`;
+* `brokers.pas`;
+
+In `cgi1.lpr`, type:
+
+```pascal
+program cgi1;
+ 
+{$mode objfpc}{$H+}
+ 
+uses
+  BrookApplication, Brokers, Unit1;
+ 
+begin
+  BrookApp.Run;
+end.
+```
+
+In `unit1.pas`, type:
+
+```pascal
+unit Unit1;
+ 
+{$mode objfpc}{$H+}
+ 
+interface
+ 
+uses
+  BrookAction;
+ 
+type
+  TMyAction = class(TBrookAction)
+  public
+    procedure Get; override;
+  end;
+ 
+implementation
+ 
+procedure TMyAction.Get;
+begin
+  Write('Hello world!');
+end;
+ 
+initialization
+  TMyAction.Register('*');
+ 
+end.
+```
+
+In `brokers.pas`, type:
+
+```pascal
+unit Brokers;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  BrookFCLCGIBroker;
+
+implementation
+
+end. 
+```
+
+Compile the project `cgi1.lpr` and copy the resulting file to CGI directory of your web server. Now, in your web browser, access the following URL:
+
+```
+http://localhost/cgi-bin/cgi1
+```
+
+***
+
+#### <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_009_magic.png">&nbsp; if you are a Lazarus user:
+
+Open and install the file `brookex.lpk`. After the installation, select _File | New ..._ and, in _Brook framework_, choose the _Simple CGI application_ option as shown in the figure below:
+
+![Brook - New project](https://dl.dropboxusercontent.com/u/135304375/cdn/img/brook_new-project.png)
+
+Save and compile the project. Copy the resulting file to the CGI directory of your web server and enjoy! See the final result:
+
+![Brook - Hello world](https://dl.dropboxusercontent.com/u/135304375/cdn/img/brook_hello-world.png)
+
+## PLUGINS
+
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[RUtils](https://github.com/silvioprog/rutils)** – This plugin offers some general purpose routines on string conversions, parsings, encodings and others.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[JTemplate](http://silvioprog.github.io/jtemplate)** – This plugin helps you to fill variables in a template file.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[QTemplate](https://github.com/leledumbo/QTemplate)** – This plugin implements an alternative to FPTemplate engine.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[EasyRSS](https://github.com/silvioprog/easyrss)** – This plugin is the easiest way of Pascal developers provide news updating services in their applications.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[XMailer](https://github.com/silvioprog/xmailer)** – This plugin offers a really simple way to send e-mails using Free Pascal..
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[AlgEx](https://github.com/silvioprog/algex)** – This plugin helps you to process algebric expressions passed as string.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[Captcha](https://github.com/silvioprog/captcha)** – This plugin provides the handling of verification images, usually to block _bot_ access in login pages.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[MGeoIP](https://github.com/silvioprog/mgeoip)** – This plugin allows you to identify the name of country or city which IPs come from.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[ConvUtils](https://github.com/silvioprog/convutils)** – This plugin allows you to convert one measure (centimeters, inches, liters etc.) to another.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[HtmlDoc](https://github.com/silvioprog/htmldoc)** – Whith this plugin you can write headers, body and other relevant tags using Object Pascal.
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[LJGridUtils](https://github.com/silvioprog/ljgridutils)** – This plugin offers easy conversion from LCL to JSON and vice versa.
 
 ##LICENSE
 
@@ -24,17 +125,13 @@ The source code of the Brook framework is distributed under the GNU Lesser Gener
 
 Book requires **Free Pascal 2.6.2 or newer**. If you prefer the Lazarus interface, choose the **1.0.8 version or newer**.
 
-##GET STARTED
-
-Do you need some help to start? Whether you use the Lazarus IDE or purely the Free Pascal compiler, start [here](http://brookframework.org/get-started.html).
-
 ##DOCUMENTATION
 
-The project documentation is available in two formats: [HTML](http://docs.brookframework.org) and [PDF](http://docs.brookframework.org/brookframework-ref.pdf).
+The project documentation is available in two formats: [HTML](https://dl.dropboxusercontent.com/u/135304375/brookframework/doc/index.html) and [PDF](https://dl.dropboxusercontent.com/u/135304375/brookframework/doc/brookframework-ref.pdf).
 
 ##DEMOS
 
-If you want to see Brook in action, then take a look at demos [here](http://brookframework.org/demos.html).
+If you want to see Brook in action, then take a look a database demo [here](http://brookframework.org/cgi-bin/chat.bf) and a simple chat [here](https://dl.dropboxusercontent.com/u/135304375/brookframework/demos/index.html).
 
 ##VERSIONING
 
@@ -56,12 +153,6 @@ For more information on SemVer, please visit [http://semver.org](http://semver.o
 
 Please use the [issues page](https://github.com/silvioprog/brookframework/issues). Your cooperation will be appreciated.
 
-## DOWNLOAD
-
-You can download a release [here](https://github.com/silvioprog/brookframework/archive/master.zip). Alternatively, you can also follow the project's GIT repository. The address is:
-
-`git://github.com/silvioprog/brookframework.git`
-
 ##CONTRIBUTORS
 
 Brook would not be possible without important and active contributors. See their names [here](https://github.com/silvioprog/brookframework/blob/master/CONTRIBUTORS.txt).
@@ -76,6 +167,10 @@ Make a donation to the project, it's extremely easy, free, fast and secure!
 
 See the name of all donors [here](https://github.com/silvioprog/brookframework/blob/master/DONORS.txt).
 
-<br>
+## DOWNLOAD
 
-**Welcome to world of Brook!** ![Welcome to the Brook's world!](http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/113.gif)
+You can download the last release [here](https://github.com/silvioprog/brookframework/releases). Alternatively, you can also follow the project's GIT repository. The address is:
+
+`git://github.com/silvioprog/brookframework.git`
+
+## Welcome to world of Brook! ![Welcome to the Brook's world!](http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/113.gif)
