@@ -2,11 +2,11 @@
 <html lang="en-US">
 <head>
 <meta charset="UTF-8">
-<link href="/assets/css/redmond/jquery-ui-1.10.3.custom.min.css" rel="stylesheet"/>
-<link href="/assets/jtable/themes/lightcolor/blue/jtable.css" rel="stylesheet"/>
-<script src="/assets/js/jquery-1.9.0.min.js"></script>
-<script src="/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-<script src="/assets/jtable/jquery.jtable.min.js"></script>
+<link rel="stylesheet" href="http://www.jtable.org/Content/themes/metroblue/jquery-ui.css"/>
+<link rel="stylesheet" href="http://www.jtable.org/Scripts/jtable/themes/metro/blue/jtable.css"/>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="http://www.jtable.org/Scripts/jtable/jquery.jtable.js"></script>
 </head>
 <body>
 <div id="grid" style="width: 600px;"></div>
@@ -15,10 +15,10 @@ $(function() {
 	//Prepare jTable
 	$("#grid").jtable({
 		actions: {
-			listAction: "/cgi-bin/cgi1.bf/personlist",
-			createAction: "/cgi-bin/cgi1.bf/personcreate",
-			updateAction: "/cgi-bin/cgi1.bf/personupdate",
-			deleteAction: "/cgi-bin/cgi1.bf/persondelete"
+			listAction: "http://54.207.15.41/cgi-bin/cgi1.bf/personlist",
+			createAction: "http://54.207.15.41/cgi-bin/cgi1.bf/personcreate",
+			updateAction: "http://54.207.15.41/cgi-bin/cgi1.bf/personupdate",
+			deleteAction: "http://54.207.15.41/cgi-bin/cgi1.bf/persondelete"
 		},
 		fields: {
 			id: {
@@ -33,9 +33,9 @@ $(function() {
 		},
 		title: "Table of person",
 		paging: true,
-		pageSize: 10,
+		pageSize: 5,
 		sorting: true,
-		defaultSorting: "id desc"
+		defaultSorting: "id asc"
 	});
 	//Load person list from server
 	$("#grid").jtable("load");
