@@ -28,7 +28,7 @@ uses
   FPJSONRTTI, CustWeb, Classes, SysUtils;
 
 type
-  { Defines a array of strings. }
+  { Defines an array of strings. }
   TBrookArrayOfString = array of string;
 
   { Defines an enumerator to represent the HTTP request methods. }
