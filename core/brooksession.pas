@@ -92,8 +92,8 @@ type
     property Directory: string read FDirectory write FDirectory;
     { Returns @code(True) if the session has expired.}
     property Expired: Boolean read IsExpired;
-    { Get the ID session. }
-    property SID: string read FSID;
+    { Get or set the ID session. }
+    property SID: string read FSID write FSID;
     { Checks if the session has started. }
     property Started: Boolean read IsStarted;
     { The session file name. }
@@ -162,7 +162,8 @@ end;
 
 procedure TBrookSession.CheckSID(ARequest: TRequest);
 begin
-  FSID := ARequest.CookieFields.Values[FCookieName];
+  if FSID = ES then
+    FSID := ARequest.CookieFields.Values[FCookieName];
   if FSID = ES then
     FSID := GenerateID;
 end;
