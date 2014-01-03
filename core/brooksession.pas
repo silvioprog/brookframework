@@ -113,6 +113,7 @@ implementation
 
 constructor TBrookSession.Create;
 begin
+  inherited Create;
   FData := TMemoryStream.Create;
   FFields := CreateFields;
   FCookieName := BROOK_SESS_ID;
@@ -139,9 +140,17 @@ end;
 function TBrookSession.IsExpired: Boolean;
 begin
   Result := FTimeOut <> 0;
-  if Result then
-    Result := FileExists(FFileName) and
-      (IncSecond(BrookFileDate(FFileName), FTimeOut) < Now);
+  if not Result then
+    Exit;
+  if FileExists(FFileName) then
+  begin
+    if FTimeOut > 0 then
+      Result := IncSecond(BrookFileDate(FFileName), FTimeOut) < Now
+    else
+      Result := False;
+  end
+  else
+    Result := True;
 end;
 
 function TBrookSession.GenerateID: string;
