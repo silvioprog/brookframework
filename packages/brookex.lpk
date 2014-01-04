@@ -3,7 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="BrookEX"/>
-    <Author Value="Silvio Clecio - http://silvioprog.com.br"/>
+    <Author Value="Silvio Clecio - https://github.com/silvioprog"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
