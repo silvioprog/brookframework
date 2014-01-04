@@ -3,7 +3,7 @@ program chat;
 {$mode objfpc}{$H+}
 
 uses
-  BrookApplication, Chat, Auth, Brokers;
+  BrookApplication, chatactns, authactns, Brokers;
 
 begin
   BrookApp.Run;

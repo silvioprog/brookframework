@@ -55,15 +55,15 @@
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="chat.pas"/>
+        <Filename Value="chatactns.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Chat"/>
+        <UnitName Value="chatactns"/>
         <UsageCount Value="20"/>
       </Unit1>
       <Unit2>
-        <Filename Value="auth.pas"/>
+        <Filename Value="authactns.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Auth"/>
+        <UnitName Value="authactns"/>
         <UsageCount Value="20"/>
       </Unit2>
       <Unit3>

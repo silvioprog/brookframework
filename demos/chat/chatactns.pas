@@ -1,11 +1,11 @@
-unit Chat;
+unit chatactns;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  BrookUtils, Auth, RUtils, SysUtils;
+  BrookUtils, authactns, RUtils, SysUtils;
 
 type
 
