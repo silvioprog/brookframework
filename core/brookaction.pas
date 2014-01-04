@@ -254,10 +254,10 @@ initialization
     { Stops the action showing a formatted exception message. }
     procedure Stop(const AMsg: string; const AArgs: array of const); overload;
     { Writes the content of a file. }
-    procedure Render(const AFileName: TFileName); overload;
+    procedure Render(const AFileName: TFileName); overload; virtual;
     { Writes the content of a file passing parameters to the output. }
     procedure Render(const AFileName: TFileName;
-      const AArgs: array of const); overload;
+      const AArgs: array of const); overload; virtual;
     { Clears all written content with @code(Write(), WriteLn(), Render()) etc. }
     procedure Clear;
     { Writes a string. }
