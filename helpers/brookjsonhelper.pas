@@ -111,6 +111,18 @@ type
     procedure SetDateTimes(AName: string; AValue: TTime);
     procedure SetTimes(AName: string; AValue: TTime);
   public
+    { Get the value as boolean passing the default value as parameter. }
+    function Bool(const AName: string; const ADef: Boolean = False): Boolean;
+    { Get the value as float passing the default value as parameter. }
+    function Float(const AName: string; const ADef: TJSONFloat = 0): TJSONFloat;
+    { Get the value as integer passing the default value as parameter. }
+    function Int(const AName: string; const ADef: Integer = 0): Integer;
+    { Get the value as integer 64 passing the default value as parameter. }
+    function Int64(const AName: string; const ADef: Int64 = 0): Int64;
+    { Get the value as string passing the default value as parameter. }
+    function Str(const AName: string; const ADef: TJSONStringType = ''): TJSONStringType;
+    { Get the value as JSON passing the default value as parameter. }
+    function JSON(const AName: string; const ADef: TJSONStringType = '""'): TJSONStringType;
     { Checks if a name exists. }
     function Exists(const AName: string): Boolean;
     { Get or set a value as TTime. }
@@ -327,6 +339,78 @@ end;
 procedure TBrookJSONObjectHelper.SetTimes(AName: string; AValue: TTime);
 begin
   Floats[AName] := Frac(AValue);
+end;
+
+function TBrookJSONObjectHelper.Bool(const AName: string;
+  const ADef: Boolean): Boolean;
+var
+  VIdx: Integer;
+begin
+  VIdx := IndexOfName(AName);
+  if VIdx > -1 then
+    Result := Items[VIdx].AsBoolean
+  else
+    Result := ADef;
+end;
+
+function TBrookJSONObjectHelper.Float(const AName: string;
+  const ADef: TJSONFloat): TJSONFloat;
+var
+  VIdx: Integer;
+begin
+  VIdx := IndexOfName(AName);
+  if VIdx > -1 then
+    Result := Items[VIdx].AsFloat
+  else
+    Result := ADef;
+end;
+
+function TBrookJSONObjectHelper.Int(const AName: string;
+  const ADef: Integer): Integer;
+var
+  VIdx: Integer;
+begin
+  VIdx := IndexOfName(AName);
+  if VIdx > -1 then
+    Result := Items[VIdx].AsInteger
+  else
+    Result := ADef;
+end;
+
+function TBrookJSONObjectHelper.Int64(const AName: string;
+  const ADef: Int64): Int64;
+var
+  VIdx: Integer;
+begin
+  VIdx := IndexOfName(AName);
+  if VIdx > -1 then
+    Result := Items[VIdx].AsInt64
+  else
+    Result := ADef;
+end;
+
+function TBrookJSONObjectHelper.Str(const AName: string;
+  const ADef: TJSONStringType): TJSONStringType;
+var
+  VIdx: Integer;
+begin
+  VIdx := IndexOfName(AName);
+  if VIdx > -1 then
+    Result := Items[VIdx].AsString
+  else
+    Result := ADef;
+end;
+
+function TBrookJSONObjectHelper.JSON(const AName: string;
+  const ADef: TJSONStringType): TJSONStringType;
+var
+  VIdx: Integer;
+begin
+  VIdx := IndexOfName(AName);
+  if VIdx > -1 then
+    Result := Items[VIdx].AsJSON
+  else
+    Result := ADef;
 end;
 
 function TBrookJSONObjectHelper.Exists(const AName: string): Boolean;
