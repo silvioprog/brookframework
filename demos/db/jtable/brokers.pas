@@ -5,8 +5,8 @@ unit Brokers;
 interface
 
 uses
-  BrookFCLCGIBroker, BrookException, BrookUtils, BrookSQLdbBroker, BrookHTTPConsts,
-  PQConnection, HTTPDefs, fpjson, sysutils;
+  BrookFCLCGIBroker, BrookException, BrookUtils, BrookSQLdbBroker,
+  BrookHTTPConsts, PQConnection, HTTPDefs, fpjson, sysutils;
 
 implementation
 
@@ -26,6 +26,5 @@ initialization
   BrookSettings.OnError := @OnError;
   BrookSettings.Configuration := 'db.cfg';
   BrookSettings.ContentType := BROOK_HTTP_CONTENT_TYPE_APP_JSON;
-  BrookSettings.Page404 := '{ "Result": "ERROR", "Message": "Not found." }';
 
 end.
