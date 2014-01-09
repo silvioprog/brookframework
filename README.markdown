@@ -173,4 +173,8 @@ You can download the last release [here](https://github.com/silvioprog/brookfram
 
 `git://github.com/silvioprog/brookframework.git`
 
+## THIRD PARTY
+
+The Brook supports third party solutions and, for these, there is a broker file implementing your features. You can download the package containing all files [here](https://dl.dropboxusercontent.com/u/135304375/brookframework/third-party.zip).
+
 ## Welcome to world of Brook! ![Welcome to the Brook's world!](http://l.yimg.com/us.yimg.com/i/mesg/emoticons7/113.gif)
