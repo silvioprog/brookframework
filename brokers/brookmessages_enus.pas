@@ -73,6 +73,9 @@ begin
   SBrookEmptyCountryCodeError := SBrookEmptyCountryCodeError_rst;
   SBrookMethodNotAllowedError := SBrookMethodNotAllowedError_rst;
   SBrookIncompatibleTypesError := SBrookIncompatibleTypesError_rst;
+  SBrookConstraintAlreadyRegisteredError := SBrookConstraintAlreadyRegisteredError_rst;
+  SBrookConstraintsServiceAlreadyRegisteredError := SBrookConstraintsServiceAlreadyRegisteredError_rst;
+  SBrookNoConstraintsServiceRegisteredError := SBrookNoConstraintsServiceRegisteredError_rst;
 end;
 
 class function TBrookMessage_enUS.CountryCode: ShortString;

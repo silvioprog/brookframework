@@ -25,3 +25,6 @@
   SBrookEmptyCountryCodeError_rst = 'The country code must not be empty.';
   SBrookMethodNotAllowedError_rst = 'HTTP method not allowed for the requested resource.';
   SBrookIncompatibleTypesError_rst = 'Incompatible types: got "%s" expected "%s".';
+  SBrookConstraintAlreadyRegisteredError_rst = 'The constraint "%s" is already registered.';
+  SBrookConstraintsServiceAlreadyRegisteredError_rst = 'The constraints service is already registered.';
+  SBrookNoConstraintsServiceRegisteredError_rst = 'No constraints service registered.';

@@ -25,3 +25,6 @@
   SBrookEmptyCountryCodeError_rst = 'O código do país não pode ser vazio.';
   SBrookMethodNotAllowedError_rst = 'Método HTTP não permitido para o recurso solicitado.';
   SBrookIncompatibleTypesError_rst = 'Tipos incompatíveis: Tem "%s", esperado "%s".';
+  SBrookConstraintAlreadyRegisteredError_rst = 'A restrição "%s" já está registrada.';
+  SBrookConstraintsServiceAlreadyRegisteredError_rst = 'O serviço de restrições já está registrado.';
+  SBrookNoConstraintsServiceRegisteredError_rst = 'Serviço de restrições não registrado.';

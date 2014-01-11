@@ -117,6 +117,9 @@ var
   SBrookEmptyCountryCodeError: string = ES;
   SBrookMethodNotAllowedError: string = ES;
   SBrookIncompatibleTypesError: string = ES;
+  SBrookConstraintAlreadyRegisteredError: string = ES;
+  SBrookConstraintsServiceAlreadyRegisteredError: string = ES;
+  SBrookNoConstraintsServiceRegisteredError: string = ES;
 
 { Translates the framework messages acoording to the default language. }
 procedure BrookSetDefaultLanguage;
@@ -164,6 +167,9 @@ begin
   SBrookEmptyCountryCodeError := SBrookEmptyCountryCodeError_rst;
   SBrookMethodNotAllowedError := SBrookMethodNotAllowedError_rst;
   SBrookIncompatibleTypesError := SBrookIncompatibleTypesError_rst;
+  SBrookConstraintAlreadyRegisteredError := SBrookConstraintAlreadyRegisteredError_rst;
+  SBrookConstraintsServiceAlreadyRegisteredError := SBrookConstraintsServiceAlreadyRegisteredError_rst;
+  SBrookNoConstraintsServiceRegisteredError := SBrookNoConstraintsServiceRegisteredError_rst;
 end;
 
 { TBrookMessage }
