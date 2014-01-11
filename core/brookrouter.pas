@@ -404,7 +404,7 @@ end;
 class procedure TBrookRouter.RegisterService;
 begin
   if Assigned(_BrookRouterServiceClass) then
-    raise EBrookRouter.Create(Self, SBrookRouterAlreadyRegisteredError);
+    raise EBrookRouter.Create(Self, SBrookRouterServiceAlreadyRegisteredError);
   _BrookRouterServiceClass := Self;
 end;
 
@@ -419,7 +419,7 @@ begin
   if not Assigned(_BrookRouterService) then
   begin
     if not Assigned(_BrookRouterServiceClass) then
-      raise EBrookRouter.Create(Self, SBrookNoRouterRegisteredError);
+      raise EBrookRouter.Create(Self, SBrookNoRouterServiceRegisteredError);
     _BrookRouterService := _BrookRouterServiceClass.Create;
   end;
   Result := _BrookRouterService;

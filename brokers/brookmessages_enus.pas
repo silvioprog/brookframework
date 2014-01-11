@@ -53,18 +53,18 @@ begin
   SBrookDefaultActionAlreadyRegisteredError :=
     SBrookDefaultActionAlreadyRegisteredError_rst;
   SBrookPatternAlreadyRegisteredError := SBrookPatternAlreadyRegisteredError_rst;
-  SBrookRouterAlreadyRegisteredError := SBrookRouterAlreadyRegisteredError_rst;
-  SBrookNoRouterRegisteredError := SBrookNoRouterRegisteredError_rst;
-  SBrookMessagesAlreadyRegisteredError :=
-    SBrookMessagesAlreadyRegisteredError_rst;
-  SBrookNoMessagesRegisteredError := SBrookNoMessagesRegisteredError_rst;
+  SBrookRouterServiceAlreadyRegisteredError := SBrookRouterServiceAlreadyRegisteredError_rst;
+  SBrookNoRouterServiceRegisteredError := SBrookNoRouterServiceRegisteredError_rst;
+  SBrookMessagesServiceAlreadyRegisteredError :=
+    SBrookMessagesServiceAlreadyRegisteredError_rst;
+  SBrookNoMessagesServiceRegisteredError := SBrookNoMessagesServiceRegisteredError_rst;
   SBrookNoRouteRegisteredError := SBrookNoRouteRegisteredError_rst;
   SBrookCfgFileNotFoundError := SBrookCfgFileNotFoundError_rst;
   SBrookNilJSONParamError := SBrookNilJSONParamError_rst;
   SBrookNilParamError := SBrookNilParamError_rst;
-  SBrookDataBaseAlreadyRegisteredError :=
-    SBrookDataBaseAlreadyRegisteredError_rst;
-  SBrookNoDataBaseRegisteredError := SBrookNoDataBaseRegisteredError_rst;
+  SBrookDataBaseServiceAlreadyRegisteredError :=
+    SBrookDataBaseServiceAlreadyRegisteredError_rst;
+  SBrookNoDataBaseServiceRegisteredError := SBrookNoDataBaseServiceRegisteredError_rst;
   SBrookNoQueryBrokerClassRegisteredError :=
     SBrookNoQueryBrokerClassRegisteredError_rst;
   SBrookNoQueryInstantiatedError := SBrookNoQueryInstantiatedError_rst;

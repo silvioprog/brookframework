@@ -268,7 +268,7 @@ end;
 class procedure TBrookDataBases.RegisterService;
 begin
   if Assigned(_BrookDataBasesServiceClass) then
-    raise EBrookDataBases.Create(Self, SBrookDataBaseAlreadyRegisteredError);
+    raise EBrookDataBases.Create(Self, SBrookDataBaseServiceAlreadyRegisteredError);
   _BrookDataBasesServiceClass := Self;
 end;
 
@@ -283,7 +283,7 @@ begin
   if not Assigned(_BrookDataBasesService) then
   begin
     if not Assigned(_BrookDataBasesServiceClass) then
-      raise EBrookDataBases.Create(Self, SBrookNoDataBaseRegisteredError);
+      raise EBrookDataBases.Create(Self, SBrookNoDataBaseServiceRegisteredError);
     _BrookDataBasesService := _BrookDataBasesServiceClass.Create;
   end;
   Result := _BrookDataBasesService;

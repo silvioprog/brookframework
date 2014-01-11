@@ -100,16 +100,16 @@ var
   SBrookActionAlreadyRegisteredError: string = ES;
   SBrookDefaultActionAlreadyRegisteredError: string = ES;
   SBrookPatternAlreadyRegisteredError: string = ES;
-  SBrookRouterAlreadyRegisteredError: string = ES;
-  SBrookNoRouterRegisteredError: string = ES;
-  SBrookMessagesAlreadyRegisteredError: string = ES;
-  SBrookNoMessagesRegisteredError: string = ES;
+  SBrookRouterServiceAlreadyRegisteredError: string = ES;
+  SBrookNoRouterServiceRegisteredError: string = ES;
+  SBrookMessagesServiceAlreadyRegisteredError: string = ES;
+  SBrookNoMessagesServiceRegisteredError: string = ES;
   SBrookNoRouteRegisteredError: string = ES;
   SBrookCfgFileNotFoundError: string = ES;
   SBrookNilJSONParamError: string = ES;
   SBrookNilParamError: string = ES;
-  SBrookDataBaseAlreadyRegisteredError: string = ES;
-  SBrookNoDataBaseRegisteredError: string = ES;
+  SBrookDataBaseServiceAlreadyRegisteredError: string = ES;
+  SBrookNoDataBaseServiceRegisteredError: string = ES;
   SBrookNoQueryBrokerClassRegisteredError: string = ES;
   SBrookNoQueryInstantiatedError: string = ES;
   SBrookEmptyTableNameError: string = ES;
@@ -144,19 +144,19 @@ begin
   SBrookDefaultActionAlreadyRegisteredError :=
     SBrookDefaultActionAlreadyRegisteredError_rst;
   SBrookPatternAlreadyRegisteredError := SBrookPatternAlreadyRegisteredError_rst;
-  SBrookRouterAlreadyRegisteredError := SBrookRouterAlreadyRegisteredError_rst;
-  SBrookNoRouterRegisteredError := SBrookNoRouterRegisteredError_rst;
-  SBrookMessagesAlreadyRegisteredError :=
-    SBrookMessagesAlreadyRegisteredError_rst;
-  SBrookNoMessagesRegisteredError := SBrookNoMessagesRegisteredError_rst;
+  SBrookRouterServiceAlreadyRegisteredError := SBrookRouterServiceAlreadyRegisteredError_rst;
+  SBrookNoRouterServiceRegisteredError := SBrookNoRouterServiceRegisteredError_rst;
+  SBrookMessagesServiceAlreadyRegisteredError :=
+    SBrookMessagesServiceAlreadyRegisteredError_rst;
+  SBrookNoMessagesServiceRegisteredError := SBrookNoMessagesServiceRegisteredError_rst;
   SBrookNoRouteRegisteredError := SBrookNoRouteRegisteredError_rst;
   SBrookCfgFileNotFoundError := SBrookCfgFileNotFoundError_rst;
   SBrookNilJSONParamError := SBrookNilJSONParamError_rst;
   SBrookNilParamError := SBrookNilParamError_rst;
-  SBrookDataBaseAlreadyRegisteredError :=
-    SBrookDataBaseAlreadyRegisteredError_rst;
+  SBrookDataBaseServiceAlreadyRegisteredError :=
+    SBrookDataBaseServiceAlreadyRegisteredError_rst;
   SBrookNoQueryInstantiatedError := SBrookNoQueryInstantiatedError_rst;
-  SBrookNoDataBaseRegisteredError := SBrookNoDataBaseRegisteredError_rst;
+  SBrookNoDataBaseServiceRegisteredError := SBrookNoDataBaseServiceRegisteredError_rst;
   SBrookNoQueryBrokerClassRegisteredError :=
     SBrookNoQueryBrokerClassRegisteredError_rst;
   SBrookEmptyTableNameError := SBrookEmptyTableNameError_rst;
@@ -189,7 +189,7 @@ end;
 class procedure TBrookMessages.RegisterService;
 begin
   if Assigned(_BrookMessagesServiceClass) then
-    raise EBrookMessages.Create(Self, SBrookMessagesAlreadyRegisteredError);
+    raise EBrookMessages.Create(Self, SBrookMessagesServiceAlreadyRegisteredError);
   _BrookMessagesServiceClass := Self;
 end;
 
@@ -204,7 +204,7 @@ begin
   if not Assigned(_BrookMessagesService) then
   begin
     if not Assigned(_BrookMessagesServiceClass) then
-      raise EBrookMessages.Create(Self, SBrookNoMessagesRegisteredError);
+      raise EBrookMessages.Create(Self, SBrookNoMessagesServiceRegisteredError);
     _BrookMessagesService := _BrookMessagesServiceClass.Create;
   end;
   Result := _BrookMessagesService;
