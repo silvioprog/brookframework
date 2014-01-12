@@ -114,8 +114,6 @@ type
 
   { Registers and executes constraint classes. }
   TBrookConstraints = class(TBrookCustomConstraints)
-  private
-    FOnExecuteHandler: TBrookExecuteActionEvent;
   public
     { Registers the service provided by this class. }
     class procedure RegisterService;
@@ -126,15 +124,8 @@ type
     { Adds a constraint item. }
     procedure Add(AActionClass: TBrookActionClass;
       AConstraintClass: TBrookConstraintClass);
-    { Triggers the user validations and calls the @code(OnExecute) event. }
-    procedure DoExecute(ASender: TObject; AAction: TBrookAction;
-      ARequest: TRequest; AResponse: TResponse; ARoute: TBrookRoute;
-      var AHandled: Boolean);
     { Triggers the user validations implemented in the constraint. }
-    procedure Execute(AAction: TBrookAction; ARoute: TBrookRoute;
-      {%H-}var AHandled: Boolean); virtual;
-    { Binds a middleware class to the @code(Execute) method of this class. }
-    procedure BindExecution(AEvent: PBrookExecuteActionEvent);
+    procedure Execute(AAction: TBrookAction; ARoute: TBrookRoute); virtual;
   end;
 
 implementation
@@ -273,17 +264,7 @@ begin
   FList.Add(PItem);
 end;
 
-procedure TBrookConstraints.DoExecute(ASender: TObject; AAction: TBrookAction;
-  ARequest: TRequest; AResponse: TResponse; ARoute: TBrookRoute;
-  var AHandled: Boolean);
-begin
-  Execute(AAction, ARoute, AHandled);
-  if Assigned(FOnExecuteHandler) then
-    FOnExecuteHandler(ASender, AAction, ARequest, AResponse, ARoute, AHandled);
-end;
-
-procedure TBrookConstraints.Execute(AAction: TBrookAction; ARoute: TBrookRoute;
-  var AHandled: Boolean);
+procedure TBrookConstraints.Execute(AAction: TBrookAction; ARoute: TBrookRoute);
 var
   PItem: PBrookConstraintItem;
   VConstraint: TBrookConstraint;
@@ -295,12 +276,6 @@ begin
       VConstraint.Execute;
       FreeAndNil(VConstraint);
     end;
-end;
-
-procedure TBrookConstraints.BindExecution(AEvent: PBrookExecuteActionEvent);
-begin
-  FOnExecuteHandler := AEvent^;
-  AEvent^ := @DoExecute;
 end;
 
 initialization
