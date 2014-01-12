@@ -134,7 +134,7 @@ type
     procedure Execute(AAction: TBrookAction; ARoute: TBrookRoute;
       {%H-}var AHandled: Boolean); virtual;
     { Binds a middleware class to the @code(Execute) method of this class. }
-    procedure BindExecution(AEvent: TBrookExecuteActionEvent);
+    procedure BindExecution(AEvent: PBrookExecuteActionEvent);
   end;
 
 implementation
@@ -297,10 +297,10 @@ begin
     end;
 end;
 
-procedure TBrookConstraints.BindExecution(AEvent: TBrookExecuteActionEvent);
+procedure TBrookConstraints.BindExecution(AEvent: PBrookExecuteActionEvent);
 begin
-  FOnExecuteHandler := AEvent;
-  AEvent := @DoExecute;
+  FOnExecuteHandler := AEvent^;
+  AEvent^ := @DoExecute;
 end;
 
 initialization
