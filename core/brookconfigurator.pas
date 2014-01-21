@@ -98,6 +98,7 @@ implementation
 
 constructor TBrookConfigurator.Create;
 begin
+  inherited Create;
   FCfg := TStringList.Create;
   FCfg.Delimiter := SC;
   FCfg.StrictDelimiter := True;
@@ -121,7 +122,7 @@ end;
 function TBrookConfigurator.Load: TBrookConfigurator;
 begin
   Result := Self;
-  if BrookSettings.Configuration <> ES then
+  if (FConfiguration = ES) and (BrookSettings.Configuration <> ES) then
     FConfiguration := BrookSettings.Configuration;
   if Trim(FConfiguration) = ES then
   begin
