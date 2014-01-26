@@ -28,6 +28,12 @@ uses
 
 type
 
+  { Is a metaclass for @link(TBrookCustomRESTAction) class. }
+  TBrookCustomRESTActionClass = class of TBrookCustomRESTAction;
+
+    { Is a metaclass for @link(TBrookCustomCRUDAction) class. }
+  TBrookCustomCRUDActionClass = class of TBrookCustomCRUDAction;
+
   { Offers abstract methods for REST actions. }
   TBrookCustomRESTAction = class(TBrookDBAction)
   public
