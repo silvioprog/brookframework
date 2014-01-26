@@ -27,8 +27,16 @@ uses
   BrookDBAction, BrookUtils, BrookHTTPConsts, HTTPDefs, FPJSON, SysUtils;
 
 type
+
+  { Offers abstract methods for REST actions. }
+  TBrookCustomRESTAction = class(TBrookDBAction)
+  public
+    { Is triggered by the inherited class. }
+    function Execute: Boolean; virtual; abstract;
+  end;
+
   { Displays the schema of the resource. }
-  TBrookOptionsAction = class(TBrookDBAction)
+  TBrookOptionsAction = class(TBrookCustomRESTAction)
   protected
     procedure InternalOpen; virtual;
   public
@@ -45,11 +53,11 @@ type
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     (* Executes the action. If there are schema in the resource, they are
       returned, if not, it returns a @code('{ "error": "No schema." }') JSON. *)
-    function Execute: Boolean; virtual;
+    function Execute: Boolean; override;
   end;
 
   { Displays all the contents of the resource. }
-  TBrookRetrieveAction = class(TBrookDBAction)
+  TBrookRetrieveAction = class(TBrookCustomRESTAction)
   protected
     procedure InternalOpen; virtual;
   public
@@ -66,11 +74,11 @@ type
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If there are contents in the resource, they are
       returned, if not, it returns a 404 status code. }
-    function Execute: Boolean; virtual;
+    function Execute: Boolean; override;
   end;
 
   { Displays the content of a specific resource. }
-  TBrookShowAction = class(TBrookDBAction)
+  TBrookShowAction = class(TBrookCustomRESTAction)
   protected
     procedure InternalOpen; virtual;
   public
@@ -87,11 +95,11 @@ type
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If there are contents in the resource, they are
       returned, if not, it returns a 404 status code. }
-    function Execute: Boolean; virtual;
+    function Execute: Boolean; override;
   end;
 
   { Creates a new resource. }
-  TBrookCreateAction = class(TBrookDBAction)
+  TBrookCreateAction = class(TBrookCustomRESTAction)
   private
     FAutoApply: Boolean;
     FAfterApply: TBrookDBActionNotifyEvent;
@@ -116,7 +124,7 @@ type
     { Is triggered by a request of any HTTP method. }
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. The 201 status code is always returned. }
-    function Execute: Boolean; virtual;
+    function Execute: Boolean; override;
     { Is triggered after insert a record. }
     property AfterInsert: TBrookDBActionNotifyEvent read FAfterInsert
       write FAfterInsert;
@@ -134,7 +142,7 @@ type
   end;
 
   { Updates a specific resource. }
-  TBrookUpdateAction = class(TBrookDBAction)
+  TBrookUpdateAction = class(TBrookCustomRESTAction)
   private
     FAfterApply: TBrookDBActionNotifyEvent;
     FAfterInsert: TBrookDBActionNotifyEvent;
@@ -166,7 +174,7 @@ type
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If the edition is successful, the 204 status code is
       returned, if not, the code is 201. }
-    function Execute: Boolean; virtual;
+    function Execute: Boolean; override;
     { Is triggered after edit a record. }
     property AfterEdit: TBrookDBActionNotifyEvent read FAfterEdit
       write FAfterEdit;
@@ -196,7 +204,7 @@ type
   end;
 
   { Destroy a specific resource. }
-  TBrookDestroyAction = class(TBrookDBAction)
+  TBrookDestroyAction = class(TBrookCustomRESTAction)
   private
     FAfterApply: TBrookDBActionNotifyEvent;
     FAfterDelete: TBrookDBActionNotifyEvent;
@@ -225,7 +233,7 @@ type
     procedure Request({%H-}ARequest: TRequest; AResponse: TResponse); override;
     { Executes the action. If the deletion is successful, the 204 status code is
       returned, if not, the code is 404. }
-    function Execute: Boolean; virtual;
+    function Execute: Boolean; override;
     { Is triggered after delete a record. }
     property AfterDelete: TBrookDBActionNotifyEvent read FAfterDelete
       write FAfterDelete;
