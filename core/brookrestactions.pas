@@ -93,6 +93,7 @@ type
   { Creates a new resource. }
   TBrookCreateAction = class(TBrookDBAction)
   private
+    FAutoApply: Boolean;
     FAfterApply: TBrookDBActionNotifyEvent;
     FAfterInsert: TBrookDBActionNotifyEvent;
     FBeforeApply: TBrookDBActionNotifyEvent;
@@ -101,6 +102,8 @@ type
     procedure InternalInsert; virtual;
     procedure InternalApply; virtual;
   public
+    { Creates an instance of @code(TBrookCreateAction). }
+    constructor Create; override;
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
       const AMethod: TBrookRequestMethod = rmPost;
@@ -126,6 +129,8 @@ type
     { Is triggered before apply updates. }
     property BeforeApply: TBrookDBActionNotifyEvent read FBeforeApply
       write FBeforeApply;
+    { Indicates whether to apply the Dataset changes automatically. }
+    property AutoApply: Boolean read FAutoApply write FAutoApply;
   end;
 
   { Updates a specific resource. }
@@ -135,6 +140,7 @@ type
     FAfterInsert: TBrookDBActionNotifyEvent;
     FAfterOpen: TBrookDBActionNotifyEvent;
     FAfterEdit: TBrookDBActionNotifyEvent;
+    FAutoApply: Boolean;
     FBeforeApply: TBrookDBActionNotifyEvent;
     FBeforeInsert: TBrookDBActionNotifyEvent;
     FBeforeOpen: TBrookDBActionNotifyEvent;
@@ -145,6 +151,8 @@ type
     procedure InternalOpen; virtual;
     procedure InternalApply({%H-}const AUpdating: Boolean); virtual;
   public
+    { Creates an instance of @code(TBrookUpdateAction). }
+    constructor Create; override;
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
       const AMethod: TBrookRequestMethod = rmPut;
@@ -183,6 +191,8 @@ type
     { Is triggered before apply changes. }
     property BeforeApply: TBrookDBActionNotifyEvent read FBeforeApply
       write FBeforeApply;
+    { Indicates whether to apply the Dataset changes automatically. }
+    property AutoApply: Boolean read FAutoApply write FAutoApply;
   end;
 
   { Destroy a specific resource. }
@@ -191,6 +201,7 @@ type
     FAfterApply: TBrookDBActionNotifyEvent;
     FAfterDelete: TBrookDBActionNotifyEvent;
     FAfterOpen: TBrookDBActionNotifyEvent;
+    FAutoApply: Boolean;
     FBeforeApply: TBrookDBActionNotifyEvent;
     FBeforeDelete: TBrookDBActionNotifyEvent;
     FBeforeOpen: TBrookDBActionNotifyEvent;
@@ -199,6 +210,8 @@ type
     procedure InternalOpen; virtual;
     procedure InternalApply; virtual;
   public
+    { Creates an instance of @code(TBrookDestroyAction). }
+    constructor Create; override;
     { Registers an action linking the request to a database table. }
     class procedure Register(const ATableName, APattern: string;
       const AMethod: TBrookRequestMethod = rmDelete;
@@ -231,6 +244,8 @@ type
     { Is triggered before apply changes. }
     property BeforeApply: TBrookDBActionNotifyEvent read FBeforeApply
       write FBeforeApply;
+    { Indicates whether to apply the Dataset changes automatically. }
+    property AutoApply: Boolean read FAutoApply write FAutoApply;
   end;
 
 implementation
@@ -369,6 +384,12 @@ end;
 
 { TBrookCreateAction }
 
+constructor TBrookCreateAction.Create;
+begin
+  inherited Create;
+  FAutoApply := True;
+end;
+
 procedure TBrookCreateAction.InternalInsert;
 begin
   if Assigned(FBeforeInsert) then
@@ -419,11 +440,18 @@ function TBrookCreateAction.Execute: Boolean;
 begin
   BrookJSONCopy(Values, Fields);
   InternalInsert;
-  InternalApply;
+  if FAutoApply then
+    InternalApply;
   Result := Fields.Count > 0;
 end;
 
 { TBrookUpdateAction }
+
+constructor TBrookUpdateAction.Create;
+begin
+  inherited Create;
+  FAutoApply := True;
+end;
 
 procedure TBrookUpdateAction.InternalEdit;
 begin
@@ -509,16 +537,24 @@ begin
   if Result then
   begin
     InternalEdit;
-    InternalApply(True);
+    if FAutoApply then
+      InternalApply(True);
   end
   else
   begin
     InternalInsert;
-    InternalApply(False);
+    if FAutoApply then
+      InternalApply(False);
   end;
 end;
 
 { TBrookDestroyAction }
+
+constructor TBrookDestroyAction.Create;
+begin
+  inherited Create;
+  FAutoApply := True;
+end;
 
 procedure TBrookDestroyAction.InternalDelete;
 begin
@@ -594,7 +630,8 @@ begin
   if Result then
   begin
     InternalDelete;
-    InternalApply;
+    if FAutoApply then
+      InternalApply;
   end;
 end;
 
