@@ -52,7 +52,8 @@ procedure TChatPostMsg.Post;
 const
   MSG = '<div class="msgln">(%s) <b>%s</b>: %s<br></div>';
 begin
-  Add(MSG, [FormatDateTime('yyyy-mm-dd', Now), Session.Fields['name'].AsString,
+  Add(MSG, [FormatDateTime('yyyy-mm-dd', Now),
+    StripHTMLMarkup(Session.Fields['name'].AsString),
     StripHTMLMarkup(Fields['text'].AsString)]);
   Save;
 end;
