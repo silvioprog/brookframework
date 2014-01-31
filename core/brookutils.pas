@@ -188,6 +188,7 @@ begin
   ALvl := Copy(S, 1, P - 1);
   R := IncludeHTTPPathDelimiter(R) + ALvl;
 end;
+
 function BrookGetPathLevel(const APath: string; const AIndex: SizeInt;
   const ADelimiter: Char): string;
 var
@@ -263,7 +264,7 @@ end;
 procedure BrookDeleteFiles(APath: string; const ABeforeOf: TDateTime;
   const ASkippedFile: TFileName; const AContains: string);
 
-  function IsOldFile(const FN: TFileName; const DT: TDateTime): Boolean;
+  function IsOldFile(const FN: TFileName; const DT: TDateTime): Boolean; inline;
   begin
     if DT = NullDate then
       Result := True
