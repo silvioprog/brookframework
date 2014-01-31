@@ -24,7 +24,7 @@ unit BrookClasses;
 interface
 
 uses
-  BrookConsts;
+  BrookConsts, Classes;
 
 type
   { Is the main interface for Brook. }
@@ -40,6 +40,10 @@ type
 
   { Is the main interfaced object for Brook. }
   TBrookInterfacedObject = class(TInterfacedObject)
+  end;
+
+  { Is the main component for Brook. }
+  TBrookComponent = class(TComponent)
   end;
 
 implementation
