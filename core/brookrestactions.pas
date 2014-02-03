@@ -24,7 +24,8 @@ unit BrookRESTActions;
 interface
 
 uses
-  BrookDBAction, BrookUtils, BrookHTTPConsts, HTTPDefs, FPJSON, SysUtils;
+  BrookDBAction, BrookUtils, BrookHTTPConsts, BrookDBConsts, HTTPDefs, FPJSON,
+  SysUtils;
 
 type
 
@@ -446,7 +447,8 @@ begin
   if VCount > 1 then
     Table.CreateFields(Values).Conditions(Values).Prepare.Bind(Values);
   InternalOpen;
-  Result := Table.Locate(Values);
+  Result := Table.Locate(BROOK_DEFAULT_KEY_NAME,
+    Values[BROOK_DEFAULT_KEY_NAME].AsString);
 end;
 
 { TBrookCreateAction }
@@ -596,13 +598,15 @@ begin
   if VCount = 1 then
   begin
     InternalOpen;
-    Result := Table.Locate(Values)
+    Result := Table.Locate(BROOK_DEFAULT_KEY_NAME,
+      Values[BROOK_DEFAULT_KEY_NAME].AsString)
   end
   else
   begin
     Table.CreateFields(Values).Conditions(Values).Prepare.Bind(Values);
     InternalOpen;
-    Result := (VCount > 1) and Table.Locate(Values);
+    Result := (VCount > 1) and Table.Locate(BROOK_DEFAULT_KEY_NAME,
+      Values[BROOK_DEFAULT_KEY_NAME].AsString);
   end;
   BrookJSONCopy(Values, Fields);
   if Result then
@@ -692,13 +696,15 @@ begin
   if VCount = 1 then
   begin
     InternalOpen;
-    Result := Table.Locate(Values)
+    Result := Table.Locate(BROOK_DEFAULT_KEY_NAME,
+      Values[BROOK_DEFAULT_KEY_NAME].AsString)
   end
   else
   begin
     Table.CreateFields(Values).Conditions(Values).Prepare.Bind(Values);
     InternalOpen;
-    Result := (VCount > 1) and Table.Locate(Values);
+    Result := (VCount > 1) and Table.Locate(BROOK_DEFAULT_KEY_NAME,
+      Values[BROOK_DEFAULT_KEY_NAME].AsString);
   end;
   if Result then
   begin
