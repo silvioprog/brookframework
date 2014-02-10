@@ -17,6 +17,8 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
+{$WARNING This unit will be discontinued!}
+
 unit BrookDBAction;
 
 {$i brook.inc}
