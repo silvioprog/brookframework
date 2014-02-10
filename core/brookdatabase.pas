@@ -65,25 +65,25 @@ type
     property Objects: TFPList read FObjects;
   public
     { Creates an instance of a @link(TBrookDataBase) class. }
-    constructor Init; virtual;
+    constructor Init; virtual; deprecated;
     { Frees an instance of @link(TBrookDataBase) class. }
     destructor Destroy; override;
     { Creates an instance of a @link(TBrookDataBase) class, initializing the
       internal configuration. }
-    class function Create: TBrookDataBase; overload;
+    class function Create: TBrookDataBase; overload; deprecated;
     { Creates an instance of a @link(TBrookDataBase) class passing the library
       as parameter, without initialize the internal configuration. }
-    class function Create(const ALibrary: string): TBrookDataBase; overload;
+    class function Create(const ALibrary: string): TBrookDataBase; overload; deprecated;
     { Register the broker class. }
     class procedure Register;
     { Unregister the broker class. }
     class procedure Unregister;
     { Adds objects that will be automatically freed when the database object is
       destroyed. }
-    procedure AddObject(AObject: TObject);
+    procedure AddObject(AObject: TObject); deprecated;
     { Removes objects that would be automatically freed when the database object
       is destroyed. }
-    procedure RemoveObject(AObject: TObject);
+    procedure RemoveObject(AObject: TObject); deprecated;
     { Get the broker library name, exemple: SQLdb, Zeos, UniDAC etc. }
     class function GetLibrary: string; virtual; abstract;
     { Connects to the data base. }
@@ -139,7 +139,7 @@ type
     { Creates an database item. }
     function CreateDataBase: TBrookDataBase;
     { Frees the current database item. }
-    procedure FreeCurrent;
+    procedure FreeCurrent; deprecated;
     { Returns the number of registered databases. }
     function Count: Integer;
     { Finds a database item by its library name. }
@@ -151,7 +151,7 @@ type
     { Removes a database item. }
     procedure Remove(AClass: TBrookDataBaseClass);
     { The current database item. }
-    property Current: TBrookDataBase read FCurrent write FCurrent;
+    property Current: TBrookDataBase read FCurrent write FCurrent; deprecated;
     { The list of database items. }
     property Items[const AIndex: Integer]: TBrookDataBaseClass read GetItems
       write SetItems;
