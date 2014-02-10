@@ -74,47 +74,47 @@ type
     { Registers the broker class. }
     class function BrokerClass: TBrookQueryClass; virtual;
     { Returns a JSON type according to a field class. }
-    class function GetJSONType(const AFieldClass: TFieldClass): ShortString;
+    class function GetJSONType(const AFieldClass: TFieldClass): ShortString; deprecated;
     { Returns a JSON type according to a field type. }
-    class function GetJSONType(const AField: TField): ShortString;
+    class function GetJSONType(const AField: TField): ShortString; deprecated;
     { Set the content of a JSON object to fields. }
     class procedure JSONToFields(AJSON: TJSONObject; AFields: TFields;
-      const ADateAsString: Boolean);
+      const ADateAsString: Boolean); deprecated;
     { Set the content of fields to a JSON object. }
     class procedure FieldsToJSON(AFields: TFields; AJSON: TJSONObject;
-      const ADateAsString: Boolean);
+      const ADateAsString: Boolean); deprecated;
     { Set the content of a dataset to a JSON array. }
     class procedure DataSetToJSON(ADataSet: TDataSet; AJSON: TJSONArray;
-      const ADateAsString: Boolean);
+      const ADateAsString: Boolean); deprecated;
     { Set the content of a JSON object to params. }
     class procedure JSONToParams(AJSON: TJSONObject; AParams: TParams;
-      AFieldDefs: TFieldDefs; const ADateAsString, AAutoCreateParams: Boolean);
+      AFieldDefs: TFieldDefs; const ADateAsString, AAutoCreateParams: Boolean); deprecated;
     { Set the content of fieldsdefs to a JSON object. }
     class procedure FieldDefsToSchema(AFieldDefs: TFieldDefs;
-      ASchema: TJSONObject); overload;
+      ASchema: TJSONObject); overload; deprecated;
     { Set the content of fieldsdefs to a JSON string. }
     class procedure FieldDefsToSchema(AFieldDefs: TFieldDefs;
-      out ASchema: TJSONStringType); overload;
+      out ASchema: TJSONStringType); overload; deprecated;
     { Get the attributes of a JSON object and converts into a variant. }
     class procedure GetJSONAttributes(AJSON: TJSONObject; out ANames: string;
-      out AValues: Variant; const ADelimiter: Char = SC);
+      out AValues: Variant; const ADelimiter: Char = SC); deprecated;
     { Returns a JSON object with the query columns. }
-    procedure GetSchema(out ASchema: TJSONObject); overload;
+    procedure GetSchema(out ASchema: TJSONObject); overload; deprecated;
     { Returns a JSON string with the query columns. }
-    function GetSchema: TJSONStringType; overload;
+    function GetSchema: TJSONStringType; overload; deprecated;
     { Locates a register from a JSON object. }
     class function Locate(ADataSet: TDataSet; const AJSON: TJSONObject;
-      const AOptions: TLocateOptions): Boolean; overload;
+      const AOptions: TLocateOptions): Boolean; overload; deprecated;
     { Get all the rows of a query in a JSON array. }
-    function GetRows(out AJSON: TJSONArray): TBrookQuery;
+    function GetRows(out AJSON: TJSONArray): TBrookQuery; deprecated;
     { Get the current register in a JSON object. }
-    function GetRow(out AJSON: TJSONObject): TBrookQuery;
+    function GetRow(out AJSON: TJSONObject): TBrookQuery; deprecated;
     { Inserts registers from a JSON array. }
-    function SetRows(AJSON: TJSONArray): TBrookQuery;
+    function SetRows(AJSON: TJSONArray): TBrookQuery; deprecated;
     { Inserts one register from a JSON object. }
-    function SetRow(AJSON: TJSONObject): TBrookQuery;
+    function SetRow(AJSON: TJSONObject): TBrookQuery; deprecated;
     { Binds a JSON object to the parameters. }
-    function Bind(AJSON: TJSONObject): TBrookQuery;
+    function Bind(AJSON: TJSONObject): TBrookQuery; deprecated;
     { Applies all the changes stored in the buffer. }
     function ApplyUpdates: TBrookQuery; virtual; abstract;
     { Cancels all the updates stored in the buffer. }
@@ -128,11 +128,11 @@ type
     { Rollbacks the transaction. }
     function Rollback(const ARetaining: Boolean = False): TBrookQuery; virtual; abstract;
     { Adds a JSON object to the end of registers. }
-    function Append(AJSON: TJSONObject): TBrookQuery;
+    function Append(AJSON: TJSONObject): TBrookQuery; deprecated;
     { Inserts a JSON object in the current position. }
-    function Insert(AJSON: TJSONObject): TBrookQuery;
+    function Insert(AJSON: TJSONObject): TBrookQuery; deprecated;
     { Edits the current register by means of a JSON object. }
-    function Edit(AJSON: TJSONObject): TBrookQuery;
+    function Edit(AJSON: TJSONObject): TBrookQuery; deprecated;
     { Cancels editions in the query. }
     function Cancel: TBrookQuery;
     { Deletes the current register. }
@@ -159,7 +159,7 @@ type
     function RowsAffected: TRowsCount; virtual; abstract;
     { Locates a register by means of JSON object. }
     function Locate(const AJSON: TJSONObject;
-      const AOptions: TLocateOptions = []): Boolean; overload;
+      const AOptions: TLocateOptions = []): Boolean; overload; deprecated;
     { Locates a register passing a key and a value. }
     function Locate(const AKeyFields: string; const AKeyValues: Variant;
       const AOptions: TLocateOptions = []): Boolean; overload;
@@ -202,13 +202,13 @@ type
     { Get or set a query database. }
     property DataBase: TBrookDataBase read GetDataBase write SetDataBase;
     { Enables the date saving as string. }
-    property DateAsString: Boolean read FDateAsString write FDateAsString;
+    property DateAsString: Boolean read FDateAsString write FDateAsString; deprecated;
     { Returns a JSON string with the query registers. }
-    property AsJSON: TJSONStringType read GetAsJSON write SetAsJSON;
+    property AsJSON: TJSONStringType read GetAsJSON write SetAsJSON; deprecated;
     { Returns a JSON array with the query registers. }
-    property Rows: TJSONArray read GetRows;
+    property Rows: TJSONArray read GetRows; deprecated;
     { Returns the current register in a JSON object. }
-    property Row: TJSONObject read GetRow;
+    property Row: TJSONObject read GetRow; deprecated;
     { Get the position of the current register. }
     property Position: LongInt read GetPosition write SetPosition;
   end;
