@@ -17,6 +17,11 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
+{$WARNING All properties using the TJSONObject type (like Fields) will be
+ changed to use the future new Brook types, like TBrookValues. Do not worry,
+ we will maintain full compatibility with JSON. This changes are necessary
+ to increase the performance of Brook. }
+
 unit BrookSession;
 
 {$i brook.inc}
