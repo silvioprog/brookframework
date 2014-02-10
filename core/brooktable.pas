@@ -80,30 +80,30 @@ type
   public
     { Creates an instance of a @link(TBrookTable) class. }
     constructor Create(ADataBase: TBrookDataBase;
-      const ATableName: string = ES); virtual;
+      const ATableName: string = ES); virtual; deprecated;
     { Creates an instance of a @link(TBrookTable) class. }
-    constructor Create(const ATableName: string = ES); reintroduce;
+    constructor Create(const ATableName: string = ES); reintroduce; deprecated;
     { Frees an instance of @link(TBrookTable) class. }
     destructor Destroy; override;
     { Receives an JSON object with parameters and creates a "SQL where"
       condition. }
-    class procedure GetConditions(AJSON: TJSONObject; out AConditions: string);
+    class procedure GetConditions(AJSON: TJSONObject; out AConditions: string); deprecated;
     { Returns a JSON object with the table columns. }
-    procedure GetSchema(out ASchema: TJSONObject); overload;
+    procedure GetSchema(out ASchema: TJSONObject); overload; deprecated;
     { Returns a JSON string with the table columns. }
-    function GetSchema: TJSONStringType; overload;
+    function GetSchema: TJSONStringType; overload; deprecated;
     { Creates fielddefs from a JSON Object. }
-    function CreateFields(AJSON: TJSONObject): TBrookTable;
+    function CreateFields(AJSON: TJSONObject): TBrookTable; deprecated;
     { Get all the rows of a query in a JSON array. }
-    function GetRows(out AJSON: TJSONArray): TBrookTable;
+    function GetRows(out AJSON: TJSONArray): TBrookTable; deprecated;
     { Get the current register in a JSON object. }
-    function GetRow(out AJSON: TJSONObject): TBrookTable;
+    function GetRow(out AJSON: TJSONObject): TBrookTable; deprecated;
     { Inserts registers from a JSON array. }
-    function SetRows(AJSON: TJSONArray): TBrookTable;
+    function SetRows(AJSON: TJSONArray): TBrookTable; deprecated;
     { Inserts one register from a JSON object. }
-    function SetRow(AJSON: TJSONObject): TBrookTable;
+    function SetRow(AJSON: TJSONObject): TBrookTable; deprecated;
     { Binds a JSON object to the parameters. }
-    function Bind(AJSON: TJSONObject): TBrookTable;
+    function Bind(AJSON: TJSONObject): TBrookTable; deprecated;
     { Applies all the changes stored in the buffer. }
     function ApplyUpdates: TBrookTable;
     { Cancels all the updates stored in the buffer. }
@@ -117,11 +117,11 @@ type
     { Rollbacks the transaction. }
     function Rollback(const ARetaining: Boolean = False): TBrookTable;
     { Adds a JSON object to the end of registers. }
-    function Append(AJSON: TJSONObject): TBrookTable;
+    function Append(AJSON: TJSONObject): TBrookTable; deprecated;
     { Inserts a JSON object in the current position. }
-    function Insert(AJSON: TJSONObject): TBrookTable;
+    function Insert(AJSON: TJSONObject): TBrookTable; deprecated;
     { Edits the current register by means of a JSON object. }
-    function Edit(AJSON: TJSONObject): TBrookTable;
+    function Edit(AJSON: TJSONObject): TBrookTable; deprecated;
     { Cancels editions in the table. }
     function Cancel: TBrookTable;
     { Deletes the current register. }
@@ -154,7 +154,7 @@ type
       const AOptions: TLocateOptions = []): Boolean; overload;
     { Finds a register by means of JSON object. }
     function Find(AJSON: TJSONObject;
-      const AOptions: TLocateOptions = []): TBrookTable;
+      const AOptions: TLocateOptions = []): TBrookTable; deprecated;
     { Gets a register passing a key value. }
     function Get(const AKeyValue: Variant): TBrookTable; overload;
     { Gets a register passing a key and a value. }
@@ -168,7 +168,7 @@ type
     function FieldDef(const AName: string): TFieldDef;
     { Receives an JSON object with parameters and creates a "SQL where"
       condition. }
-    function Conditions(AJSON: TJSONObject): TBrookTable;
+    function Conditions(AJSON: TJSONObject): TBrookTable; deprecated;
     { Get the number of registers. }
     function Count: Int64;
     { Get the number of changed registers.}
