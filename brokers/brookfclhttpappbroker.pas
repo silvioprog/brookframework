@@ -24,9 +24,8 @@ unit BrookFCLHTTPAppBroker;
 interface
 
 uses
-  BrookClasses, BrookApplication, BrookMessages, BrookConsts, BrookRouter,
-  BrookUtils, BrookHTTPDefsBroker, HttpDefs, CustWeb, CustHTTPApp, FPHTTPServer,
-  Classes, SysUtils;
+  BrookClasses, BrookApplication, BrookRouter, BrookUtils, BrookHTTPDefsBroker,
+  HttpDefs, CustWeb, CustHTTPApp, FPHTTPServer, Classes, SysUtils;
 
 type
   TBrookHTTPApplication = class;
@@ -165,8 +164,6 @@ procedure TBrookHTTPServerHandler.HandleRequest(ARequest: TRequest;
 begin
   try
     AResponse.ContentType := BrookFormatContentType;
-    if BrookSettings.Language <> BROOK_DEFAULT_LANGUAGE then
-      TBrookMessages.Service.SetLanguage(BrookSettings.Language);
     TBrookRouter.Service.Route(ARequest, AResponse);
   except
     on E: Exception do

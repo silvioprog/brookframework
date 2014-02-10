@@ -207,8 +207,6 @@ end;
 procedure TBrookFCGIHandler.HandleRequest(ARequest: TRequest; AResponse: TResponse);
 begin
   AResponse.ContentType := BrookFormatContentType;
-  if BrookSettings.Language <> BROOK_DEFAULT_LANGUAGE then
-    TBrookMessages.Service.SetLanguage(BrookSettings.Language);
   try
     TBrookRouter.Service.Route(ARequest, AResponse);
     TBrookFCGIRequest(ARequest).DeleteTempUploadedFiles;

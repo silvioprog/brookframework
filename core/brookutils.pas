@@ -44,8 +44,6 @@ type
     Charset: ShortString;
     { Set the default application Content-Type. }
     ContentType: ShortString;
-    { Set the default application Language. }
-    Language: ShortString;
     { Set the 404 HTML page. The string will be sent as is. }
     Page404: string;
     { Set the 404 HTML page file. The file content will be sent.
@@ -89,7 +87,6 @@ var
     Mapped: False;
     Charset: BROOK_HTTP_CHARSET_UTF_8;
     ContentType: BROOK_HTTP_CONTENT_TYPE_TEXT_HTML;
-    Language: BROOK_DEFAULT_LANGUAGE;
     Page404: BROOK_HTTP_RESPONSE_TEMPLATE_NOT_FOUND;
     Page404File: ES;
     Page500: BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR;

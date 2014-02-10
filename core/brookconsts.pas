@@ -98,7 +98,6 @@ const
   BROOK_UUID_MASK = '%.8x%.4x%.4x%.2x%.2x%.2x%.2x%.2x%.2x%.2x%.2x';
   BROOK_UUID_SEP_MASK = '%.8x-%.4x-%.4x-%.2x%.2x-%.2x%.2x%.2x%.2x%.2x%.2x';
   BROOK_OVERRIDDEN_METHOD = '_METHOD';
-  BROOK_DEFAULT_LANGUAGE = 'en-US';
   BROOK_SESS_ID = 'BRKSESSID';
   BROOK_SESS_PREFIX = 'brook_sess_';
   { 3 minutes. }

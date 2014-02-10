@@ -26,69 +26,39 @@ interface
 uses
   BrookMessages;
 
-type
-  TBrookMessage_ptBR = class(TBrookMessage)
-  public
-    class procedure Translate; override;
-    class function CountryCode: ShortString; override;
-    class function CountryName: string; override;
-  end;
+procedure BrookTranslate;
 
 implementation
 
-resourcestring
-{$i brookmessages_ptbr.inc}
-
-class procedure TBrookMessage_ptBR.Translate;
+procedure BrookTranslate;
 begin
-  SBrookInvalidRequestMethodError := SBrookInvalidRequestMethodError_rst;
-  SBrookItemNotFoundError := SBrookItemNotFoundError_rst;
-  SBrookFileNotFoundError := SBrookFileNotFoundError_rst;
-  SBrookNoRequestMethodError := SBrookNoRequestMethodError_rst;
-  SBrookNoApplicationRegisteredError := SBrookNoApplicationRegisteredError_rst;
-  SBrookApplicationAlreadyRegisteredError :=
-    SBrookApplicationAlreadyRegisteredError_rst;
-  SBrookRegiterTBrookActionError := SBrookRegiterTBrookActionError_rst;
-  SBrookActionAlreadyRegisteredError := SBrookActionAlreadyRegisteredError_rst;
-  SBrookDefaultActionAlreadyRegisteredError :=
-    SBrookDefaultActionAlreadyRegisteredError_rst;
-  SBrookPatternAlreadyRegisteredError := SBrookPatternAlreadyRegisteredError_rst;
-  SBrookRouterServiceAlreadyRegisteredError := SBrookRouterServiceAlreadyRegisteredError_rst;
-  SBrookNoRouterServiceRegisteredError := SBrookNoRouterServiceRegisteredError_rst;
-  SBrookMessagesServiceAlreadyRegisteredError :=
-    SBrookMessagesServiceAlreadyRegisteredError_rst;
-  SBrookNoMessagesServiceRegisteredError := SBrookNoMessagesServiceRegisteredError_rst;
-  SBrookNoRouteRegisteredError := SBrookNoRouteRegisteredError_rst;
-  SBrookCfgFileNotFoundError := SBrookCfgFileNotFoundError_rst;
-  SBrookNilJSONParamError := SBrookNilJSONParamError_rst;
-  SBrookNilParamError := SBrookNilParamError_rst;
-  SBrookDataBaseServiceAlreadyRegisteredError :=
-    SBrookDataBaseServiceAlreadyRegisteredError_rst;
-  SBrookNoDataBaseServiceRegisteredError := SBrookNoDataBaseServiceRegisteredError_rst;
-  SBrookNoQueryBrokerClassRegisteredError :=
-    SBrookNoQueryBrokerClassRegisteredError_rst;
-  SBrookNoQueryInstantiatedError := SBrookNoQueryInstantiatedError_rst;
-  SBrookEmptyTableNameError := SBrookEmptyTableNameError_rst;
-  SBrookEmptyLibraryNameError := SBrookEmptyLibraryNameError_rst;
-  SBrookEmptyCountryCodeError := SBrookEmptyCountryCodeError_rst;
-  SBrookMethodNotAllowedError := SBrookMethodNotAllowedError_rst;
-  SBrookIncompatibleTypesError := SBrookIncompatibleTypesError_rst;
-  SBrookConstraintAlreadyRegisteredError := SBrookConstraintAlreadyRegisteredError_rst;
-  SBrookConstraintsServiceAlreadyRegisteredError := SBrookConstraintsServiceAlreadyRegisteredError_rst;
-  SBrookNoConstraintsServiceRegisteredError := SBrookNoConstraintsServiceRegisteredError_rst;
+  SBrookInvalidRequestMethodError := 'Método de solicitação inválido: %s.';
+  SBrookItemNotFoundError := 'Item "%s" não encontrado.';
+  SBrookFileNotFoundError := 'Arquivo não encontrado: %s';
+  SBrookNoRequestMethodError := 'REQUEST_METHOD não passado do servidor.';
+  SBrookNoApplicationRegisteredError := 'Application não registrada.';
+  SBrookApplicationAlreadyRegisteredError := 'A aplicação já está registrada.';
+  SBrookRegiterTBrookActionError := 'Não é possível registrar o tipo TBrookAction diretamente.';
+  SBrookActionAlreadyRegisteredError := 'A ação "%s" já está registrada.';
+  SBrookDefaultActionAlreadyRegisteredError := 'Já existe uma ação padrão registrada.';
+  SBrookPatternAlreadyRegisteredError := 'Já existe uma ação registrada com o padrão "%s".';
+  SBrookRouterServiceAlreadyRegisteredError := 'O serviço de roteador já está registrado.';
+  SBrookNoRouterServiceRegisteredError := 'Serviço de roteador não registrado.';
+  SBrookNoRouteRegisteredError := 'Rota não registrada.';
+  SBrookCfgFileNotFoundError := 'O arquivo de configuração não foi encontrado: "%s"';
+  SBrookNilJSONParamError := '"AJSON" não pode ser nulo.';
+  SBrookNilParamError := '"%s" não pode ser nulo.';
+  SBrookDataBaseServiceAlreadyRegisteredError := 'O serviço de database já está registrado.';
+  SBrookNoDataBaseServiceRegisteredError := 'Serviço de database não registrado.';
+  SBrookNoQueryBrokerClassRegisteredError := 'Classe de broker da query não registrada.';
+  SBrookNoQueryInstantiatedError := 'Query não instanciada.';
+  SBrookEmptyTableNameError := 'O nome da tabela não pode ser vazio.';
+  SBrookEmptyLibraryNameError := 'O nome da biblioteca não pode ser vazio.';
+  SBrookMethodNotAllowedError := 'Método HTTP não permitido para o recurso solicitado.';
+  SBrookIncompatibleTypesError := 'Tipos incompatíveis: Tem "%s", esperado "%s".';
+  SBrookConstraintAlreadyRegisteredError := 'A restrição "%s" já está registrada.';
+  SBrookConstraintsServiceAlreadyRegisteredError := 'O serviço de restrições já está registrado.';
+  SBrookNoConstraintsServiceRegisteredError := 'Serviço de restrições não registrado.';
 end;
-
-class function TBrookMessage_ptBR.CountryCode: ShortString;
-begin
-  Result := 'pt-BR';
-end;
-
-class function TBrookMessage_ptBR.CountryName: string;
-begin
-  Result := 'Brazil';
-end;
-
-initialization
-  TBrookMessage_ptBR.Register;
 
 end.
