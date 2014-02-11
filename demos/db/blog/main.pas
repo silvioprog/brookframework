@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses
-  BrookAction, BrookHttpDefs, BrookDBAction, BrookUtils, BrookDBUtils,
+  BrookAction, BrookTable, BrookHttpDefs, BrookUtils, BrookDBUtils,
   BrookHTTPConsts, BrookActionHelper, BrookConsts, JTemplate, RUtils, Brokers,
   SysUtils, DB, FPJSON;
 
@@ -13,8 +13,9 @@ type
 
   { TView }
 
-  TView = class(TBrookDBAction)
+  TView = class(TBrookAction)
   private
+    FTable: TBrookTable;
     FTemplate: TJTemplateStream;
   public
     constructor Create; override;
@@ -27,6 +28,7 @@ type
     procedure Add(const AName, AValue: string);
     procedure Load(const AFileName: string);
     property Template: TJTemplateStream read FTemplate;
+    property Table: TBrookTable read FTable;
   end;
 
   { THome }
@@ -70,12 +72,14 @@ implementation
 constructor TView.Create;
 begin
   inherited Create;
+  FTable := TBrookTable.Create('post');
   FTemplate := TJTemplateStream.Create;
   FTemplate.Parser.HtmlSupports := False;
 end;
 
 destructor TView.Destroy;
 begin
+  FTable.Free;
   FTemplate.Free;
   inherited Destroy;
 end;
@@ -193,9 +197,9 @@ begin
 end;
 
 initialization
-  THome.Register('post', '/');
-  TPostAdd.Register('post', '/post/add');
-  TPostEdit.Register('post', '/post/edit/:id');
-  TPostRemove.Register('post', '/post/remove/:id');
+  THome.Register('/');
+  TPostAdd.Register('/post/add');
+  TPostEdit.Register('/post/edit/:id');
+  TPostRemove.Register('/post/remove/:id');
 
 end.

@@ -5,15 +5,34 @@ unit Actn;
 interface
 
 uses
-  BrookDBAction, BrookUtils, SysUtils, FPJSON, people;
+  BrookAction, BrookHttpDefs, BrookTable, BrookUtils, SysUtils, FPJSON, people;
 
 type
-  TPeopleAction = class(TBrookDBAction)
+  TPeopleAction = class(TBrookAction)
+  private
+    FTable: TBrookTable;
   public
+    constructor Create(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); overload; override;
+    destructor Destroy; override;
     procedure Get; override;
+    property Table: TBrookTable read FTable;
   end;
 
 implementation
+
+constructor TPeopleAction.Create(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
+begin
+  inherited Create(ARequest, AResponse);
+  FTable := TBrookTable.Create('people');
+end;
+
+destructor TPeopleAction.Destroy;
+begin
+  FTable.Free;
+  inherited Destroy;
+end;
 
 procedure TPeopleAction.Get;
 var
@@ -50,6 +69,6 @@ end;
 
 initialization
   DefaultFormatSettings.DecimalSeparator := '.';
-  TPeopleAction.Register('people', '*');
+  TPeopleAction.Register('*');
 
 end.

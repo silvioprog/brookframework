@@ -5,10 +5,22 @@ unit Person;
 interface
 
 uses
-  BrookAction, BrookDBAction, BrookActionHelper, BrookUtils, BrookDBUtils,
-  JTemplate, DB, SysUtils;
+  BrookAction, BrookTable, BrookHttpDefs, BrookActionHelper, BrookUtils,
+  BrookDBUtils, JTemplate, DB, SysUtils;
 
 type
+
+  { TCustomDBAction }
+
+  TCustomDBAction = class(TBrookAction)
+  private
+    FTable: TBrookTable;
+  public
+    constructor Create(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); overload; override;
+    destructor Destroy; override;
+    property Table: TBrookTable read FTable;
+  end;
 
   { TIndex }
 
@@ -19,7 +31,7 @@ type
 
   { TPersonList }
 
-  TPersonList = class(TBrookDBAction)
+  TPersonList = class(TCustomDBAction)
   public
     function GridCallback(ADataSet: TDataSet;
       const AWritingType: TBrookHTMLTableWritingState;
@@ -29,49 +41,49 @@ type
 
   { TPersonNew }
 
-  TPersonNew = class(TBrookDBAction)
+  TPersonNew = class(TCustomDBAction)
   public
     procedure Get; override;
   end;
 
   { TPersonCreate }
 
-  TPersonCreate = class(TBrookDBAction)
+  TPersonCreate = class(TCustomDBAction)
   public
     procedure Post; override;
   end;
 
   { TPersonShow }
 
-  TPersonShow = class(TBrookDBAction)
+  TPersonShow = class(TCustomDBAction)
   public
     procedure Get; override;
   end;
 
   { TPersonEdit }
 
-  TPersonEdit = class(TBrookDBAction)
+  TPersonEdit = class(TCustomDBAction)
   public
     procedure Get; override;
   end;
 
   { TPersonUpdate }
 
-  TPersonUpdate = class(TBrookDBAction)
+  TPersonUpdate = class(TCustomDBAction)
   public
     procedure Post; override;
   end;
 
   { TPersonDelete }
 
-  TPersonDelete = class(TBrookDBAction)
+  TPersonDelete = class(TCustomDBAction)
   public
     procedure Get; override;
   end;
 
   { TPersonDestroy }
 
-  TPersonDestroy = class(TBrookDBAction)
+  TPersonDestroy = class(TCustomDBAction)
   public
     procedure Post; override;
   end;
@@ -80,6 +92,21 @@ const
   tpl_dir = 'C:\repository\git\brookframework\demos\db\crud\';
 
 implementation
+
+{ TCustomDBAction }
+
+constructor TCustomDBAction.Create(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
+begin
+  inherited Create(ARequest, AResponse);
+  FTable := TBrookTable.Create('person');
+end;
+
+destructor TCustomDBAction.Destroy;
+begin
+  FTable.Free;
+  inherited Destroy;
+end;
 
 { TIndex }
 
@@ -238,13 +265,13 @@ end;
 
 initialization
   TIndex.Register('/', rmGet);
-  TPersonList.Register('person', '/person', rmGet);
-  TPersonNew.Register('person', '/person/new', rmGet);
-  TPersonCreate.Register('person', '/person', rmPost);
-  TPersonShow.Register('person', '/person/:id', rmGet);
-  TPersonEdit.Register('person', '/person/:id/edit', rmGet);
-  TPersonUpdate.Register('person', '/person/:id', rmPost);
-  TPersonDelete.Register('person', '/person/:id/delete', rmGet);
-  TPersonDestroy.Register('person', '/person/:id/destroy', rmPost);
+  TPersonList.Register('/person', rmGet);
+  TPersonNew.Register('/person/new', rmGet);
+  TPersonCreate.Register('/person', rmPost);
+  TPersonShow.Register('/person/:id', rmGet);
+  TPersonEdit.Register('/person/:id/edit', rmGet);
+  TPersonUpdate.Register('/person/:id', rmPost);
+  TPersonDelete.Register('/person/:id/delete', rmGet);
+  TPersonDestroy.Register('/person/:id/destroy', rmPost);
 
 end.
