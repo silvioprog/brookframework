@@ -22,7 +22,7 @@
     <Description Value="Brook runtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Major="2" Minor="6" Release="7"/>
-    <Files Count="36">
+    <Files Count="34">
       <Item1>
         <Filename Value="..\brokers\brookfclcgibroker.pas"/>
         <UnitName Value="BrookFCLCGIBroker"/>
@@ -88,85 +88,77 @@
         <UnitName Value="BrookDataBase"/>
       </Item16>
       <Item17>
-        <Filename Value="..\core\brookdbaction.pas"/>
-        <UnitName Value="BrookDBAction"/>
-      </Item17>
-      <Item18>
         <Filename Value="..\core\brookdbconsts.pas"/>
         <UnitName Value="BrookDBConsts"/>
-      </Item18>
-      <Item19>
+      </Item17>
+      <Item18>
         <Filename Value="..\core\brookdbutils.pas"/>
         <UnitName Value="BrookDBUtils"/>
-      </Item19>
-      <Item20>
+      </Item18>
+      <Item19>
         <Filename Value="..\core\brookexception.pas"/>
         <UnitName Value="BrookException"/>
-      </Item20>
-      <Item21>
+      </Item19>
+      <Item20>
         <Filename Value="..\core\brookhttpclient.pas"/>
         <UnitName Value="BrookHTTPClient"/>
-      </Item21>
-      <Item22>
+      </Item20>
+      <Item21>
         <Filename Value="..\core\brookhttpconsts.pas"/>
         <UnitName Value="BrookHTTPConsts"/>
-      </Item22>
-      <Item23>
+      </Item21>
+      <Item22>
         <Filename Value="..\core\brookhttpdefs.pas"/>
         <UnitName Value="brookhttpdefs"/>
-      </Item23>
-      <Item24>
+      </Item22>
+      <Item23>
         <Filename Value="..\core\brookhttputils.pas"/>
         <UnitName Value="BrookHTTPUtils"/>
-      </Item24>
-      <Item25>
+      </Item23>
+      <Item24>
         <Filename Value="..\core\brookmessages.pas"/>
         <UnitName Value="BrookMessages"/>
-      </Item25>
-      <Item26>
+      </Item24>
+      <Item25>
         <Filename Value="..\core\brookquery.pas"/>
         <UnitName Value="BrookQuery"/>
-      </Item26>
-      <Item27>
-        <Filename Value="..\core\brookrestactions.pas"/>
-        <UnitName Value="BrookRESTActions"/>
-      </Item27>
-      <Item28>
+      </Item25>
+      <Item26>
         <Filename Value="..\core\brookrouter.pas"/>
         <UnitName Value="BrookRouter"/>
-      </Item28>
-      <Item29>
+      </Item26>
+      <Item27>
         <Filename Value="..\core\brooksession.pas"/>
         <UnitName Value="BrookSession"/>
-      </Item29>
-      <Item30>
+      </Item27>
+      <Item28>
         <Filename Value="..\core\brooktable.pas"/>
         <UnitName Value="BrookTable"/>
-      </Item30>
-      <Item31>
+      </Item28>
+      <Item29>
         <Filename Value="..\core\brookutils.pas"/>
         <UnitName Value="BrookUtils"/>
-      </Item31>
-      <Item32>
+      </Item29>
+      <Item30>
         <Filename Value="..\helpers\brookactionhelper.pas"/>
         <UnitName Value="BrookActionHelper"/>
-      </Item32>
-      <Item33>
+      </Item30>
+      <Item31>
         <Filename Value="..\helpers\brookjsonhelper.pas"/>
         <UnitName Value="BrookJSONHelper"/>
-      </Item33>
-      <Item34>
+      </Item31>
+      <Item32>
         <Filename Value="..\helpers\brookrequesthelper.pas"/>
         <UnitName Value="BrookRequestHelper"/>
-      </Item34>
-      <Item35>
+      </Item32>
+      <Item33>
         <Filename Value="..\helpers\brookresponsehelper.pas"/>
         <UnitName Value="BrookResponseHelper"/>
-      </Item35>
-      <Item36>
+      </Item33>
+      <Item34>
         <Filename Value="..\includes\brook.inc"/>
         <Type Value="Include"/>
-      </Item36>
+      </Item34>
     </Files>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
