@@ -483,7 +483,7 @@ begin
       end;
     end;
   end;
-  Result := BrookExcludeHTTPPathDelimiter(TBrookRouter.RootUrl) + S;
+  Result := BrookExcludeTrailingUrlDelimiter(TBrookRouter.RootUrl) + S;
 end;
 
 function TBrookRouter.UrlFor(AClassName: string;
@@ -531,7 +531,7 @@ begin
       end;
     end;
   end;
-  Result := BrookExcludeHTTPPathDelimiter(TBrookRouter.RootUrl) + S;
+  Result := BrookExcludeTrailingUrlDelimiter(TBrookRouter.RootUrl) + S;
 end;
 
 function TBrookRouter.UrlFor(AClassName: string;

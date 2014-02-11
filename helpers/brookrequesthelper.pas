@@ -168,7 +168,8 @@ end;
 
 function TBrookRequestHelper.GetPath: string;
 begin
-  Result := BrookExcludeHTTPPathDelimiter(TBrookRouter.RootUrl(Self)) + PathInfo;
+  Result := BrookExcludeTrailingUrlDelimiter(TBrookRouter.RootUrl(Self)) +
+    PathInfo;
 end;
 
 function TBrookRequestHelper.GetFullURL: string;

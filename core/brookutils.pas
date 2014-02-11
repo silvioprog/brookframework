@@ -137,14 +137,14 @@ function BrookFileSetDate(const AFileName: TFileName;
 procedure BrookJSONCopy(ASrc, ADest: TJSONObject);
 { Writes a backtrace of the current exception. }
 function BrookDumpStack(const AEOL: ShortString = BR): string;
-{ Ensures URL ends with delimiter. }
-function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
+{ Ensures Url ends without delimiter. }
+function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
+{ Ensures Url ends with delimiter. }
+function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
 { Get the JSON from a object. }
 function BrookObjectToJson(AObject: TObject): TJSONObject;
 { Get the object from a JSON. }
 procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject);
-{ Includes a delimiter at the end of url. }
-function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
 
 implementation
 
@@ -341,14 +341,24 @@ begin
     Result += BackTraceStrFunc(ExceptFrames[I]) + AEOL;
 end;
 
-function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
+function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 var
-  L: SizeInt;
+  L: Integer;
 begin
   Result := AUrl;
   L := Length(Result);
   if (L > 0) and (Result[L] = US) then
     Delete(Result, L, 1);
+end;
+
+function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
+var
+  L: Integer;
+begin
+  Result := AUrl;
+  L := Length(Result);
+  if (L > 0) and (Result[L] <> US) then
+    Result += US;
 end;
 
 function BrookObjectToJson(AObject: TObject): TJSONObject;
@@ -381,16 +391,6 @@ begin
   finally
     VDeStreamer.Free;
   end;
-end;
-
-function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
-var
-  L: Integer;
-begin
-  Result := AUrl;
-  L := Length(Result);
-  if (L > 0) and (Result[L] <> US) then
-    Result += US;
 end;
 
 end.
