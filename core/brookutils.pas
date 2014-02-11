@@ -24,7 +24,7 @@ unit BrookUtils;
 interface
 
 uses
-  BrookException, BrookMessages, BrookConsts, BrookHTTPConsts, HTTPDefs, FPJSON,
+  BrookException, BrookMessages, BrookConsts, BrookHTTPConsts, FPJSON,
   FPJSONRTTI, CustWeb, Classes, SysUtils;
 
 type
@@ -143,6 +143,8 @@ function BrookExcludeHTTPPathDelimiter(const AUrl: string): string;
 function BrookObjectToJson(AObject: TObject): TJSONObject;
 { Get the object from a JSON. }
 procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject);
+{ Includes a delimiter at the end of url. }
+function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
 
 implementation
 
@@ -178,12 +180,12 @@ begin
     Delete(S, L, 1);
   if (S <> ES) and (S[1] = ADelimiter) then
     Delete(S, 1, 1);
-  Delete(S, 1, Length(IncludeHTTPPathDelimiter(R)));
+  Delete(S, 1, Length(BrookIncludeTrailingUrlDelimiter(R)));
   P := Pos(ADelimiter, S);
   if P = 0 then
     P := Length(S) + 1;
   ALvl := Copy(S, 1, P - 1);
-  R := IncludeHTTPPathDelimiter(R) + ALvl;
+  R := BrookIncludeTrailingUrlDelimiter(R) + ALvl;
 end;
 
 function BrookGetPathLevel(const APath: string; const AIndex: SizeInt;
@@ -379,6 +381,16 @@ begin
   finally
     VDeStreamer.Free;
   end;
+end;
+
+function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
+var
+  L: Integer;
+begin
+  Result := AUrl;
+  L := Length(Result);
+  if (L > 0) and (Result[L] <> US) then
+    Result += US;
 end;
 
 end.

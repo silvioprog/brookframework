@@ -5,9 +5,9 @@ unit main;
 interface
 
 uses
-  BrookAction, BrookDBAction, BrookUtils, BrookDBUtils, BrookHTTPConsts,
-  BrookActionHelper, BrookConsts, JTemplate, RUtils, Brokers, SysUtils,
-  HTTPDefs, DB, FPJSON;
+  BrookAction, BrookHttpDefs, BrookDBAction, BrookUtils, BrookDBUtils,
+  BrookHTTPConsts, BrookActionHelper, BrookConsts, JTemplate, RUtils, Brokers,
+  SysUtils, DB, FPJSON;
 
 type
 
@@ -19,8 +19,9 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure FillFields(ARequest: TRequest); override;
-    procedure DoRequest(ARequest: TRequest; AResponse: TResponse); override;
+    procedure FillFields(ARequest: TBrookRequest); override;
+    procedure DoRequest(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); override;
     function Link(const ACaption: string; AActionClass: TBrookActionClass;
       const AParams: array of string; const AClass: string = ES): string;
     procedure Add(const AName, AValue: string);
@@ -79,7 +80,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TView.FillFields(ARequest: TRequest);
+procedure TView.FillFields(ARequest: TBrookRequest);
 var
   I: Integer;
 begin
@@ -88,7 +89,7 @@ begin
       StripHTMLMarkup(ARequest.ContentFields.ValueFromIndex[I]));
 end;
 
-procedure TView.DoRequest(ARequest: TRequest; AResponse: TResponse);
+procedure TView.DoRequest(ARequest: TBrookRequest; AResponse: TBrookResponse);
 begin
   inherited DoRequest(ARequest, AResponse);
   FTemplate.Parser.Replace;

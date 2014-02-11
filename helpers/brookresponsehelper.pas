@@ -24,15 +24,15 @@ unit BrookResponseHelper;
 interface
 
 uses
-  BrookMessages, BrookConsts, BrookHTTPConsts, BrookHTTPUtils, BrookException,
-  HTTPDefs, Classes, SysUtils;
+  BrookHttpDefs, BrookMessages, BrookConsts, BrookHTTPConsts, BrookHTTPUtils,
+  BrookException, Classes, SysUtils;
 
 type
   { Handles exceptions for @link(TBrookResponseHelper). }
   EBrookResponseHelper = class(EBrook);
 
-  { Adds features to @code(TResponse) class. }
-  TBrookResponseHelper = class helper for TResponse
+  { Adds features to @code(TBrookResponse) class. }
+  TBrookResponseHelper = class helper for TBrookResponse
   private
     function GetHeader(AName: string): string;
     function GetStatus: Integer;
@@ -133,7 +133,7 @@ begin
   if not FileExists(AFileName) then
     EBrookResponseHelper.Create(SBrookFileNotFoundError);
   ContentType := ES;
-  VHeaders := fieldContentType + CO + SP + AContentType + CRLF +
+  VHeaders := 'Content-Type' + CO + SP + AContentType + CRLF +
     BROOK_HTTP_HEADER_CONTENT_DISPOSITION + CO + SP + ADispositionType;
   if AFileName <> ES then
   begin

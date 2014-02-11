@@ -5,12 +5,13 @@ unit Brokers;
 interface
 
 uses
-  BrookFCLCGIBroker, BrookException, BrookUtils, BrookSQLdbBroker,
-  BrookHTTPConsts, PQConnection, HTTPDefs, fpjson, sysutils;
+  BrookFCLCGIBroker, BrookHttpDefs, BrookException, BrookUtils,
+  BrookSQLdbBroker, BrookHTTPConsts, PQConnection, fpjson, sysutils;
 
 implementation
 
-procedure OnError(AResponse: TResponse; AException: Exception; var AHandled: Boolean);
+procedure OnError(AResponse: TBrookResponse; AException: Exception;
+  var AHandled: Boolean);
 begin
   AHandled := True;
   AResponse.Code := BROOK_HTTP_STATUS_CODE_OK;

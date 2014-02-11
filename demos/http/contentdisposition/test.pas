@@ -7,7 +7,7 @@ unit Test;
 interface
 
 uses
-  BrookAction, BrookHTTPConsts, BrookResponseHelper, HTTPDefs;
+  BrookAction, BrookHTTPConsts, BrookResponseHelper;
 
 type
   TMyAction = class(TBrookAction)

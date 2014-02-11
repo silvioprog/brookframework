@@ -30,8 +30,9 @@ unit BrookAction;
 interface
 
 uses
-  BrookClasses, BrookException, BrookMessages, BrookUtils, BrookHTTPUtils,
-  BrookConsts, BrookHTTPConsts, HTTPDefs, FPJSON, Classes, SysUtils, Variants;
+  BrookClasses, BrookHttpDefs, BrookException, BrookMessages, BrookUtils,
+  BrookHTTPUtils, BrookConsts, BrookHTTPConsts, FPJSON, Classes, SysUtils,
+  Variants;
 
 type
   { Handles exceptions for @link(TBrookAction). }
@@ -47,8 +48,8 @@ type
     FFields: TJSONObject;
     FParams: TJSONObject;
     FValues: TJSONObject;
-    FRequest: TRequest;
-    FResponse: TResponse;
+    FRequest: TBrookRequest;
+    FResponse: TBrookResponse;
     function GetMethod: string;
   protected
     function CreateFields: TJSONObject; virtual;
@@ -57,28 +58,29 @@ type
     procedure FreeFields; virtual;
     procedure FreeParams; virtual;
     procedure FreeValues; virtual;
-    function GetFiles: TUploadedFiles; virtual;
-    function GetRequest: TRequest; virtual;
-    function GetResponse: TResponse; virtual;
-    procedure DoBeforeRequest({%H-}ARequest: TRequest;
-      {%H-}AResponse: TResponse); virtual;
-    procedure DoAfterRequest({%H-}ARequest: TRequest;
-      {%H-}AResponse: TResponse); virtual;
+    function GetFiles: TBrookUploadedFiles; virtual;
+    function GetRequest: TBrookRequest; virtual;
+    function GetResponse: TBrookResponse; virtual;
+    procedure DoBeforeRequest({%H-}ARequest: TBrookRequest;
+      {%H-}AResponse: TBrookResponse); virtual;
+    procedure DoAfterRequest({%H-}ARequest: TBrookRequest;
+      {%H-}AResponse: TBrookResponse); virtual;
     property ContentStream: TStream read FContentStream write FContentStream;
   public
     { Creates an instance of a @link(TBrookAction) class. }
     constructor Create; overload; virtual;
     { Creates an instance of a @link(TBrookAction) class passing params to
       request/response. }
-    constructor Create(ARequest: TRequest; AResponse: TResponse); overload; virtual;
+    constructor Create(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); overload; virtual;
     { Frees an instance of @link(TBrookAction) class. }
     destructor Destroy; override;
     { Fills the @link(Fields) with data coming from a request called by means
       of POST method. }
-    procedure FillFields(ARequest: TRequest); virtual;
+    procedure FillFields(ARequest: TBrookRequest); virtual;
     { Fills the @link(params) with data coming from a request called by means
       of GET method. }
-    procedure FillParams(ARequest: TRequest); virtual;
+    procedure FillParams(ARequest: TBrookRequest); virtual;
     { Fills the @link(values) with variables passed through the URL. }
     procedure FillValues(ANames, AValues: TBrookArrayOfString); virtual;
     { Registers an action.
@@ -193,10 +195,10 @@ initialization
       @code(/cgi-bin/cgi1/myaction). }
     class function GetPath: string;
     { Calls the method @link(TBrookAction.Request). }
-    procedure DoRequest(ARequest: TRequest;
-      AResponse: TResponse); overload; virtual;
+    procedure DoRequest(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); overload; virtual;
     { Calls the method @link(TBrookAction.Request). }
-    procedure DoRequest(ARequest: TRequest; AResponse: TResponse;
+    procedure DoRequest(ARequest: TBrookRequest; AResponse: TBrookResponse;
       var AHandled: Boolean); overload; virtual;
     { Creates an URL for action. }
     function UrlFor(AActionClass: TBrookActionClass): string; overload;
@@ -228,7 +230,8 @@ initialization
     function UrlFor(AClassName: string;
       const AParams: TJSONData): string; overload;
     { Is triggered by a request of any HTTP method. }
-    procedure Request(ARequest: TRequest;{%H-}AResponse: TResponse); virtual;
+    procedure Request(ARequest: TBrookRequest;
+      {%H-}AResponse: TBrookResponse); virtual;
     { Is triggered by a GET HTTP request method. }
     procedure Get; virtual;
     { Is triggered by a POST HTTP request method. }
@@ -338,7 +341,7 @@ initialization
       @code(BR) HTML tag to the end. }
     procedure WriteLn(S: TStrings); overload;
     { The list of files coming from a request called by the POST method. }
-    property Files: TUploadedFiles read GetFiles;
+    property Files: TBrookUploadedFiles read GetFiles;
     { The list of variables coming from a request called by the POST method. }
     property Fields: TJSONObject read FFields;
     { The list of variables coming from a request called by the GET method. }
@@ -362,7 +365,8 @@ begin
   FValues := CreateValues;
 end;
 
-constructor TBrookAction.Create(ARequest: TRequest; AResponse: TResponse);
+constructor TBrookAction.Create(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
 begin
   FRequest := ARequest;
   FResponse := AResponse;
@@ -377,7 +381,7 @@ begin
   inherited Destroy;
 end;
 
-function TBrookAction.GetFiles: TUploadedFiles;
+function TBrookAction.GetFiles: TBrookUploadedFiles;
 begin
   Result := GetRequest.Files;
 end;
@@ -417,33 +421,36 @@ begin
   FreeAndNil(FValues);
 end;
 
-function TBrookAction.GetRequest: TRequest;
+function TBrookAction.GetRequest: TBrookRequest;
 begin
   Result := FRequest;
 end;
 
-function TBrookAction.GetResponse: TResponse;
+function TBrookAction.GetResponse: TBrookResponse;
 begin
   Result := FResponse;
 end;
 
-procedure TBrookAction.DoBeforeRequest(ARequest: TRequest; AResponse: TResponse);
+procedure TBrookAction.DoBeforeRequest(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
 begin
 end;
 
-procedure TBrookAction.DoAfterRequest(ARequest: TRequest; AResponse: TResponse);
+procedure TBrookAction.DoAfterRequest(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
 begin
 end;
 
-procedure TBrookAction.DoRequest(ARequest: TRequest; AResponse: TResponse);
+procedure TBrookAction.DoRequest(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
 begin
   DoBeforeRequest(ARequest, AResponse);
   Request(ARequest, AResponse);
   DoAfterRequest(ARequest, AResponse);
 end;
 
-procedure TBrookAction.DoRequest(ARequest: TRequest; AResponse: TResponse;
-  var AHandled: Boolean);
+procedure TBrookAction.DoRequest(ARequest: TBrookRequest;
+  AResponse: TBrookResponse; var AHandled: Boolean);
 begin
   DoBeforeRequest(ARequest, AResponse);
   if not AHandled then
@@ -469,7 +476,7 @@ end;
 
 class function TBrookAction.GetPath: string;
 begin
-  Result := IncludeHTTPPathDelimiter(TBrookRouter.RootUrl) +
+  Result := BrookIncludeTrailingUrlDelimiter(TBrookRouter.RootUrl) +
     LowerCase(Copy(ClassName, 2, MaxInt));
 end;
 
@@ -507,7 +514,8 @@ begin
   Result := TBrookRouter.Service.UrlFor(AClassName, AParams);
 end;
 
-procedure TBrookAction.Request(ARequest: TRequest; AResponse: TResponse);
+procedure TBrookAction.Request(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
 begin
   case ARequest.Method of
     BROOK_HTTP_REQUEST_METHOD_GET: Get;
@@ -549,7 +557,7 @@ begin
   TBrookRouter.MethodNotAllowed(FResponse);
 end;
 
-procedure TBrookAction.FillFields(ARequest: TRequest);
+procedure TBrookAction.FillFields(ARequest: TBrookRequest);
 var
   I: Integer;
   S, N: TJSONStringType;
@@ -565,7 +573,7 @@ begin
   end;
 end;
 
-procedure TBrookAction.FillParams(ARequest: TRequest);
+procedure TBrookAction.FillParams(ARequest: TBrookRequest);
 var
   I: Integer;
   S, N: TJSONStringType;
@@ -606,7 +614,7 @@ procedure TBrookAction.Redirect(const AUrl: string; const AStatusCode: Word);
 begin
   FResponse.Code := AStatusCode;
   FResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
-  FResponse.SetCustomHeader(fieldLocation, AUrl);
+  FResponse.SetCustomHeader('Location', AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string; const AUseRootUrl: Boolean);
@@ -623,10 +631,10 @@ begin
   FResponse.Code := AStatusCode;
   FResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
   if AUseRootUrl then
-    FResponse.SetCustomHeader(fieldLocation,
+    FResponse.SetCustomHeader('Location',
       TBrookRouter.RootUrl(FRequest) + AUrl)
   else
-    FResponse.SetCustomHeader(fieldLocation, AUrl);
+    FResponse.SetCustomHeader('Location', AUrl);
 end;
 
 procedure TBrookAction.Error(const AMsg: string);

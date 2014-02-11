@@ -25,7 +25,7 @@ interface
 
 uses
   BrookClasses, BrookAction, BrookRouter, BrookException, BrookMessages,
-  HTTPDefs, Classes, SysUtils;
+  Classes, SysUtils;
 
 type
   TBrookConstraint = class;

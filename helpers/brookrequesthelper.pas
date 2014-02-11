@@ -24,12 +24,12 @@ unit BrookRequestHelper;
 interface
 
 uses
-  BrookUtils, BrookRouter, BrookConsts, BrookHTTPConsts, HttpDefs, SysUtils,
-  Classes, CustWeb;
+  BrookUtils, BrookHttpDefs, BrookRouter, BrookConsts, BrookHTTPConsts,
+  SysUtils, Classes, CustWeb;
 
 type
-  { Adds features to @code(TRequest) class. }
-  TBrookRequestHelper = class helper for TRequest
+  { Adds features to @code(TBrookRequest) class. }
+  TBrookRequestHelper = class helper for TBrookRequest
   public
     { Set the URL scheme (HTTP or HTTPs) in @code(GetFullURL) function. }
     class procedure SetScheme(const AScheme: ShortString);

@@ -24,8 +24,9 @@ unit BrookRouter;
 interface
 
 uses
-  BrookClasses, BrookException, BrookAction, BrookUtils, BrookConsts,
-  BrookMessages, BrookHTTPConsts, HTTPDefs, FPJSON, Classes, SysUtils, StrUtils;
+  BrookClasses, BrookHttpDefs, BrookException, BrookAction, BrookUtils,
+  BrookConsts, BrookMessages, BrookHTTPConsts, HTTPDefs, FPJSON, Classes,
+  SysUtils, StrUtils;
 
 type
   { Handles exceptions for @link(TBrookRoutes). }
@@ -62,14 +63,14 @@ type
   PBrookMatchPatternEvent = ^TBrookMatchPatternEvent;
 
   { Is a type to @code(*Route) event. }
-  TBrookRouteEvent = procedure(ASender: TObject; ARequest: TRequest;
-    AResponse: TResponse) of object;
+  TBrookRouteEvent = procedure(ASender: TObject; ARequest: TBrookRequest;
+    AResponse: TBrookResponse) of object;
   { Defines a pointer to the route event.}
   PBrookRouteEvent = ^TBrookRouteEvent;
 
   { Is a type to @code(*ExecuteAction) event. }
   TBrookExecuteActionEvent = procedure(ASender: TObject;
-    AAction: TBrookAction; ARequest: TRequest; AResponse: TResponse;
+    AAction: TBrookAction; ARequest: TBrookRequest; AResponse: TBrookResponse;
     ARoute: TBrookRoute; var AHandled: Boolean) of object;
   { Defines a pointer to the execute action event.}
   PBrookExecuteActionEvent = ^TBrookExecuteActionEvent;
@@ -121,10 +122,10 @@ type
     function CreateRoutes: TBrookRoutes; virtual;
     procedure FreeRoutes(ARoutes: TBrookRoutes); virtual;
     function CreateAction(out AActionClass: TBrookActionClass;
-      ARequest: TRequest; AResponse: TResponse): TBrookAction; virtual;
+      ARequest: TBrookRequest; AResponse: TBrookResponse): TBrookAction; virtual;
     procedure FreeAction(AAction: TBrookAction); virtual;
-    procedure ExecuteAction(AAction: TBrookAction; ARequest: TRequest;
-      AResponse: TResponse; ANames, AValues: TBrookArrayOfString;
+    procedure ExecuteAction(AAction: TBrookAction; ARequest: TBrookRequest;
+      AResponse: TBrookResponse; ANames, AValues: TBrookArrayOfString;
       ARoute: TBrookRoute); virtual;
   public
     { Creates an instance of a @link(TBrookRouter) class. }
@@ -141,10 +142,10 @@ type
     class function Service: TBrookRouter;
     { Return the root URL. }
     class function RootUrl: string;
-    { Return the root URL passing @code(TRequest) as param. }
-    class function RootUrl(ARequest: TRequest): string;
+    { Return the root URL passing @code(TBrookRequest) as param. }
+    class function RootUrl(ARequest: TBrookRequest): string;
     { Sends the HTTP "NotAllowed" status code to the response. }
-    class procedure MethodNotAllowed(AResponse: TResponse);
+    class procedure MethodNotAllowed(AResponse: TBrookResponse);
     { Creates an URL for an action informing an array of parameters. Exemple:
 
       @longCode(
@@ -171,12 +172,13 @@ type
     function UrlFor(AClassName: string;
       const AParams: TJSONData): string; overload;
     { Adds an slash to the end of the URL if does not exist. }
-    function Canonicalize(ARequest: TRequest; AResponse: TResponse): Boolean;
+    function Canonicalize(ARequest: TBrookRequest;
+      AResponse: TBrookResponse): Boolean;
     { Checks if the given parameters match with a registered route. }
     function MatchPattern(APattern, APathInfo: string; out ARedirect: Boolean;
       out ANames, AValues: TBrookArrayOfString): Boolean; virtual;
     { Runs the route processing. }
-    procedure Route(ARequest: TRequest; AResponse: TResponse); virtual;
+    procedure Route(ARequest: TBrookRequest; AResponse: TBrookResponse); virtual;
     { List of available routes. }
     property Routes: TBrookRoutes read FRoutes write FRoutes;
     { Is triggered after the router executes a action. }
@@ -369,7 +371,7 @@ begin
 end;
 
 function TBrookRouter.CreateAction(out AActionClass: TBrookActionClass;
-  ARequest: TRequest; AResponse: TResponse): TBrookAction;
+  ARequest: TBrookRequest; AResponse: TBrookResponse): TBrookAction;
 begin
   Result := AActionClass.Create(ARequest, AResponse);
 end;
@@ -379,9 +381,9 @@ begin
   AAction.Free;
 end;
 
-procedure TBrookRouter.ExecuteAction(AAction: TBrookAction; ARequest: TRequest;
-  AResponse: TResponse; ANames, AValues: TBrookArrayOfString;
-  ARoute: TBrookRoute);
+procedure TBrookRouter.ExecuteAction(AAction: TBrookAction;
+  ARequest: TBrookRequest; AResponse: TBrookResponse; ANames,
+  AValues: TBrookArrayOfString; ARoute: TBrookRoute);
 var
   VHandled: Boolean = False;
 begin
@@ -433,7 +435,7 @@ begin
     Result := BrookSettings.RootUrl;
 end;
 
-class function TBrookRouter.RootUrl(ARequest: TRequest): string;
+class function TBrookRouter.RootUrl(ARequest: TBrookRequest): string;
 begin
   if BrookSettings.RootUrl = ES then
     Result := ARequest.ScriptName
@@ -441,7 +443,7 @@ begin
     Result := BrookSettings.RootUrl;
 end;
 
-class procedure TBrookRouter.MethodNotAllowed(AResponse: TResponse);
+class procedure TBrookRouter.MethodNotAllowed(AResponse: TBrookResponse);
 begin
   AResponse.Code := BROOK_HTTP_STATUS_CODE_METHOD_NOT_ALLOWED;
   AResponse.CodeText := BROOK_HTTP_REASON_PHRASE_METHOD_NOT_ALLOWED;
@@ -538,7 +540,8 @@ begin
   Result := UrlFor(FRoutes.ActionClassByClassName(AClassName), AParams);
 end;
 
-function TBrookRouter.Canonicalize(ARequest: TRequest; AResponse: TResponse): Boolean;
+function TBrookRouter.Canonicalize(ARequest: TBrookRequest;
+  AResponse: TBrookResponse): Boolean;
 var
   L: LongInt;
   VURL, VQueryStr: string;
@@ -718,7 +721,7 @@ begin
     FAfterMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues);
 end;
 
-procedure TBrookRouter.Route(ARequest: TRequest; AResponse: TResponse);
+procedure TBrookRouter.Route(ARequest: TBrookRequest; AResponse: TBrookResponse);
 var
   I, C: Integer;
   PRoute: PBrookRoute;

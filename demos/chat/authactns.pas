@@ -5,7 +5,7 @@ unit authactns;
 interface
 
 uses
-  BrookAction, BrookSession, BrookUtils, HTTPDefs, Classes, SysUtils;
+  BrookAction, BrookHttpDefs, BrookSession, BrookUtils, Classes, SysUtils;
 
 type
 
@@ -18,7 +18,8 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure Request(ARequest: TRequest; AResponse: TResponse); override;
+    procedure Request(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); override;
     procedure Load;
     procedure Save;
     procedure Add(const ALog: string);
@@ -35,7 +36,8 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure Request(ARequest: TRequest; AResponse: TResponse); override;
+    procedure Request(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); override;
     procedure Location(const AActionClassName: string);
     procedure Get; override;
     property Session: TBrookSession read FSession;
@@ -53,7 +55,8 @@ type
 
   TLogout = class(TAuth)
   public
-    procedure Request(ARequest: TRequest; AResponse: TResponse); override;
+    procedure Request(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); override;
   end;
 
 implementation
@@ -77,7 +80,7 @@ begin
   Result := FLog.Text;
 end;
 
-procedure TLog.Request(ARequest: TRequest; AResponse: TResponse);
+procedure TLog.Request(ARequest: TBrookRequest; AResponse: TBrookResponse);
 begin
   Load;
   inherited;
@@ -120,7 +123,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TAuth.Request(ARequest: TRequest; AResponse: TResponse);
+procedure TAuth.Request(ARequest: TBrookRequest; AResponse: TBrookResponse);
 begin
   Session.Start(ARequest);
   if Session.Exists('name') then
@@ -170,7 +173,7 @@ end;
 
 { TLogout }
 
-procedure TLogout.Request(ARequest: TRequest; AResponse: TResponse);
+procedure TLogout.Request(ARequest: TBrookRequest; AResponse: TBrookResponse);
 const
   MSG = '<div class="msgln"><i>User <b>%s</b> has left the room.</i><br></div>';
 begin

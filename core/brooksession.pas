@@ -29,8 +29,8 @@ unit BrookSession;
 interface
 
 uses
-  BrookClasses, BrookUtils, BrookException, BrookConsts, FPJSON, JSONParser,
-  Classes, SysUtils, HTTPDefs, DateUtils;
+  BrookClasses, BrookHttpDefs, BrookUtils, BrookException, BrookConsts, FPJSON,
+  JSONParser, Classes, SysUtils, HTTPDefs, DateUtils;
 
 type
   { Handles exceptions for @link(TBrookSession). }
@@ -58,9 +58,9 @@ type
   protected
     function CreateFields: TJSONObject; virtual;
     function IsStarted: Boolean;
-    procedure CheckSID(ARequest: TRequest); virtual;
+    procedure CheckSID(ARequest: TBrookRequest); virtual;
     procedure CheckFileName; virtual;
-    procedure CheckCookie(AResponse: TResponse); virtual;
+    procedure CheckCookie(AResponse: TBrookResponse); virtual;
     procedure Load; virtual;
     procedure Save; virtual;
     property Data: TMemoryStream read FData;
@@ -74,11 +74,12 @@ type
     { Creates an ID for the session. }
     function GenerateID: string; virtual;
     { Starts the session. }
-    procedure Start(ARequest: TRequest); virtual;
+    procedure Start(ARequest: TBrookRequest); virtual;
     { Terminates the session. }
-    procedure Finish(AResponse: TResponse); virtual;
+    procedure Finish(AResponse: TBrookResponse); virtual;
     { Expires the session. }
-    procedure Expire(ARequest: TRequest; AResponse: TResponse); virtual;
+    procedure Expire(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); virtual;
     { Deletes the session files. }
     procedure DeleteFiles;
     { Checks if a name exists in fields. }
@@ -174,7 +175,7 @@ begin
   Result := FStarted;
 end;
 
-procedure TBrookSession.CheckSID(ARequest: TRequest);
+procedure TBrookSession.CheckSID(ARequest: TBrookRequest);
 begin
   if FSID = ES then
     FSID := ARequest.CookieFields.Values[FCookieName];
@@ -187,7 +188,7 @@ begin
   FFileName := IncludeTrailingPathDelimiter(FDirectory) + FFilePrefix + FSID;
 end;
 
-procedure TBrookSession.CheckCookie(AResponse: TResponse);
+procedure TBrookSession.CheckCookie(AResponse: TBrookResponse);
 var
   VCookie: TCookie;
 begin
@@ -241,7 +242,7 @@ begin
     FData.SaveToFile(FFileName);
 end;
 
-procedure TBrookSession.Start(ARequest: TRequest);
+procedure TBrookSession.Start(ARequest: TBrookRequest);
 begin
   if FStarted then
     Exit;
@@ -251,7 +252,7 @@ begin
   Load;
 end;
 
-procedure TBrookSession.Finish(AResponse: TResponse);
+procedure TBrookSession.Finish(AResponse: TBrookResponse);
 begin
   if not FStarted then
     Exit;
@@ -261,7 +262,8 @@ begin
   FFields.Clear;
 end;
 
-procedure TBrookSession.Expire(ARequest: TRequest; AResponse: TResponse);
+procedure TBrookSession.Expire(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
 var
   VCookie: TCookie;
 begin

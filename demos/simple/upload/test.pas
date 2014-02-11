@@ -5,7 +5,7 @@ unit Test;
 interface
 
 uses
-  BrookAction, BrookConsts, BrookUtils, HTTPDefs, SysUtils;
+  BrookAction, BrookHttpDefs, BrookConsts, BrookUtils, SysUtils;
 
 type
   TTest = class(TBrookAction)
@@ -30,7 +30,7 @@ procedure TTest.Post;
 var
   I: Integer;
   VFiles, VSep: string;
-  VFormItem: TUploadedFile;
+  VFormItem: TBrookUploadedFile;
 begin
   VFiles := '';
   VSep := '||';

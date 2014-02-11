@@ -7,7 +7,7 @@ unit test1;
 interface
 
 uses
-  BrookAction, BrookConsts, BrookHTTPUtils, HTTPDefs, ZStream, Classes, SysUtils;
+  BrookAction, BrookConsts, BrookHTTPUtils, ZStream, Classes, SysUtils;
 
 const
   CONTENT =
@@ -47,7 +47,7 @@ begin
         Free;
       end;
       VOutput.Seek(0, 0);
-      GetResponse.SetCustomHeader(fieldContentEncoding, 'deflate');
+      GetResponse.SetCustomHeader('Content-Encoding', 'deflate');
       GetResponse.ContentStream := VOutput;
       GetResponse.SendContent;
     finally

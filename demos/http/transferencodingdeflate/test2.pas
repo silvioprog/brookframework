@@ -5,7 +5,7 @@ unit test2;
 interface
 
 uses
-  BrookAction, RUtils, HTTPDefs;
+  BrookAction, RUtils;
 
 type
   TTest2Action = class(TBrookAction)
@@ -17,7 +17,7 @@ implementation
 
 procedure TTest2Action.Get;
 begin
-  GetResponse.SetCustomHeader(fieldContentEncoding, 'deflate');
+  GetResponse.SetCustomHeader('Content-Encoding', 'deflate');
   Write(ZCompressStr('Hello world! (compressed content)'));
 end;
 
