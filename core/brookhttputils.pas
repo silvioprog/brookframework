@@ -63,34 +63,34 @@ function BrookStrToRequestMethod(const AMethod: string): TBrookRequestMethod;
 { Perform HTTP requests. (allows all request methods) }
 function BrookHttpRequest(const AUrl: string;
   const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
+  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
 { Perform HTTP requests returning the response as @code(TJSONData). (allows
   request methods: GET, HEAD, OPTIONS and TRACE) }
 function BrookHttpRequest(const AUrl: string; out AResponse: TJSONData;
   const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
+  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
 { Perform HTTP requests returning the response as @code(TJSONArray). (allows
   request methods: GET, HEAD, OPTIONS and TRACE) }
 function BrookHttpRequest(const AUrl: string; out AResponse: TJSONArray;
   const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
+  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
 { Perform HTTP requests returning the response as @code(TJSONObject). (allows
   request methods: GET, HEAD, OPTIONS and TRACE) }
 function BrookHttpRequest(const AUrl: string; out AResponse: TJSONObject;
   const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
+  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
 { Perform HTTP requests passing the data as @code(TJSONData). (allows
   request methods: POST, PUT and DELETE) }
 function BrookHttpRequest(var AData: TJSONData; const AUrl: string;
   const AMethod: TBrookRequestMethod = rmPost;
   const AHttpClientLibrary: string = ES;
-  const AEncodeData: Boolean = True): TBrookHTTPResult;
+  const AEncodeData: Boolean = True): TBrookHTTPResult; deprecated;
 { Perform HTTP requests passing the data as @code(TJSONObject). (allows
   request methods: POST, PUT and DELETE) }
 function BrookHttpRequest(var AData: TJSONObject; const AUrl: string;
   const AMethod: TBrookRequestMethod = rmPost;
   const AHttpClientLibrary: string = ES;
-  const AEncodeData: Boolean = True): TBrookHTTPResult;
+  const AEncodeData: Boolean = True): TBrookHTTPResult; deprecated;
 
 implementation
 

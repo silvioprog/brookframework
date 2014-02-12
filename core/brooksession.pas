@@ -80,12 +80,8 @@ type
     { Expires the session. }
     procedure Expire(ARequest: TBrookRequest;
       AResponse: TBrookResponse); virtual;
-    { Deletes the session files. }
-    procedure DeleteFiles; deprecated;
     { Checks if a name exists in fields. }
     function Exists(const AName: string): Boolean;
-    { Deletes the session files except for the current session file. }
-    procedure DeleteOldFiles(const ABeforeOf: TDateTime); deprecated;
     { Set the session cookie name. }
     property CookieName: string read FCookieName write FCookieName;
     { Set the session cookie domain. }
@@ -280,21 +276,9 @@ begin
   FFields.Clear;
 end;
 
-procedure TBrookSession.DeleteFiles;
-begin
-  CheckFileName;
-  BrookDeleteFiles(FDirectory, NullDate, ES, BROOK_SESS_PREFIX);
-end;
-
 function TBrookSession.Exists(const AName: string): Boolean;
 begin
   Result := FFields.IndexOfName(AName, True) <> -1;
-end;
-
-procedure TBrookSession.DeleteOldFiles(const ABeforeOf: TDateTime);
-begin
-  CheckFileName;
-  BrookDeleteFiles(FDirectory, ABeforeOf, FFileName, BROOK_SESS_PREFIX);
 end;
 
 end.

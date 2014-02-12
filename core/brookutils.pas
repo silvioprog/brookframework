@@ -24,8 +24,8 @@ unit BrookUtils;
 interface
 
 uses
-  BrookException, BrookMessages, BrookConsts, BrookHTTPConsts, FPJSON,
-  FPJSONRTTI, CustWeb, Classes, SysUtils;
+  BrookException, BrookMessages, BrookConsts, BrookHTTPConsts, CustWeb,
+  SysUtils;
 
 type
   { Defines an array of strings. }
@@ -101,8 +101,6 @@ var
     OnError: nil;
   );
 
-{ Get the content string from a file. }
-function BrookFileToStr(const AFileName: TFileName): string; deprecated;
 { Check whether a string starts with a given character. }
 function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 { Check whether a string ends with a given character. }
@@ -125,39 +123,16 @@ function BrookGetPathLevels(const APath: string; const AIndex: SizeInt = 0;
   method. }
 function BrookMatchMethod(const ABrookMethod: TBrookRequestMethod;
   const AMethod: string): Boolean;
-{ Deletes files according to their creation dates and file names. }
-procedure BrookDeleteFiles(APath: string; const ABeforeOf: TDateTime;
-  const ASkippedFile: TFileName = ES; const AContains: string = ES); deprecated;
 { Get the datetime of a file. }
 function BrookFileDate(const AFileName: TFileName): TDateTime;
-{ Set the datetime of a file. }
-function BrookFileSetDate(const AFileName: TFileName;
-  const ADateTime: TDateTime): LongInt; deprecated;
-{ Copy the content of a JSON Object to another. }
-procedure BrookJSONCopy(ASrc, ADest: TJSONObject); deprecated;
 { Writes a backtrace of the current exception. }
 function BrookDumpStack(const AEOL: ShortString = BR): string;
 { Ensures Url ends without delimiter. }
 function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
-{ Get the JSON from a object. }
-function BrookObjectToJson(AObject: TObject): TJSONObject; deprecated;
-{ Get the object from a JSON. }
-procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject); deprecated;
 
 implementation
-
-function BrookFileToStr(const AFileName: TFileName): string;
-begin
-  with TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite) do
-    try
-      SetLength(Result, Size);
-      Read(Result[1], Length(Result));
-    finally
-      Free;
-    end;
-end;
 
 function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 begin
@@ -260,76 +235,12 @@ begin
   end;
 end;
 
-procedure BrookDeleteFiles(APath: string; const ABeforeOf: TDateTime;
-  const ASkippedFile: TFileName; const AContains: string);
-
-  function IsOldFile(const FN: TFileName; const DT: TDateTime): Boolean; inline;
-  begin
-    if DT = NullDate then
-      Result := True
-    else
-      Result := BrookFileDate(FN) < DT;
-  end;
-
-var
-  VResult: Integer;
-  VFileName: TFileName;
-  VSearchRec: TSearchRec;
-begin
-  APath := IncludeTrailingPathDelimiter(APath);
-  VResult := FindFirst(APath + AK, faArchive, VSearchRec);
-  try
-    if AContains = ES then
-      while VResult = 0 do
-      begin
-        VFileName := APath + VSearchRec.Name;
-        if (VFileName <> ASkippedFile) and (VSearchRec.Name <> '..') and
-          (VSearchRec.Name <> DT) and IsOldFile(VFileName, ABeforeOf) then
-          DeleteFile(VFileName);
-        VResult := FindNext(VSearchRec);
-      end
-    else
-      while VResult = 0 do
-      begin
-        VFileName := APath + VSearchRec.Name;
-        if (VFileName <> ASkippedFile) and (VSearchRec.Name <> '..') and
-          (Pos(AContains, VSearchRec.Name) <> 0) and (VSearchRec.Name <> DT) and
-          IsOldFile(VFileName, ABeforeOf) then
-          DeleteFile(VFileName);
-        VResult := FindNext(VSearchRec);
-      end;
-  finally
-    FindClose(VSearchRec);
-  end;
-end;
-
 function BrookFileDate(const AFileName: TFileName): TDateTime;
 begin
   if not FileExists(AFileName) then
     raise EBrook.CreateFmt('BrookFileDate',
       SBrookFileNotFoundError, [AFileName]);
   Result := FileDateToDateTime(FileAge(AFileName));
-end;
-
-function BrookFileSetDate(const AFileName: TFileName;
-  const ADateTime: TDateTime): LongInt;
-begin
-  if not FileExists(AFileName) then
-    raise EBrook.CreateFmt('BrookFileSetDate',
-      SBrookFileNotFoundError, [AFileName]);
-  Result := FileSetDate(AFileName, DateTimeToFileDate(ADateTime));
-end;
-
-procedure BrookJSONCopy(ASrc, ADest: TJSONObject);
-var
-  I: Integer;
-begin
-  if not Assigned(ASrc) then
-    raise EBrook.CreateFmt('BrookJSONCopy', SBrookNilParamError, ['ASrc']);
-  if not Assigned(ADest) then
-    raise EBrook.CreateFmt('BrookJSONCopy', SBrookNilParamError, ['ADest']);
-  for I := 0 to Pred(ASrc.Count) do
-    ADest.Add(ASrc.Names[I], ASrc.Items[I].Clone);
 end;
 
 function BrookDumpStack(const AEOL: ShortString): string;
@@ -359,38 +270,6 @@ begin
   L := Length(Result);
   if (L > 0) and (Result[L] <> US) then
     Result += US;
-end;
-
-function BrookObjectToJson(AObject: TObject): TJSONObject;
-var
-  VStreamer: TJSONStreamer;
-begin
-  VStreamer := TJSONStreamer.Create(nil);
-  try
-    try
-      Result := VStreamer.ObjectToJSON(AObject);
-    except
-      FreeAndNil(Result);
-      raise;
-    end;
-  finally
-    VStreamer.Free;
-  end;
-end;
-
-procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject);
-var
-  VDeStreamer: TJSONDeStreamer;
-begin
-  VDeStreamer := TJSONDeStreamer.Create(nil);
-  try
-{$IF FPC_FULLVERSION >= 20701}
-    VDeStreamer.CaseInsensitive := True;
-{$ENDIF}
-    VDeStreamer.JSONToObject(AJSON, AObject);
-  finally
-    VDeStreamer.Free;
-  end;
 end;
 
 end.
