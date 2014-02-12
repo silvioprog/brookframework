@@ -25,7 +25,7 @@ interface
 
 uses
   BrookHttpClient, BrookMessages, BrookHttpConsts, BrookConsts, BrookUtils,
-  HttpDefs, SysUtils, FPJSON, JSONParser;
+  HttpDefs, SysUtils;
 
 type
   { Defines a set to represent the AcceptEncoding HTTP header. }
@@ -34,7 +34,7 @@ type
 { Converts TDateTime to a GMT format. }
 function BrookDateTimeToGMT(const ADateTime: TDateTime): string;
 { Compare two URLs ignoring a possible final slash. }
-function BrookSameUrl(AURL1, AURL2: string): Boolean;
+function BrookSameUrl(AUrl1, AUrl2: string): Boolean;
 { Returns the reason phrase corresponding to a status code. }
 function BrookStatusCodeToReasonPhrase(const AStatusCode: Word): string;
 { Returns the status code corresponding to a reason phrase. }
@@ -63,34 +63,7 @@ function BrookStrToRequestMethod(const AMethod: string): TBrookRequestMethod;
 { Perform HTTP requests. (allows all request methods) }
 function BrookHttpRequest(const AUrl: string;
   const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
-{ Perform HTTP requests returning the response as @code(TJSONData). (allows
-  request methods: GET, HEAD, OPTIONS and TRACE) }
-function BrookHttpRequest(const AUrl: string; out AResponse: TJSONData;
-  const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
-{ Perform HTTP requests returning the response as @code(TJSONArray). (allows
-  request methods: GET, HEAD, OPTIONS and TRACE) }
-function BrookHttpRequest(const AUrl: string; out AResponse: TJSONArray;
-  const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
-{ Perform HTTP requests returning the response as @code(TJSONObject). (allows
-  request methods: GET, HEAD, OPTIONS and TRACE) }
-function BrookHttpRequest(const AUrl: string; out AResponse: TJSONObject;
-  const AMethod: TBrookRequestMethod = rmGet;
-  const AHttpClientLibrary: string = ES): TBrookHTTPResult; deprecated;
-{ Perform HTTP requests passing the data as @code(TJSONData). (allows
-  request methods: POST, PUT and DELETE) }
-function BrookHttpRequest(var AData: TJSONData; const AUrl: string;
-  const AMethod: TBrookRequestMethod = rmPost;
-  const AHttpClientLibrary: string = ES;
-  const AEncodeData: Boolean = True): TBrookHTTPResult; deprecated;
-{ Perform HTTP requests passing the data as @code(TJSONObject). (allows
-  request methods: POST, PUT and DELETE) }
-function BrookHttpRequest(var AData: TJSONObject; const AUrl: string;
-  const AMethod: TBrookRequestMethod = rmPost;
-  const AHttpClientLibrary: string = ES;
-  const AEncodeData: Boolean = True): TBrookHTTPResult; deprecated;
+  const AHttpClientLibrary: string = ES): TBrookHTTPResult;
 
 implementation
 
@@ -104,11 +77,11 @@ begin
     HTTPMonths[VMonth], VYear, VHour, VMinute, VSecond]);
 end;
 
-function BrookSameUrl(AURL1, AURL2: string): Boolean;
+function BrookSameUrl(AUrl1, AUrl2: string): Boolean;
 begin
-  AURL1 := IncludeHTTPPathDelimiter(AURL1);
-  AURL2 := IncludeHTTPPathDelimiter(AURL2);
-  Result := CompareText(AURL1, AURL2) = 0;
+  AUrl1 := IncludeHTTPPathDelimiter(AUrl1);
+  AUrl2 := IncludeHTTPPathDelimiter(AUrl2);
+  Result := CompareText(AUrl1, AUrl2) = 0;
 end;
 
 function BrookStatusCodeToReasonPhrase(const AStatusCode: Word): string;
@@ -432,155 +405,6 @@ begin
   finally
     VClient.Free;
   end;
-end;
-
-function BrookHttpRequest(const AUrl: string; out AResponse: TJSONData;
-  const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string): TBrookHTTPResult;
-var
-  VParser: TJSONParser;
-  VMethod, VLibrary: string;
-  VClient: TBrookHTTPClient;
-  VHttp: TBrookHTTPDef = nil;
-begin
-  if AHttpClientLibrary <> ES then
-    VLibrary := AHttpClientLibrary
-  else
-    VLibrary := BROOK_HTTP_CLIENT_DEFAULT_LIBRARY;
-  VClient := TBrookHTTPClient.Create(VLibrary);
-  try
-    case AMethod of
-      rmGet: VMethod := BROOK_HTTP_REQUEST_METHOD_GET;
-      rmHead: VMethod := BROOK_HTTP_REQUEST_METHOD_HEAD;
-      rmOptions: VMethod := BROOK_HTTP_REQUEST_METHOD_OPTIONS;
-      rmTrace: VMethod := BROOK_HTTP_REQUEST_METHOD_TRACE;
-    else
-      raise EBrookHTTPClient.CreateFmt(SBrookInvalidRequestMethodError,
-        [BrookRequestMethodToStr(AMethod)]);
-    end;
-    VClient.Prepare(VHttp);
-    VHttp.Method := VMethod;
-    VHttp.Url := AUrl;
-    Result := VClient.Request(VHttp);
-    if VHttp.Document.Size > 0 then
-    begin
-      VHttp.Document.Seek(0, 0);
-      VParser := TJSONParser.Create(VHttp.Document);
-      try
-        try
-          AResponse := VParser.Parse;
-        except
-          on E: Exception do
-            raise EBrookHTTPClient.CreateFmt('BrookHttpRequest: %s' +
-              LineEnding + LineEnding + '%s', [E.Message, Result.Content]);
-        end;
-      finally
-        VParser.Free;
-      end;
-    end;
-  finally
-    VHttp.Free;
-    VClient.Free;
-  end;
-end;
-
-function BrookHttpRequest(const AUrl: string; out AResponse: TJSONArray;
-  const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string): TBrookHTTPResult;
-var
-  VData: TJSONData absolute AResponse;
-begin
-  Result := BrookHttpRequest(AUrl, VData, AMethod, AHttpClientLibrary);
-end;
-
-function BrookHttpRequest(const AUrl: string; out AResponse: TJSONObject;
-  const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string): TBrookHTTPResult;
-var
-  VData: TJSONData absolute AResponse;
-begin
-  Result := BrookHttpRequest(AUrl, VData, AMethod, AHttpClientLibrary);
-end;
-
-function BrookHttpRequest(var AData: TJSONData; const AUrl: string;
-  const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string;
-  const AEncodeData: Boolean): TBrookHTTPResult;
-var
-  I: Integer;
-  VParser: TJSONParser;
-  VJSON: TJSONStringType;
-  VMethod, VLibrary: string;
-  VClient: TBrookHTTPClient;
-  VHttp: TBrookHTTPDef = nil;
-  VObject: TJSONObject absolute AData;
-begin
-  if AHttpClientLibrary <> ES then
-    VLibrary := AHttpClientLibrary
-  else
-    VLibrary := BROOK_HTTP_CLIENT_DEFAULT_LIBRARY;
-  VClient := TBrookHTTPClient.Create(VLibrary);
-  try
-    case AMethod of
-      rmPost: VMethod := BROOK_HTTP_REQUEST_METHOD_POST;
-      rmPut: VMethod := BROOK_HTTP_REQUEST_METHOD_PUT;
-      rmDelete: VMethod := BROOK_HTTP_REQUEST_METHOD_DELETE;
-    else
-      raise EBrookHTTPClient.CreateFmt(SBrookInvalidRequestMethodError,
-        [BrookRequestMethodToStr(AMethod)]);
-    end;
-    VClient.Prepare(VHttp);
-    if Assigned(AData) then
-    begin
-      VJSON := ES;
-      for I := 0 to Pred(VObject.Count) do
-        if AEncodeData then
-          VJSON += VObject.Names[I] + EQ +
-            HTTPEncode(VObject.Items[I].AsString) + AM
-        else
-          VJSON += VObject.Names[I] + EQ + VObject.Items[I].AsString + AM;
-      SetLength(VJSON, Length(VJSON) - Length(AM));
-      VHttp.Document.Write(Pointer(VJSON)^, Length(VJSON));
-      VHttp.Document.Seek(0, 0);
-      AData.Clear;
-    end;
-    VHttp.AddHeader(fieldContentType,
-      BROOK_HTTP_CONTENT_TYPE_APP_X_WWW_FORM_URLENCODED);
-    VHttp.Method := VMethod;
-    VHttp.Url := AUrl;
-    Result := VClient.Request(VHttp);
-    if VHttp.Document.Size > 0 then
-    begin
-      FreeAndNil(AData);
-      VHttp.Document.Seek(0, 0);
-      VParser := TJSONParser.Create(VHttp.Document);
-      try
-        try
-          AData := VParser.Parse;
-        except
-          on E: Exception do
-            raise EBrookHTTPClient.CreateFmt('BrookHttpRequest: %s' +
-              LineEnding + LineEnding + '%s', [E.Message, Result.Content]);
-        end;
-      finally
-        VParser.Free;
-      end;
-    end;
-  finally
-    VHttp.Free;
-    VClient.Free;
-  end;
-end;
-
-function BrookHttpRequest(var AData: TJSONObject; const AUrl: string;
-  const AMethod: TBrookRequestMethod;
-  const AHttpClientLibrary: string;
-  const AEncodeData: Boolean): TBrookHTTPResult;
-var
-  VData: TJSONData absolute AData;
-begin
-  Result := BrookHttpRequest(VData, AUrl, AMethod, AHttpClientLibrary,
-    AEncodeData);
 end;
 
 end.

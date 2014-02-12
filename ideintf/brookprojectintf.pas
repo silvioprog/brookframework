@@ -24,9 +24,9 @@ unit BrookProjectIntf;
 interface
 
 uses
-  frmBrookNewProject, frmBrookNewBroker, frmBrookActEdit, frmBrookTable2HTMLForm,
-  ProjectIntf, NewItemIntf, LazIDEIntf, Classes, SysUtils, Controls, ComCtrls,
-  Forms, Dialogs;
+  frmBrookNewProject, frmBrookNewBroker, frmBrookActEdit, ProjectIntf,
+  NewItemIntf, LazIDEIntf, Classes, SysUtils, Controls, ComCtrls, Forms,
+  Dialogs;
 
 type
   TBrookBrokersFileDescPascalUnit = class;
@@ -105,16 +105,6 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
-  { TBrookTable2HTMLFormDescriptor }
-
-  TBrookTable2HTMLFormDescriptor = class(TProjectDescriptor)
-  public
-    constructor Create; override;
-    function DoInitDescriptor: TModalResult; override;
-    function GetLocalizedName: string; override;
-    function GetLocalizedDescription: string; override;
-  end;
-
   { TBrookFileDescPascalUnit }
 
   TBrookFileDescPascalUnit = class(TFileDescPascalUnit)
@@ -174,8 +164,6 @@ resourcestring
   SBrookSimpleCGIAppDesc = 'Create a simple CGI application.';
   SBrookSimpleFastCGIAppName = 'Simple FastCGI application';
   SBrookSimpleFastCGIAppDesc = 'Create a simple FastCGI application.';
-  SBrookTable2HTMLFormName = 'Table to HTML form';
-  SBrookTable2HTMLFormDesc = 'Create a HTML form from a database table.';
   SBrookBrokersName = 'Brokers unit';
   SBrookBrokersDesc = 'Create a brokers unit.';
   SBrookActionName = 'Action unit';
@@ -219,8 +207,6 @@ begin
   RegisterProjectDescriptor(TBrookHTTPDaemonProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookProjectDescriptor.Create,
-    SBrookIDEItemCategoryName);
-  RegisterProjectDescriptor(TBrookTable2HTMLFormDescriptor.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectFileDescriptor(TBrookBrokersFileDescPascalUnit.Create,
     SBrookIDEItemCategoryName);
@@ -625,30 +611,6 @@ end;
 function TBrookProjectDescriptor.GetLocalizedDescription: string;
 begin
   Result := SBrookAppDesc;
-end;
-
-{ TBrookTable2HTMLFormDescriptor }
-
-constructor TBrookTable2HTMLFormDescriptor.Create;
-begin
-  inherited Create;
-  Name := SBrookTable2HTMLFormName;
-end;
-
-function TBrookTable2HTMLFormDescriptor.DoInitDescriptor: TModalResult;
-begin
-  TfrBrookTable2HTMLForm.Execute;
-  Result := mrCancel;
-end;
-
-function TBrookTable2HTMLFormDescriptor.GetLocalizedName: string;
-begin
-  Result := SBrookTable2HTMLFormName;
-end;
-
-function TBrookTable2HTMLFormDescriptor.GetLocalizedDescription: string;
-begin
-  Result := SBrookTable2HTMLFormDesc;
 end;
 
 { TBrookBrokersFileDescPascalUnit }
