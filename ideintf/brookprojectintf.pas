@@ -68,9 +68,9 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
-  { TBrookHTTPAppProjectDescriptor }
+  { TBrookHttpAppProjectDescriptor }
 
-  TBrookHTTPAppProjectDescriptor = class(TBrookSimpleCGIProjectDescriptor)
+  TBrookHttpAppProjectDescriptor = class(TBrookSimpleCGIProjectDescriptor)
   protected
     procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); override;
     procedure CreateProjectFile(AProject: TLazProject); override;
@@ -81,9 +81,9 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
-  { TBrookHTTPDaemonProjectDescriptor }
+  { TBrookHttpDaemonProjectDescriptor }
 
-  TBrookHTTPDaemonProjectDescriptor = class(TBrookHTTPAppProjectDescriptor)
+  TBrookHttpDaemonProjectDescriptor = class(TBrookHttpAppProjectDescriptor)
   protected
     procedure ConfigureBrokerItem(AItem: TBrookBrokersFileDescPascalUnit); override;
   public
@@ -156,10 +156,10 @@ resourcestring
   SBrookIDEItemCategoryName = 'Brook framework';
   SBrookAppName = 'Full CGI/FastCGI Application';
   SBrookAppDesc = 'Create a full CGI or FastCGI application.';
-  SBrookHTTPAppName = 'Embedded server';
-  SBrookHTTPAppDesc = 'Create a embedded HTTP webserver.';
-  SBrookHTTPDaemonName = 'Embedded daemon server';
-  SBrookHTTPDaemonDesc = 'Create a embedded daemon HTTP webserver.';
+  SBrookHttpAppName = 'Embedded server';
+  SBrookHttpAppDesc = 'Create a embedded HTTP webserver.';
+  SBrookHttpDaemonName = 'Embedded daemon server';
+  SBrookHttpDaemonDesc = 'Create a embedded daemon HTTP webserver.';
   SBrookSimpleCGIAppName = 'Simple CGI application';
   SBrookSimpleCGIAppDesc = 'Create a simple CGI application.';
   SBrookSimpleFastCGIAppName = 'Simple FastCGI application';
@@ -202,9 +202,9 @@ begin
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookSimpleFastCGIProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
-  RegisterProjectDescriptor(TBrookHTTPAppProjectDescriptor.Create,
+  RegisterProjectDescriptor(TBrookHttpAppProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
-  RegisterProjectDescriptor(TBrookHTTPDaemonProjectDescriptor.Create,
+  RegisterProjectDescriptor(TBrookHttpDaemonProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
@@ -391,15 +391,15 @@ begin
   Result := SBrookSimpleFastCGIAppDesc;
 end;
 
-{ TBrookHTTPAppProjectDescriptor }
+{ TBrookHttpAppProjectDescriptor }
 
-constructor TBrookHTTPAppProjectDescriptor.Create;
+constructor TBrookHttpAppProjectDescriptor.Create;
 begin
   inherited Create;
-  Name := SBrookHTTPAppName;
+  Name := SBrookHttpAppName;
 end;
 
-function TBrookHTTPAppProjectDescriptor.InitProject(
+function TBrookHttpAppProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 begin
   Result := inherited InitProject(AProject);
@@ -419,14 +419,14 @@ begin
   AProject.LazCompilerOptions.TargetFileName := 'project1';
 end;
 
-procedure TBrookHTTPAppProjectDescriptor.ConfigureBrokerItem(
+procedure TBrookHttpAppProjectDescriptor.ConfigureBrokerItem(
   AItem: TBrookBrokersFileDescPascalUnit);
 begin
   inherited;
   AItem.FAppType := 2;
 end;
 
-procedure TBrookHTTPAppProjectDescriptor.CreateProjectFile(
+procedure TBrookHttpAppProjectDescriptor.CreateProjectFile(
   AProject: TLazProject);
 var
   VProject: TLazProjectFile;
@@ -436,46 +436,46 @@ begin
   AProject.AddFile(VProject, False);
 end;
 
-function TBrookHTTPAppProjectDescriptor.GetLocalizedName: string;
+function TBrookHttpAppProjectDescriptor.GetLocalizedName: string;
 begin
-  Result := SBrookHTTPAppName;
+  Result := SBrookHttpAppName;
 end;
 
-function TBrookHTTPAppProjectDescriptor.GetLocalizedDescription: string;
+function TBrookHttpAppProjectDescriptor.GetLocalizedDescription: string;
 begin
-  Result := SBrookHTTPAppDesc;
+  Result := SBrookHttpAppDesc;
 end;
 
-{ TBrookHTTPDaemonProjectDescriptor }
+{ TBrookHttpDaemonProjectDescriptor }
 
-constructor TBrookHTTPDaemonProjectDescriptor.Create;
+constructor TBrookHttpDaemonProjectDescriptor.Create;
 begin
   inherited Create;
-  Name := SBrookHTTPDaemonName;
+  Name := SBrookHttpDaemonName;
 end;
 
-function TBrookHTTPDaemonProjectDescriptor.InitProject(
+function TBrookHttpDaemonProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 begin
   Result := inherited InitProject(AProject);
   AProject.LazCompilerOptions.Win32GraphicApp := True;
 end;
 
-procedure TBrookHTTPDaemonProjectDescriptor.ConfigureBrokerItem(
+procedure TBrookHttpDaemonProjectDescriptor.ConfigureBrokerItem(
   AItem: TBrookBrokersFileDescPascalUnit);
 begin
   inherited;
   AItem.FAppType := 3;
 end;
 
-function TBrookHTTPDaemonProjectDescriptor.GetLocalizedName: string;
+function TBrookHttpDaemonProjectDescriptor.GetLocalizedName: string;
 begin
-  Result := SBrookHTTPDaemonName;
+  Result := SBrookHttpDaemonName;
 end;
 
-function TBrookHTTPDaemonProjectDescriptor.GetLocalizedDescription: string;
+function TBrookHttpDaemonProjectDescriptor.GetLocalizedDescription: string;
 begin
-  Result := SBrookHTTPDaemonDesc;
+  Result := SBrookHttpDaemonDesc;
 end;
 
 { TBrookProjectDescriptor }
@@ -644,8 +644,8 @@ begin
   case FAppType of
     0: VBroker := 'BrookFCLCGIBroker';
     1: VBroker := 'BrookFCLFCGIBroker';
-    2: VBroker := 'BrookFCLHTTPAppBroker';
-    3: VBroker := 'BrookFCLHTTPDaemonBroker';
+    2: VBroker := 'BrookFCLHttpAppBroker';
+    3: VBroker := 'BrookFCLHttpDaemonBroker';
   end;
   case FAppDefCharset of
     0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
@@ -662,7 +662,7 @@ begin
     'interface'+le+
     ''+le+
     'uses'+le+
-    '  '+VBroker+', BrookHTTPConsts, BrookUtils, Classes, SysUtils;'+le+
+    '  '+VBroker+', BrookHttpConsts, BrookUtils, Classes, SysUtils;'+le+
     ''+le+
     'const'+le+
     '  PUBLIC_HTML = '+QuotedStr(IncludeTrailingPathDelimiter(VDlg.edPubHTMLDir.Text))+';'+le+
