@@ -166,11 +166,11 @@ type
       const AParams: array of string): string; overload;
     { Creates an URL for an action passing a JSON data. }
     function UrlFor(AActionClass: TBrookActionClass;
-      const AParams: TJSONData): string; overload;
+      const AParams: TJSONData): string; overload; deprecated;
     { Creates an URL for an action passing a JSON data however informing the
       class name as string. }
     function UrlFor(AClassName: string;
-      const AParams: TJSONData): string; overload;
+      const AParams: TJSONData): string; overload; deprecated;
     { Adds an slash to the end of the URL if does not exist. }
     function Canonicalize(ARequest: TBrookRequest;
       AResponse: TBrookResponse): Boolean;
