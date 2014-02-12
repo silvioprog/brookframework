@@ -1,5 +1,5 @@
 (*
-  Brook FCL HTTPDefs Broker unit.
+  Brook FCL HttpDefs Broker unit.
 
   Copyright (C) 2013 Yuriy Pilgun.
 
@@ -17,14 +17,14 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit BrookHTTPDefsBroker;
+unit BrookHttpDefsBroker;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  BrookConsts, BrookHTTPConsts, BrookException, BrookUtils, HTTPDefs, CustWeb,
+  BrookConsts, BrookHttpConsts, BrookException, BrookUtils, HttpDefs, CustWeb,
   Classes, SysUtils, StrUtils;
 
 function BrookFormatContentType: string;
@@ -105,7 +105,7 @@ procedure BrookShowRequestException(AHandler: TWebHandler;
 var
   VHandled: Boolean = False;
 
-  procedure HandleHTTP404;
+  procedure HandleHttp404;
   begin
     if not R.HeadersSent then
     begin
@@ -124,7 +124,7 @@ var
     VHandled := True;
   end;
 
-  procedure HandleHTTP500;
+  procedure HandleHttp500;
   var
     VExceptionMessage, VStackDumpString: TJSONStringType;
   begin
@@ -185,14 +185,14 @@ begin
   end;
   if AHandler.RedirectOnError and not R.HeadersSent then
   begin
-    R.SendRedirect(Format(AHandler.RedirectOnErrorURL, [HTTPEncode(E.Message)]));
+    R.SendRedirect(Format(AHandler.RedirectOnErrorURL, [HttpEncode(E.Message)]));
     R.SendContent;
     Exit;
   end;
-  if E is EBrookHTTP404 then
-    HandleHTTP404
+  if E is EBrookHttp404 then
+    HandleHttp404
   else
-    HandleHTTP500;
+    HandleHttp500;
 end;
 
 end.

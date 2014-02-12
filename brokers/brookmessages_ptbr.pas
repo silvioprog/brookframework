@@ -46,13 +46,7 @@ begin
   SBrookNoRouterServiceRegisteredError := 'Serviço de roteador não registrado.';
   SBrookNoRouteRegisteredError := 'Rota não registrada.';
   SBrookCfgFileNotFoundError := 'O arquivo de configuração não foi encontrado: "%s"';
-  SBrookNilJSONParamError := '"AJSON" não pode ser nulo.';
   SBrookNilParamError := '"%s" não pode ser nulo.';
-  SBrookDataBaseServiceAlreadyRegisteredError := 'O serviço de database já está registrado.';
-  SBrookNoDataBaseServiceRegisteredError := 'Serviço de database não registrado.';
-  SBrookNoQueryBrokerClassRegisteredError := 'Classe de broker da query não registrada.';
-  SBrookNoQueryInstantiatedError := 'Query não instanciada.';
-  SBrookEmptyTableNameError := 'O nome da tabela não pode ser vazio.';
   SBrookEmptyLibraryNameError := 'O nome da biblioteca não pode ser vazio.';
   SBrookMethodNotAllowedError := 'Método HTTP não permitido para o recurso solicitado.';
   SBrookIncompatibleTypesError := 'Tipos incompatíveis: Tem "%s", esperado "%s".';

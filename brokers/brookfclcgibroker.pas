@@ -24,8 +24,8 @@ unit BrookFCLCGIBroker;
 interface
 
 uses
-  BrookClasses, BrookApplication, BrookMessages, BrookConsts, BrookHTTPConsts,
-  BrookRouter, BrookUtils, BrookHTTPDefsBroker, HTTPDefs, CustWeb, CustCGI,
+  BrookClasses, BrookApplication, BrookMessages, BrookConsts, BrookHttpConsts,
+  BrookRouter, BrookUtils, BrookHttpDefsBroker, HttpDefs, CustWeb, CustCGI,
   Classes, SysUtils;
 
 type

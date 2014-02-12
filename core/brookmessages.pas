@@ -40,13 +40,7 @@ var
   SBrookNoRouterServiceRegisteredError: string = 'No router service registered.';
   SBrookNoRouteRegisteredError: string = 'No route registered.';
   SBrookCfgFileNotFoundError: string = 'The config file was not found: "%s"';
-  SBrookNilJSONParamError: string = '"AJSON" must not be nil.';
   SBrookNilParamError: string = '"%s" must not be nil.';
-  SBrookDataBaseServiceAlreadyRegisteredError: string = 'The database service is already registered.';
-  SBrookNoDataBaseServiceRegisteredError: string = 'No database service registered.';
-  SBrookNoQueryBrokerClassRegisteredError: string = 'No query broker class registered.';
-  SBrookNoQueryInstantiatedError: string = 'No query instantiated.';
-  SBrookEmptyTableNameError: string = 'The table name must not be empty.';
   SBrookEmptyLibraryNameError: string = 'The library name must not be empty.';
   SBrookMethodNotAllowedError: string = 'HTTP method not allowed for the requested resource.';
   SBrookIncompatibleTypesError: string = 'Incompatible types: got "%s" expected "%s".';

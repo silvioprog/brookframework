@@ -17,7 +17,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit BrookFCLHTTPDaemonBroker;
+unit BrookFCLHttpDaemonBroker;
 
 {$mode objfpc}{$H+}
 
@@ -27,7 +27,7 @@ uses
 {$IFDEF MSWINDOWS}
   ServiceManager,
 {$ENDIF}
-  BrookFCLHTTPAppBroker, BrookApplication, BrookConsts, DaemonApp, Classes,
+  BrookFCLHttpAppBroker, BrookApplication, BrookConsts, DaemonApp, Classes,
   SysUtils;
 
 type
@@ -53,9 +53,9 @@ type
     procedure Execute; override;
   end;
 
-  { TBrookHTTPDaemon }
+  { TBrookHttpDaemon }
 
-  TBrookHTTPDaemon = class(TCustomDaemon)
+  TBrookHttpDaemon = class(TCustomDaemon)
   private
     FThread: TThread;
   public
@@ -66,9 +66,9 @@ type
     procedure Log(const AMsg: string);
   end;
 
-  { TBrookHTTPDaemonMapper }
+  { TBrookHttpDaemonMapper }
 
-  TBrookHTTPDaemonMapper = class(TCustomDaemonMapper)
+  TBrookHttpDaemonMapper = class(TCustomDaemonMapper)
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -76,13 +76,13 @@ type
 implementation
 
 var
-  _BrookHTTPApp: IBrookApplication = nil;
+  _BrookHttpApp: IBrookApplication = nil;
 
-function BrookHTTPApp: IBrookApplication;
+function BrookHttpApp: IBrookApplication;
 begin
-  if not Assigned(_BrookHTTPApp) then
-    _BrookHTTPApp := TBrookApplication.Create;
-  Result := _BrookHTTPApp;
+  if not Assigned(_BrookHttpApp) then
+    _BrookHttpApp := TBrookApplication.Create;
+  Result := _BrookHttpApp;
 end;
 
 { TBrookDaemonApplication }
@@ -99,7 +99,7 @@ end;
 
 function TBrookDaemonApplication.Instance: TObject;
 begin
-  Result := BrookHTTPApp.Instance;
+  Result := BrookHttpApp.Instance;
 end;
 
 procedure TBrookDaemonApplication.Run;
@@ -122,12 +122,12 @@ end;
 
 procedure TBrookDaemonThread.Execute;
 begin
-  BrookHTTPApp.Run;
+  BrookHttpApp.Run;
 end;
 
-{ TBrookHTTPDaemon }
+{ TBrookHttpDaemon }
 
-function TBrookHTTPDaemon.Start: Boolean;
+function TBrookHttpDaemon.Start: Boolean;
 begin
   Result := inherited Start;
   FThread := TBrookDaemonThread.Create;
@@ -135,14 +135,14 @@ begin
   Log('Start.');
 end;
 
-function TBrookHTTPDaemon.Stop: Boolean;
+function TBrookHttpDaemon.Stop: Boolean;
 begin
   Result := inherited Stop;
   FThread.Terminate;
   Log('Stop.');
 end;
 
-function TBrookHTTPDaemon.Install: Boolean;
+function TBrookHttpDaemon.Install: Boolean;
 {$IFDEF MSWINDOWS}
 var
   VSM: TServiceManager;
@@ -164,7 +164,7 @@ begin
   WriteLn('Service installed.');
 end;
 
-function TBrookHTTPDaemon.Uninstall: Boolean;
+function TBrookHttpDaemon.Uninstall: Boolean;
 {$IFDEF MSWINDOWS}
 var
   VSM: TServiceManager;
@@ -186,14 +186,14 @@ begin
   WriteLn('Service uninstalled.');
 end;
 
-procedure TBrookHTTPDaemon.Log(const AMsg: string);
+procedure TBrookHttpDaemon.Log(const AMsg: string);
 begin
   Application.Log(etCustom, ClassName + ': ' + AMsg);
 end;
 
-{ TBrookHTTPDaemonMapper }
+{ TBrookHttpDaemonMapper }
 
-constructor TBrookHTTPDaemonMapper.Create(AOwner: TComponent);
+constructor TBrookHttpDaemonMapper.Create(AOwner: TComponent);
 var
   VDaemonDef: TDaemonDef;
 begin
@@ -207,8 +207,8 @@ begin
 end;
 
 initialization
-  RegisterDaemonClass(TBrookHTTPDaemon);
-  RegisterDaemonMapper(TBrookHTTPDaemonMapper);
+  RegisterDaemonClass(TBrookHttpDaemon);
+  RegisterDaemonMapper(TBrookHttpDaemonMapper);
   BrookUnregisterApp;
   BrookRegisterApp(TBrookDaemonApplication.Create);
 

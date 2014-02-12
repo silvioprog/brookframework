@@ -81,11 +81,11 @@ type
     procedure Expire(ARequest: TBrookRequest;
       AResponse: TBrookResponse); virtual;
     { Deletes the session files. }
-    procedure DeleteFiles;
+    procedure DeleteFiles; deprecated;
     { Checks if a name exists in fields. }
     function Exists(const AName: string): Boolean;
     { Deletes the session files except for the current session file. }
-    procedure DeleteOldFiles(const ABeforeOf: TDateTime);
+    procedure DeleteOldFiles(const ABeforeOf: TDateTime); deprecated;
     { Set the session cookie name. }
     property CookieName: string read FCookieName write FCookieName;
     { Set the session cookie domain. }

@@ -17,24 +17,24 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit BrookFCLHTTPClientBroker;
+unit BrookFCLHttpClientBroker;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  BrookHTTPClient, BrookConsts, FPHTTPClient, Classes, SysUtils;
+  BrookHttpClient, BrookConsts, FPHttpClient, Classes, SysUtils;
 
 type
-  TBrookFPHTTPClientDef = class(TBrookHTTPDef)
+  TBrookFPHttpClientDef = class(TBrookHttpDef)
   private
-    FHttp: TFPHTTPClient;
+    FHttp: TFPHttpClient;
     FContents: TStrings;
     FDocument: TMemoryStream;
     FMethod: string;
     FUrl: string;
-    class procedure InternalRequest(AHttp: TFPHTTPClient; AResponse: TStream;
+    class procedure InternalRequest(AHttp: TFPHttpClient; AResponse: TStream;
       const AMethod, AUrl: string);
   protected
     function GetClient: TObject; override;
@@ -72,16 +72,16 @@ type
 
 implementation
 
-constructor TBrookFPHTTPClientDef.Create;
+constructor TBrookFPHttpClientDef.Create;
 begin
-  FHttp := TFPHTTPClient.Create(nil);
+  FHttp := TFPHttpClient.Create(nil);
   FContents := TStringList.Create;
   FDocument := TMemoryStream.Create;
   FHttp.AddHeader('User-Agent', 'Brook framework and FCL-Web.');
   FMethod := 'GET';
 end;
 
-destructor TBrookFPHTTPClientDef.Destroy;
+destructor TBrookFPHttpClientDef.Destroy;
 begin
   FContents.Free;
   FDocument.Free;
@@ -89,100 +89,100 @@ begin
   inherited Destroy;
 end;
 
-function TBrookFPHTTPClientDef.GetClient: TObject;
+function TBrookFPHttpClientDef.GetClient: TObject;
 begin
   Result := FHttp;
 end;
 
-function TBrookFPHTTPClientDef.GetContents: TStrings;
+function TBrookFPHttpClientDef.GetContents: TStrings;
 begin
   FDocument.Seek(0, 0);
   FContents.LoadFromStream(FDocument);
   Result := FContents;
 end;
 
-function TBrookFPHTTPClientDef.GetCookies: TStrings;
+function TBrookFPHttpClientDef.GetCookies: TStrings;
 begin
   Result := FHttp.Cookies;
 end;
 
-function TBrookFPHTTPClientDef.GetDocument: TStream;
+function TBrookFPHttpClientDef.GetDocument: TStream;
 begin
   Result := FDocument;
 end;
 
-function TBrookFPHTTPClientDef.GetHeaders: TStrings;
+function TBrookFPHttpClientDef.GetHeaders: TStrings;
 begin
   Result := FHttp.ResponseHeaders;
 end;
 
-function TBrookFPHTTPClientDef.GetContentType: string;
+function TBrookFPHttpClientDef.GetContentType: string;
 begin
   Result := FHttp.GetHeader('Content-Type');
 end;
 
-procedure TBrookFPHTTPClientDef.SetContentType(AValue: string);
+procedure TBrookFPHttpClientDef.SetContentType(AValue: string);
 begin
   FHttp.AddHeader('Content-Type', AValue);
 end;
 
-function TBrookFPHTTPClientDef.GetStatusCode: Integer;
+function TBrookFPHttpClientDef.GetStatusCode: Integer;
 begin
   Result := FHttp.ResponseStatusCode;
 end;
 
-function TBrookFPHTTPClientDef.GetReasonPhrase: string;
+function TBrookFPHttpClientDef.GetReasonPhrase: string;
 begin
   Result := FHttp.ResponseStatusText;
 end;
 
-function TBrookFPHTTPClientDef.GetMethod: string;
+function TBrookFPHttpClientDef.GetMethod: string;
 begin
   Result := FMethod;
 end;
 
-function TBrookFPHTTPClientDef.GetUrl: string;
+function TBrookFPHttpClientDef.GetUrl: string;
 begin
   Result := FUrl;
 end;
 
-procedure TBrookFPHTTPClientDef.SetMethod(AValue: string);
+procedure TBrookFPHttpClientDef.SetMethod(AValue: string);
 begin
   FMethod := AValue;
 end;
 
-procedure TBrookFPHTTPClientDef.SetUrl(AValue: string);
+procedure TBrookFPHttpClientDef.SetUrl(AValue: string);
 begin
   FUrl := AValue;
 end;
 
-class procedure TBrookFPHTTPClientDef.InternalRequest(AHttp: TFPHTTPClient;
+class procedure TBrookFPHttpClientDef.InternalRequest(AHttp: TFPHttpClient;
   AResponse: TStream; const AMethod, AUrl: string);
 begin
   if Assigned(AResponse) then
-    AHttp.HTTPMethod(AMethod, AUrl, AResponse, [])
+    AHttp.HttpMethod(AMethod, AUrl, AResponse, [])
   else
   begin
     AResponse := TMemoryStream.Create;
     try
-      AHttp.HTTPMethod(AMethod, AUrl, AResponse, []);
+      AHttp.HttpMethod(AMethod, AUrl, AResponse, []);
     finally
       FreeAndNil(AResponse);
     end;
   end;
 end;
 
-class function TBrookFPHTTPClientDef.GetLibrary: string;
+class function TBrookFPHttpClientDef.GetLibrary: string;
 begin
   Result := 'FCLWeb';
 end;
 
-class function TBrookFPHTTPClientDef.Get(const AUrl: string;
+class function TBrookFPHttpClientDef.Get(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VHttp.RequestHeaders.Add('Connection: Close');
     InternalRequest(VHttp, AResponse, 'GET', AUrl);
@@ -192,12 +192,12 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.Post(const AUrl: string;
+class function TBrookFPHttpClientDef.Post(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VHttp.RequestHeaders.Add('Connection: Close');
     InternalRequest(VHttp, AResponse, 'POST', AUrl);
@@ -207,12 +207,12 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.Put(const AUrl: string;
+class function TBrookFPHttpClientDef.Put(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VHttp.RequestHeaders.Add('Connection: Close');
     InternalRequest(VHttp, AResponse, 'PUT', AUrl);
@@ -222,12 +222,12 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.Delete(const AUrl: string;
+class function TBrookFPHttpClientDef.Delete(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VHttp.RequestHeaders.Add('Connection: Close');
     InternalRequest(VHttp, AResponse, 'DELETE', AUrl);
@@ -237,12 +237,12 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.Options(const AUrl: string;
+class function TBrookFPHttpClientDef.Options(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VHttp.RequestHeaders.Add('Connection: Close');
     InternalRequest(VHttp, AResponse, 'OPTIONS', AUrl);
@@ -252,15 +252,15 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.Head(const AUrl: string;
+class function TBrookFPHttpClientDef.Head(const AUrl: string;
   AHeaders: TStrings): Boolean;
 var
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VHttp.RequestHeaders.Add('Connection: Close');
-    VHttp.HTTPMethod('HEAD', AUrl, nil, []);
+    VHttp.HttpMethod('HEAD', AUrl, nil, []);
     AHeaders.Assign(VHttp.ResponseHeaders);
     Result := VHttp.ResponseStatusCode = 200;
   finally
@@ -268,12 +268,12 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.PostForm(const AUrl: string; AFormData,
+class function TBrookFPHttpClientDef.PostForm(const AUrl: string; AFormData,
   AResponse: TStream): Boolean;
 var
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VHttp.RequestBody := AFormData;
     VHttp.AddHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -285,7 +285,7 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.PostForm(const AUrl, AFormData: string;
+class function TBrookFPHttpClientDef.PostForm(const AUrl, AFormData: string;
   AResponse: TStream): Boolean;
 var
   VFormData: TStringStream;
@@ -299,15 +299,15 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.PostFile(const AUrl, AFieldName,
+class function TBrookFPHttpClientDef.PostFile(const AUrl, AFieldName,
   AFileName: string; AFile, AResponse: TStream): Boolean;
 var
   S, VSep: string;
   VData: TMemoryStream;
-  VHttp: TFPHTTPClient;
+  VHttp: TFPHttpClient;
 begin
   VData := TMemoryStream.Create;
-  VHttp := TFPHTTPClient.Create(nil);
+  VHttp := TFPHttpClient.Create(nil);
   try
     VSep := Format('%.8x_multipart_boundary', [Random($FFFFFF)]);
     S := '--' + VSep + CRLF;
@@ -332,7 +332,7 @@ begin
   end;
 end;
 
-class function TBrookFPHTTPClientDef.PostFile(const AUrl, AFieldName,
+class function TBrookFPHttpClientDef.PostFile(const AUrl, AFieldName,
   AFileName: string; AResponse: TStream): Boolean;
 var
   VFile: TFileStream;
@@ -345,12 +345,12 @@ begin
   end;
 end;
 
-procedure TBrookFPHTTPClientDef.AddHeader(const AName, AValue: string);
+procedure TBrookFPHttpClientDef.AddHeader(const AName, AValue: string);
 begin
   FHttp.AddHeader(AName, AValue);
 end;
 
-function TBrookFPHTTPClientDef.Request: Boolean;
+function TBrookFPHttpClientDef.Request: Boolean;
 begin
   try
     if FHttp.ResponseHeaders.Count > 0 then
@@ -363,7 +363,7 @@ begin
       FDocument.Clear;
     end;
     FHttp.RequestHeaders.Add('Connection: Close');
-    FHttp.HTTPMethod(FMethod, FUrl, FDocument, []);
+    FHttp.HttpMethod(FMethod, FUrl, FDocument, []);
     Result := FHttp.ResponseStatusCode = 200;
   finally
     FHttp.RequestBody.Free;
@@ -372,7 +372,7 @@ begin
 end;
 
 initialization
-  TBrookFPHTTPClientDef.Register;
+  TBrookFPHttpClientDef.Register;
 
 end.
 

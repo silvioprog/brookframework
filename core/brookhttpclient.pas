@@ -17,43 +17,43 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit BrookHTTPClient;
+unit BrookHttpClient;
 
 {$i brook.inc}
 
 interface
 
 uses
-  BrookClasses, BrookException, BrookMessages, BrookConsts, BrookHTTPConsts,
+  BrookClasses, BrookException, BrookMessages, BrookConsts, BrookHttpConsts,
   Classes, SysUtils, FGL;
 
 type
-  { Handles exceptions for @link(TBrookHTTPDef). }
-  EBrookHTTPDef = class(EBrook);
+  { Handles exceptions for @link(TBrookHttpDef). }
+  EBrookHttpDef = class(EBrook);
 
-  { Handles exceptions for @link(TBrookHTTPDefs). }
-  EBrookHTTPDefs = class(EBrook);
+  { Handles exceptions for @link(TBrookHttpDefs). }
+  EBrookHttpDefs = class(EBrook);
 
-  { Handles exceptions for @link(EBrookHTTPClient). }
-  EBrookHTTPClient = class(EBrook);
+  { Handles exceptions for @link(EBrookHttpClient). }
+  EBrookHttpClient = class(EBrook);
 
-  { Is a metaclass for @link(TBrookHTTPDef) class. }
-  TBrookHTTPDefClass = class of TBrookHTTPDef;
+  { Is a metaclass for @link(TBrookHttpDef) class. }
+  TBrookHttpDefClass = class of TBrookHttpDef;
 
-  { Is a metaclass for @link(TBrookHTTPDefs) class. }
-  TBrookHTTPDefsClass = class of TBrookHTTPDefs;
+  { Is a metaclass for @link(TBrookHttpDefs) class. }
+  TBrookHttpDefsClass = class of TBrookHttpDefs;
 
-  { Is a metaclass for @link(TBrookHTTPClient) class. }
-  TBrookHTTPClientClass = class of TBrookHTTPClient;
+  { Is a metaclass for @link(TBrookHttpClient) class. }
+  TBrookHttpClientClass = class of TBrookHttpClient;
 
   { Information returned after a request. }
-  TBrookHTTPResult = record
+  TBrookHttpResult = record
     StatusCode: Integer;
     ReasonPhrase, Header, Content: string;
   end;
 
   { Offers general abstract features for HTTP handling. }
-  TBrookHTTPDef = class(TBrookObject)
+  TBrookHttpDef = class(TBrookObject)
   protected
     procedure SetContentType(AValue: string); virtual; abstract;
     function GetContentType: string; virtual; abstract;
@@ -69,7 +69,7 @@ type
     procedure SetMethod(AValue: string); virtual; abstract;
     procedure SetUrl(AValue: string); virtual; abstract;
   public
-    { Creates an instance of a @link(TBrookHTTPDef) class. }
+    { Creates an instance of a @link(TBrookHttpDef) class. }
     constructor Create; virtual; abstract;
     { Register the broker class. }
     class procedure Register;
@@ -138,29 +138,29 @@ type
   end;
 
   { Registers HTTP definitions. }
-  TBrookHTTPDefs = class(specialize TFPGList<TBrookHTTPDefClass>)
+  TBrookHttpDefs = class(specialize TFPGList<TBrookHttpDefClass>)
   private
-    class var _List: TBrookHTTPDefs;
+    class var _List: TBrookHttpDefs;
   public
     { Registers the service provided by this class. }
-    class function Service: TBrookHTTPDefs;
+    class function Service: TBrookHttpDefs;
     { Finds a database item by its library name. }
-    function Find(const ALibrary: string): TBrookHTTPDefClass;
+    function Find(const ALibrary: string): TBrookHttpDefClass;
     { Returns a database item by its library name. }
-    function ItemByLibrary(const ALibrary: string): TBrookHTTPDefClass;
+    function ItemByLibrary(const ALibrary: string): TBrookHttpDefClass;
   end;
 
   { Client to perform HTTP requests. }
-  TBrookHTTPClient = class(TBrookObject)
+  TBrookHttpClient = class(TBrookObject)
   private
     class var _Library: string;
   public
-    { Creates an instance of a @link(TBrookHTTPClient) class. }
+    { Creates an instance of a @link(TBrookHttpClient) class. }
     constructor Create(const ALibrary: string);
     { Specifies the library to be used by this class. }
     class procedure SetLibrary(const ALibrary: string);
-    { Prepares an instance of @code(TBrookHTTPDef). }
-    class procedure Prepare(out AHttp: TBrookHTTPDef);
+    { Prepares an instance of @code(TBrookHttpDef). }
+    class procedure Prepare(out AHttp: TBrookHttpDef);
     { Sends request by a GET HTTP request method. }
     class function Get(const AUrl: string; AResponse: TStream): Boolean;
     { Sends request by a POST HTTP request method. }
@@ -189,39 +189,39 @@ type
       parameter. }
     class function PostFile(const AUrl, AFieldName, AFileName: string;
       AResponse: TStream): Boolean;
-    { Performs the request, passing a @code(TBrookHTTPDef) as parameter. }
-    function Request(AHttp: TBrookHTTPDef): TBrookHTTPResult;
+    { Performs the request, passing a @code(TBrookHttpDef) as parameter. }
+    function Request(AHttp: TBrookHttpDef): TBrookHttpResult;
     { Performs the request, passing the method and URL as parameter. }
-    function Request(const AMethod, AUrl: string): TBrookHTTPResult;
+    function Request(const AMethod, AUrl: string): TBrookHttpResult;
     { Performs the request, passing URL as parameter. }
-    function Request(const AUrl: string): TBrookHTTPResult;
+    function Request(const AUrl: string): TBrookHttpResult;
   end;
 
 implementation
 
-{ TBrookHTTPDef }
+{ TBrookHttpDef }
 
-class procedure TBrookHTTPDef.Register;
+class procedure TBrookHttpDef.Register;
 begin
-  TBrookHTTPDefs.Service.Add(Self);
+  TBrookHttpDefs.Service.Add(Self);
   BROOK_HTTP_CLIENT_DEFAULT_LIBRARY := GetLibrary;
 end;
 
-class procedure TBrookHTTPDef.Unregister;
+class procedure TBrookHttpDef.Unregister;
 begin
-  TBrookHTTPDefs.Service.Remove(Self);
+  TBrookHttpDefs.Service.Remove(Self);
 end;
 
-{ TBrookHTTPDefs }
+{ TBrookHttpDefs }
 
-class function TBrookHTTPDefs.Service: TBrookHTTPDefs;
+class function TBrookHttpDefs.Service: TBrookHttpDefs;
 begin
-  if not Assigned(TBrookHTTPDefs._List) then
-    TBrookHTTPDefs._List := TBrookHTTPDefs.Create;
-  Result := TBrookHTTPDefs._List;
+  if not Assigned(TBrookHttpDefs._List) then
+    TBrookHttpDefs._List := TBrookHttpDefs.Create;
+  Result := TBrookHttpDefs._List;
 end;
 
-function TBrookHTTPDefs.Find(const ALibrary: string): TBrookHTTPDefClass;
+function TBrookHttpDefs.Find(const ALibrary: string): TBrookHttpDefClass;
 begin
   for Result in Self do
     if SameText(Result.GetLibrary, ALibrary) then
@@ -229,37 +229,37 @@ begin
   Result := nil;
 end;
 
-function TBrookHTTPDefs.ItemByLibrary(
-  const ALibrary: string): TBrookHTTPDefClass;
+function TBrookHttpDefs.ItemByLibrary(
+  const ALibrary: string): TBrookHttpDefClass;
 begin
   if ALibrary = ES then
-    raise EBrookHTTPDefs.Create(Self, SBrookEmptyLibraryNameError);
+    raise EBrookHttpDefs.Create(Self, SBrookEmptyLibraryNameError);
   Result := Find(ALibrary);
   if not Assigned(Result) then
-    raise EBrookHTTPDefs.CreateFmt(Self, SBrookItemNotFoundError, [ALibrary]);
+    raise EBrookHttpDefs.CreateFmt(Self, SBrookItemNotFoundError, [ALibrary]);
 end;
 
-{ TBrookHTTPClient }
+{ TBrookHttpClient }
 
-constructor TBrookHTTPClient.Create(const ALibrary: string);
+constructor TBrookHttpClient.Create(const ALibrary: string);
 begin
   _Library := ALibrary;
 end;
 
-class procedure TBrookHTTPClient.SetLibrary(const ALibrary: string);
+class procedure TBrookHttpClient.SetLibrary(const ALibrary: string);
 begin
   _Library := ALibrary;
 end;
 
-class procedure TBrookHTTPClient.Prepare(out AHttp: TBrookHTTPDef);
+class procedure TBrookHttpClient.Prepare(out AHttp: TBrookHttpDef);
 begin
-  AHttp := TBrookHTTPDefs.Service.ItemByLibrary(_Library).Create;
+  AHttp := TBrookHttpDefs.Service.ItemByLibrary(_Library).Create;
 end;
 
-class function TBrookHTTPClient.Get(const AUrl: string;
+class function TBrookHttpClient.Get(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -269,10 +269,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.Post(const AUrl: string;
+class function TBrookHttpClient.Post(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -282,10 +282,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.Put(const AUrl: string;
+class function TBrookHttpClient.Put(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -295,10 +295,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.Delete(const AUrl: string;
+class function TBrookHttpClient.Delete(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -308,10 +308,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.Options(const AUrl: string;
+class function TBrookHttpClient.Options(const AUrl: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -321,10 +321,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.Head(const AUrl: string;
+class function TBrookHttpClient.Head(const AUrl: string;
   AHeaders: TStrings): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -334,10 +334,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.PostForm(const AUrl: string; AFormData,
+class function TBrookHttpClient.PostForm(const AUrl: string; AFormData,
   AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -347,10 +347,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.PostForm(const AUrl, AFormData: string;
+class function TBrookHttpClient.PostForm(const AUrl, AFormData: string;
   AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -360,10 +360,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.PostFile(const AUrl, AFieldName,
+class function TBrookHttpClient.PostFile(const AUrl, AFieldName,
   AFileName: string; AFile, AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -373,10 +373,10 @@ begin
   end;
 end;
 
-class function TBrookHTTPClient.PostFile(const AUrl, AFieldName,
+class function TBrookHttpClient.PostFile(const AUrl, AFieldName,
   AFileName: string; AResponse: TStream): Boolean;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -386,7 +386,7 @@ begin
   end;
 end;
 
-function TBrookHTTPClient.Request(AHttp: TBrookHTTPDef): TBrookHTTPResult;
+function TBrookHttpClient.Request(AHttp: TBrookHttpDef): TBrookHttpResult;
 begin
   AHttp.Request;
   Result.Content := AHttp.Contents.Text;
@@ -395,9 +395,9 @@ begin
   Result.ReasonPhrase := AHttp.ReasonPhrase;
 end;
 
-function TBrookHTTPClient.Request(const AMethod, AUrl: string): TBrookHTTPResult;
+function TBrookHttpClient.Request(const AMethod, AUrl: string): TBrookHttpResult;
 var
-  VHttp: TBrookHTTPDef = nil;
+  VHttp: TBrookHttpDef = nil;
 begin
   Prepare(VHttp);
   try
@@ -409,12 +409,12 @@ begin
   end;
 end;
 
-function TBrookHTTPClient.Request(const AUrl: string): TBrookHTTPResult;
+function TBrookHttpClient.Request(const AUrl: string): TBrookHttpResult;
 begin
   Result := Request(BROOK_HTTP_REQUEST_METHOD_GET, AUrl);
 end;
 
 finalization
-  FreeAndNil(TBrookHTTPDefs._List);
+  FreeAndNil(TBrookHttpDefs._List);
 
 end.

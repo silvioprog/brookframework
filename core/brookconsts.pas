@@ -792,8 +792,8 @@ const
 var
   BROOK_HTTP_DAEMON_DESCRIPTION: string = 'Brook HTTP daemon.';
   BROOK_HTTP_DAEMON_DISPLAYNAME: string = 'Brook daemon';
-  BROOK_HTTP_DAEMON_NAME: string = 'BrookHTTPDaemon';
-  BROOK_HTTP_DAEMON_CLASSNAME: string = 'TBrookHTTPDaemon';
+  BROOK_HTTP_DAEMON_NAME: string = 'BrookHttpDaemon';
+  BROOK_HTTP_DAEMON_CLASSNAME: string = 'TBrookHttpDaemon';
 
 implementation
 

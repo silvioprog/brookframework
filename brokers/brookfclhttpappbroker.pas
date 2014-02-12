@@ -17,24 +17,24 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit BrookFCLHTTPAppBroker;
+unit BrookFCLHttpAppBroker;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  BrookClasses, BrookApplication, BrookRouter, BrookUtils, BrookHTTPDefsBroker,
-  HttpDefs, CustWeb, CustHTTPApp, FPHTTPServer, Classes, SysUtils;
+  BrookClasses, BrookApplication, BrookRouter, BrookUtils, BrookHttpDefsBroker,
+  HttpDefs, CustWeb, CustHttpApp, FPHttpServer, Classes, SysUtils;
 
 type
-  TBrookHTTPApplication = class;
+  TBrookHttpApplication = class;
 
   { TBrookApplication }
 
   TBrookApplication = class(TBrookInterfacedObject, IBrookApplication)
   private
-    FApp: TBrookHTTPApplication;
+    FApp: TBrookHttpApplication;
     function GetTerminated: Boolean;
   public
     constructor Create; virtual;
@@ -45,38 +45,38 @@ type
     property Terminated: Boolean read GetTerminated;
   end;
 
-  { TBrookHTTPApplication }
+  { TBrookHttpApplication }
 
-  TBrookHTTPApplication = class(TCustomHTTPApplication)
+  TBrookHttpApplication = class(TCustomHttpApplication)
   protected
     function InitializeWebHandler: TWebHandler; override;
   end;
 
-  { TBrookHTTPConnectionRequest }
+  { TBrookHttpConnectionRequest }
 
-  TBrookHTTPConnectionRequest = class(TFPHTTPConnectionRequest)
+  TBrookHttpConnectionRequest = class(TFPHttpConnectionRequest)
   protected
     procedure HandleUnknownEncoding(
       const AContentType: string; AStream: TStream); override;
   end;
 
-  { TBrookHTTPConnectionResponse }
+  { TBrookHttpConnectionResponse }
 
-  TBrookHTTPConnectionResponse = class(TFPHTTPConnectionResponse)
+  TBrookHttpConnectionResponse = class(TFPHttpConnectionResponse)
   end;
 
  { TBrookEmbeddedHttpServer }
 
   TBrookEmbeddedHttpServer = class(TEmbeddedHttpServer)
   protected
-    function CreateRequest: TFPHTTPConnectionRequest; override;
+    function CreateRequest: TFPHttpConnectionRequest; override;
     function CreateResponse(
-      ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse; override;
+      ARequest: TFPHttpConnectionRequest): TFPHttpConnectionResponse; override;
   end;
 
-  { TBrookHTTPServerHandler }
+  { TBrookHttpServerHandler }
 
-  TBrookHTTPServerHandler = class(TFPHTTPServerHandler)
+  TBrookHttpServerHandler = class(TFPHttpServerHandler)
   protected
     function CreateServer: TEmbeddedHttpServer; override;
   public
@@ -96,7 +96,7 @@ end;
 
 constructor TBrookApplication.Create;
 begin
-  FApp := TBrookHTTPApplication.Create(nil);
+  FApp := TBrookHttpApplication.Create(nil);
   FApp.Initialize;
 end;
 
@@ -123,16 +123,16 @@ begin
   FApp.Terminate;
 end;
 
-{ TBrookHTTPApplication }
+{ TBrookHttpApplication }
 
-function TBrookHTTPApplication.InitializeWebHandler: TWebHandler;
+function TBrookHttpApplication.InitializeWebHandler: TWebHandler;
 begin
-  Result := TBrookHTTPServerHandler.Create(Self);
+  Result := TBrookHttpServerHandler.Create(Self);
 end;
 
-{ TBrookHTTPConnectionRequest }
+{ TBrookHttpConnectionRequest }
 
-procedure TBrookHTTPConnectionRequest.HandleUnknownEncoding(
+procedure TBrookHttpConnectionRequest.HandleUnknownEncoding(
   const AContentType: string; AStream: TStream);
 begin
   if not BrookHandleUnknownEncoding(Self, AContentType, AStream) then
@@ -141,25 +141,25 @@ end;
 
 { TBrookEmbeddedHttpServer }
 
-function TBrookEmbeddedHttpServer.CreateRequest: TFPHTTPConnectionRequest;
+function TBrookEmbeddedHttpServer.CreateRequest: TFPHttpConnectionRequest;
 begin
-  Result := TBrookHTTPConnectionRequest.Create;
+  Result := TBrookHttpConnectionRequest.Create;
 end;
 
 function TBrookEmbeddedHttpServer.CreateResponse(
-  ARequest: TFPHTTPConnectionRequest): TFPHTTPConnectionResponse;
+  ARequest: TFPHttpConnectionRequest): TFPHttpConnectionResponse;
 begin
-  Result := TBrookHTTPConnectionResponse.Create(ARequest);
+  Result := TBrookHttpConnectionResponse.Create(ARequest);
 end;
 
-{ TBrookHTTPServerHandler }
+{ TBrookHttpServerHandler }
 
-function TBrookHTTPServerHandler.CreateServer: TEmbeddedHttpServer;
+function TBrookHttpServerHandler.CreateServer: TEmbeddedHttpServer;
 begin
   Result:=TBrookEmbeddedHttpServer.Create(Self);
 end;
 
-procedure TBrookHTTPServerHandler.HandleRequest(ARequest: TRequest;
+procedure TBrookHttpServerHandler.HandleRequest(ARequest: TRequest;
   AResponse: TResponse);
 begin
   try
@@ -171,7 +171,7 @@ begin
   end;
 end;
 
-procedure TBrookHTTPServerHandler.ShowRequestException(R: TResponse; E: Exception);
+procedure TBrookHttpServerHandler.ShowRequestException(R: TResponse; E: Exception);
 begin
   BrookShowRequestException(Self, R, E);
 end;

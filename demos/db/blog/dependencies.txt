@@ -1,2 +1,0 @@
-JTemplate: https://github.com/silvioprog/jtemplate
-RUtils: https://github.com/silvioprog/rutils

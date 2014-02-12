@@ -102,7 +102,7 @@ var
   );
 
 { Get the content string from a file. }
-function BrookFileToStr(const AFileName: TFileName): string;
+function BrookFileToStr(const AFileName: TFileName): string; deprecated;
 { Check whether a string starts with a given character. }
 function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 { Check whether a string ends with a given character. }
@@ -127,14 +127,14 @@ function BrookMatchMethod(const ABrookMethod: TBrookRequestMethod;
   const AMethod: string): Boolean;
 { Deletes files according to their creation dates and file names. }
 procedure BrookDeleteFiles(APath: string; const ABeforeOf: TDateTime;
-  const ASkippedFile: TFileName = ES; const AContains: string = ES);
+  const ASkippedFile: TFileName = ES; const AContains: string = ES); deprecated;
 { Get the datetime of a file. }
 function BrookFileDate(const AFileName: TFileName): TDateTime;
 { Set the datetime of a file. }
 function BrookFileSetDate(const AFileName: TFileName;
-  const ADateTime: TDateTime): LongInt;
+  const ADateTime: TDateTime): LongInt; deprecated;
 { Copy the content of a JSON Object to another. }
-procedure BrookJSONCopy(ASrc, ADest: TJSONObject);
+procedure BrookJSONCopy(ASrc, ADest: TJSONObject); deprecated;
 { Writes a backtrace of the current exception. }
 function BrookDumpStack(const AEOL: ShortString = BR): string;
 { Ensures Url ends without delimiter. }
@@ -142,9 +142,9 @@ function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
 { Get the JSON from a object. }
-function BrookObjectToJson(AObject: TObject): TJSONObject;
+function BrookObjectToJson(AObject: TObject): TJSONObject; deprecated;
 { Get the object from a JSON. }
-procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject);
+procedure BrookJsonToObject(AJSON: TJSONObject; AObject: TObject); deprecated;
 
 implementation
 

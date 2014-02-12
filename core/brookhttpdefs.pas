@@ -24,7 +24,7 @@ unit BrookHttpDefs;
 interface
 
 uses
-  HTTPDefs;
+  HttpDefs;
 
 type
   { Alias to @code(TRequest). }

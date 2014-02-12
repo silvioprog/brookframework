@@ -81,6 +81,8 @@ type
     FList: TFPList;
     function GetItems(const AIndex: Integer): PBrookRoute;
     procedure SetItems(const AIndex: Integer; const AValue: PBrookRoute);
+  protected
+    property List: TFPList read FList;
   public
     { Creates an instance of a @link(TBrookRoutes) class. }
     constructor Create;
@@ -103,8 +105,6 @@ type
     { The list of routes. }
     property Items[const AIndex: Integer]: PBrookRoute read GetItems
       write SetItems; default;
-    { The router pointers list. }
-    property List: TFPList read FList;
   end;
 
   { Provides features for the route handling. }

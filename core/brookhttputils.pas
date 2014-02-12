@@ -17,15 +17,15 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit BrookHTTPUtils;
+unit BrookHttpUtils;
 
 {$i brook.inc}
 
 interface
 
 uses
-  BrookHTTPClient, BrookMessages, BrookHTTPConsts, BrookConsts, BrookUtils,
-  HTTPDefs, SysUtils, FPJSON, JSONParser;
+  BrookHttpClient, BrookMessages, BrookHttpConsts, BrookConsts, BrookUtils,
+  HttpDefs, SysUtils, FPJSON, JSONParser;
 
 type
   { Defines a set to represent the AcceptEncoding HTTP header. }
@@ -34,7 +34,7 @@ type
 { Converts TDateTime to a GMT format. }
 function BrookDateTimeToGMT(const ADateTime: TDateTime): string;
 { Compare two URLs ignoring a possible final slash. }
-function BrookSameURL(AURL1, AURL2: string): Boolean;
+function BrookSameUrl(AURL1, AURL2: string): Boolean;
 { Returns the reason phrase corresponding to a status code. }
 function BrookStatusCodeToReasonPhrase(const AStatusCode: Word): string;
 { Returns the status code corresponding to a reason phrase. }
@@ -104,7 +104,7 @@ begin
     HTTPMonths[VMonth], VYear, VHour, VMinute, VSecond]);
 end;
 
-function BrookSameURL(AURL1, AURL2: string): Boolean;
+function BrookSameUrl(AURL1, AURL2: string): Boolean;
 begin
   AURL1 := IncludeHTTPPathDelimiter(AURL1);
   AURL2 := IncludeHTTPPathDelimiter(AURL2);

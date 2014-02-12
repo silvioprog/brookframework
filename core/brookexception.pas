@@ -51,10 +51,10 @@ type
   end;
 
   { Handles the exception for 404 error. }
-  EBrookHTTP404 = class(EBrook);
+  EBrookHttp404 = class(EBrook);
 
   { Handles the exception for 500 error. }
-  EBrookHTTP500 = class(EBrook);
+  EBrookHttp500 = class(EBrook);
 
 implementation
 
