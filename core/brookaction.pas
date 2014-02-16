@@ -222,13 +222,6 @@ initialization
       const AParams: array of string): string; overload;
     { Creates an URL for an action informing the class name as string. }
     function UrlFor(AClassName: string): string; overload;
-    { Creates an URL for an action passing a JSON data. }
-    function UrlFor(AActionClass: TBrookActionClass;
-      const AParams: TJSONData): string; overload;
-    { Creates an URL for an action passing a JSON data however informing the
-      class name as string. }
-    function UrlFor(AClassName: string;
-      const AParams: TJSONData): string; overload;
     { Is triggered by a request of any HTTP method. }
     procedure Request(ARequest: TBrookRequest;
       {%H-}AResponse: TBrookResponse); virtual;
@@ -500,18 +493,6 @@ end;
 function TBrookAction.UrlFor(AClassName: string): string;
 begin
   Result := UrlFor(AClassName, []);
-end;
-
-function TBrookAction.UrlFor(AActionClass: TBrookActionClass;
-  const AParams: TJSONData): string;
-begin
-  Result := TBrookRouter.Service.UrlFor(AActionClass, AParams);
-end;
-
-function TBrookAction.UrlFor(AClassName: string;
-  const AParams: TJSONData): string;
-begin
-  Result := TBrookRouter.Service.UrlFor(AClassName, AParams);
 end;
 
 procedure TBrookAction.Request(ARequest: TBrookRequest;
