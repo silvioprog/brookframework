@@ -25,8 +25,8 @@ interface
 
 uses
   BrookClasses, BrookHttpDefs, BrookException, BrookAction, BrookUtils,
-  BrookConsts, BrookMessages, BrookHTTPConsts, HTTPDefs, FPJSON, Classes,
-  SysUtils, StrUtils;
+  BrookConsts, BrookMessages, BrookHTTPConsts, HTTPDefs, Classes, SysUtils,
+  StrUtils;
 
 type
   { Handles exceptions for @link(TBrookRoutes). }
@@ -164,13 +164,6 @@ type
       informing the class name as string }
     function UrlFor(AClassName: string;
       const AParams: array of string): string; overload;
-    { Creates an URL for an action passing a JSON data. }
-    function UrlFor(AActionClass: TBrookActionClass;
-      const AParams: TJSONData): string; overload; deprecated;
-    { Creates an URL for an action passing a JSON data however informing the
-      class name as string. }
-    function UrlFor(AClassName: string;
-      const AParams: TJSONData): string; overload; deprecated;
     { Adds an slash to the end of the URL if does not exist. }
     function Canonicalize(ARequest: TBrookRequest;
       AResponse: TBrookResponse): Boolean;
@@ -488,54 +481,6 @@ end;
 
 function TBrookRouter.UrlFor(AClassName: string;
   const AParams: array of string): string;
-begin
-  Result := UrlFor(FRoutes.ActionClassByClassName(AClassName), AParams);
-end;
-
-function TBrookRouter.UrlFor(AActionClass: TBrookActionClass;
-  const AParams: TJSONData): string;
-var
-  S, VVal: string;
-  I, B, E: Integer;
-begin
-  Result := ES;
-  if (AParams.JSONType <> jtArray) and (AParams.JSONType <> jtObject) then
-    raise EBrookRouter.CreateFmt(Self, SBrookIncompatibleTypesError,
-      [AParams.ClassName, 'TJSONArray or TJSONObject']);
-  S := FRoutes.PatternByActionClass(AActionClass);
-  if Length(S) = 0 then
-    Exit;
-  if S[1] = AK then
-    Delete(S, 1, 1);
-  for I := 0 to Pred(AParams.Count) do
-  begin
-    case AParams.JSONType of
-      jtArray: VVal := HTTPEncode(TJSONArray(AParams).Strings[I]);
-      jtObject: VVal := HTTPEncode(TJSONObject(AParams).Items[I].AsString);
-    end;
-    B := Pos(CO, S);
-    if B = 0 then
-      B := Pos(AK,S);
-    if B <> 0 then
-    begin
-      E := PosEx(US, S, B);
-      if E <> 0 then
-      begin
-        Delete(S, B, E - B);
-        Insert(VVal, S, B);
-      end
-      else
-      begin
-        Delete(S, B, MaxInt);
-        Insert(VVal, S, MaxInt);
-      end;
-    end;
-  end;
-  Result := BrookExcludeTrailingUrlDelimiter(TBrookRouter.RootUrl) + S;
-end;
-
-function TBrookRouter.UrlFor(AClassName: string;
-  const AParams: TJSONData): string;
 begin
   Result := UrlFor(FRoutes.ActionClassByClassName(AClassName), AParams);
 end;
