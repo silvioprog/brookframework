@@ -25,8 +25,8 @@ type
   public
     constructor Create(AConnection: TSQLConnection); virtual;
     destructor Destroy; override;
-    function Apply: TObjectStorage;
-    function Undo: TObjectStorage;
+    function Store: TObjectStorage;
+    function Cancel: TObjectStorage;
     procedure Execute(AObject: TObject; const ASQLType: TUpdateKind);
     function Add(AObject: TObject): TObjectStorage;
     function Modify(AObject: TObject): TObjectStorage;
@@ -149,7 +149,7 @@ begin
     end;
 end;
 
-function TObjectStorage.Apply: TObjectStorage;
+function TObjectStorage.Store: TObjectStorage;
 begin
   Result := Self;
   try
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-function TObjectStorage.Undo: TObjectStorage;
+function TObjectStorage.Cancel: TObjectStorage;
 begin
   Result := Self;
   FTransaction.Rollback;
