@@ -46,10 +46,9 @@ begin
   SBrookNoRouterServiceRegisteredError := 'Serviço de roteador não registrado.';
   SBrookNoRouteRegisteredError := 'Rota não registrada.';
   SBrookCfgFileNotFoundError := 'O arquivo de configuração não foi encontrado: "%s"';
-  SBrookNilParamError := '"%s" não pode ser nulo.';
+  SBrookNotNilError := '"%s" não pode ser nulo.';
   SBrookEmptyLibraryNameError := 'O nome da biblioteca não pode ser vazio.';
   SBrookMethodNotAllowedError := 'Método HTTP não permitido para o recurso solicitado.';
-  SBrookIncompatibleTypesError := 'Tipos incompatíveis: Tem "%s", esperado "%s".';
   SBrookConstraintAlreadyRegisteredError := 'A restrição "%s" já está registrada.';
   SBrookConstraintsServiceAlreadyRegisteredError := 'O serviço de restrições já está registrado.';
   SBrookNoConstraintsServiceRegisteredError := 'Serviço de restrições não registrado.';

@@ -158,15 +158,15 @@ const
 var
   VName: string;
 begin
-  if Fields['name'].AsString = '' then
+  if Fields.Values['name'] = '' then
     Render('login.html', ['Please type your name.'])
   else
   begin
-    VName := Fields['name'].AsString;
+    VName := Fields.Values['name'];
     Add(MSG, [VName]);
     Save;
-    Session.Fields.Add('name', VName);
-    Session.Finish(GetResponse);
+    Session.Fields.Add('name=' + VName);
+    Session.Finish(TheResponse);
     Location('TChatGetMsg');
   end;
 end;
@@ -178,7 +178,7 @@ const
   MSG = '<div class="msgln"><i>User <b>%s</b> has left the room.</i><br></div>';
 begin
   inherited;
-  Add(MSG, [Session.Fields['name'].AsString]);
+  Add(MSG, [Session.Fields.Values['name']]);
   Save;
   Session.Expire(ARequest, AResponse);
   Location('TChatGetMsg');

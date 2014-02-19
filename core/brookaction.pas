@@ -17,12 +17,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-{$WARNING All properties using the TJSONObject type (like Fields, Params,
- Values etc.) will be changed to use the future new Brook types, like
- TBrookValues, TBrookParams etc. Do not worry, we will maintain full
- compatibility with JSON. This changes are necessary to increase the
- performance of Brook. }
-
 unit BrookAction;
 
 {$i brook.inc}
@@ -31,8 +25,7 @@ interface
 
 uses
   BrookClasses, BrookHttpDefs, BrookException, BrookMessages, BrookUtils,
-  BrookHTTPUtils, BrookConsts, BrookHTTPConsts, FPJSON, Classes, SysUtils,
-  Variants;
+  BrookHTTPUtils, BrookHTTPConsts, Classes, SysUtils;
 
 type
   { Handles exceptions for @link(TBrookAction). }
@@ -41,31 +34,20 @@ type
   { Is a metaclass for @link(TBrookAction) class. }
   TBrookActionClass = class of TBrookAction;
 
-  { Provides features to handle with HTTP requests and responses. }
+  { Provides features to handle HTTP requests and responses. }
   TBrookAction = class(TBrookObject)
   private
-    FContentStream: TStream;
-    FFields: TJSONObject;
-    FParams: TJSONObject;
-    FValues: TJSONObject;
-    FRequest: TBrookRequest;
-    FResponse: TBrookResponse;
+    FTheRequest: TBrookRequest;
+    FTheResponse: TBrookResponse;
+    FValues: TStrings;
+    function GetFields: TStrings;
     function GetMethod: string;
+    function GetFiles: TBrookUploadedFiles;
+    function GetParams: TStrings;
+    function GetValues: TStrings;
   protected
-    function CreateFields: TJSONObject; virtual;
-    function CreateParams: TJSONObject; virtual;
-    function CreateValues: TJSONObject; virtual;
-    procedure FreeFields; virtual;
-    procedure FreeParams; virtual;
-    procedure FreeValues; virtual;
-    function GetFiles: TBrookUploadedFiles; virtual;
-    function GetRequest: TBrookRequest; virtual;
-    function GetResponse: TBrookResponse; virtual;
-    procedure DoBeforeRequest({%H-}ARequest: TBrookRequest;
-      {%H-}AResponse: TBrookResponse); virtual;
-    procedure DoAfterRequest({%H-}ARequest: TBrookRequest;
-      {%H-}AResponse: TBrookResponse); virtual;
-    property ContentStream: TStream read FContentStream write FContentStream;
+    property TheRequest: TBrookRequest read FTheRequest;
+    property TheResponse: TBrookResponse read FTheResponse;
   public
     { Creates an instance of a @link(TBrookAction) class. }
     constructor Create; overload; virtual;
@@ -75,14 +57,6 @@ type
       AResponse: TBrookResponse); overload; virtual;
     { Frees an instance of @link(TBrookAction) class. }
     destructor Destroy; override;
-    { Fills the @link(Fields) with data coming from a request called by means
-      of POST method. }
-    procedure FillFields(ARequest: TBrookRequest); virtual;
-    { Fills the @link(params) with data coming from a request called by means
-      of GET method. }
-    procedure FillParams(ARequest: TBrookRequest); virtual;
-    { Fills the @link(values) with variables passed through the URL. }
-    procedure FillValues(ANames, AValues: TBrookArrayOfString); virtual;
     { Registers an action.
 
       @param(APattern Is an expression defining which URLs is used to call
@@ -98,7 +72,7 @@ type
          Value of a variable @code("myvar") can be read from the property
          @link(Values), e.g.:
 
-         @code(Write(Values['myvar'].AsString);)
+         @code(Write(Values.Values['myvar']);)
 
          Any number of variables can be combined:
 
@@ -116,7 +90,7 @@ type
          http://localhost/cgi-bin/cgi1/home/dir/file @br
          http://localhost/cgi-bin/cgi1/home/dir/subdir/file etc.
 
-         Variable @code(Values['path']) will receive @code('file'),
+         Variable @code(Values.Values['path']) will receive @code('file'),
          @code('dir/file') or @code('dir/subdir/file') correspondingly.
 
          You can also add static text after variable part:
@@ -196,10 +170,16 @@ initialization
     class function GetPath: string;
     { Calls the method @link(TBrookAction.Request). }
     procedure DoRequest(ARequest: TBrookRequest;
-      AResponse: TBrookResponse); overload; virtual;
-    { Calls the method @link(TBrookAction.Request). }
-    procedure DoRequest(ARequest: TBrookRequest; AResponse: TBrookResponse;
-      var AHandled: Boolean); overload; virtual;
+      AResponse: TBrookResponse); virtual;
+    { Is triggered by a request of any HTTP method. }
+    procedure Request(ARequest: TBrookRequest;
+      {%H-}AResponse: TBrookResponse); virtual;
+    { Gets an object coming from a @code(x-www-form-urlencoded) form. }
+    procedure GetFields(AObject: TObject);
+    { Gets an object coming from a @code(QUERY_STRING). }
+    procedure GetParams(AObject: TObject);
+    { Gets an object coming from a parametrized URL. }
+    procedure GetValues(AObject: TObject);
     { Creates an URL for action. }
     function UrlFor(AActionClass: TBrookActionClass): string; overload;
     { Creates an URL for an action informing an array of parameters. Exemple:
@@ -222,9 +202,6 @@ initialization
       const AParams: array of string): string; overload;
     { Creates an URL for an action informing the class name as string. }
     function UrlFor(AClassName: string): string; overload;
-    { Is triggered by a request of any HTTP method. }
-    procedure Request(ARequest: TBrookRequest;
-      {%H-}AResponse: TBrookResponse); virtual;
     { Is triggered by a GET HTTP request method. }
     procedure Get; virtual;
     { Is triggered by a POST HTTP request method. }
@@ -266,83 +243,45 @@ initialization
     procedure Write(const AString: string); overload;
     { Writes a boolean. }
     procedure Write(const ABoolean: Boolean); overload;
-    { Writes a boolean formating output. }
-    procedure Write(const ABoolean: Boolean;
-      const ATrueStr, AFalseStr: string); overload;
     { Writes an integer. }
     procedure Write(const AInteger: Integer); overload;
     { Writes a float. }
     procedure Write(const AFloat: Double); overload;
-    { Writes a float formatting output. }
-    procedure Write(const AFloat: Double;
-      const AFormatSettings: TFormatSettings); overload;
     { Writes a content of stream. }
     procedure Write(AStream: TStream); overload;
     { Writes a formatted string. }
     procedure Write(const AFmt: string; const AArgs: array of const); overload;
-    { Writes a formatted string. }
-    procedure Write(const AFmt: string; const AArgs: array of const;
-      const AFormatSettings: TFormatSettings); overload;
-    { Writes the content of a @code(JSONObject). }
-    procedure Write(AJSON: TJSONObject); overload;
-    { Writes the content of a @code(TJSONArray). }
-    procedure Write(AJSON: TJSONArray); overload;
-    { Writes the content of a @code(TStrings). }
-    procedure Write(S: TStrings); overload;
-    { Writes value of any type. Exemple:
-
-      @code(Write([1, 3.14, False, 'ABC'])). }
-    procedure Write(const AArgs: array of const); overload;
-    { Writes a variant. }
-    procedure Write(const AValue: Variant); overload;
-    { Writes a string adding a suffix to the end. Used by @code(Write) and
-      @code(WriteLn), avoiding code duplication. }
-    procedure Write(const AArgs: array of const; const ASuffix: string);
-    { Writes a string adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const AString: string = ES); overload;
-    { Writes a boolean adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const ABoolean: Boolean); overload;
-    { Writes a boolean formating output and adding the @code(BR) HTML tag to
-      the end. }
-    procedure WriteLn(const ABoolean: Boolean;
-      const ATrueStr, AFalseStr: string); overload;
-    { Writes an integer adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const AInteger: Integer); overload;
-    { Writes a float adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const AFloat: Double); overload;
-    { Writes a float formatting output and adding the @code(BR) HTML tag to
-      the end. }
-    procedure WriteLn(const AFloat: Double;
-      const AFormatSettings: TFormatSettings); overload;
-    { Writes a formatted string adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const AFmt: string;
-      const AArgs: array of const); overload;
-    { Writes a formatted string adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const AFmt: string; const AArgs: array of const;
-      const AFormatSettings: TFormatSettings); overload;
-    { Writes value of any type adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const AArgs: array of const); overload;
-    { Writes a variant adding the @code(BR) HTML tag to the end. }
-    procedure WriteLn(const AValue: Variant); overload;
-    { Writes the content of a @code(JSONObject) adding the @code(BR) HTML tag
-      to the end. }
-    procedure WriteLn(AJSON: TJSONObject); overload;
-    { Writes the content of a @code(JSONArray) adding the @code(BR) HTML tag
-      to the end. }
-    procedure WriteLn(AJSON: TJSONArray); overload;
-    { Writes the content of a @code(TStrings) adding, for each item, the
-      @code(BR) HTML tag to the end. }
-    procedure WriteLn(S: TStrings); overload;
     { The list of files coming from a request called by the POST method. }
     property Files: TBrookUploadedFiles read GetFiles;
     { The list of variables coming from a request called by the POST method. }
-    property Fields: TJSONObject read FFields;
+    property Fields: TStrings read GetFields;
     { The list of variables coming from a request called by the GET method. }
-    property Params: TJSONObject read FParams;
-    { The list of variables received from parametrized URLs. }
-    property Values: TJSONObject read FValues;
+    property Params: TStrings read GetParams;
+    { The list of variables received from a parametrized URL. }
+    property Values: TStrings read GetValues;
     { Returns the HTTP request method. }
     property Method: string read GetMethod;
+  end;
+
+  { Provides features to handle HTTP requests and responses mapping URIs to
+    object. }
+  generic TBrookEntityAction<T> = class(TBrookAction)
+  private
+    FEntity: T;
+  protected
+    procedure FillEntity; virtual;
+    function CreateEntity: T; virtual;
+    procedure FreeEntity; virtual;
+  public
+    { Creates an instance of a @link(TBrookAction) class. }
+    constructor Create; overload; override;
+    { Frees an instance of @link(TBrookAction) class. }
+    destructor Destroy; override;
+    { Is triggered by a request of any HTTP method. }
+    procedure Request(ARequest: TBrookRequest;
+      {%H-}AResponse: TBrookResponse); override;
+    { Maps URI to object. }
+    property Entity: T read FEntity write FEntity;
   end;
 
 implementation
@@ -350,105 +289,72 @@ implementation
 uses
   BrookRouter;
 
+{ TBrookAction }
+
 constructor TBrookAction.Create;
 begin
   inherited Create;
-  FFields := CreateFields;
-  FParams := CreateParams;
-  FValues := CreateValues;
+  FValues := TStringList.Create;
 end;
 
 constructor TBrookAction.Create(ARequest: TBrookRequest;
   AResponse: TBrookResponse);
 begin
-  FRequest := ARequest;
-  FResponse := AResponse;
   Create;
+  FTheRequest := ARequest;
+  FTheResponse := AResponse;
 end;
 
 destructor TBrookAction.Destroy;
 begin
-  FreeFields;
-  FreeParams;
-  FreeValues;
+  FValues.Free;
   inherited Destroy;
 end;
 
 function TBrookAction.GetFiles: TBrookUploadedFiles;
 begin
-  Result := GetRequest.Files;
+  Result := FTheRequest.Files;
+end;
+
+function TBrookAction.GetFields: TStrings;
+begin
+  Result := FTheRequest.ContentFields;
+end;
+
+function TBrookAction.GetParams: TStrings;
+begin
+  Result := FTheRequest.QueryFields;
+end;
+
+function TBrookAction.GetValues: TStrings;
+begin
+  Result := FValues;
 end;
 
 function TBrookAction.GetMethod: string;
 begin
-  Result := FRequest.Method;
-end;
-
-function TBrookAction.CreateFields: TJSONObject;
-begin
-  Result := TJSONObject.Create;
-end;
-
-function TBrookAction.CreateParams: TJSONObject;
-begin
-  Result := TJSONObject.Create;
-end;
-
-function TBrookAction.CreateValues: TJSONObject;
-begin
-  Result := TJSONObject.Create;
-end;
-
-procedure TBrookAction.FreeFields;
-begin
-  FreeAndNil(FFields);
-end;
-
-procedure TBrookAction.FreeParams;
-begin
-  FreeAndNil(FParams);
-end;
-
-procedure TBrookAction.FreeValues;
-begin
-  FreeAndNil(FValues);
-end;
-
-function TBrookAction.GetRequest: TBrookRequest;
-begin
-  Result := FRequest;
-end;
-
-function TBrookAction.GetResponse: TBrookResponse;
-begin
-  Result := FResponse;
-end;
-
-procedure TBrookAction.DoBeforeRequest(ARequest: TBrookRequest;
-  AResponse: TBrookResponse);
-begin
-end;
-
-procedure TBrookAction.DoAfterRequest(ARequest: TBrookRequest;
-  AResponse: TBrookResponse);
-begin
+  Result := FTheRequest.Method;
 end;
 
 procedure TBrookAction.DoRequest(ARequest: TBrookRequest;
   AResponse: TBrookResponse);
 begin
-  DoBeforeRequest(ARequest, AResponse);
   Request(ARequest, AResponse);
-  DoAfterRequest(ARequest, AResponse);
 end;
 
-procedure TBrookAction.DoRequest(ARequest: TBrookRequest;
-  AResponse: TBrookResponse; var AHandled: Boolean);
+procedure TBrookAction.GetFields(AObject: TObject);
 begin
-  DoBeforeRequest(ARequest, AResponse);
-  if not AHandled then
-    Request(ARequest, AResponse);
-  DoAfterRequest(ARequest, AResponse);
+  BrookStringsToObject(FTheRequest.ContentFields, AObject);
+end;
+
+procedure TBrookAction.GetParams(AObject: TObject);
+begin
+  BrookStringsToObject(FTheRequest.QueryFields, AObject);
+end;
+
+procedure TBrookAction.GetValues(AObject: TObject);
+begin
+  BrookStringsToObject(FValues, AObject);
 end;
 
 class procedure TBrookAction.Register(const APattern: string;
@@ -510,112 +416,64 @@ end;
 
 procedure TBrookAction.Get;
 begin
-  TBrookRouter.MethodNotAllowed(FResponse);
+  TBrookRouter.MethodNotAllowed(FTheResponse);
 end;
 
 procedure TBrookAction.Post;
 begin
-  TBrookRouter.MethodNotAllowed(FResponse);
+  TBrookRouter.MethodNotAllowed(FTheResponse);
 end;
 
 procedure TBrookAction.Put;
 begin
-  TBrookRouter.MethodNotAllowed(FResponse);
+  TBrookRouter.MethodNotAllowed(FTheResponse);
 end;
 
 procedure TBrookAction.Delete;
 begin
-  TBrookRouter.MethodNotAllowed(FResponse);
+  TBrookRouter.MethodNotAllowed(FTheResponse);
 end;
 
 procedure TBrookAction.Head;
 begin
-  TBrookRouter.MethodNotAllowed(FResponse);
+  TBrookRouter.MethodNotAllowed(FTheResponse);
 end;
 
 procedure TBrookAction.Options;
 begin
-  TBrookRouter.MethodNotAllowed(FResponse);
-end;
-
-procedure TBrookAction.FillFields(ARequest: TBrookRequest);
-var
-  I: Integer;
-  S, N: TJSONStringType;
-begin
-  for I := 0 to Pred(ARequest.ContentFields.Count) do
-  begin
-    S := ARequest.ContentFields.ValueFromIndex[I];
-    N := ARequest.ContentFields.Names[I];
-    if S = NU then
-      FFields.Add(N)
-    else
-      FFields.Add(N, S);
-  end;
-end;
-
-procedure TBrookAction.FillParams(ARequest: TBrookRequest);
-var
-  I: Integer;
-  S, N: TJSONStringType;
-begin
-  for I := 0 to Pred(ARequest.QueryFields.Count) do
-  begin
-    S := ARequest.QueryFields.ValueFromIndex[I];
-    N := ARequest.QueryFields.Names[I];
-    if S = NU then
-      FParams.Add(N)
-    else
-      FParams.Add(N, S);
-  end;
-end;
-
-procedure TBrookAction.FillValues(ANames, AValues: TBrookArrayOfString);
-var
-  I: Integer;
-  S, N: TJSONStringType;
-begin
-  for I := 0 to High(ANames) do
-  begin
-    S := AValues[I];
-    N := ANames[I];
-    if S = NU then
-      FValues.Add(N)
-    else
-      FValues.Add(N, S);
-  end;
+  TBrookRouter.MethodNotAllowed(FTheResponse);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string);
 begin
-  FResponse.SendRedirect(AUrl);
+  FTheResponse.SendRedirect(AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string; const AStatusCode: Word);
 begin
-  FResponse.Code := AStatusCode;
-  FResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
-  FResponse.SetCustomHeader('Location', AUrl);
+  FTheResponse.Code := AStatusCode;
+  FTheResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
+  FTheResponse.SetCustomHeader('Location', AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string; const AUseRootUrl: Boolean);
 begin
   if AUseRootUrl then
-    FResponse.SendRedirect(TBrookRouter.RootUrl + AUrl)
+    FTheResponse.SendRedirect(TBrookRouter.RootUrl + AUrl)
   else
-    FResponse.SendRedirect(AUrl);
+    FTheResponse.SendRedirect(AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string;
   const AUseRootUrl: Boolean; const AStatusCode: Word);
 begin
-  FResponse.Code := AStatusCode;
-  FResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
+  FTheResponse.Code := AStatusCode;
+  FTheResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
   if AUseRootUrl then
-    FResponse.SetCustomHeader('Location',
-      TBrookRouter.RootUrl(FRequest) + AUrl)
+    FTheResponse.SetCustomHeader('Location',
+      TBrookRouter.RootUrl(FTheRequest) + AUrl)
   else
-    FResponse.SetCustomHeader('Location', AUrl);
+    FTheResponse.SetCustomHeader('Location', AUrl);
 end;
 
 procedure TBrookAction.Error(const AMsg: string);
@@ -640,38 +498,29 @@ end;
 
 procedure TBrookAction.Render(const AFileName: TFileName);
 begin
-  FResponse.Contents.LoadFromFile(AFileName);
+  FTheResponse.Contents.LoadFromFile(AFileName);
 end;
 
 procedure TBrookAction.Render(const AFileName: TFileName;
   const AArgs: array of const);
 begin
-  FResponse.Contents.LoadFromFile(AFileName);
-  FResponse.Contents.Text := Format(FResponse.Contents.Text, AArgs);
+  FTheResponse.Contents.LoadFromFile(AFileName);
+  FTheResponse.Contents.Text := Format(FTheResponse.Contents.Text, AArgs);
 end;
 
 procedure TBrookAction.Clear;
 begin
-  FResponse.Contents.Clear;
+  FTheResponse.Contents.Clear;
 end;
 
 procedure TBrookAction.Write(const AString: string);
 begin
-  if Assigned(FContentStream) then
-    FContentStream.Write(Pointer(AString)^, Length(AString))
-  else
-    FResponse.Contents.Add(AString);
+  FTheResponse.Contents.Add(AString);
 end;
 
 procedure TBrookAction.Write(const ABoolean: Boolean);
 begin
   Write(BoolToStr(ABoolean));
-end;
-
-procedure TBrookAction.Write(const ABoolean: Boolean; const ATrueStr,
-  AFalseStr: string);
-begin
-  Write(BoolToStr(ABoolean, ATrueStr, AFalseStr));
 end;
 
 procedure TBrookAction.Write(const AInteger: Integer);
@@ -684,15 +533,9 @@ begin
   Write(FloatToStr(AFloat));
 end;
 
-procedure TBrookAction.Write(const AFloat: Double;
-  const AFormatSettings: TFormatSettings);
-begin
-  Write(FloatToStr(AFloat, AFormatSettings));
-end;
-
 procedure TBrookAction.Write(AStream: TStream);
 begin
-  FResponse.Contents.LoadFromStream(AStream);
+  FTheResponse.Contents.LoadFromStream(AStream);
 end;
 
 procedure TBrookAction.Write(const AFmt: string; const AArgs: array of const);
@@ -700,148 +543,58 @@ begin
   Write(Format(AFmt, AArgs));
 end;
 
-procedure TBrookAction.Write(const AFmt: string; const AArgs: array of const;
-  const AFormatSettings: TFormatSettings);
+{ TBrookEntityAction }
+
+constructor TBrookEntityAction.Create;
 begin
-  Write(Format(AFmt, AArgs, AFormatSettings));
+  inherited Create;
+  FEntity := CreateEntity;
 end;
 
-procedure TBrookAction.Write(AJSON: TJSONObject);
-var
-  I: Integer;
+destructor TBrookEntityAction.Destroy;
 begin
-  for I := 0 to Pred(AJSON.Count) do
-    Write(AJSON.Items[I].AsString);
+  FreeEntity;
+  inherited Destroy;
 end;
 
-procedure TBrookAction.Write(AJSON: TJSONArray);
-var
-  I: Integer;
+function TBrookEntityAction.CreateEntity: T;
 begin
-  for I := 0 to Pred(AJSON.Count) do
-    Write(AJSON[I].AsString);
+  Result := T.Create;
 end;
 
-procedure TBrookAction.Write(S: TStrings);
-var
-  X: string;
+procedure TBrookEntityAction.FreeEntity;
 begin
-  for X in S do
-    Write(X);
+  FreeAndNil(FEntity);
 end;
 
-procedure TBrookAction.Write(const AValue: Variant);
+procedure TBrookEntityAction.Request(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
 begin
-  Write(VarToStr(AValue));
-end;
-
-procedure TBrookAction.Write(const AArgs: array of const; const ASuffix: string);
-var
-  I: Integer;
-begin
-  for I := 0 to High(AArgs) do
-    with AArgs[I] do
-      case VType of
-        vtInteger: Write(IntToStr(VInteger) + ASuffix);
-        vtInt64: Write(IntToStr(VInt64^) + ASuffix);
-        vtQWord: Write(IntToStr(VQWord^) + ASuffix);
-        vtBoolean: Write(BoolToStr(VBoolean) + ASuffix);
-        vtExtended: Write(FloatToStr(VExtended^) + ASuffix);
-        vtCurrency: Write(FloatToStr(VCurrency^) + ASuffix);
-        vtString: Write(VString^);
-        vtAnsiString: Write(AnsiString(VAnsiString) + ASuffix);
-        vtChar: Write(VChar + ASuffix);
-        vtPChar: Write(VPChar + ASuffix);
-        vtPWideChar: Write(AnsiString(VPWideChar) + ASuffix);
-        vtWideChar: Write(AnsiString(VWideChar) + ASuffix);
-        vtWidestring: Write(AnsiString(WideString(VWideString)) + ASuffix);
-        vtObject:
-           if VObject is TJSONArray then
-             Write(TJSONObject(VObject).AsJSON + ASuffix)
-           else
-             if VObject is TJSONObject then
-               Write(TJSONObject(VObject).AsJSON + ASuffix);
-      else
-        Write('?unknown variant?' + ASuffix);
+  case ARequest.Method of
+    BROOK_HTTP_REQUEST_METHOD_GET: Get;
+    BROOK_HTTP_REQUEST_METHOD_POST:
+      begin
+        FillEntity;
+        Post;
       end;
+    BROOK_HTTP_REQUEST_METHOD_PUT:
+      begin
+        FillEntity;
+        Put;
+      end;
+    BROOK_HTTP_REQUEST_METHOD_DELETE:
+      begin
+        FillEntity;
+        Delete;
+      end;
+    BROOK_HTTP_REQUEST_METHOD_HEAD: Head;
+    BROOK_HTTP_REQUEST_METHOD_OPTIONS: Options;
+  end;
 end;
 
-procedure TBrookAction.Write(const AArgs: array of const);
+procedure TBrookEntityAction.FillEntity;
 begin
-  Write(AArgs, ES);
-end;
-
-procedure TBrookAction.WriteLn(const AString: string);
-begin
-  Write(AString + BR);
-end;
-
-procedure TBrookAction.WriteLn(const ABoolean: Boolean);
-begin
-  Write(BoolToStr(ABoolean) + BR);
-end;
-
-procedure TBrookAction.WriteLn(const ABoolean: Boolean; const ATrueStr,
-  AFalseStr: string);
-begin
-  Write(BoolToStr(ABoolean, ATrueStr, AFalseStr) + BR);
-end;
-
-procedure TBrookAction.WriteLn(const AInteger: Integer);
-begin
-  Write(IntToStr(AInteger) + BR);
-end;
-
-procedure TBrookAction.WriteLn(const AFloat: Double);
-begin
-  Write(FloatToStr(AFloat) + BR);
-end;
-
-procedure TBrookAction.WriteLn(const AFloat: Double;
-  const AFormatSettings: TFormatSettings);
-begin
-  Write(FloatToStr(AFloat, AFormatSettings) + BR);
-end;
-
-procedure TBrookAction.WriteLn(const AFmt: string; const AArgs: array of const);
-begin
-  Write(Format(AFmt, AArgs) + BR);
-end;
-
-procedure TBrookAction.WriteLn(const AFmt: string; const AArgs: array of const;
-  const AFormatSettings: TFormatSettings);
-begin
-  Write(Format(AFmt, AArgs, AFormatSettings) + BR);
-end;
-
-procedure TBrookAction.WriteLn(const AArgs: array of const);
-begin
-  Write(AArgs, BR);
-end;
-
-procedure TBrookAction.WriteLn(const AValue: Variant);
-begin
-  Write(VarToStr(AValue) + BR);
-end;
-
-procedure TBrookAction.WriteLn(AJSON: TJSONObject);
-begin
-  Write(AJSON);
-  Write(BR);
-end;
-
-procedure TBrookAction.WriteLn(AJSON: TJSONArray);
-begin
-  Write(AJSON);
-  Write(BR);
-end;
-
-procedure TBrookAction.WriteLn(S: TStrings);
-var
-  VVal: string;
-begin
-  for VVal in S do
-    Write(VVal + BR);
+  GetFields(FEntity);
 end;
 
 end.

@@ -25,7 +25,7 @@ interface
 
 uses
   BrookException, BrookMessages, BrookConsts, BrookHTTPConsts, CustWeb,
-  SysUtils;
+  Classes, SysUtils, TypInfo;
 
 type
   { Defines an array of strings. }
@@ -131,8 +131,52 @@ function BrookDumpStack(const AEOL: ShortString = BR): string;
 function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
+{ Fills the published properties of an object passing the name and value as
+  string.  }
+procedure BrookStringToObject(const AName: ShortString; const AValue: string;
+  AObject: TObject);
+{ Fills the published properties of an object passing the names and values as
+  a list of strings.  }
+procedure BrookStringsToObject(AStrings: TStrings; AObject: TObject);
 
 implementation
+
+procedure StringToObject(AName, AValue: PChar; AObject: TObject);
+
+  function IsFloat(P: PChar): Boolean;
+  var
+    I: ShortInt = 0;
+  begin
+    while (P^ <> #0) and (I < 2) do
+    begin
+      if P^ = DefaultFormatSettings.DecimalSeparator then
+        Inc(I);
+      Inc(P);
+    end;
+    Result := I = 1;
+  end;
+
+var
+  PI: PPropInfo;
+begin
+  PI := GetPropInfo(AObject, AName);
+  if Assigned(PI) then
+    case PI^.PropType^.Kind of
+      tkAString: SetStrProp(AObject, PI, AValue);
+      tkChar: SetOrdProp(AObject, PI, Ord(AValue^));
+      tkInteger: SetOrdProp(AObject, PI, StrToInt(AValue));
+      tkInt64, tkQWord: SetInt64Prop(AObject, PI, StrToInt64(AValue));
+      tkBool: SetOrdProp(AObject, PI, Ord((CompareText(AValue, 'on') = 0) or
+        StrToBool(AValue)));
+      tkFloat:
+        if IsFloat(AValue) then
+          SetFloatProp(AObject, PI, StrToFloat(AValue))
+        else
+          SetFloatProp(AObject, PI, StrToDateTime(AValue));
+      tkEnumeration: SetEnumProp(AObject, PI, AValue);
+      tkSet: SetSetProp(AObject, PI, AValue);
+    end;
+end;
 
 function BrookStartsChar(const Ch: Char; const S: string): Boolean;
 begin
@@ -270,6 +314,33 @@ begin
   L := Length(Result);
   if (L > 0) and (Result[L] <> US) then
     Result += US;
+end;
+
+procedure BrookStringToObject(const AName: ShortString; const AValue: string;
+  AObject: TObject);
+begin
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookStringsToObject', SBrookNotNilError,
+      ['AObject']);
+  StringToObject(@AName, PChar(AValue), AObject);
+end;
+
+procedure BrookStringsToObject(AStrings: TStrings; AObject: TObject);
+var
+  I: Integer;
+  N, V: string;
+begin
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookStringsToObject', SBrookNotNilError,
+      ['AStrings']);
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookStringsToObject', SBrookNotNilError,
+      ['AObject']);
+  for I := 0 to Pred(AStrings.Count) do
+  begin
+    AStrings.GetNameValue(I, N, V);
+    StringToObject(PChar(N), PChar(V), AObject);
+  end;
 end;
 
 end.

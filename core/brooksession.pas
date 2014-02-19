@@ -17,11 +17,6 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-{$WARNING All properties using the TJSONObject type (like Fields) will be
- changed to use the future new Brook types, like TBrookValues. Do not worry,
- we will maintain full compatibility with JSON. This changes are necessary
- to increase the performance of Brook. }
-
 unit BrookSession;
 
 {$i brook.inc}
@@ -29,8 +24,8 @@ unit BrookSession;
 interface
 
 uses
-  BrookClasses, BrookHttpDefs, BrookUtils, BrookException, BrookConsts, FPJSON,
-  JSONParser, Classes, SysUtils, HTTPDefs, DateUtils;
+  BrookClasses, BrookHttpDefs, BrookUtils, BrookException, BrookConsts, Classes,
+  SysUtils, HTTPDefs, DateUtils;
 
 type
   { Handles exceptions for @link(TBrookSession). }
@@ -46,9 +41,8 @@ type
     FCookieName: string;
     FCookiePath: string;
     FCookieSecure: Boolean;
-    FData: TMemoryStream;
+    FFields: TStrings;
     FDirectory: string;
-    FFields: TJSONObject;
     FFileName: TFileName;
     FFilePrefix: ShortString;
     FHttpOnly: Boolean;
@@ -56,19 +50,19 @@ type
     FStarted: Boolean;
     FTimeOut: Integer;
   protected
-    function CreateFields: TJSONObject; virtual;
     function IsStarted: Boolean;
     procedure CheckSID(ARequest: TBrookRequest); virtual;
     procedure CheckFileName; virtual;
     procedure CheckCookie(AResponse: TBrookResponse); virtual;
     procedure Load; virtual;
     procedure Save; virtual;
-    property Data: TMemoryStream read FData;
   public
     { Creates an instance of a @link(TBrookSession) class. }
     constructor Create; virtual;
     { Frees an instance of @link(TBrookSession) class. }
     destructor Destroy; override;
+    { Gets an object coming from the session data. }
+    procedure GetFields(AObject: TObject);
     { Returns @code(True) if the session has expired.}
     function IsExpired: Boolean; virtual;
     { Creates an ID for the session. }
@@ -90,11 +84,13 @@ type
     property CookiePath: string read FCookiePath write FCookiePath;
     { Set the session cookie secure. }
     property CookieSecure: Boolean read FCookieSecure write FCookieSecure;
-    { Set the name of directory session. }
+    { The session fields. }
+    property Fields: TStrings read FFields;
+    { Set the name of session directory. }
     property Directory: string read FDirectory write FDirectory;
     { Returns @code(True) if the session has expired.}
     property Expired: Boolean read IsExpired;
-    { Get or set the ID session. }
+    { Get or set the session ID. }
     property SID: string read FSID write FSID;
     { Checks if the session has started. }
     property Started: Boolean read IsStarted;
@@ -102,9 +98,7 @@ type
     property FileName: TFileName read FFileName write FFileName;
     { The session file prefix. }
     property FilePrefix: ShortString read FFilePrefix write FFilePrefix;
-    { The fields session. }
-    property Fields: TJSONObject read FFields;
-    { The remaining seconds for the session end. }
+    { The remaining seconds for the session finish. }
     property TimeOut: Integer read FTimeOut write FTimeOut;
     { Informs if the session cookie is accessible only by HTTP requests,
       if @code(True), the JavaScript access is not allowed. }
@@ -116,8 +110,7 @@ implementation
 constructor TBrookSession.Create;
 begin
   inherited Create;
-  FData := TMemoryStream.Create;
-  FFields := CreateFields;
+  FFields := TStringList.Create;
   FCookieName := BROOK_SESS_ID;
   FFilePrefix := BROOK_SESS_PREFIX;
   FDirectory := GetTempDir(False);
@@ -129,14 +122,13 @@ end;
 
 destructor TBrookSession.Destroy;
 begin
-  FreeAndNil(FFields);
-  FreeAndNil(FData);
+  FFields.Free;
   inherited Destroy;
 end;
 
-function TBrookSession.CreateFields: TJSONObject;
+procedure TBrookSession.GetFields(AObject: TObject);
 begin
-  Result := TJSONObject.Create;
+  BrookStringsToObject(FFields, AObject);
 end;
 
 function TBrookSession.IsExpired: Boolean;
@@ -202,40 +194,17 @@ begin
 end;
 
 procedure TBrookSession.Load;
-var
-  I: Integer;
-  VParser: TJSONParser;
-  VJSON: TJSONObject = nil;
 begin
   if IsExpired then
     Exit;
   if FileExists(FFileName) then
-    FData.LoadFromFile(FFileName)
-  else
-    Exit;
-  FData.Position := 0;
-  VParser := TJSONParser.Create(FData);
-  try
-    FFields.Clear;
-    VJSON := VParser.Parse as TJSONObject;
-    if Assigned(VJSON) then
-      for I := 0 to Pred(VJSON.Count) do
-        FFields.Add(VJSON.Names[I], VJSON.Items[I].Clone);
-  finally
-    VJSON.Free;
-    VParser.Free;
-  end;
+    FFields.LoadFromFile(FFileName);
 end;
 
 procedure TBrookSession.Save;
-var
-  VData: TJSONStringType;
 begin
-  VData := FFields.AsJSON;
-  FData.Clear;
-  FData.Write(Pointer(VData)^, Length(VData));
   if FFileName <> ES then
-    FData.SaveToFile(FFileName);
+    FFields.SaveToFile(FFileName);
 end;
 
 procedure TBrookSession.Start(ARequest: TBrookRequest);
@@ -255,7 +224,6 @@ begin
   CheckCookie(AResponse);
   Save;
   FStarted := False;
-  FFields.Clear;
 end;
 
 procedure TBrookSession.Expire(ARequest: TBrookRequest;
@@ -278,7 +246,7 @@ end;
 
 function TBrookSession.Exists(const AName: string): Boolean;
 begin
-  Result := FFields.IndexOfName(AName, True) <> -1;
+  Result := FFields.IndexOfName(AName) <> -1;
 end;
 
 end.

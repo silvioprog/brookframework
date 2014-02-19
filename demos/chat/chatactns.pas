@@ -36,14 +36,14 @@ implementation
 
 procedure TChatMsg.Get;
 begin
-  Write(Log);
+  Write(Log.Text);
 end;
 
 { TChatGetMsg }
 
 procedure TChatGetMsg.Get;
 begin
-  Render('chat.html', [Session.Fields['name'].AsString, Text]);
+  Render('chat.html', [Session.Fields.Values['name'], Text]);
 end;
 
 { TChatPostMsg }
@@ -53,8 +53,8 @@ const
   MSG = '<div class="msgln">(%s) <b>%s</b>: %s<br></div>';
 begin
   Add(MSG, [FormatDateTime('yyyy-mm-dd', Now),
-    StripHTMLMarkup(Session.Fields['name'].AsString),
-    StripHTMLMarkup(Fields['text'].AsString)]);
+    StripHTMLMarkup(Session.Fields.Values['name']),
+    StripHTMLMarkup(Fields.Values['text'])]);
   Save;
 end;
 

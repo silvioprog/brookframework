@@ -40,10 +40,9 @@ var
   SBrookNoRouterServiceRegisteredError: string = 'No router service registered.';
   SBrookNoRouteRegisteredError: string = 'No route registered.';
   SBrookCfgFileNotFoundError: string = 'The config file was not found: "%s"';
-  SBrookNilParamError: string = '"%s" must not be nil.';
+  SBrookNotNilError: string = '"%s" must not be nil.';
   SBrookEmptyLibraryNameError: string = 'The library name must not be empty.';
   SBrookMethodNotAllowedError: string = 'HTTP method not allowed for the requested resource.';
-  SBrookIncompatibleTypesError: string = 'Incompatible types: got "%s" expected "%s".';
   SBrookConstraintAlreadyRegisteredError: string = 'The constraint "%s" is already registered.';
   SBrookConstraintsServiceAlreadyRegisteredError: string = 'The constraints service is already registered.';
   SBrookNoConstraintsServiceRegisteredError: string = 'No constraints service registered.';

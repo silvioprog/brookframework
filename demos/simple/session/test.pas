@@ -5,9 +5,21 @@ unit Test;
 interface
 
 uses
-  BrookAction, BrookSession, BrookConsts;
+  BrookAction, BrookSession, SysUtils;
 
 type
+
+  { TVisit }
+
+  TVisit = class
+  private
+    FCount: Integer;
+  published
+    property Count: Integer read FCount write FCount;
+  end;
+
+  { TMyAction }
+
   TMyAction = class(TBrookAction)
   private
     FSession: TBrookSession;
@@ -18,6 +30,8 @@ type
   end;
 
 implementation
+
+{ TMyAction }
 
 constructor TMyAction.Create;
 begin
@@ -33,34 +47,36 @@ end;
 
 procedure TMyAction.Get;
 var
-  I: Integer;
+  VVisit: TVisit;
 begin
-  FSession.Start(GetRequest);
-  Write('<!DOCTYPE HTML>');
-  Write('<html lang="en-US">');
-  Write('<head>');
-  Write('	<meta charset="UTF-8">');
-  Write('	<title>Sessions</title>');
-  Write('</head>');
-  Write('<body>');
-  if FSession.Fields.Count = 0 then
-  begin
-    Write('Creating session ...' + BR);
-    Write('Use F5 to show created session.' + BR);
-    FSession.Fields.Add('session1', 'ABC');
-    FSession.Fields.Add('session2', 123);
-    FSession.Fields.Add('session3', 1.5);
-    FSession.Fields.Add('session4', True);
-  end
-  else
-  begin
-    Write('Created session:' + BR);
-    for I := 0 to Pred(FSession.Fields.Count) do
-      Write(FSession.Fields.Items[I].AsString + BR);
+  VVisit := TVisit.Create;
+  try
+    FSession.Start(TheRequest);
+    Write('<!DOCTYPE HTML>');
+    Write('<html lang="en-US">');
+    Write('<head>');
+    Write('	<meta charset="UTF-8">');
+    Write('	<title>Visits</title>');
+    Write('</head>');
+    Write('<body>');
+    if FSession.Fields.Count = 0 then
+    begin
+      Write('Use F5 to show created session.<br />');
+      FSession.Fields.Add('count=1');
+    end
+    else
+    begin
+      FSession.GetFields(VVisit);
+      Write('Visit count: %d', [VVisit.Count]);
+      VVisit.Count := VVisit.Count + 1;
+      FSession.Fields.Values['count'] := IntToStr(VVisit.Count);
+    end;
+    Write('</body>');
+    Write('</html>');
+    FSession.Finish(TheResponse);
+  finally
+    VVisit.Free;
   end;
-  Write('</body>');
-  Write('</html>');
-  FSession.Finish(GetResponse);
 end;
 
 initialization

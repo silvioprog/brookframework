@@ -116,7 +116,6 @@ type
     FBeforeExecuteAction: TBrookExecuteActionEvent;
     FBeforeMatchPattern: TBrookMatchPatternEvent;
     FBeforeRoute: TBrookRouteEvent;
-    FOnExecuteAction: TBrookExecuteActionEvent;
     FRoutes: TBrookRoutes;
   protected
     function CreateRoutes: TBrookRoutes; virtual;
@@ -192,9 +191,6 @@ type
     { Is triggered before the router is routing. }
     property BeforeRoute: TBrookRouteEvent read FBeforeRoute
       write FBeforeRoute;
-    { Is triggered when the router executes a action. }
-    property OnExecuteAction: TBrookExecuteActionEvent
-      read FOnExecuteAction write FOnExecuteAction;
   end;
 
 implementation
@@ -378,18 +374,14 @@ procedure TBrookRouter.ExecuteAction(AAction: TBrookAction;
   ARequest: TBrookRequest; AResponse: TBrookResponse; ANames,
   AValues: TBrookArrayOfString; ARoute: TBrookRoute);
 var
+  I: Integer;
   VHandled: Boolean = False;
 begin
   if Assigned(FBeforeExecuteAction) then
     FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
-  if not VHandled then
-  begin
-    AAction.FillFields(ARequest);
-    AAction.FillParams(ARequest);
-    AAction.FillValues(ANames, AValues);
-  end;
-  if Assigned(FOnExecuteAction) then
-    FOnExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
+  AAction.Values.Clear;
+  for I := 0 to High(ANames) do
+    AAction.Values.Add(ANames[I] + EQ + AValues[I]);
   if not VHandled then
     AAction.DoRequest(ARequest, AResponse);
   if Assigned(FAfterExecuteAction) then

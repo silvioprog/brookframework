@@ -19,8 +19,8 @@ implementation
 
 procedure TTest.Get;
 begin
-  GetResponse.ContentType := BROOK_HTTP_CONTENT_TYPE_TEXT_PLAIN;
-  GetResponse.SetCustomHeader(BROOK_HTTP_HEADER_TRANSFER_ENCODING,
+  TheResponse.ContentType := BROOK_HTTP_CONTENT_TYPE_TEXT_PLAIN;
+  TheResponse.SetCustomHeader(BROOK_HTTP_HEADER_TRANSFER_ENCODING,
     BROOK_HTTP_TRANSFER_ENCODING_CHUNKED);
   Write('23');
   Write('This is the data in the first chunk');
