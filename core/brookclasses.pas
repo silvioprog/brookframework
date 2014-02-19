@@ -1,5 +1,5 @@
 (*
-  Brook framework, Classes Unit
+  Brook framework, Base Classes
 
   Copyright (C) 2014 Silvio Clecio
 

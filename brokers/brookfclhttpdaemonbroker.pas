@@ -1,5 +1,5 @@
 (*
-  Brook framework, FCL HTTP Daemon Broker Unit
+  Brook framework, FCL HTTP Daemon Broker
 
   Copyright (C) 2014 Silvio Clecio
 

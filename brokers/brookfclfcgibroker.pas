@@ -1,5 +1,5 @@
 (*
-  Brook framework, FCL FastCGI Broker Unit
+  Brook framework, FCL FastCGI Broker
 
   Copyright (C) 2014 Silvio Clecio
 

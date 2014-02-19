@@ -1,5 +1,5 @@
 (*
-  Brook framework, HTTP Client Unit
+  Brook framework, HTTP Client Classes
 
   Copyright (C) 2014 Silvio Clecio.
 

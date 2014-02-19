@@ -1,5 +1,5 @@
 (*
-  Brook framework, Static File Broker Unit
+  Brook framework, Static File Broker
 
   Copyright (C) 2014 Mario Ray Mahardhika
 

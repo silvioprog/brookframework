@@ -1,5 +1,5 @@
 (*
-  Brook framework, FCL HTTPApp Broker Unit
+  Brook framework, FCL HTTPApp Broker
 
   Copyright (C) 2014 Mario Ray Mahardhika
 

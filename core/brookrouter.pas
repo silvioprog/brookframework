@@ -1,5 +1,5 @@
 (*
-  Brook framework, Router Unit
+  Brook framework, Router Classes
 
   Copyright (C) 2014 Silvio Clecio.
 

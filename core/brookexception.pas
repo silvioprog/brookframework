@@ -1,5 +1,5 @@
 (*
-  Brook framework, Exceptions Unit.
+  Brook framework, Exceptions Classes
 
   Copyright (C) 2014 Silvio Clecio
 

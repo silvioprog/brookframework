@@ -1,5 +1,5 @@
 (*
-  Brook framework, HTTP Utils Unit
+  Brook framework, HTTP Utilities Unit
 
   Copyright (C) 2014 Silvio Clecio
 

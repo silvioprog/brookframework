@@ -1,5 +1,5 @@
 (*
-  Brook framework, Session Unit
+  Brook framework, Session Class
 
   Copyright (C) 2014 Silvio Clecio
 

@@ -1,5 +1,5 @@
 (*
-  Brook framework, HttpDefs Unit.
+  Brook framework, HttpDefs Classes
 
   Copyright (C) 2014 Silvio Clecio
 

@@ -1,5 +1,5 @@
 (*
-  Brook framework, FCL HTTP Client Broker Unit
+  Brook framework, FCL HTTP Client Broker
 
   Copyright (C) 2014 Silvio Clecio.
 

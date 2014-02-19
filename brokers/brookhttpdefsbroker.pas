@@ -1,5 +1,5 @@
 (*
-  Brook framework, FCL HttpDefs Broker Unit
+  Brook framework, FCL HttpDefs Broker
 
   Copyright (C) 2014 Yuriy Pilgun
 

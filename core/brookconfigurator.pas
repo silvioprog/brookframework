@@ -1,5 +1,5 @@
 (*
-  Brook framework, Configurator Unit
+  Brook framework, Configurator Class
 
   Copyright (C) 2014 Silvio Clecio
 

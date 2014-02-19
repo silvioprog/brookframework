@@ -1,5 +1,5 @@
 (*
-  Brook framework, Action Unit
+  Brook framework, Action Classes
 
   Copyright (C) 2014 Silvio Clecio
 

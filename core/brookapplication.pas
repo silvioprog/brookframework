@@ -1,5 +1,5 @@
 ﻿(*
-  Brook framework, Application Unit
+  Brook framework, Application Interface
 
   Copyright (C) 2014 Silvio Clecio
 
