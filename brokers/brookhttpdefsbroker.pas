@@ -1,13 +1,7 @@
 (*
-  Brook FCL HttpDefs Broker unit.
+  Brook framework, FCL HttpDefs Broker Unit
 
-  Copyright (C) 2013 Yuriy Pilgun.
-
-  http://silvioprog.github.io/brookframework
-
-  All contributors:
-  Plase see the file CONTRIBUTORS.txt, included in this
-  distribution.
+  Copyright (C) 2014 Yuriy Pilgun
 
   See the file LICENSE.txt, included in this distribution,
   for details about the copyright.

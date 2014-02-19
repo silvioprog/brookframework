@@ -1,13 +1,7 @@
 (*
-  Brook Http Defs unit.
+  Brook framework, HttpDefs Unit.
 
-  Copyright (C) 2013 Silvio Clecio.
-
-  http://silvioprog.github.io/brookframework
-
-  All contributors:
-  Plase see the file CONTRIBUTORS.txt, included in this
-  distribution.
+  Copyright (C) 2014 Silvio Clecio
 
   See the file LICENSE.txt, included in this distribution,
   for details about the copyright.

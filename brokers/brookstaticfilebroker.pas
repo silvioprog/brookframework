@@ -1,13 +1,7 @@
 (*
-  Brook Static File Broker unit.
+  Brook framework, Static File Broker Unit
 
-  Copyright (C) 2013 Mario Ray Mahardhika.
-
-  http://silvioprog.github.io/brookframework
-
-  All contributors:
-  Plase see the file CONTRIBUTORS.txt, included in this
-  distribution.
+  Copyright (C) 2014 Mario Ray Mahardhika
 
   See the file LICENSE.txt, included in this distribution,
   for details about the copyright.
