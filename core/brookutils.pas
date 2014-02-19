@@ -133,15 +133,15 @@ function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
 { Fills the published properties of an object passing the name and value as
   string.  }
-procedure BrookStringToObject(const AName: ShortString; const AValue: string;
-  AObject: TObject);
+procedure BrookStringToObject(AObject: TObject; const AName: ShortString;
+  const AValue: string);
 { Fills the published properties of an object passing the names and values as
   a list of strings.  }
-procedure BrookStringsToObject(AStrings: TStrings; AObject: TObject);
+procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
 
 implementation
 
-procedure StringToObject(AName, AValue: PChar; AObject: TObject);
+procedure StringToObject(AObject: TObject; AName, AValue: PChar);
 
   function IsFloat(P: PChar): Boolean;
   var
@@ -159,7 +159,7 @@ procedure StringToObject(AName, AValue: PChar; AObject: TObject);
 var
   PI: PPropInfo;
 begin
-  PI := GetPropInfo(AObject, AName);
+  PI := GetPropInfo(PTypeInfo(AObject.ClassInfo), AName);
   if Assigned(PI) then
     case PI^.PropType^.Kind of
       tkAString: SetStrProp(AObject, PI, AValue);
@@ -316,16 +316,16 @@ begin
     Result += US;
 end;
 
-procedure BrookStringToObject(const AName: ShortString; const AValue: string;
-  AObject: TObject);
+procedure BrookStringToObject(AObject: TObject;
+  const AName: ShortString; const AValue: string);
 begin
   if not Assigned(AObject) then
     raise EBrook.CreateFmt('BrookStringsToObject', SBrookNotNilError,
       ['AObject']);
-  StringToObject(@AName, PChar(AValue), AObject);
+  StringToObject(AObject, @AName, PChar(AValue));
 end;
 
-procedure BrookStringsToObject(AStrings: TStrings; AObject: TObject);
+procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
 var
   I: Integer;
   N, V: string;
@@ -339,7 +339,7 @@ begin
   for I := 0 to Pred(AStrings.Count) do
   begin
     AStrings.GetNameValue(I, N, V);
-    StringToObject(PChar(N), PChar(V), AObject);
+    StringToObject(AObject, PChar(N), PChar(V));
   end;
 end;
 

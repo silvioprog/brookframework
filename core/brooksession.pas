@@ -61,7 +61,7 @@ type
     constructor Create; virtual;
     { Frees an instance of @link(TBrookSession) class. }
     destructor Destroy; override;
-    { Gets an object coming from the session data. }
+    { Get an object with the fields coming from session. }
     procedure GetFields(AObject: TObject);
     { Returns @code(True) if the session has expired.}
     function IsExpired: Boolean; virtual;
@@ -128,7 +128,7 @@ end;
 
 procedure TBrookSession.GetFields(AObject: TObject);
 begin
-  BrookStringsToObject(FFields, AObject);
+  BrookStringsToObject(AObject, FFields);
 end;
 
 function TBrookSession.IsExpired: Boolean;

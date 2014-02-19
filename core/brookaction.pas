@@ -37,14 +37,13 @@ type
   { Provides features to handle HTTP requests and responses. }
   TBrookAction = class(TBrookObject)
   private
+    FFields: TStrings;
+    FFiles: TBrookUploadedFiles;
+    FParams: TStrings;
     FTheRequest: TBrookRequest;
     FTheResponse: TBrookResponse;
     FValues: TStrings;
-    function GetFields: TStrings;
     function GetMethod: string;
-    function GetFiles: TBrookUploadedFiles;
-    function GetParams: TStrings;
-    function GetValues: TStrings;
   protected
     property TheRequest: TBrookRequest read FTheRequest;
     property TheResponse: TBrookResponse read FTheResponse;
@@ -174,11 +173,12 @@ initialization
     { Is triggered by a request of any HTTP method. }
     procedure Request(ARequest: TBrookRequest;
       {%H-}AResponse: TBrookResponse); virtual;
-    { Gets an object coming from a @code(x-www-form-urlencoded) form. }
+    { Get an object with the fields coming from a
+        @code(x-www-form-urlencoded) form. }
     procedure GetFields(AObject: TObject);
-    { Gets an object coming from a @code(QUERY_STRING). }
+    { Get an object with the params coming from a @code(QUERY_STRING). }
     procedure GetParams(AObject: TObject);
-    { Gets an object coming from a parametrized URL. }
+    { Get an object with the variables coming from an URL. }
     procedure GetValues(AObject: TObject);
     { Creates an URL for action. }
     function UrlFor(AActionClass: TBrookActionClass): string; overload;
@@ -252,13 +252,13 @@ initialization
     { Writes a formatted string. }
     procedure Write(const AFmt: string; const AArgs: array of const); overload;
     { The list of files coming from a request called by the POST method. }
-    property Files: TBrookUploadedFiles read GetFiles;
+    property Files: TBrookUploadedFiles read FFiles;
     { The list of variables coming from a request called by the POST method. }
-    property Fields: TStrings read GetFields;
+    property Fields: TStrings read FFields;
     { The list of variables coming from a request called by the GET method. }
-    property Params: TStrings read GetParams;
+    property Params: TStrings read FParams;
     { The list of variables received from a parametrized URL. }
-    property Values: TStrings read GetValues;
+    property Values: TStrings read FValues;
     { Returns the HTTP request method. }
     property Method: string read GetMethod;
   end;
@@ -303,32 +303,15 @@ begin
   Create;
   FTheRequest := ARequest;
   FTheResponse := AResponse;
+  FFields := FTheRequest.ContentFields;
+  FParams := FTheRequest.QueryFields;
+  FFiles := FTheRequest.Files;
 end;
 
 destructor TBrookAction.Destroy;
 begin
   FValues.Free;
   inherited Destroy;
-end;
-
-function TBrookAction.GetFiles: TBrookUploadedFiles;
-begin
-  Result := FTheRequest.Files;
-end;
-
-function TBrookAction.GetFields: TStrings;
-begin
-  Result := FTheRequest.ContentFields;
-end;
-
-function TBrookAction.GetParams: TStrings;
-begin
-  Result := FTheRequest.QueryFields;
-end;
-
-function TBrookAction.GetValues: TStrings;
-begin
-  Result := FValues;
 end;
 
 function TBrookAction.GetMethod: string;
@@ -344,17 +327,17 @@ end;
 
 procedure TBrookAction.GetFields(AObject: TObject);
 begin
-  BrookStringsToObject(FTheRequest.ContentFields, AObject);
+  BrookStringsToObject(AObject, FTheRequest.ContentFields);
 end;
 
 procedure TBrookAction.GetParams(AObject: TObject);
 begin
-  BrookStringsToObject(FTheRequest.QueryFields, AObject);
+  BrookStringsToObject(AObject, FTheRequest.QueryFields);
 end;
 
 procedure TBrookAction.GetValues(AObject: TObject);
 begin
-  BrookStringsToObject(FValues, AObject);
+  BrookStringsToObject(AObject, FValues);
 end;
 
 class procedure TBrookAction.Register(const APattern: string;
