@@ -5,8 +5,11 @@ unit Brokers;
 interface
 
 uses
-  BrookFCLCGIBroker;
+  BrookFCLCGIBroker, SysUtils;
 
 implementation
+
+initialization
+  DefaultFormatSettings.ShortDateFormat := 'yyyy/mm/dd';
 
 end.
