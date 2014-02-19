@@ -39,7 +39,7 @@
         <PackageName Value="BrookRT"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="5">
       <Unit0>
         <Filename Value="cgi1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -76,12 +76,6 @@
         <UnitName Value="person"/>
         <UsageCount Value="20"/>
       </Unit4>
-      <Unit5>
-        <Filename Value="..\objectstorage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="objectstorage"/>
-        <UsageCount Value="20"/>
-      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -92,7 +86,6 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value=".."/>
     </SearchPaths>
     <Other>
       <CompilerMessages>
