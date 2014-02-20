@@ -25,7 +25,7 @@ type
   public
     constructor Create(AConnection: TSQLConnection); virtual;
     destructor Destroy; override;
-    function Store: TObjectStorage;
+    function Save: TObjectStorage;
     function Cancel: TObjectStorage;
     procedure Execute(AObject: TObject; const ASQLType: TUpdateKind);
     function Add(AObject: TObject): TObjectStorage;
@@ -149,7 +149,7 @@ begin
     end;
 end;
 
-function TObjectStorage.Store: TObjectStorage;
+function TObjectStorage.Save: TObjectStorage;
 begin
   Result := Self;
   try

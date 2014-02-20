@@ -60,18 +60,18 @@ end;
 procedure TPersonAction.Post;
 begin
   Entity.Validate;
-  FStorage.Add(Entity).Store;
+  FStorage.Add(Entity).Save;
 end;
 
 procedure TPersonAction.Put;
 begin
   Entity.Validate;
-  FStorage.Modify(Entity).Store;
+  FStorage.Modify(Entity).Save;
 end;
 
 procedure TPersonAction.Delete;
 begin
-  FStorage.Delete(Entity).Store;
+  FStorage.Delete(Entity).Save;
 end;
 
 initialization
