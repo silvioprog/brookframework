@@ -314,7 +314,7 @@ procedure BrookStringToObject(AObject: TObject;
   const AName: ShortString; const AValue: string);
 begin
   if not Assigned(AObject) then
-    raise EBrook.CreateFmt('BrookStringsToObject', SBrookNotNilError,
+    raise EBrook.CreateFmt('BrookStringToObject', SBrookNotNilError,
       ['AObject']);
   StringToObject(AObject, @AName, PChar(AValue));
 end;
