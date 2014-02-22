@@ -117,7 +117,7 @@ end;
 procedure TfrBrookNewProject.btHelpClick(Sender: TObject);
 begin
   OpenURL(
-    'http://docs.brookframework.org/BrookAction.TBrookAction.html#Register');
+    'https://dl.dropboxusercontent.com/u/135304375/brookframework/doc/BrookAction.TBrookAction.html#Register');
 end;
 
 procedure TfrBrookNewProject.btAddActClick(Sender: TObject);
