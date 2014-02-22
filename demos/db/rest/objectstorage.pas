@@ -81,7 +81,7 @@ begin
             for I := 0 to Pred(C) do
             begin
               N := PL^[I]^.Name;
-              if CompareText(N, 'id') = 0 then
+              if ShortCompareText(N, 'id') = 0 then
                 Continue;
               N += ', ';
               FS += N;
@@ -100,7 +100,7 @@ begin
             for I := 0 to Pred(C) do
             begin
               N := PL^[I]^.Name;
-              if CompareText(N, 'id') = 0 then
+              if ShortCompareText(N, 'id') = 0 then
                 Continue;
               PS += N + ' = :' + N + ' and';
             end;

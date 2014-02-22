@@ -160,8 +160,8 @@ begin
       tkChar: SetOrdProp(AObject, PI, Ord(AValue^));
       tkInteger: SetOrdProp(AObject, PI, StrToInt(AValue));
       tkInt64, tkQWord: SetInt64Prop(AObject, PI, StrToInt64(AValue));
-      tkBool: SetOrdProp(AObject, PI, Ord((CompareText(AValue, 'on') = 0) or
-        StrToBool(AValue)));
+      tkBool: SetOrdProp(AObject, PI,
+        Ord((ShortCompareText(AValue, 'on') = 0) or StrToBool(AValue)));
       tkFloat:
         if IsFloat(AValue) then
           SetFloatProp(AObject, PI, StrToFloat(AValue))
