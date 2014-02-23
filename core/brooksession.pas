@@ -122,7 +122,7 @@ end;
 
 procedure TBrookSession.GetFields(AObject: TObject);
 begin
-  BrookStringsToObject(AObject, FFields);
+  BrookSafeStringsToObject(AObject, FFields);
 end;
 
 function TBrookSession.IsExpired: Boolean;

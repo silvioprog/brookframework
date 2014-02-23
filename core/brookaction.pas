@@ -321,17 +321,17 @@ end;
 
 procedure TBrookAction.GetFields(AObject: TObject);
 begin
-  BrookStringsToObject(AObject, FTheRequest.ContentFields);
+  BrookSafeStringsToObject(AObject, FTheRequest.ContentFields);
 end;
 
 procedure TBrookAction.GetParams(AObject: TObject);
 begin
-  BrookStringsToObject(AObject, FTheRequest.QueryFields);
+  BrookSafeStringsToObject(AObject, FTheRequest.QueryFields);
 end;
 
 procedure TBrookAction.GetValues(AObject: TObject);
 begin
-  BrookStringsToObject(AObject, FValues);
+  BrookSafeStringsToObject(AObject, FValues);
 end;
 
 class procedure TBrookAction.Register(const APattern: string;
