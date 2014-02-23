@@ -125,18 +125,21 @@ function BrookDumpStack(const AEOL: ShortString = BR): string;
 function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
-{ Fills the published properties of an object passing the name and value as
-  string.  }
+{ Fills a published property of an object passing the value as string. }
+procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
+  AValue: PChar);
+{ Fills a published property of an object passing the name and value as
+  string. }
 procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
-{ Fills the published properties of an object passing the name and value as
-  string and checking the params.  }
+{ Fills a published property of an object passing the name and value as
+  string and checking the params. }
 procedure BrookSafeStringToObject(AObject: TObject; const AName: ShortString;
   const AValue: string);
 { Fills the published properties of an object passing the names and values as
-  a list of strings.  }
+  a list of strings. }
 procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
 { Fills the published properties of an object passing the names and values as
-  a list of strings and checking the params.  }
+  a list of strings and checking the params. }
 procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings);
 
 implementation
@@ -279,7 +282,8 @@ begin
     Result += US;
 end;
 
-procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
+procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
+  AValue: PChar);
 
   function IsFloat(P: PChar): Boolean;
   var
@@ -294,26 +298,29 @@ procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
     Result := I = 1;
   end;
 
-var
-  PI: PPropInfo;
 begin
-  PI := GetPropInfo(PTypeInfo(AObject.ClassInfo), AName);
-  if Assigned(PI) then
-    case PI^.PropType^.Kind of
-      tkAString: SetStrProp(AObject, PI, AValue);
-      tkChar: SetOrdProp(AObject, PI, Ord(AValue^));
-      tkInteger: SetOrdProp(AObject, PI, StrToInt(AValue));
-      tkInt64, tkQWord: SetInt64Prop(AObject, PI, StrToInt64(AValue));
-      tkBool: SetOrdProp(AObject, PI,
+  if Assigned(APropInfo) then
+    case APropInfo^.PropType^.Kind of
+      tkAString: SetStrProp(AObject, APropInfo, AValue);
+      tkChar: SetOrdProp(AObject, APropInfo, Ord(AValue^));
+      tkInteger: SetOrdProp(AObject, APropInfo, StrToInt(AValue));
+      tkInt64, tkQWord: SetInt64Prop(AObject, APropInfo, StrToInt64(AValue));
+      tkBool: SetOrdProp(AObject, APropInfo,
         Ord((ShortCompareText(AValue, 'on') = 0) or StrToBool(AValue)));
       tkFloat:
         if IsFloat(AValue) then
-          SetFloatProp(AObject, PI, StrToFloat(AValue))
+          SetFloatProp(AObject, APropInfo, StrToFloat(AValue))
         else
-          SetFloatProp(AObject, PI, StrToDateTime(AValue));
-      tkEnumeration: SetEnumProp(AObject, PI, AValue);
-      tkSet: SetSetProp(AObject, PI, AValue);
+          SetFloatProp(AObject, APropInfo, StrToDateTime(AValue));
+      tkEnumeration: SetEnumProp(AObject, APropInfo, AValue);
+      tkSet: SetSetProp(AObject, APropInfo, AValue);
     end;
+end;
+
+procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
+begin
+  BrookValueToObject(AObject, GetPropInfo(PTypeInfo(AObject.ClassInfo), AName),
+    AValue);
 end;
 
 procedure BrookSafeStringToObject(AObject: TObject;
