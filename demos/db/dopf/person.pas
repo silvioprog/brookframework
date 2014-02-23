@@ -40,8 +40,12 @@ var
 begin
   Validate;
   q := TdQuery.Create(dbutils.Connection);
-  q.SQL.Text := 'insert into person (name) values (:name)';
-  q.SetParams(Self).Execute.Apply;
+  try
+    q.SQL.Text := 'insert into person (name) values (:name)';
+    q.SetParams(Self).Execute.Apply;
+  finally
+    q.Free;
+  end;
 end;
 
 end.
