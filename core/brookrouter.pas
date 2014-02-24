@@ -475,12 +475,15 @@ function TBrookRouter.Canonicalize(ARequest: TBrookRequest;
   AResponse: TBrookResponse): Boolean;
 var
   L: LongInt;
-  VURL, VQueryStr: string;
+  VURL, VQueryStr, VPathInfo: string;
 begin
   VQueryStr := ARequest.QueryString;
   if VQueryStr <> ES then
     VQueryStr := QU + VQueryStr;
-  VURL := TBrookRouter.RootUrl(ARequest) + ARequest.PathInfo;
+  VPathInfo := Copy(ARequest.PathInfo, 1, Pos(QU, ARequest.PathInfo) - 1);
+  if VPathInfo = ES then
+    VPathInfo := ARequest.PathInfo;
+  VURL := TBrookRouter.RootUrl(ARequest) + VPathInfo;
   L := Length(VURL);
   Result := ((L > 0) and (VURL[L] <> US)) or (VURL = ES);
   if Result then
