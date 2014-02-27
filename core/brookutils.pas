@@ -133,8 +133,7 @@ procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
 procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
 { Fills a published property of an object passing the name and value as
   string and checking the params. }
-procedure BrookSafeStringToObject(AObject: TObject; const AName: ShortString;
-  const AValue: string);
+procedure BrookSafeStringToObject(AObject: TObject; const AName, AValue: string);
 { Fills the published properties of an object passing the names and values as
   a list of strings. }
 procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
@@ -323,13 +322,12 @@ begin
     AValue);
 end;
 
-procedure BrookSafeStringToObject(AObject: TObject;
-  const AName: ShortString; const AValue: string);
+procedure BrookSafeStringToObject(AObject: TObject; const AName, AValue: string);
 begin
   if not Assigned(AObject) then
     raise EBrook.CreateFmt('BrookStringToObject', SBrookNotNilError,
       ['AObject']);
-  BrookStringToObject(AObject, @AName, PChar(AValue));
+  BrookStringToObject(AObject, PChar(AName), PChar(AValue));
 end;
 
 procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
