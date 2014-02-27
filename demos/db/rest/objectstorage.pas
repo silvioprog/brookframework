@@ -74,7 +74,7 @@ begin
   C := GetPropList(PTypeInfo(AObject.ClassInfo), PL);
   if Assigned(PL) then
     try
-      strlower(@FTableName);
+      strlower(PChar(FTableName));
       case ASQLType of
         ukInsert:
           begin
