@@ -5,7 +5,7 @@ unit person;
 interface
 
 uses
-  dbutils, dOPF, SysUtils;
+  dUtils, dbutils, SysUtils;
 
 type
   EPerson = class(Exception);
@@ -36,13 +36,14 @@ end;
 
 procedure TPerson.Save;
 var
-  q: TdQuery;
+  q: Tqry;
 begin
   Validate;
-  q := TdQuery.Create(dbutils.Connection);
+  q := Tqry.Create(dbutils.con);
   try
     q.SQL.Text := 'insert into person (name) values (:name)';
-    q.SetParams(Self).Execute.Apply;
+    dUtils.SetParams(Self, q.Params);
+    q.Execute.Apply;
   finally
     q.Free;
   end;

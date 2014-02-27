@@ -5,27 +5,32 @@ unit dbutils;
 interface
 
 uses
-  dOPF, dSQLdbBroker, pqconnection, sysutils;
+  dOPF, dSQLdbBroker, pqconnection;
+
+type
+  Tcon = specialize TdConnection<TdSQLdbConnectionBroker, TdLogger>;
+
+  Tqry = specialize TdQuery<TdSQLdbQueryBroker, Tcon>;
 
 var
-  Connection: TdConnection;
+  con: Tcon;
 
 implementation
 
 initialization
-  Connection := TdConnection.Create(nil, TdSQLdbBroker);
-  Connection.Logger.Active := True;
-  Connection.Logger.Filter := [ltSQL];
-  Connection.Logger.FileName := 'OUTPUT.LOG';
-  Connection.Driver := 'postgresql';
-  Connection.Host := '127.0.0.1';
-  Connection.Database := 'postgres';
-  Connection.User := 'postgres';
-  Connection.Password := 'postgres';
-  Connection.Connect;
+  con := Tcon.Create(nil);
+  con.Logger.Active := True;
+  con.Logger.Filter := [ltSQL];
+  con.Logger.FileName := 'OUTPUT.LOG';
+  con.Driver := 'postgresql';
+  con.Host := '127.0.0.1';
+  con.Database := 'postgres';
+  con.User := 'postgres';
+  con.Password := 'postgres';
+  con.Connect;
 
 finalization
-  FreeAndNil(Connection);
+  con.Free;
 
 end.
 
