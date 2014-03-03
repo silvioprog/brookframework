@@ -5,7 +5,7 @@ unit dbutils;
 interface
 
 uses
-  dOPF, dSQLdbBroker, pqconnection;
+  dOpf, dSQLdbBroker, pqconnection;
 
 type
   Tcon = specialize TdConnection<TdSQLdbConnectionBroker, TdLogger>;
