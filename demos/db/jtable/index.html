@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/135304375/cdn/css/themes/metro/blue/jquery-ui.min.css"/>
+<link rel="stylesheet" href="https://dl.dropboxusercontent.com/u/135304375/cdn/css/themes/metro/blue/jtable.min.css"/>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/135304375/cdn/js/jquery.jtable.min.js"></script>
+</head>
+<body>
+<div id="grid" style="width: 600px;"></div>
+<script type="text/javascript">
+$(function() {
+	// prepare jTable
+	$("#grid").jtable({
+		actions: {
+			listAction: "https://brookframework.org/cgi-bin/cgi1.bf/personlist",
+			createAction: "https://brookframework.org/cgi-bin/cgi1.bf/personcreate",
+			updateAction: "https://brookframework.org/cgi-bin/cgi1.bf/personupdate",
+			deleteAction: "https://brookframework.org/cgi-bin/cgi1.bf/persondelete"
+		},
+		fields: {
+			Id: {
+				key: true,
+				create: false,
+				edit: false
+			},
+			Name: {
+				title: "Name",
+				width: "40%"
+			}
+		},
+		title: "Table of person",
+		paging: true,
+		pageSizes: [5, 10, 25],
+		pageSize: 5,
+		sorting: true,
+		defaultSorting: "Id ASC"
+	});
+	// load person list from server
+	$("#grid").jtable("load");
+});
+</script>
+</body>
+</html>
