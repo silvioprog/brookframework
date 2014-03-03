@@ -11,7 +11,7 @@ type
 
   { TPersonAction }
 
-  TPersonAction = class(specialize TBrookEntityAction<TPerson>)
+  TPersonAction = class(specialize TBrookGAction<TPerson>)
   public
     procedure Post; override;
   end;

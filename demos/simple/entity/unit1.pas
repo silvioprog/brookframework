@@ -41,7 +41,7 @@ type
 
   { TMyAction }
 
-  TMyAction = class(specialize TBrookEntityAction<TMyType>)
+  TMyAction = class(specialize TBrookGAction<TMyType>)
   public
     procedure Post; override;
   end;

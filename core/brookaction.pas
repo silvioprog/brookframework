@@ -259,7 +259,7 @@ initialization
 
   { Provides features to handle HTTP requests and responses mapping URIs to
     object. }
-  generic TBrookEntityAction<T> = class(TBrookAction)
+  generic TBrookGAction<T> = class(TBrookAction)
   private
     FEntity: T;
   protected
@@ -520,31 +520,31 @@ begin
   Write(Format(AFmt, AArgs));
 end;
 
-{ TBrookEntityAction }
+{ TBrookGAction }
 
-constructor TBrookEntityAction.Create;
+constructor TBrookGAction.Create;
 begin
   inherited Create;
   FEntity := CreateEntity;
 end;
 
-destructor TBrookEntityAction.Destroy;
+destructor TBrookGAction.Destroy;
 begin
   FreeEntity;
   inherited Destroy;
 end;
 
-function TBrookEntityAction.CreateEntity: T;
+function TBrookGAction.CreateEntity: T;
 begin
   Result := T.Create;
 end;
 
-procedure TBrookEntityAction.FreeEntity;
+procedure TBrookGAction.FreeEntity;
 begin
   FreeAndNil(FEntity);
 end;
 
-procedure TBrookEntityAction.Request(ARequest: TBrookRequest;
+procedure TBrookGAction.Request(ARequest: TBrookRequest;
   AResponse: TBrookResponse);
 begin
   case ARequest.Method of
@@ -569,7 +569,7 @@ begin
   end;
 end;
 
-procedure TBrookEntityAction.FillEntity;
+procedure TBrookGAction.FillEntity;
 begin
   GetFields(FEntity);
 end;
