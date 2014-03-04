@@ -42,8 +42,9 @@ begin
   q := Tqry.Create(dbutils.con);
   try
     q.SQL.Text := 'insert into person (name) values (:name)';
-    dUtils.SetParams(Self, q.Params);
-    q.Execute.Apply;
+    dUtils.dSetParams(Self, q.Params);
+    q.Execute;
+    q.Apply;
   finally
     q.Free;
   end;

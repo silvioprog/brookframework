@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -33,12 +33,15 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="BrookRT"/>
+        <PackageName Value="dOpfRT"/>
       </Item1>
+      <Item2>
+        <PackageName Value="BrookRT"/>
+      </Item2>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="6">
       <Unit0>
         <Filename Value="cgi1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -75,6 +78,12 @@
         <UnitName Value="dbutils"/>
         <UsageCount Value="20"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="jtableactns.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="jTableActns"/>
+        <UsageCount Value="20"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -84,8 +93,7 @@
       <Filename Value="cgi1.bf" ApplyConventions="False"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir);..\..\..\..\dopf\core"/>
-      <OtherUnitFiles Value="..\..\..\..\dopf\core;..\..\..\..\dopf\brokers"/>
+      <IncludeFiles Value="$(ProjOutDir)"/>
     </SearchPaths>
     <Other>
       <CompilerMessages>
@@ -107,4 +115,5 @@
       </Item3>
     </Exceptions>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>

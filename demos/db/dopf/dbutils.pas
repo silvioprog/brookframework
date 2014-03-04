@@ -5,20 +5,20 @@ unit dbutils;
 interface
 
 uses
-  dOpf, dSQLdbBroker, pqconnection;
+  dOpf, dSQLdbBroker, PQConnection;
 
 type
-  Tcon = specialize TdConnection<TdSQLdbConnectionBroker, TdLogger>;
+  Tcon = TdSQLdbConnector;
 
-  Tqry = specialize TdQuery<TdSQLdbQueryBroker, Tcon>;
+  Tqry = TdSQLdbQuery;
 
 var
-  con: Tcon;
+  con: TdSQLdbConnector;
 
 implementation
 
 initialization
-  con := Tcon.Create(nil);
+  con := TdSQLdbConnector.Create(nil);
   con.Logger.Active := True;
   con.Logger.Filter := [ltSQL];
   con.Logger.FileName := 'OUTPUT.LOG';
