@@ -5,30 +5,31 @@ unit dbutils;
 interface
 
 uses
-  sysutils, pqconnection;
+  dSQLdbBroker, SysUtils, PQConnection;
 
-function Connection: TPQConnection;
+function con: TdSQLdbConnector;
 
 implementation
 
 var
-  _Connection: TPQConnection;
+  _con: TdSQLdbConnector = nil;
 
-function Connection: TPQConnection;
+function con: TdSQLdbConnector;
 begin
-  if not Assigned(_Connection) then
+  if not Assigned(_con) then
   begin
-    _Connection := TPQConnection.Create(nil);
-    _Connection.HostName := '127.0.0.1';
-    _Connection.DatabaseName := 'postgres';
-    _Connection.UserName := 'postgres';
-    _Connection.Password := 'postgres';
+    _con := TdSQLdbConnector.Create(nil);
+    _con.Driver := 'postgresql';
+    _con.Host := '127.0.0.1';
+    _con.Database := 'postgres';
+    _con.User := 'postgres';
+    _con.Password := 'postgres';
   end;
-  Result := _Connection;
+  Result := _con;
 end;
 
 finalization
-  FreeAndNil(_Connection);
+  FreeAndNil(_con);
 
 end.
 

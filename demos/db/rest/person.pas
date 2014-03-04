@@ -5,7 +5,7 @@ unit person;
 interface
 
 uses
-  objectstorage, dbutils, SysUtils;
+  SysUtils;
 
 type
   EPerson = class(Exception);
@@ -23,13 +23,6 @@ type
     property Name: string read FName write FName;
   end;
 
-  { TPersonStorage }
-
-  TPersonStorage = class(TObjectStorage)
-  public
-    constructor Create; reintroduce;
-  end;
-
 implementation
 
 { TPerson }
@@ -37,14 +30,7 @@ implementation
 procedure TPerson.Validate;
 begin
   if Trim(FName) = '' then
-    raise EPerson.Create('Name must not be empty.');
-end;
-
-{ TPersonStorage }
-
-constructor TPersonStorage.Create;
-begin
-  inherited Create(dbutils.Connection);
+    raise EPerson.Create('Field "Name" must not be empty.');
 end;
 
 end.

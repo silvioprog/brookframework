@@ -5,15 +5,22 @@ unit Unit1;
 interface
 
 uses
-  BrookAction, person, Classes;
+  BrookAction, dSQLdbBroker, dbutils, person, Classes;
 
 type
 
-  { TPersonAction }
+  { TPersonOpf }
 
-  TPersonAction = class(specialize TBrookGAction<TPerson>)
+  TPersonOpf = class(specialize TdGSQLdbOpf<TPerson>)
+  public
+    constructor Create; overload;
+  end;
+
+  { TPersonRESTAction }
+
+  TPersonRESTAction = class(specialize TBrookGAction<TPerson>)
   private
-    FStorage: TPersonStorage;
+    FOpf: TPersonOpf;
   public
     constructor Create; overload; override;
     destructor Destroy; override;
@@ -21,60 +28,68 @@ type
     procedure Post; override;
     procedure Put; override;
     procedure Delete; override;
-    property Storage: TPersonStorage read FStorage;
+    property Opf: TPersonOpf read FOpf;
   end;
 
 implementation
 
-{ TPersonAction }
+{ TPersonOpf }
 
-constructor TPersonAction.Create;
+constructor TPersonOpf.Create;
 begin
-  inherited Create;
-  FStorage := TPersonStorage.Create;
-  FStorage.TableName := 'person';
+  inherited Create(dbutils.con, 'person');
 end;
 
-destructor TPersonAction.Destroy;
+{ TPersonRESTAction }
+
+constructor TPersonRESTAction.Create;
 begin
-  FStorage.Free;
+  inherited Create;
+  FOpf := TPersonOpf.Create;
+end;
+
+destructor TPersonRESTAction.Destroy;
+begin
+  FOpf.Free;
   inherited Destroy;
 end;
 
-procedure TPersonAction.Get;
+procedure TPersonRESTAction.Get;
 var
-  I: Pointer;
-  VPerson: TPerson absolute I;
-  VPersons: TFPList;
+  VPerson: TPerson;
+  VPersons: TPersonOpf.TEntities;
 begin
-  VPersons := TFPList.Create;
+  VPersons := TPersonOpf.TEntities.Create;
   try
-    FStorage.List(VPersons, TPerson);
-    for I in VPersons do
+    FOpf.List(VPersons);
+    for VPerson in VPersons do
       Write('Id: %d, Name: %s<br />', [VPerson.Id, VPerson.Name]);
   finally
     VPersons.Free;
   end;
 end;
 
-procedure TPersonAction.Post;
+procedure TPersonRESTAction.Post;
 begin
   Entity.Validate;
-  FStorage.Add(Entity).Save;
+  FOpf.Add(Entity);
+  FOpf.Apply;
 end;
 
-procedure TPersonAction.Put;
+procedure TPersonRESTAction.Put;
 begin
   Entity.Validate;
-  FStorage.Modify(Entity).Save;
+  FOpf.Modify(Entity);
+  FOpf.Apply;
 end;
 
-procedure TPersonAction.Delete;
+procedure TPersonRESTAction.Delete;
 begin
-  FStorage.Delete(Entity).Save;
+  FOpf.Remove(Entity);
+  FOpf.Apply;
 end;
 
 initialization
-  TPersonAction.Register('*');
+  TPersonRESTAction.Register('*');
 
 end.
