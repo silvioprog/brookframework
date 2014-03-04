@@ -121,6 +121,7 @@ end;
 
 procedure TjTableGAction.WriteData;
 begin
+  Data.Add('Result', 'OK');
   Write(FData.AsJSON);
 end;
 
@@ -149,7 +150,6 @@ begin
       VArray.Add(VObject);
     end;
     Data.Add('TotalRecordCount', pgCount(Opf.Table.Name));
-    Data.Add('Result', 'OK');
     Data.Add('Records', VArray);
     inherited WriteData;
   finally
@@ -170,7 +170,6 @@ begin
   Opf.Add(Entity, False);
   Opf.Apply;
   dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject);
-  Data.Add('Result', 'OK');
   Data.Add('Record', VObject);
   inherited WriteData;
 end;
@@ -185,7 +184,6 @@ begin
   Opf.Modify(Entity, False);
   Opf.Apply;
   dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject);
-  Data.Add('Result', 'OK');
   Data.Add('Record', VObject);
   inherited WriteData;
 end;
@@ -196,7 +194,6 @@ procedure TjTableGDeleteAction.WriteData;
 begin
   Opf.Remove(Entity);
   Opf.Apply;
-  Data.Add('Result', 'OK');
   inherited WriteData;
 end;
 
