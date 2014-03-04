@@ -197,7 +197,7 @@ begin
   Opf.Remove(Entity);
   Opf.Apply;
   Data.Add('Result', 'OK');
-  Write(Data.AsJSON);
+  inherited WriteData;
 end;
 
 end.
