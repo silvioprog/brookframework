@@ -11,7 +11,7 @@ type
 
   { TPersonOpf }
 
-  TPersonOpf = specialize TdGOpf<TdSQLdbConnector, TdSQLdbQuery, TPerson>;
+  TPersonOpf = specialize TdGSQLdbOpf<TPerson>;
 
   { TPersonOpfAction }
 
