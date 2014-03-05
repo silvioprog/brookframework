@@ -390,6 +390,8 @@ begin
           'TTime': AValue := PChar(TimeToStr(GetFloatProp(AObject, APropInfo)));
           'TDateTime':
             AValue := PChar(DateTimeToStr(GetFloatProp(AObject, APropInfo)));
+          'Currency': AValue :=
+            PChar(CurrToStrF(GetFloatProp(AObject, APropInfo), ffCurrency, -1));
         else
           AValue := PChar(FloatToStr(GetFloatProp(AObject, APropInfo)));
         end;
