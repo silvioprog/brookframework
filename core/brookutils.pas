@@ -141,6 +141,24 @@ procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
 { Fills the published properties of an object passing the names and values as
   a list of strings and checking the params. }
 procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings);
+{ Reads a published property of an object passing the property as
+  @code(PPropInfo) and getting the value as @code(PChar). }
+procedure BrookObjectToValue(AObject: TObject; APropInfo: PPropInfo;
+  out AValue: PChar);
+{ Reads a published property of an object passing the name as @code(PChar) and
+  getting the value as @code(PChar). }
+procedure BrookObjectToString(AObject: TObject; const AName: PChar;
+  out AValue: PChar);
+{ Reads a published property of an object passing the name, getting the value as
+  string and checking the params. }
+procedure BrookSafeObjectToString(AObject: TObject; const AName: string;
+  out AValue: string);
+{ Reads the published properties of an object getting the names and values as
+  a list of strings. }
+procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings);
+{ Read the published properties of an object getting the names and values as
+  a list of strings and checking the params. }
+procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings);
 
 implementation
 
@@ -352,6 +370,79 @@ begin
     raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
       ['AObject']);
   BrookStringsToObject(AObject, AStrings);
+end;
+
+procedure BrookObjectToValue(AObject: TObject; APropInfo: PPropInfo;
+  out AValue: PChar);
+begin
+  if Assigned(APropInfo) then
+    case APropInfo^.PropType^.Kind of
+      tkAString: AValue := PChar(GetStrProp(AObject, APropInfo));
+      tkChar: AValue := PChar(string(Char(GetOrdProp(AObject, APropInfo))));
+      tkInteger: AValue := PChar(IntToStr(GetOrdProp(AObject, APropInfo)));
+      tkInt64, tkQWord: AValue := PChar(IntToStr(GetInt64Prop(AObject,
+        APropInfo)));
+      tkBool: AValue := PChar(BoolToStr(GetOrdProp(AObject, APropInfo) <> 0,
+        True));
+      tkFloat: AValue := PChar(FloatToStr(GetFloatProp(AObject, APropInfo)));
+      tkEnumeration: AValue := PChar(GetEnumProp(AObject, APropInfo));
+      tkSet: AValue := PChar(GetSetProp(AObject, APropInfo, False));
+    end;
+end;
+
+procedure BrookObjectToString(AObject: TObject; const AName: PChar;
+  out AValue: PChar);
+begin
+  BrookObjectToValue(AObject, GetPropInfo(PTypeInfo(AObject.ClassInfo), AName),
+    AValue);
+end;
+
+procedure BrookSafeObjectToString(AObject: TObject; const AName: string;
+  out AValue: string);
+var
+  P: PChar;
+begin
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookSafeObjectToString', SBrookNotNilError,
+      ['AObject']);
+  BrookObjectToString(AObject, PChar(AName), P);
+  AValue := P;
+end;
+
+procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings);
+var
+  S: Char;
+  V: PChar;
+  I, C: Integer;
+  PI: PPropInfo;
+  PL: PPropList = nil;
+begin
+  C := GetPropList(PTypeInfo(AObject.ClassInfo), PL);
+  if Assigned(PL) then
+    try
+      S := AStrings.NameValueSeparator;
+      if S = NU then
+        S := EQ;
+      for I := 0 to Pred(C) do
+      begin
+        PI := PL^[I];
+        BrookObjectToValue(AObject, PI, V);
+        AStrings.Add(PI^.Name + S + V);
+      end;
+    finally
+      FreeMem(PL);
+    end;
+end;
+
+procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings);
+begin
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AStrings']);
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AObject']);
+  BrookObjectToStrings(AObject, AStrings);
 end;
 
 end.
