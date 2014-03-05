@@ -125,11 +125,12 @@ function BrookDumpStack(const AEOL: ShortString = BR): string;
 function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
-{ Fills a published property of an object passing the value as string. }
+{ Fills a published property of an object passing the property as
+  @code(PPropInfo) and value as @code(PChar). }
 procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
   AValue: PChar);
 { Fills a published property of an object passing the name and value as
-  string. }
+  @code(PChar). }
 procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
 { Fills a published property of an object passing the name and value as
   string and checking the params. }
