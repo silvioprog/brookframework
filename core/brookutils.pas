@@ -288,7 +288,7 @@ procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
   var
     I: ShortInt = 0;
   begin
-    while (P^ <> #0) and (I < 2) do
+    while (P^ <> NU) and (I < 2) do
     begin
       if P^ = DefaultFormatSettings.DecimalSeparator then
         Inc(I);
@@ -325,7 +325,7 @@ end;
 procedure BrookSafeStringToObject(AObject: TObject; const AName, AValue: string);
 begin
   if not Assigned(AObject) then
-    raise EBrook.CreateFmt('BrookStringToObject', SBrookNotNilError,
+    raise EBrook.CreateFmt('BrookSafeStringToObject', SBrookNotNilError,
       ['AObject']);
   BrookStringToObject(AObject, PChar(AName), PChar(AValue));
 end;
@@ -345,10 +345,10 @@ end;
 procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings);
 begin
   if not Assigned(AStrings) then
-    raise EBrook.CreateFmt('BrookStringsToObject', SBrookNotNilError,
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
       ['AStrings']);
   if not Assigned(AObject) then
-    raise EBrook.CreateFmt('BrookStringsToObject', SBrookNotNilError,
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
       ['AObject']);
   BrookStringsToObject(AObject, AStrings);
 end;
