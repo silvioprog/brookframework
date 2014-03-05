@@ -59,6 +59,8 @@ type
     procedure GetFields(AObject: TObject);
     { Returns @code(True) if the session has expired.}
     function IsExpired: Boolean; virtual;
+    { Returns @code(True) if the session fieds is empty.}
+    function IsEmpty: Boolean; virtual;
     { Creates an ID for the session. }
     function GenerateID: string; virtual;
     { Starts the session. }
@@ -84,6 +86,8 @@ type
     property Directory: string read FDirectory write FDirectory;
     { Returns @code(True) if the session has expired.}
     property Expired: Boolean read IsExpired;
+    { Returns @code(True) if the session fieds is empty.}
+    property Empty: Boolean read IsEmpty;
     { Get or set the session ID. }
     property SID: string read FSID write FSID;
     { Checks if the session has started. }
@@ -100,6 +104,8 @@ type
   end;
 
 implementation
+
+{ TBrookSession }
 
 constructor TBrookSession.Create;
 begin
@@ -139,6 +145,11 @@ begin
   end
   else
     Result := True;
+end;
+
+function TBrookSession.IsEmpty: Boolean;
+begin
+  Result := FFields.Count < 1;
 end;
 
 function TBrookSession.GenerateID: string;
