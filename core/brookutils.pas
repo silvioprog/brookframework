@@ -384,7 +384,15 @@ begin
         APropInfo)));
       tkBool: AValue := PChar(BoolToStr(GetOrdProp(AObject, APropInfo) <> 0,
         True));
-      tkFloat: AValue := PChar(FloatToStr(GetFloatProp(AObject, APropInfo)));
+      tkFloat:
+        case APropInfo^.PropType^.Name of
+          'TDate': AValue := PChar(DateToStr(GetFloatProp(AObject, APropInfo)));
+          'TTime': AValue := PChar(TimeToStr(GetFloatProp(AObject, APropInfo)));
+          'TDateTime':
+            AValue := PChar(DateTimeToStr(GetFloatProp(AObject, APropInfo)));
+        else
+          AValue := PChar(FloatToStr(GetFloatProp(AObject, APropInfo)));
+        end;
       tkEnumeration: AValue := PChar(GetEnumProp(AObject, APropInfo));
       tkSet: AValue := PChar(GetSetProp(AObject, APropInfo, False));
     end;
