@@ -267,9 +267,9 @@ initialization
     function CreateEntity: T; virtual;
     procedure FreeEntity; virtual;
   public
-    { Creates an instance of a @link(TBrookAction) class. }
+    { Creates an instance of a @link(TBrookGAction) class. }
     constructor Create; overload; override;
-    { Frees an instance of @link(TBrookAction) class. }
+    { Frees an instance of @link(TBrookGAction) class. }
     destructor Destroy; override;
     { Is triggered by a request of any HTTP method. }
     procedure Request(ARequest: TBrookRequest;
