@@ -103,6 +103,26 @@ type
     property HttpOnly: Boolean read FHttpOnly write FHttpOnly;
   end;
 
+  { Defines features to the section mapping field values to object. }
+  generic TBrookGSession<T> = class(TBrookSession)
+  private
+    FEntity: T;
+  protected
+    function CreateEntity: T; virtual;
+    procedure FreeEntity; virtual;
+    procedure FillEntity; virtual;
+    procedure ReadEntity; virtual;
+    procedure Load; override;
+    procedure Save; override;
+  public
+    { Creates an instance of a @link(TBrookGSession) class. }
+    constructor Create; override;
+    { Frees an instance of @link(TBrookGSession) class. }
+    destructor Destroy; override;
+    { Maps field values to object. }
+    property Entity: T read FEntity write FEntity;
+  end;
+
 implementation
 
 { TBrookSession }
@@ -252,6 +272,53 @@ end;
 function TBrookSession.Exists(const AName: string): Boolean;
 begin
   Result := FFields.IndexOfName(AName) <> -1;
+end;
+
+{ TBrookGSession }
+
+constructor TBrookGSession.Create;
+begin
+  inherited Create;
+  FEntity := CreateEntity;
+end;
+
+destructor TBrookGSession.Destroy;
+begin
+  FreeEntity;
+  inherited Destroy;
+end;
+
+function TBrookGSession.CreateEntity: T;
+begin
+  Result := T.Create;
+end;
+
+procedure TBrookGSession.FreeEntity;
+begin
+  FreeAndNil(FEntity);
+end;
+
+procedure TBrookGSession.FillEntity;
+begin
+  BrookStringsToObject(FEntity, Fields);
+end;
+
+procedure TBrookGSession.ReadEntity;
+begin
+  Fields.Clear;
+  BrookObjectToStrings(FEntity, Fields);
+end;
+
+procedure TBrookGSession.Load;
+begin
+  inherited Load;
+  FillEntity;
+end;
+
+procedure TBrookGSession.Save;
+begin
+  ReadEntity;
+  inherited Save;
 end;
 
 end.
