@@ -271,7 +271,7 @@ end;
 
 function TBrookSession.Exists(const AName: string): Boolean;
 begin
-  Result := FFields.IndexOfName(AName) <> -1;
+  Result := FFields.IndexOfName(AName) > -1;
 end;
 
 { TBrookGSession }
