@@ -5,7 +5,7 @@ unit jTableActns;
 interface
 
 uses
-  BrookAction, dOpf, dSQLdbBroker, dSqlBuilder, dbutils, Classes, FPJSON, FGL;
+  BrookAction, dOpf, dSQLdbBroker, dbutils, Classes, FPJSON;
 
 type
 
@@ -39,9 +39,6 @@ type
     FjtPageSize: Integer;
     FjtSorting: string;
     FjtStartIndex: Integer;
-  public type
-    TEntities = specialize TFPGObjectList<T2>;
-    TTable = specialize TdGTable<T2>;
   public
     procedure WriteData; override;
   published
@@ -132,19 +129,19 @@ procedure TjTableGListAction.WriteData;
 var
   I: Integer;
   VEntity: TObject;
-  VEntities: TEntities;
+  VEntities: TObject;
   VArray: TJSONArray;
   VObject: TJSONObject;
 begin
-  VEntities := TEntities.Create;
+  VEntities := T1.TEntities.Create;
   try
     GetParams(Self);
-    Opf.BuildSelect(VEntities, Params, Self);
+    Opf.BuildSelect(T1.TEntities(VEntities), Params, Self);
     VArray := TJSONArray.Create;
-    for I := 0 to Pred(VEntities.Count) do
+    for I := 0 to Pred(T1.TEntities(VEntities).Count) do
     begin
       VObject := TJSONObject.Create;
-      VEntity := VEntities.Items[I];
+      VEntity := T1.TEntities(VEntities).Items[I];
       dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, VEntity,
         VObject);
       VArray.Add(VObject);

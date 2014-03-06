@@ -5,7 +5,7 @@ unit person;
 interface
 
 uses
-  SysUtils;
+  dSQLdbBroker, dbutils, SysUtils;
 
 type
   EPerson = class(Exception);
@@ -23,6 +23,13 @@ type
     property Name: string read FName write FName;
   end;
 
+  { TPersonOpf }
+
+  TPersonOpf = class(specialize TdGSQLdbOpf<TPerson>)
+  public
+    constructor Create; overload;
+  end;
+
 implementation
 
 { TPerson }
@@ -31,6 +38,13 @@ procedure TPerson.Validate;
 begin
   if Trim(FName) = '' then
     raise EPerson.Create('Field "Name" must not be empty.');
+end;
+
+{ TPersonOpf }
+
+constructor TPersonOpf.Create;
+begin
+  inherited Create(dbutils.con, 'person');
 end;
 
 end.

@@ -5,16 +5,9 @@ unit personactns;
 interface
 
 uses
-  jTableActns, dbutils, personobjs;
+  jTableActns, personobjs;
 
 type
-
-  { TPersonOpf }
-
-  TPersonOpf = class(specialize TjTableGOpf<TPerson>)
-  public
-    constructor Create; overload;
-  end;
 
   { TPersonListAction }
 
@@ -37,13 +30,6 @@ type
   end;
 
 implementation
-
-{ TPersonOpf }
-
-constructor TPersonOpf.Create;
-begin
-  inherited Create(dbutils.con, 'person');
-end;
 
 initialization
   TPersonListAction.Register('/personlist');

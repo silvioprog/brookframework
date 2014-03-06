@@ -5,16 +5,9 @@ unit Unit1;
 interface
 
 uses
-  BrookAction, dSQLdbBroker, dbutils, person, Classes;
+  BrookAction, person;
 
 type
-
-  { TPersonOpf }
-
-  TPersonOpf = class(specialize TdGSQLdbOpf<TPerson>)
-  public
-    constructor Create; overload;
-  end;
 
   { TPersonRESTAction }
 
@@ -32,13 +25,6 @@ type
   end;
 
 implementation
-
-{ TPersonOpf }
-
-constructor TPersonOpf.Create;
-begin
-  inherited Create(dbutils.con, 'person');
-end;
 
 { TPersonRESTAction }
 
