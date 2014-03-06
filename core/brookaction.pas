@@ -233,6 +233,8 @@ initialization
       const AArgs: array of const); overload; virtual;
     { Clears all written content with @code(Write(), WriteLn(), Render()) etc. }
     procedure Clear;
+    { Checks if a name exists in fields. }
+    function Exists(const AName: string): Boolean;
     { Writes a string. }
     procedure Write(const AString: string); overload;
     { Writes a boolean. }
@@ -488,6 +490,11 @@ end;
 procedure TBrookAction.Clear;
 begin
   FTheResponse.Contents.Clear;
+end;
+
+function TBrookAction.Exists(const AName: string): Boolean;
+begin
+  Result := FFields.IndexOfName(AName) > -1;
 end;
 
 procedure TBrookAction.Write(const AString: string);
