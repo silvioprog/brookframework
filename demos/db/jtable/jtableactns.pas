@@ -95,7 +95,7 @@ begin
   if (VjtPageSizeIdx > -1) and (VjtStartIndexIdx > -1) then
   begin
     VSql += ' limit :jtPageSize offset :jtStartIndex';
-    List(AEntities, VSql, AParams)
+    List(AEntities, AParams, VSql)
   end
   else
     List(AEntities);
