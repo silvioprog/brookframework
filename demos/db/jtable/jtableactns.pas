@@ -13,6 +13,7 @@ type
 
   generic TjTableGOpf<T> = class(specialize TdGOpf<TdSQLdbConnector, TdSQLdbQuery, T>)
   public
+    constructor Create; overload; virtual;
     procedure BuildSelect(AEntities: TEntities; AParamsStr: TStrings;
       AParams: TObject);
   end;
@@ -71,6 +72,11 @@ type
 implementation
 
 { TjTableGOpf }
+
+constructor TjTableGOpf.Create;
+begin
+  inherited Create(dbutils.con, '');
+end;
 
 procedure TjTableGOpf.BuildSelect(AEntities: TEntities; AParamsStr: TStrings;
   AParams: TObject);

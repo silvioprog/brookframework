@@ -5,7 +5,7 @@ unit personobjs;
 interface
 
 uses
-  jTableActns, dbutils, SysUtils;
+  jTableActns, SysUtils;
 
 type
   EPerson = class(Exception);
@@ -27,7 +27,7 @@ type
 
   TPersonOpf = class(specialize TjTableGOpf<TPerson>)
   public
-    constructor Create; overload;
+    constructor Create; override;
   end;
 
 implementation
@@ -44,7 +44,8 @@ end;
 
 constructor TPersonOpf.Create;
 begin
-  inherited Create(dbutils.con, 'person');
+  inherited Create;
+  Table.Name := 'person';
 end;
 
 end.
