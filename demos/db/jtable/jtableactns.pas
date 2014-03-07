@@ -18,6 +18,15 @@ type
       AParams: TObject);
   end;
 
+  { TjTableGEntityOpf }
+
+  generic TjTableGEntityOpf<T> = class(specialize TdGEntityOpf<TdSQLdbConnector, TdSQLdbQuery, T>)
+  public
+    constructor Create; overload; virtual;
+    procedure BuildSelect(AEntities: TEntities; AParamsStr: TStrings;
+      AParams: TObject);
+  end;
+
   { TjTableGAction }
 
   generic TjTableGAction<T1, T2> = class(specialize TBrookGAction<T2>)
@@ -80,6 +89,36 @@ end;
 
 procedure TjTableGOpf.BuildSelect(AEntities: TEntities; AParamsStr: TStrings;
   AParams: TObject);
+var
+  VSql: string;
+  VFields: string = '';
+  VjtSortingIdx, VjtStartIndexIdx, VjtPageSizeIdx: Integer;
+begin
+  VjtSortingIdx := AParamsStr.IndexOfName('jtSorting');
+  VjtPageSizeIdx := AParamsStr.IndexOfName('jtPageSize');
+  VjtStartIndexIdx := AParamsStr.IndexOfName('jtStartIndex');
+  GetFieldNames(VFields);
+  VSql := 'select ' + VFields + ' from ' + Table.Name;
+  if VjtSortingIdx > -1 then
+    VSql += ' order by ' + AParamsStr.ValueFromIndex[VjtSortingIdx];
+  if (VjtPageSizeIdx > -1) and (VjtStartIndexIdx > -1) then
+  begin
+    VSql += ' limit :jtPageSize offset :jtStartIndex';
+    List(AEntities, AParams, VSql)
+  end
+  else
+    List(AEntities);
+end;
+
+{ TjTableGEntityOpf }
+
+constructor TjTableGEntityOpf.Create;
+begin
+  inherited Create(dbutils.con, '');
+end;
+
+procedure TjTableGEntityOpf.BuildSelect(AEntities: TEntities;
+  AParamsStr: TStrings; AParams: TObject);
 var
   VSql: string;
   VFields: string = '';
