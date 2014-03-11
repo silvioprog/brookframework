@@ -302,20 +302,6 @@ end;
 
 procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
   AValue: PChar);
-
-  function IsFloat(P: PChar): Boolean;
-  var
-    I: ShortInt = 0;
-  begin
-    while (P^ <> NU) and (I < 2) do
-    begin
-      if P^ = DefaultFormatSettings.DecimalSeparator then
-        Inc(I);
-      Inc(P);
-    end;
-    Result := I = 1;
-  end;
-
 begin
   if Assigned(APropInfo) then
     case APropInfo^.PropType^.Kind of
@@ -326,10 +312,12 @@ begin
       tkBool: SetOrdProp(AObject, APropInfo,
         Ord((ShortCompareText(AValue, 'on') = 0) or StrToBool(AValue)));
       tkFloat:
-        if IsFloat(AValue) then
-          SetFloatProp(AObject, APropInfo, StrToFloat(AValue))
+        case APropInfo^.PropType^.Name of
+          'TDate', 'TTime', 'TDateTime':
+            SetFloatProp(AObject, APropInfo, StrToDateTime(AValue));
         else
-          SetFloatProp(AObject, APropInfo, StrToDateTime(AValue));
+          SetFloatProp(AObject, APropInfo, StrToFloat(AValue));
+        end;
       tkEnumeration: SetEnumProp(AObject, APropInfo, AValue);
       tkSet: SetSetProp(AObject, APropInfo, AValue);
     end;
