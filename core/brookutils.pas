@@ -142,13 +142,13 @@ procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
   a list of strings and checking the params. }
 procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings);
 { Reads a published property of an object passing the property as
-  @code(PPropInfo) and getting the value as @code(PChar). }
+  @code(PPropInfo) and getting the value as @code(string). }
 procedure BrookObjectToValue(AObject: TObject; APropInfo: PPropInfo;
-  out AValue: PChar);
+  out AValue: string);
 { Reads a published property of an object passing the name as @code(PChar) and
-  getting the value as @code(PChar). }
-procedure BrookObjectToString(AObject: TObject; const AName: PChar;
-  out AValue: PChar);
+  getting the value as @code(string). }
+procedure BrookObjectToString(AObject: TObject; const AName: string;
+  out AValue: string);
 { Reads a published property of an object passing the name, getting the value as
   string and checking the params. }
 procedure BrookSafeObjectToString(AObject: TObject; const AName: string;
@@ -361,56 +361,50 @@ begin
 end;
 
 procedure BrookObjectToValue(AObject: TObject; APropInfo: PPropInfo;
-  out AValue: PChar);
+  out AValue: string);
 begin
   if Assigned(APropInfo) then
     case APropInfo^.PropType^.Kind of
-      tkAString: AValue := PChar(GetStrProp(AObject, APropInfo));
-      tkChar: AValue := PChar(string(Char(GetOrdProp(AObject, APropInfo))));
-      tkInteger: AValue := PChar(IntToStr(GetOrdProp(AObject, APropInfo)));
-      tkInt64, tkQWord: AValue := PChar(IntToStr(GetInt64Prop(AObject,
-        APropInfo)));
-      tkBool: AValue := PChar(BoolToStr(GetOrdProp(AObject, APropInfo) <> 0,
-        True));
+      tkAString: AValue := GetStrProp(AObject, APropInfo);
+      tkChar: AValue := Char(GetOrdProp(AObject, APropInfo));
+      tkInteger: AValue := IntToStr(GetOrdProp(AObject, APropInfo));
+      tkInt64, tkQWord: AValue := IntToStr(GetInt64Prop(AObject, APropInfo));
+      tkBool: AValue := BoolToStr(GetOrdProp(AObject, APropInfo) <> 0, True);
       tkFloat:
         case APropInfo^.PropType^.Name of
-          'TDate': AValue := PChar(DateToStr(GetFloatProp(AObject, APropInfo)));
-          'TTime': AValue := PChar(TimeToStr(GetFloatProp(AObject, APropInfo)));
-          'TDateTime':
-            AValue := PChar(DateTimeToStr(GetFloatProp(AObject, APropInfo)));
+          'TDate': AValue := DateToStr(GetFloatProp(AObject, APropInfo));
+          'TTime': AValue := TimeToStr(GetFloatProp(AObject, APropInfo));
+          'TDateTime': AValue := DateTimeToStr(GetFloatProp(AObject, APropInfo));
           'Currency': AValue :=
-            PChar(CurrToStrF(GetFloatProp(AObject, APropInfo), ffCurrency, -1));
+            CurrToStrF(GetFloatProp(AObject, APropInfo), ffCurrency, -1);
         else
-          AValue := PChar(FloatToStr(GetFloatProp(AObject, APropInfo)));
+          AValue := FloatToStr(GetFloatProp(AObject, APropInfo));
         end;
-      tkEnumeration: AValue := PChar(GetEnumProp(AObject, APropInfo));
-      tkSet: AValue := PChar(GetSetProp(AObject, APropInfo, False));
+      tkEnumeration: AValue := GetEnumProp(AObject, APropInfo);
+      tkSet: AValue := GetSetProp(AObject, APropInfo, False);
     end;
 end;
 
-procedure BrookObjectToString(AObject: TObject; const AName: PChar;
-  out AValue: PChar);
+procedure BrookObjectToString(AObject: TObject; const AName: string;
+  out AValue: string);
 begin
-  BrookObjectToValue(AObject, GetPropInfo(PTypeInfo(AObject.ClassInfo), AName),
-    AValue);
+  BrookObjectToValue(AObject,
+    GetPropInfo(PTypeInfo(AObject.ClassInfo), AName), AValue);
 end;
 
 procedure BrookSafeObjectToString(AObject: TObject; const AName: string;
   out AValue: string);
-var
-  P: PChar;
 begin
   if not Assigned(AObject) then
     raise EBrook.CreateFmt('BrookSafeObjectToString', SBrookNotNilError,
       ['AObject']);
-  BrookObjectToString(AObject, PChar(AName), P);
-  AValue := P;
+  BrookObjectToString(AObject, AName, AValue);
 end;
 
 procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings);
 var
   S: Char;
-  V: PChar;
+  V: string;
   I, C: Integer;
   PI: PPropInfo;
   PL: PPropList = nil;
