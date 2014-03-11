@@ -126,12 +126,13 @@ function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
 { Fills a published property of an object passing the property as
-  @code(PPropInfo) and value as @code(PChar). }
-procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
-  AValue: PChar);
+  @code(PPropInfo) and value as @code(string). }
+procedure BrookStringToObject(AObject: TObject; APropInfo: PPropInfo;
+  const AValue: string); overload;
 { Fills a published property of an object passing the name and value as
-  @code(PChar). }
-procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
+  @code(string). }
+procedure BrookStringToObject(AObject: TObject; const AName,
+  AValue: string); overload;
 { Fills a published property of an object passing the name and value as
   string and checking the params. }
 procedure BrookSafeStringToObject(AObject: TObject; const AName, AValue: string);
@@ -143,12 +144,12 @@ procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
 procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings);
 { Reads a published property of an object passing the property as
   @code(PPropInfo) and getting the value as @code(string). }
-procedure BrookObjectToValue(AObject: TObject; APropInfo: PPropInfo;
-  out AValue: string);
-{ Reads a published property of an object passing the name as @code(PChar) and
+procedure BrookObjectToString(AObject: TObject; APropInfo: PPropInfo;
+  out AValue: string); overload;
+{ Reads a published property of an object passing the name as @code(string) and
   getting the value as @code(string). }
 procedure BrookObjectToString(AObject: TObject; const AName: string;
-  out AValue: string);
+  out AValue: string); overload;
 { Reads a published property of an object passing the name, getting the value as
   string and checking the params. }
 procedure BrookSafeObjectToString(AObject: TObject; const AName: string;
@@ -300,21 +301,22 @@ begin
     Result += US;
 end;
 
-procedure BrookValueToObject(AObject: TObject; APropInfo: PPropInfo;
-  AValue: PChar);
+procedure BrookStringToObject(AObject: TObject; APropInfo: PPropInfo;
+  const AValue: string);
 begin
   if Assigned(APropInfo) then
     case APropInfo^.PropType^.Kind of
       tkAString: SetStrProp(AObject, APropInfo, AValue);
-      tkChar: SetOrdProp(AObject, APropInfo, Ord(AValue^));
+      tkChar: SetOrdProp(AObject, APropInfo, Ord(PChar(AValue)^));
       tkInteger: SetOrdProp(AObject, APropInfo, StrToInt(AValue));
       tkInt64, tkQWord: SetInt64Prop(AObject, APropInfo, StrToInt64(AValue));
       tkBool: SetOrdProp(AObject, APropInfo,
         Ord((ShortCompareText(AValue, 'on') = 0) or StrToBool(AValue)));
       tkFloat:
         case APropInfo^.PropType^.Name of
-          'TDate', 'TTime', 'TDateTime':
-            SetFloatProp(AObject, APropInfo, StrToDateTime(AValue));
+          'TDate': SetFloatProp(AObject, APropInfo, StrToDate(AValue));
+          'TTime': SetFloatProp(AObject, APropInfo, StrToTime(AValue));
+          'TDateTime': SetFloatProp(AObject, APropInfo, StrToDateTime(AValue));
         else
           SetFloatProp(AObject, APropInfo, StrToFloat(AValue));
         end;
@@ -323,18 +325,18 @@ begin
     end;
 end;
 
-procedure BrookStringToObject(AObject: TObject; AName, AValue: PChar);
+procedure BrookStringToObject(AObject: TObject; const AName, AValue: string);
 begin
-  BrookValueToObject(AObject, GetPropInfo(PTypeInfo(AObject.ClassInfo), AName),
-    AValue);
+  BrookStringToObject(AObject,
+    GetPropInfo(PTypeInfo(AObject.ClassInfo), AName), AValue);
 end;
 
 procedure BrookSafeStringToObject(AObject: TObject; const AName, AValue: string);
 begin
   if not Assigned(AObject) then
-    raise EBrook.CreateFmt('BrookSafeStringToObject', SBrookNotNilError,
-      ['AObject']);
-  BrookStringToObject(AObject, PChar(AName), PChar(AValue));
+    raise EBrook.CreateFmt('BrookSafeStringToObject',
+      SBrookNotNilError, ['AObject']);
+  BrookStringToObject(AObject, AName, AValue);
 end;
 
 procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
@@ -345,7 +347,7 @@ begin
   for I := 0 to Pred(AStrings.Count) do
   begin
     AStrings.GetNameValue(I, N, V);
-    BrookStringToObject(AObject, PChar(N), PChar(V));
+    BrookStringToObject(AObject, N, V);
   end;
 end;
 
@@ -360,7 +362,7 @@ begin
   BrookStringsToObject(AObject, AStrings);
 end;
 
-procedure BrookObjectToValue(AObject: TObject; APropInfo: PPropInfo;
+procedure BrookObjectToString(AObject: TObject; APropInfo: PPropInfo;
   out AValue: string);
 begin
   if Assigned(APropInfo) then
@@ -388,7 +390,7 @@ end;
 procedure BrookObjectToString(AObject: TObject; const AName: string;
   out AValue: string);
 begin
-  BrookObjectToValue(AObject,
+  BrookObjectTostring(AObject,
     GetPropInfo(PTypeInfo(AObject.ClassInfo), AName), AValue);
 end;
 
@@ -418,7 +420,7 @@ begin
       for I := 0 to Pred(C) do
       begin
         PI := PL^[I];
-        BrookObjectToValue(AObject, PI, V);
+        BrookObjectToString(AObject, PI, V);
         AStrings.Add(PI^.Name + S + V);
       end;
     finally
