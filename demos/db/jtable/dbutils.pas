@@ -110,8 +110,9 @@ begin
         begin
           F := GetFloatProp(AObject, PI);
           case PI^.PropType^.Name of
-            'TDate', 'TTime', 'TDateTime':
-              AJson.Add(PI^.Name, DateTimeToStr(F));
+            'TDate': AJson.Add(PI^.Name, DateToStr(F));
+            'TTime': AJson.Add(PI^.Name, TimeToStr(F));
+            'TDateTime': AJson.Add(PI^.Name, DateTimeToStr(F));
           else
             AJson.Add(PI^.Name, FloatToStr(F))
           end;
