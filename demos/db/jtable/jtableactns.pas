@@ -5,26 +5,128 @@ unit jTableActns;
 interface
 
 uses
-  BrookAction, dOpf, dSQLdbBroker, dbutils, Classes, FPJSON;
+  BrookAction, BrookHttpDefs, BrookUtils, dOpf, dSQLdbBroker, dbutils, Classes,
+  SysUtils, FPJSON;
 
 type
+  TjTableBeforeMakeFieldsEvent =
+    procedure(var AFields: string; var AHandled: Boolean) of object;
+  TjTableBeforeMakeSelectEvent = procedure(var AFields, ASelect: string;
+    var AHandled: Boolean) of object;
+  TjTableBeforeMakeWhereEvent = procedure(var ASelect, AWhere: string;
+    var AHandled: Boolean) of object;
+  TjTableBeforeMakeOrderByEvent = procedure(var ASelect, AjtSorting: string;
+    var AHandled: Boolean) of object;
+  TjTableBeforeMakeLimitEvent = procedure(var ASelect: string;
+    var AHandled: Boolean) of object;
+  TjTableBeforeCountRecordsEvent = procedure(var AWhere: string;
+    var ACount: Integer; var AHandled: Boolean) of object;
+
+  TjTableAfterMakeFieldsEvent = procedure(var AFields: string) of object;
+  TjTableAfterMakeSelectEvent = procedure(var AFields,
+    ASelect: string) of object;
+  TjTableAfterMakeWhereEvent = procedure(var ASelect, AWhere: string) of object;
+  TjTableAfterMakeOrderByEvent = procedure(var ASelect,
+    AjtSorting: string) of object;
+  TjTableAfterMakeLimitEvent = procedure(var ASelect: string) of object;
+  TjTableAfterCountRecordsEvent = procedure(var AWhere: string) of object;
 
   { TjTableGOpf }
 
   generic TjTableGOpf<T> = class(specialize TdGOpf<TdSQLdbConnector, TdSQLdbQuery, T>)
+  private
+    FOnAfterMakeFields: TjTableAfterMakeFieldsEvent;
+    FOnAfterMakeLimit: TjTableAfterMakeLimitEvent;
+    FOnAfterMakeOrderBy: TjTableAfterMakeOrderByEvent;
+    FOnAfterMakeSelect: TjTableAfterMakeSelectEvent;
+    FOnAfterMakeWhere: TjTableAfterMakeWhereEvent;
+    FOnBeforeMakeLimit: TjTableBeforeMakeLimitEvent;
+    FOnBeforeMakeOrderBy: TjTableBeforeMakeOrderByEvent;
+    FOnBeforeMakeSelect: TjTableBeforeMakeSelectEvent;
+    FOnBeforeMakeFields: TjTableBeforeMakeFieldsEvent;
+    FOnBeforeMakeWhere: TjTableBeforeMakeWhereEvent;
+    FUnlistedFields: TStrings;
+  protected
+    procedure DoMakeFields(var AFields: string); virtual;
+    procedure DoMakeSelect(var AFields, ASelect: string); virtual;
+    procedure DoMakeWhere(var ASelect, AWhere: string); virtual;
+    procedure DoMakeOrderBy(var ASelect, AjtSorting: string); virtual;
+    procedure DoMakeLimit(var ASelect: string); virtual;
   public
     constructor Create; overload; virtual;
-    procedure BuildSelect(AEntities: TEntities; AParamsStr: TStrings;
-      AParams: TObject);
+    destructor Destroy; override;
+    procedure ListData(AEntity: T; AEntities: TEntities;
+      AParamsStr: TStrings; AParams: TObject; var AWhere: string);
+    property UnlistedFields: TStrings read FUnlistedFields;
+    property OnBeforeMakeFields: TjTableBeforeMakeFieldsEvent
+      read FOnBeforeMakeFields write FOnBeforeMakeFields;
+    property OnBeforeMakeSelect: TjTableBeforeMakeSelectEvent
+      read FOnBeforeMakeSelect write FOnBeforeMakeSelect;
+    property OnBeforeMakeWhere: TjTableBeforeMakeWhereEvent
+      read FOnBeforeMakeWhere write FOnBeforeMakeWhere;
+    property OnBeforeMakeOrderBy: TjTableBeforeMakeOrderByEvent
+      read FOnBeforeMakeOrderBy write FOnBeforeMakeOrderBy;
+    property OnBeforeMakeLimit: TjTableBeforeMakeLimitEvent
+      read FOnBeforeMakeLimit write FOnBeforeMakeLimit;
+    property OnAfterMakeFields: TjTableAfterMakeFieldsEvent
+      read FOnAfterMakeFields write FOnAfterMakeFields;
+    property OnAfterMakeSelect: TjTableAfterMakeSelectEvent
+      read FOnAfterMakeSelect write FOnAfterMakeSelect;
+    property OnAfterMakeWhere: TjTableAfterMakeWhereEvent
+      read FOnAfterMakeWhere write FOnAfterMakeWhere;
+    property OnAfterMakeOrderBy: TjTableAfterMakeOrderByEvent
+      read FOnAfterMakeOrderBy write FOnAfterMakeOrderBy;
+    property OnAfterMakeLimit: TjTableAfterMakeLimitEvent
+      read FOnAfterMakeLimit write FOnAfterMakeLimit;
   end;
 
   { TjTableGEntityOpf }
 
   generic TjTableGEntityOpf<T> = class(specialize TdGEntityOpf<TdSQLdbConnector, TdSQLdbQuery, T>)
+  private
+    FOnAfterMakeFields: TjTableAfterMakeFieldsEvent;
+    FOnAfterMakeLimit: TjTableAfterMakeLimitEvent;
+    FOnAfterMakeOrderBy: TjTableAfterMakeOrderByEvent;
+    FOnAfterMakeSelect: TjTableAfterMakeSelectEvent;
+    FOnAfterMakeWhere: TjTableAfterMakeWhereEvent;
+    FOnBeforeMakeLimit: TjTableBeforeMakeLimitEvent;
+    FOnBeforeMakeOrderBy: TjTableBeforeMakeOrderByEvent;
+    FOnBeforeMakeSelect: TjTableBeforeMakeSelectEvent;
+    FOnBeforeMakeFields: TjTableBeforeMakeFieldsEvent;
+    FOnBeforeMakeWhere: TjTableBeforeMakeWhereEvent;
+    FUnlistedFields: TStrings;
+  protected
+    procedure DoMakeFields(var AFields: string); virtual;
+    procedure DoMakeSelect(var AFields, ASelect: string); virtual;
+    procedure DoMakeWhere(var ASelect, AWhere: string); virtual;
+    procedure DoMakeOrderBy(var ASelect, AjtSorting: string); virtual;
+    procedure DoMakeLimit(var ASelect: string); virtual;
   public
     constructor Create; overload; virtual;
-    procedure BuildSelect(AEntities: TEntities; AParamsStr: TStrings;
-      AParams: TObject);
+    destructor Destroy; override;
+    procedure ListData(AEntity: T; AEntities: TEntities;
+      AParamsStr: TStrings; AParams: TObject; var AWhere: string);
+    property UnlistedFields: TStrings read FUnlistedFields;
+    property OnBeforeMakeFields: TjTableBeforeMakeFieldsEvent
+      read FOnBeforeMakeFields write FOnBeforeMakeFields;
+    property OnBeforeMakeSelect: TjTableBeforeMakeSelectEvent
+      read FOnBeforeMakeSelect write FOnBeforeMakeSelect;
+    property OnBeforeMakeWhere: TjTableBeforeMakeWhereEvent
+      read FOnBeforeMakeWhere write FOnBeforeMakeWhere;
+    property OnBeforeMakeOrderBy: TjTableBeforeMakeOrderByEvent
+      read FOnBeforeMakeOrderBy write FOnBeforeMakeOrderBy;
+    property OnBeforeMakeLimit: TjTableBeforeMakeLimitEvent
+      read FOnBeforeMakeLimit write FOnBeforeMakeLimit;
+    property OnAfterMakeFields: TjTableAfterMakeFieldsEvent
+      read FOnAfterMakeFields write FOnAfterMakeFields;
+    property OnAfterMakeSelect: TjTableAfterMakeSelectEvent
+      read FOnAfterMakeSelect write FOnAfterMakeSelect;
+    property OnAfterMakeWhere: TjTableAfterMakeWhereEvent
+      read FOnAfterMakeWhere write FOnAfterMakeWhere;
+    property OnAfterMakeOrderBy: TjTableAfterMakeOrderByEvent
+      read FOnAfterMakeOrderBy write FOnAfterMakeOrderBy;
+    property OnAfterMakeLimit: TjTableAfterMakeLimitEvent
+      read FOnAfterMakeLimit write FOnAfterMakeLimit;
   end;
 
   { TjTableGAction }
@@ -36,6 +138,8 @@ type
   public
     constructor Create; overload; override;
     destructor Destroy; override;
+    procedure Request(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); override;
     procedure Post; override;
     procedure WriteData; virtual;
     property Data: TJSONObject read FData;
@@ -49,33 +153,50 @@ type
     FjtPageSize: Integer;
     FjtSorting: string;
     FjtStartIndex: Integer;
+    FOnAfterCountRecords: TjTableAfterCountRecordsEvent;
+    FOnBeforeCountRecords: TjTableBeforeCountRecordsEvent;
+  protected
+    function DoCountRecords(var AWhere: string): Integer;
   public
-    procedure WriteData; override;
+    procedure Post; override;
   published
     property jtSorting: string read FjtSorting write FjtSorting;
     property jtPageSize: Integer read FjtPageSize write FjtPageSize;
     property jtStartIndex: Integer read FjtStartIndex write FjtStartIndex;
+    property OnBeforeCountRecords: TjTableBeforeCountRecordsEvent
+      read FOnBeforeCountRecords write FOnBeforeCountRecords;
+    property OnAfterCountRecords: TjTableAfterCountRecordsEvent
+      read FOnAfterCountRecords write FOnAfterCountRecords;
   end;
 
   { TjTableGCreateAction }
 
   generic TjTableGCreateAction<T1, T2> = class(specialize TjTableGAction<T1, T2>)
   public
-    procedure WriteData; override;
+    procedure Post; override;
   end;
 
   { TjTableGUpdateAction }
 
   generic TjTableGUpdateAction<T1, T2> = class(specialize TjTableGAction<T1, T2>)
   public
-    procedure WriteData; override;
+    procedure Post; override;
   end;
 
   { TjTableGDeleteAction }
 
   generic TjTableGDeleteAction<T1, T2> = class(specialize TjTableGAction<T1, T2>)
   public
-    procedure WriteData; override;
+    procedure Post; override;
+  end;
+
+  { TjTableGLookupAction }
+
+  generic TjTableGLookupAction<T1, T2> = class(specialize TjTableGAction<T1, T2>)
+  public
+    class function DisplayText: string; virtual;
+    class function Value: string; virtual;
+    procedure Post; override;
   end;
 
 implementation
@@ -85,29 +206,102 @@ implementation
 constructor TjTableGOpf.Create;
 begin
   inherited Create(dbutils.con, '');
+  FUnlistedFields := TStringList.Create;
 end;
 
-procedure TjTableGOpf.BuildSelect(AEntities: TEntities; AParamsStr: TStrings;
-  AParams: TObject);
+destructor TjTableGOpf.Destroy;
+begin
+  FUnlistedFields.Free;
+  inherited Destroy;
+end;
+
+procedure TjTableGOpf.DoMakeFields(var AFields: string);
 var
-  VSql: string;
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeFields) then
+    FOnBeforeMakeFields(AFields, VHandled);
+  if not VHandled then
+    GetFieldNames(AFields);
+  if Assigned(FOnAfterMakeFields) then
+    FOnAfterMakeFields(AFields);
+end;
+
+procedure TjTableGOpf.DoMakeSelect(var AFields, ASelect: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeSelect) then
+    FOnBeforeMakeSelect(AFields, ASelect, VHandled);
+  if not VHandled then
+    ASelect := 'select ' + AFields + ' from ' + Table.Name;
+  if Assigned(FOnAfterMakeSelect) then
+    FOnAfterMakeSelect(AFields, ASelect);
+end;
+
+procedure TjTableGOpf.DoMakeWhere(var ASelect, AWhere: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeWhere) then
+    FOnBeforeMakeWhere(ASelect, AWhere, VHandled);
+  if not VHandled then
+    ASelect += ' where ' + AWhere;
+  if Assigned(FOnAfterMakeWhere) then
+    FOnAfterMakeWhere(ASelect, AWhere);
+end;
+
+procedure TjTableGOpf.DoMakeOrderBy(var ASelect, AjtSorting: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeOrderBy) then
+    FOnBeforeMakeOrderBy(ASelect, AjtSorting, VHandled);
+  if not VHandled then
+    ASelect += ' order by ' + AjtSorting;
+  if Assigned(FOnAfterMakeOrderBy) then
+    FOnAfterMakeOrderBy(ASelect, AjtSorting);
+end;
+
+procedure TjTableGOpf.DoMakeLimit(var ASelect: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeLimit) then
+    FOnBeforeMakeLimit(ASelect, VHandled);
+  if not VHandled then
+    ASelect += ' limit :jtPageSize offset :jtStartIndex';
+  if Assigned(FOnAfterMakeLimit) then
+    FOnAfterMakeLimit(ASelect);
+end;
+
+procedure TjTableGOpf.ListData(AEntity: T; AEntities: TEntities;
+  AParamsStr: TStrings; AParams: TObject; var AWhere: string);
+var
+  VjtSorting: string;
+  VSelect: string = '';
   VFields: string = '';
   VjtSortingIdx, VjtStartIndexIdx, VjtPageSizeIdx: Integer;
 begin
   VjtSortingIdx := AParamsStr.IndexOfName('jtSorting');
   VjtPageSizeIdx := AParamsStr.IndexOfName('jtPageSize');
   VjtStartIndexIdx := AParamsStr.IndexOfName('jtStartIndex');
-  GetFieldNames(VFields);
-  VSql := 'select ' + VFields + ' from ' + Table.Name;
+  DoMakeFields(VFields);
+  DoMakeSelect(VFields, VSelect);
+  if AWhere <> '' then
+    DoMakeWhere(VSelect, AWhere);
   if VjtSortingIdx > -1 then
-    VSql += ' order by ' + AParamsStr.ValueFromIndex[VjtSortingIdx];
+  begin
+    VjtSorting := AParamsStr.ValueFromIndex[VjtSortingIdx];
+    DoMakeOrderBy(VSelect, VjtSorting);
+  end;
   if (VjtPageSizeIdx > -1) and (VjtStartIndexIdx > -1) then
   begin
-    VSql += ' limit :jtPageSize offset :jtStartIndex';
-    List(AEntities, AParams, VSql)
+    DoMakeLimit(VSelect);
+    Search(AEntity, AEntities, AParams, VSelect);
   end
   else
-    List(AEntities);
+    Search(AEntity, AEntities);
 end;
 
 { TjTableGEntityOpf }
@@ -115,29 +309,102 @@ end;
 constructor TjTableGEntityOpf.Create;
 begin
   inherited Create(dbutils.con, '');
+  FUnlistedFields := TStringList.Create;
 end;
 
-procedure TjTableGEntityOpf.BuildSelect(AEntities: TEntities;
-  AParamsStr: TStrings; AParams: TObject);
+destructor TjTableGEntityOpf.Destroy;
+begin
+  FUnlistedFields.Free;
+  inherited Destroy;
+end;
+
+procedure TjTableGEntityOpf.DoMakeFields(var AFields: string);
 var
-  VSql: string;
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeFields) then
+    FOnBeforeMakeFields(AFields, VHandled);
+  if not VHandled then
+    GetFieldNames(AFields);
+  if Assigned(FOnAfterMakeFields) then
+    FOnAfterMakeFields(AFields);
+end;
+
+procedure TjTableGEntityOpf.DoMakeSelect(var AFields, ASelect: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeSelect) then
+    FOnBeforeMakeSelect(AFields, ASelect, VHandled);
+  if not VHandled then
+    ASelect := 'select ' + AFields + ' from ' + Table.Name;
+  if Assigned(FOnAfterMakeSelect) then
+    FOnAfterMakeSelect(AFields, ASelect);
+end;
+
+procedure TjTableGEntityOpf.DoMakeWhere(var ASelect, AWhere: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeWhere) then
+    FOnBeforeMakeWhere(ASelect, AWhere, VHandled);
+  if not VHandled then
+    ASelect += ' where ' + AWhere;
+  if Assigned(FOnAfterMakeWhere) then
+    FOnAfterMakeWhere(ASelect, AWhere);
+end;
+
+procedure TjTableGEntityOpf.DoMakeOrderBy(var ASelect, AjtSorting: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeOrderBy) then
+    FOnBeforeMakeOrderBy(ASelect, AjtSorting, VHandled);
+  if not VHandled then
+    ASelect += ' order by ' + AjtSorting;
+  if Assigned(FOnAfterMakeOrderBy) then
+    FOnAfterMakeOrderBy(ASelect, AjtSorting);
+end;
+
+procedure TjTableGEntityOpf.DoMakeLimit(var ASelect: string);
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeMakeLimit) then
+    FOnBeforeMakeLimit(ASelect, VHandled);
+  if not VHandled then
+    ASelect += ' limit :jtPageSize offset :jtStartIndex';
+  if Assigned(FOnAfterMakeLimit) then
+    FOnAfterMakeLimit(ASelect);
+end;
+
+procedure TjTableGEntityOpf.ListData(AEntity: T; AEntities: TEntities;
+  AParamsStr: TStrings; AParams: TObject; var AWhere: string);
+var
+  VjtSorting: string;
+  VSelect: string = '';
   VFields: string = '';
   VjtSortingIdx, VjtStartIndexIdx, VjtPageSizeIdx: Integer;
 begin
   VjtSortingIdx := AParamsStr.IndexOfName('jtSorting');
   VjtPageSizeIdx := AParamsStr.IndexOfName('jtPageSize');
   VjtStartIndexIdx := AParamsStr.IndexOfName('jtStartIndex');
-  GetFieldNames(VFields);
-  VSql := 'select ' + VFields + ' from ' + Table.Name;
+  DoMakeFields(VFields);
+  DoMakeSelect(VFields, VSelect);
+  if AWhere <> '' then
+    DoMakeWhere(VSelect, AWhere);
   if VjtSortingIdx > -1 then
-    VSql += ' order by ' + AParamsStr.ValueFromIndex[VjtSortingIdx];
+  begin
+    VjtSorting := AParamsStr.ValueFromIndex[VjtSortingIdx];
+    DoMakeOrderBy(VSelect, VjtSorting);
+  end;
   if (VjtPageSizeIdx > -1) and (VjtStartIndexIdx > -1) then
   begin
-    VSql += ' limit :jtPageSize offset :jtStartIndex';
-    List(AEntities, AParams, VSql)
+    DoMakeLimit(VSelect);
+    Search(AEntity, AEntities, AParams, VSelect)
   end
   else
-    List(AEntities);
+    Search(AEntity, AEntities);
 end;
 
 { TjTableGAction }
@@ -156,23 +423,55 @@ begin
   inherited Destroy;
 end;
 
+procedure TjTableGAction.Request(ARequest: TBrookRequest;
+  AResponse: TBrookResponse);
+var
+  I: Integer;
+  N, V: string;
+begin
+  for I := 0 to Pred(Values.Count) do
+  begin
+    Values.GetNameValue(I, N, V);
+    Fields.Values[N] := V;
+  end;
+  inherited Request(ARequest, AResponse);
+end;
+
 procedure TjTableGAction.Post;
 begin
+  Data.Add('Result', 'OK');
   WriteData;
 end;
 
 procedure TjTableGAction.WriteData;
 begin
-  Data.Add('Result', 'OK');
   Write(FData.AsJSON);
 end;
 
 { TjTableGListAction }
 
 {$NOTES OFF}
-procedure TjTableGListAction.WriteData;
+
+function TjTableGListAction.DoCountRecords(var AWhere: string): Integer;
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeCountRecords) then
+  begin
+    Result := -1;
+    FOnBeforeCountRecords(AWhere, Result, VHandled);
+  end;
+  if not VHandled then
+    Result := pgCount(Opf.Table.Name, AWhere, Entity);
+  if Assigned(FOnAfterCountRecords) then
+    FOnAfterCountRecords(AWhere);
+end;
+
+procedure TjTableGListAction.Post;
 var
   I: Integer;
+  N, V: string;
+  VWhere: string = '';
   VEntity: TObject;
   VEntities: TObject;
   VArray: TJSONArray;
@@ -180,20 +479,31 @@ var
 begin
   VEntities := T1.TEntities.Create;
   try
+    BrookStringsToObject(Entity, Values);
     GetParams(Self);
-    Opf.BuildSelect(T1.TEntities(VEntities), Params, Self);
+    for I := 0 to Pred(Values.Count) do
+    begin
+      Values.GetNameValue(I, N, V);
+      if FOpf.Table.IgnoredFields.IndexOf(N) > -1 then
+        Continue;
+      Params.Add(N + '=' + V);
+      VWhere += N + ' = :' + N + ' and';
+    end;
+    SetLength(VWhere, Length(VWhere) - 4);
+    StrLower(PChar(VWhere));
+    Opf.ListData(Entity, T1.TEntities(VEntities), Params, Self, VWhere);
     VArray := TJSONArray.Create;
     for I := 0 to Pred(T1.TEntities(VEntities).Count) do
     begin
       VObject := TJSONObject.Create;
       VEntity := T1.TEntities(VEntities).Items[I];
       dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, VEntity,
-        VObject);
+        VObject, Opf.UnlistedFields);
       VArray.Add(VObject);
     end;
-    Data.Add('TotalRecordCount', pgCount(Opf.Table.Name));
+    Data.Add('TotalRecordCount', DoCountRecords(VWhere));
     Data.Add('Records', VArray);
-    inherited WriteData;
+    inherited Post;
   finally
     VEntities.Free;
   end;
@@ -202,7 +512,7 @@ end;
 
 { TjTableGCreateAction }
 
-procedure TjTableGCreateAction.WriteData;
+procedure TjTableGCreateAction.Post;
 var
   VObject: TJSONObject;
 begin
@@ -211,32 +521,73 @@ begin
     Entity.Id := pgNextSeq(Opf.Table.Name + '_id_seq');
   Opf.Add(Entity, False);
   Opf.Apply;
-  dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject);
+  dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject,
+    Opf.UnlistedFields);
   Data.Add('Record', VObject);
-  inherited WriteData;
+  inherited Post;
 end;
 
 { TjTableGUpdateAction }
 
-procedure TjTableGUpdateAction.WriteData;
+procedure TjTableGUpdateAction.Post;
 var
   VObject: TJSONObject;
 begin
   VObject := TJSONObject.Create;
   Opf.Modify(Entity, False);
   Opf.Apply;
-  dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject);
+  dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject,
+    Opf.UnlistedFields);
   Data.Add('Record', VObject);
-  inherited WriteData;
+  inherited Post;
 end;
 
 { TjTableGDeleteAction }
 
-procedure TjTableGDeleteAction.WriteData;
+procedure TjTableGDeleteAction.Post;
 begin
   Opf.Remove(Entity);
   Opf.Apply;
-  inherited WriteData;
+  inherited Post;
+end;
+
+{ TjTableGLookupAction }
+
+class function TjTableGLookupAction.DisplayText: string;
+begin
+  Result := 'TjTableGLookupAction.DisplayText not implemented.';
+end;
+
+class function TjTableGLookupAction.Value: string;
+begin
+  Result := 'TjTableGLookupAction.Value not implemented.';
+end;
+
+procedure TjTableGLookupAction.Post;
+var
+  VArray: TJSONArray;
+  VObject: TJSONObject;
+  VQuery: TdSQLdbQuery;
+begin
+  VQuery := TdSQLdbQuery.Create(dbutils.con);
+  try
+    VQuery.SQL.Text := 'select ' + DisplayText + ' as "DisplayText", ' + Value +
+      ' as "Value" from ' + Opf.Table.Name;
+    VQuery.Open;
+    VArray := TJSONArray.Create;
+    while not VQuery.EOF do
+    begin
+      VObject := TJSONObject.Create;
+      VObject.Add('DisplayText', VQuery.Fields[0].AsString);
+      VObject.Add('Value', VQuery.Fields[1].AsString);
+      VArray.Add(VObject);
+      VQuery.Next;
+    end;
+    Data.Add('Options', VArray);
+    inherited Post;
+  finally
+    VQuery.Free;
+  end;
 end;
 
 end.

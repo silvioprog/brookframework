@@ -5,13 +5,14 @@ unit dbutils;
 interface
 
 uses
-  dSQLdbBroker, PQConnection, SysUtils, TypInfo, FPJSON;
+  dSQLdbBroker, dUtils, PQConnection, Classes, SysUtils, TypInfo, FPJSON;
 
 function con: TdSQLdbConnector;
 function pgNextSeq(const ASeqName: string): Int64;
-function pgCount(const ATableName: string): Int64;
+function pgCount(const ATableName: string): Int64; overload;
+function pgCount(const ATableName, AWhere: string; AParams: TObject): Int64; overload;
 procedure objToJSON(APropList: PPropList; const APropCount: Integer;
-  AObject: TObject; AJson: TJSONObject);
+  AObject: TObject; AJson: TJSONObject; AIgnoredFields: TStrings);
 
 implementation
 
@@ -62,9 +63,29 @@ begin
   end;
 end;
 
-procedure objToJSON(APropList: PPropList; const APropCount: Integer;
-  AObject: TObject; AJson: TJSONObject);
+function pgCount(const ATableName, AWhere: string; AParams: TObject): Int64;
 var
+  q: TdSQLdbQuery;
+begin
+  q := TdSQLdbQuery.Create(con);
+  try
+    q.SQL.Add('select count(*) from ' + ATableName);
+    if AWhere <> '' then
+    begin
+      q.SQL.Add('where ' + AWhere);
+      dUtils.dSetParams(AParams, q.Params);
+    end;
+    q.Open;
+    Result := q.Fields[0].AsInteger;
+  finally
+    q.Free;
+  end;
+end;
+
+procedure objToJSON(APropList: PPropList; const APropCount: Integer;
+  AObject: TObject; AJson: TJSONObject; AIgnoredFields: TStrings);
+var
+  F: Double;
   I: Integer;
   PI: PPropInfo;
 begin
@@ -77,13 +98,24 @@ begin
   for I := 0 to Pred(APropCount) do
   begin
     PI := APropList^[I];
+    if AIgnoredFields.IndexOf(PI^.Name) > -1 then
+      Continue;
     case PI^.PropType^.Kind of
       tkAString: AJson.Add(PI^.Name, GetStrProp(AObject, PI));
       tkChar: AJson.Add(PI^.Name, Char(GetOrdProp(AObject, PI)));
       tkInteger: AJson.Add(PI^.Name, GetOrdProp(AObject, PI));
       tkInt64, tkQWord: AJson.Add(PI^.Name, GetInt64Prop(AObject, PI));
       tkBool: AJson.Add(PI^.Name, GetOrdProp(AObject, PI) <> 0);
-      tkFloat: AJson.Add(PI^.Name, GetFloatProp(AObject, PI));
+      tkFloat:
+        begin
+          F := GetFloatProp(AObject, PI);
+          case PI^.PropType^.Name of
+            'TDate', 'TTime', 'TDateTime':
+              AJson.Add(PI^.Name, DateTimeToStr(F));
+          else
+            AJson.Add(PI^.Name, FloatToStr(F))
+          end;
+        end;
       tkEnumeration: AJson.Add(PI^.Name, GetEnumProp(AObject, PI));
       tkSet: AJson.Add(PI^.Name, GetSetProp(AObject, PI, False));
     end;
