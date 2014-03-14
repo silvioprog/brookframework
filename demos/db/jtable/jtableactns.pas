@@ -5,8 +5,8 @@ unit jTableActns;
 interface
 
 uses
-  BrookAction, BrookHttpDefs, BrookUtils, dOpf, dSQLdbBroker, dbutils, Classes,
-  SysUtils, FPJSON;
+  BrookAction, BrookHttpDefs, BrookUtils, dOpf, dSQLdbBroker, RUtils, dbutils,
+  Classes, SysUtils, FPJSON;
 
 type
   TjTableBeforeMakeFieldsEvent =
@@ -497,8 +497,8 @@ begin
     begin
       VObject := TJSONObject.Create;
       VEntity := T1.TEntities(VEntities).Items[I];
-      dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, VEntity,
-        VObject, Opf.UnlistedFields);
+      ObjectToJSON(Opf.Table.PropList, Opf.Table.PropCount, VEntity, VObject,
+        Opf.UnlistedFields);
       VArray.Add(VObject);
     end;
     Data.Add('TotalRecordCount', DoCountRecords(VWhere));
@@ -521,7 +521,7 @@ begin
     Entity.Id := pgNextSeq(Opf.Table.Name + '_id_seq');
   Opf.Add(Entity, False);
   Opf.Apply;
-  dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject,
+  ObjectToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject,
     Opf.UnlistedFields);
   Data.Add('Record', VObject);
   inherited Post;
@@ -536,7 +536,7 @@ begin
   VObject := TJSONObject.Create;
   Opf.Modify(Entity, False);
   Opf.Apply;
-  dbutils.objToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject,
+  ObjectToJSON(Opf.Table.PropList, Opf.Table.PropCount, Entity, VObject,
     Opf.UnlistedFields);
   Data.Add('Record', VObject);
   inherited Post;

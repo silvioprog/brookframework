@@ -5,14 +5,12 @@ unit dbutils;
 interface
 
 uses
-  dSQLdbBroker, dUtils, PQConnection, Classes, SysUtils, TypInfo, FPJSON;
+  dSQLdbBroker, dUtils, PQConnection, SysUtils;
 
 function con: TdSQLdbConnector;
 function pgNextSeq(const ASeqName: string): Int64;
 function pgCount(const ATableName: string): Int64; overload;
 function pgCount(const ATableName, AWhere: string; AParams: TObject): Int64; overload;
-procedure objToJSON(APropList: PPropList; const APropCount: Integer;
-  AObject: TObject; AJson: TJSONObject; AIgnoredFields: TStrings);
 
 implementation
 
@@ -79,47 +77,6 @@ begin
     Result := q.Fields[0].AsInteger;
   finally
     q.Free;
-  end;
-end;
-
-procedure objToJSON(APropList: PPropList; const APropCount: Integer;
-  AObject: TObject; AJson: TJSONObject; AIgnoredFields: TStrings);
-var
-  F: Double;
-  I: Integer;
-  PI: PPropInfo;
-begin
-  if not Assigned(APropList) then
-    raise Exception.Create('APropList must not be nil.');
-  if not Assigned(AObject) then
-    raise Exception.Create('AObject must not be nil.');
-  if not Assigned(AJson) then
-    raise Exception.Create('AJson must not be nil.');
-  for I := 0 to Pred(APropCount) do
-  begin
-    PI := APropList^[I];
-    if AIgnoredFields.IndexOf(PI^.Name) > -1 then
-      Continue;
-    case PI^.PropType^.Kind of
-      tkAString: AJson.Add(PI^.Name, GetStrProp(AObject, PI));
-      tkChar: AJson.Add(PI^.Name, Char(GetOrdProp(AObject, PI)));
-      tkInteger: AJson.Add(PI^.Name, GetOrdProp(AObject, PI));
-      tkInt64, tkQWord: AJson.Add(PI^.Name, GetInt64Prop(AObject, PI));
-      tkBool: AJson.Add(PI^.Name, GetOrdProp(AObject, PI) <> 0);
-      tkFloat:
-        begin
-          F := GetFloatProp(AObject, PI);
-          case PI^.PropType^.Name of
-            'TDate': AJson.Add(PI^.Name, DateToStr(F));
-            'TTime': AJson.Add(PI^.Name, TimeToStr(F));
-            'TDateTime': AJson.Add(PI^.Name, DateTimeToStr(F));
-          else
-            AJson.Add(PI^.Name, FloatToStr(F))
-          end;
-        end;
-      tkEnumeration: AJson.Add(PI^.Name, GetEnumProp(AObject, PI));
-      tkSet: AJson.Add(PI^.Name, GetSetProp(AObject, PI, False));
-    end;
   end;
 end;
 
