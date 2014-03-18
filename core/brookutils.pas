@@ -308,24 +308,22 @@ begin
     case APropInfo^.PropType^.Kind of
       tkAString: SetStrProp(AObject, APropInfo, AValue);
       tkChar: SetOrdProp(AObject, APropInfo, Ord(PChar(AValue)^));
-      tkInteger: SetOrdProp(AObject, APropInfo,
-        StrToIntDef(AValue, APropInfo^.Default));
+      tkInteger: SetOrdProp(AObject, APropInfo, StrToIntDef(AValue, 0));
       tkInt64, tkQWord: SetInt64Prop(AObject, APropInfo,
-        StrToInt64Def(AValue, APropInfo^.Default));
+        StrToInt64Def(AValue, 0));
       tkBool: SetOrdProp(AObject, APropInfo,
         Ord((ShortCompareText(AValue, 'on') = 0) or
-          StrToBoolDef(AValue, APropInfo^.Default <> 0)));
+          StrToBoolDef(AValue, False)));
       tkFloat:
         case APropInfo^.PropType^.Name of
           'TDate': SetFloatProp(AObject, APropInfo,
-            StrToDateDef(AValue, APropInfo^.Default));
+            StrToDateDef(AValue, NullDate));
           'TTime': SetFloatProp(AObject, APropInfo,
-            StrToTimeDef(AValue, APropInfo^.Default));
+            StrToTimeDef(AValue, NullTime));
           'TDateTime': SetFloatProp(AObject, APropInfo,
-            StrToDateTimeDef(AValue, APropInfo^.Default));
+            StrToDateTimeDef(AValue, NullDateTime));
         else
-          SetFloatProp(AObject, APropInfo,
-            StrToFloatDef(AValue, APropInfo^.Default));
+          SetFloatProp(AObject, APropInfo, StrToFloatDef(AValue, 0));
         end;
       tkEnumeration: SetEnumProp(AObject, APropInfo, AValue);
       tkSet: SetSetProp(AObject, APropInfo, AValue);
