@@ -40,6 +40,10 @@ const
   CRLF = CR + LF;
   { Null date. }
   NullDate = 0;
+  { Null time. }
+  NullTime = 0;
+  { Null datetime. }
+  NullDateTime = 0;
   { Space. }
   SP = #32;
   { " }
