@@ -788,6 +788,13 @@ const
   );
 
 var
+  DefInt: Integer = 0;
+  DefInt64: Int64 = 0;
+  DefBool: Boolean = False;
+  DefTime: TTime = NullTime;
+  DefDate: TDate = NullDate;
+  DefDateTime: TDateTime = NullDateTime;
+  DefFloat: Double = 0;
   BROOK_HTTP_DAEMON_DESCRIPTION: string = 'Brook HTTP daemon.';
   BROOK_HTTP_DAEMON_DISPLAYNAME: string = 'Brook daemon';
   BROOK_HTTP_DAEMON_NAME: string = 'BrookHttpDaemon';
