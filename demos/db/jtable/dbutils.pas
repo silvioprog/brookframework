@@ -67,10 +67,10 @@ var
 begin
   q := TdSQLdbQuery.Create(con);
   try
-    q.SQL.Add('select count(*) from ' + ATableName);
+    q.AddSql('select count(*) from ' + ATableName);
     if AWhere <> '' then
     begin
-      q.SQL.Add('where ' + AWhere);
+      q.AddSql('where ' + AWhere);
       dUtils.dSetParams(AParams, q.Params);
     end;
     q.Open;

@@ -35,11 +35,13 @@ type
 
   generic TjTableGOpf<T> = class(specialize TdGOpf<TdSQLdbConnector, TdSQLdbQuery, T>)
   private
+    FOnAfterCountRecords: TjTableAfterCountRecordsEvent;
     FOnAfterMakeFields: TjTableAfterMakeFieldsEvent;
     FOnAfterMakeLimit: TjTableAfterMakeLimitEvent;
     FOnAfterMakeOrderBy: TjTableAfterMakeOrderByEvent;
     FOnAfterMakeSelect: TjTableAfterMakeSelectEvent;
     FOnAfterMakeWhere: TjTableAfterMakeWhereEvent;
+    FOnBeforeCountRecords: TjTableBeforeCountRecordsEvent;
     FOnBeforeMakeLimit: TjTableBeforeMakeLimitEvent;
     FOnBeforeMakeOrderBy: TjTableBeforeMakeOrderByEvent;
     FOnBeforeMakeSelect: TjTableBeforeMakeSelectEvent;
@@ -52,6 +54,8 @@ type
     procedure DoMakeWhere(var ASelect, AWhere: string); virtual;
     procedure DoMakeOrderBy(var ASelect, AjtSorting: string); virtual;
     procedure DoMakeLimit(var ASelect: string); virtual;
+    function DoCountRecords(var AWhere: string;
+      {%H-}AParams: TObject): Integer; virtual;
   public
     constructor Create; overload; virtual;
     destructor Destroy; override;
@@ -78,17 +82,23 @@ type
       read FOnAfterMakeOrderBy write FOnAfterMakeOrderBy;
     property OnAfterMakeLimit: TjTableAfterMakeLimitEvent
       read FOnAfterMakeLimit write FOnAfterMakeLimit;
+    property OnBeforeCountRecords: TjTableBeforeCountRecordsEvent
+      read FOnBeforeCountRecords write FOnBeforeCountRecords;
+    property OnAfterCountRecords: TjTableAfterCountRecordsEvent
+      read FOnAfterCountRecords write FOnAfterCountRecords;
   end;
 
   { TjTableGEntityOpf }
 
   generic TjTableGEntityOpf<T> = class(specialize TdGEntityOpf<TdSQLdbConnector, TdSQLdbQuery, T>)
   private
+    FOnAfterCountRecords: TjTableAfterCountRecordsEvent;
     FOnAfterMakeFields: TjTableAfterMakeFieldsEvent;
     FOnAfterMakeLimit: TjTableAfterMakeLimitEvent;
     FOnAfterMakeOrderBy: TjTableAfterMakeOrderByEvent;
     FOnAfterMakeSelect: TjTableAfterMakeSelectEvent;
     FOnAfterMakeWhere: TjTableAfterMakeWhereEvent;
+    FOnBeforeCountRecords: TjTableBeforeCountRecordsEvent;
     FOnBeforeMakeLimit: TjTableBeforeMakeLimitEvent;
     FOnBeforeMakeOrderBy: TjTableBeforeMakeOrderByEvent;
     FOnBeforeMakeSelect: TjTableBeforeMakeSelectEvent;
@@ -101,11 +111,13 @@ type
     procedure DoMakeWhere(var ASelect, AWhere: string); virtual;
     procedure DoMakeOrderBy(var ASelect, AjtSorting: string); virtual;
     procedure DoMakeLimit(var ASelect: string); virtual;
+    function DoCountRecords(var AWhere: string;
+      {%H-}AParams: TObject): Integer; virtual;
   public
     constructor Create; overload; virtual;
     destructor Destroy; override;
     procedure ListData(AEntity: T; AEntities: TEntities;
-      AParamsStr: TStrings; AParams: TObject; var AWhere: string);
+      AParamsStr: TStrings; AParams: TObject; var AWhere: string); virtual;
     property UnlistedFields: TStrings read FUnlistedFields;
     property OnBeforeMakeFields: TjTableBeforeMakeFieldsEvent
       read FOnBeforeMakeFields write FOnBeforeMakeFields;
@@ -127,6 +139,10 @@ type
       read FOnAfterMakeOrderBy write FOnAfterMakeOrderBy;
     property OnAfterMakeLimit: TjTableAfterMakeLimitEvent
       read FOnAfterMakeLimit write FOnAfterMakeLimit;
+    property OnBeforeCountRecords: TjTableBeforeCountRecordsEvent
+      read FOnBeforeCountRecords write FOnBeforeCountRecords;
+    property OnAfterCountRecords: TjTableAfterCountRecordsEvent
+      read FOnAfterCountRecords write FOnAfterCountRecords;
   end;
 
   { TjTableGAction }
@@ -153,20 +169,12 @@ type
     FjtPageSize: Integer;
     FjtSorting: string;
     FjtStartIndex: Integer;
-    FOnAfterCountRecords: TjTableAfterCountRecordsEvent;
-    FOnBeforeCountRecords: TjTableBeforeCountRecordsEvent;
-  protected
-    function DoCountRecords(var AWhere: string): Integer;
   public
     procedure Post; override;
   published
     property jtSorting: string read FjtSorting write FjtSorting;
     property jtPageSize: Integer read FjtPageSize write FjtPageSize;
     property jtStartIndex: Integer read FjtStartIndex write FjtStartIndex;
-    property OnBeforeCountRecords: TjTableBeforeCountRecordsEvent
-      read FOnBeforeCountRecords write FOnBeforeCountRecords;
-    property OnAfterCountRecords: TjTableAfterCountRecordsEvent
-      read FOnAfterCountRecords write FOnAfterCountRecords;
   end;
 
   { TjTableGCreateAction }
@@ -275,6 +283,22 @@ begin
     FOnAfterMakeLimit(ASelect);
 end;
 
+function TjTableGOpf.DoCountRecords(var AWhere: string;
+  AParams: TObject): Integer;
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeCountRecords) then
+  begin
+    Result := -1;
+    FOnBeforeCountRecords(AWhere, Result, VHandled);
+  end;
+  if not VHandled then
+    Result := pgCount(Table.Name, AWhere, AParams);
+  if Assigned(FOnAfterCountRecords) then
+    FOnAfterCountRecords(AWhere);
+end;
+
 procedure TjTableGOpf.ListData(AEntity: T; AEntities: TEntities;
   AParamsStr: TStrings; AParams: TObject; var AWhere: string);
 var
@@ -298,10 +322,10 @@ begin
   if (VjtPageSizeIdx > -1) and (VjtStartIndexIdx > -1) then
   begin
     DoMakeLimit(VSelect);
-    Search(AEntity, AEntities, AParams, VSelect);
+    Search(AEntity, AEntities, AParams, VSelect, False);
   end
   else
-    Search(AEntity, AEntities);
+    Search(AEntity, AEntities, nil, '', False);
 end;
 
 { TjTableGEntityOpf }
@@ -378,6 +402,22 @@ begin
     FOnAfterMakeLimit(ASelect);
 end;
 
+function TjTableGEntityOpf.DoCountRecords(var AWhere: string;
+  AParams: TObject): Integer;
+var
+  VHandled: Boolean = False;
+begin
+  if Assigned(FOnBeforeCountRecords) then
+  begin
+    Result := -1;
+    FOnBeforeCountRecords(AWhere, Result, VHandled);
+  end;
+  if not VHandled then
+    Result := pgCount(Table.Name, AWhere, AParams);
+  if Assigned(FOnAfterCountRecords) then
+    FOnAfterCountRecords(AWhere);
+end;
+
 procedure TjTableGEntityOpf.ListData(AEntity: T; AEntities: TEntities;
   AParamsStr: TStrings; AParams: TObject; var AWhere: string);
 var
@@ -401,10 +441,10 @@ begin
   if (VjtPageSizeIdx > -1) and (VjtStartIndexIdx > -1) then
   begin
     DoMakeLimit(VSelect);
-    Search(AEntity, AEntities, AParams, VSelect)
+    Search(AEntity, AEntities, AParams, VSelect, False)
   end
   else
-    Search(AEntity, AEntities);
+    Search(AEntity, AEntities, nil, '', False);
 end;
 
 { TjTableGAction }
@@ -451,22 +491,6 @@ end;
 { TjTableGListAction }
 
 {$NOTES OFF}
-
-function TjTableGListAction.DoCountRecords(var AWhere: string): Integer;
-var
-  VHandled: Boolean = False;
-begin
-  if Assigned(FOnBeforeCountRecords) then
-  begin
-    Result := -1;
-    FOnBeforeCountRecords(AWhere, Result, VHandled);
-  end;
-  if not VHandled then
-    Result := pgCount(Opf.Table.Name, AWhere, Entity);
-  if Assigned(FOnAfterCountRecords) then
-    FOnAfterCountRecords(AWhere);
-end;
-
 procedure TjTableGListAction.Post;
 var
   I: Integer;
@@ -484,7 +508,7 @@ begin
     for I := 0 to Pred(Values.Count) do
     begin
       Values.GetNameValue(I, N, V);
-      if FOpf.Table.IgnoredFields.IndexOf(N) > -1 then
+      if Opf.Table.IgnoredFields.IndexOf(N) > -1 then
         Continue;
       Params.Add(N + '=' + V);
       VWhere += N + ' = :' + N + ' and';
@@ -501,7 +525,7 @@ begin
         Opf.UnlistedFields);
       VArray.Add(VObject);
     end;
-    Data.Add('TotalRecordCount', DoCountRecords(VWhere));
+    Data.Add('TotalRecordCount', Opf.DoCountRecords(VWhere, Entity));
     Data.Add('Records', VArray);
     inherited Post;
   finally
