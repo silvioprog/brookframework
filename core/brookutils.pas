@@ -190,18 +190,67 @@ procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings;
   a list of strings. Allows to ignore properties via a list of strings. }
 procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings;
   const AIgnoredProps: TStrings); overload;
-{ Read the published properties of an object getting the names and values as
+{ Reads the published properties of an object getting the names and values as
   a list of strings and checking the params. }
 procedure BrookSafeObjectToStrings(AObject: TObject;
   AStrings: TStrings); overload;
-{ Read the published properties of an object getting the names and values as
+{ Reads the published properties of an object getting the names and values as
   a list of strings and checking the params. Allows to ignore properties via an
   array of strings. }
 procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings;
   const AIgnoredProps: array of string); overload;
-{ Read the published properties of an object getting the names and values as
+{ Reads the published properties of an object getting the names and values as
   a list of strings and checking the params. }
 procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings); overload;
+{ Copies the value of all properties from one object to another passing the
+  prop. list and prop. count. }
+procedure BrookCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject); overload;
+{ Copies the value of all properties from one object to another passing the
+  prop. list and prop. count. Allows to ignore properties via an array of
+  strings. }
+procedure BrookCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: array of string); overload;
+{ Copies the value of all properties from one object to another passing the
+  prop. list and prop. count. Allows to ignore properties via a list of
+  strings. }
+procedure BrookCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: TStrings); overload;
+{ Copies the value of all properties from one object to another. }
+procedure BrookCopyObject(AFrom, ATo: TObject); overload;
+{ Copies the value of all properties from one object to another. Allows to
+  ignore properties via an array of strings. }
+procedure BrookCopyObject(AFrom, ATo: TObject;
+  const AIgnoredProps: array of string); overload;
+{ Copies the value of all properties from one object to another. Allows to
+  ignore properties via a list of strings. }
+procedure BrookCopyObject(AFrom, ATo: TObject;
+  const AIgnoredProps: TStrings); overload;
+{ Copies the value of all properties from one object to another passing the
+  prop. list and prop. count and checking the params. }
+procedure BrookSafeCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject); overload;
+{ Copies the value of all properties from one object to another passing the
+  prop. list and prop. count and checking the params. Allows to ignore
+  properties via an array of strings. }
+procedure BrookSafeCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: array of string); overload;
+{ Copies the value of all properties from one object to another passing the
+  prop. list and prop. count and checking the params. Allows to ignore
+  properties via a list of strings. }
+procedure BrookSafeCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: TStrings); overload;
+{ Copies the value of all properties from one object to another and checking the
+  params. }
+procedure BrookSafeCopyObject(AFrom, ATo: TObject); overload;
+{ Copies the value of all properties from one object to another and checking the
+  params. Allows to ignore properties via an array of strings. }
+procedure BrookSafeCopyObject(AFrom, ATo: TObject;
+  const AIgnoredProps: array of string); overload;
+{ Copies the value of all properties from one object to another and checking the
+  params. Allows to ignore properties via a list of strings. }
+procedure BrookSafeCopyObject(AFrom, ATo: TObject;
   const AIgnoredProps: TStrings); overload;
 
 implementation
@@ -655,6 +704,205 @@ begin
     raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
       ['AIgnoredProps']);
   BrookObjectToStrings(AObject, AStrings, AIgnoredProps);
+end;
+
+procedure BrookCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject);
+var
+  I: Integer;
+  P, PI: PPropInfo;
+begin
+  for I := 0 to Pred(APropCount) do
+  begin
+    PI := APropList^[I];
+    P := GetPropInfo(PTypeInfo(ATo.ClassInfo), PI^.Name);
+    if Assigned(P) then
+      case PI^.PropType^.Kind of
+        tkAString: SetStrProp(ATo, P, GetStrProp(AFrom, PI));
+        tkInteger, tkChar, tkEnumeration, tkSet, tkClass:
+          SetOrdProp(ATo, P, GetOrdProp(AFrom, PI));
+        tkInt64: SetInt64Prop(ATo, P, GetInt64Prop(AFrom, PI));
+        tkFloat: SetFloatProp(ATo, P, GetFloatProp(AFrom, PI));
+        tkMethod: SetMethodProp(ATo, P, GetMethodProp(AFrom, PI));
+      end;
+  end;
+end;
+
+procedure BrookCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: array of string);
+var
+  I: Integer;
+  P, PI: PPropInfo;
+begin
+  for I := 0 to Pred(APropCount) do
+  begin
+    PI := APropList^[I];
+    if BrookExists(PI^.Name, AIgnoredProps, True) then
+      Continue;
+    P := GetPropInfo(PTypeInfo(ATo.ClassInfo), PI^.Name);
+    if Assigned(P) then
+      case PI^.PropType^.Kind of
+        tkAString: SetStrProp(ATo, P, GetStrProp(AFrom, PI));
+        tkInteger, tkChar, tkEnumeration, tkSet, tkClass:
+          SetOrdProp(ATo, P, GetOrdProp(AFrom, PI));
+        tkInt64: SetInt64Prop(ATo, P, GetInt64Prop(AFrom, PI));
+        tkFloat: SetFloatProp(ATo, P, GetFloatProp(AFrom, PI));
+        tkMethod: SetMethodProp(ATo, P, GetMethodProp(AFrom, PI));
+      end;
+  end;
+end;
+
+procedure BrookCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: TStrings);
+var
+  I: Integer;
+  P, PI: PPropInfo;
+begin
+  for I := 0 to Pred(APropCount) do
+  begin
+    PI := APropList^[I];
+    if AIgnoredProps.IndexOf(PI^.Name) > -1 then
+      Continue;
+    P := GetPropInfo(PTypeInfo(ATo.ClassInfo), PI^.Name);
+    if Assigned(P) then
+      case PI^.PropType^.Kind of
+        tkAString: SetStrProp(ATo, P, GetStrProp(AFrom, PI));
+        tkInteger, tkChar, tkEnumeration, tkSet, tkClass:
+          SetOrdProp(ATo, P, GetOrdProp(AFrom, PI));
+        tkInt64: SetInt64Prop(ATo, P, GetInt64Prop(AFrom, PI));
+        tkFloat: SetFloatProp(ATo, P, GetFloatProp(AFrom, PI));
+        tkMethod: SetMethodProp(ATo, P, GetMethodProp(AFrom, PI));
+      end;
+  end;
+end;
+
+procedure BrookCopyObject(AFrom, ATo: TObject);
+var
+  C: Integer;
+  PL: PPropList = nil;
+begin
+  C := GetPropList(AFrom, PL);
+  if Assigned(PL) then
+    try
+      BrookCopyObject(PL, C, AFrom, ATo);
+    finally
+      FreeMem(PL);
+    end;
+end;
+
+procedure BrookCopyObject(AFrom, ATo: TObject;
+  const AIgnoredProps: array of string);
+var
+  C: Integer;
+  PL: PPropList = nil;
+begin
+  C := GetPropList(AFrom, PL);
+  if Assigned(PL) then
+    try
+      BrookCopyObject(PL, C, AFrom, ATo, AIgnoredProps);
+    finally
+      FreeMem(PL);
+    end;
+end;
+
+procedure BrookCopyObject(AFrom, ATo: TObject; const AIgnoredProps: TStrings);
+var
+  C: Integer;
+  PL: PPropList = nil;
+begin
+  C := GetPropList(AFrom, PL);
+  if Assigned(PL) then
+    try
+      BrookCopyObject(PL, C, AFrom, ATo, AIgnoredProps);
+    finally
+      FreeMem(PL);
+    end;
+end;
+
+procedure BrookSafeCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject);
+begin
+  if not Assigned(APropList) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['APropList']);
+  if not Assigned(AFrom) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AFrom']);
+  if not Assigned(ATo) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['ATo']);
+  BrookCopyObject(APropList, APropCount, AFrom, ATo);
+end;
+
+procedure BrookSafeCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: array of string);
+begin
+  if not Assigned(APropList) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['APropList']);
+  if not Assigned(AFrom) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AFrom']);
+  if not Assigned(ATo) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['ATo']);
+  BrookCopyObject(APropList, APropCount, AFrom, ATo, AIgnoredProps);
+end;
+
+procedure BrookSafeCopyObject(APropList: PPropList; const APropCount: Integer;
+  AFrom, ATo: TObject; const AIgnoredProps: TStrings);
+begin
+  if not Assigned(APropList) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['APropList']);
+  if not Assigned(AFrom) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AFrom']);
+  if not Assigned(ATo) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['ATo']);
+  if not Assigned(AIgnoredProps) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AIgnoredProps']);
+  BrookCopyObject(APropList, APropCount, AFrom, ATo, AIgnoredProps);
+end;
+
+procedure BrookSafeCopyObject(AFrom, ATo: TObject);
+begin
+  if not Assigned(AFrom) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AFrom']);
+  if not Assigned(ATo) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['ATo']);
+  BrookCopyObject(AFrom, ATo);
+end;
+
+procedure BrookSafeCopyObject(AFrom, ATo: TObject;
+  const AIgnoredProps: array of string);
+begin
+  if not Assigned(AFrom) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AFrom']);
+  if not Assigned(ATo) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['ATo']);
+  BrookCopyObject(AFrom, ATo, AIgnoredProps);
+end;
+
+procedure BrookSafeCopyObject(AFrom, ATo: TObject;
+  const AIgnoredProps: TStrings);
+begin
+  if not Assigned(AFrom) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AFrom']);
+  if not Assigned(ATo) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['ATo']);
+  if not Assigned(AIgnoredProps) then
+    raise EBrook.CreateFmt('BrookSafeCopyObject', SBrookNotNilError,
+      ['AIgnoredProps']);
+  BrookCopyObject(AFrom, ATo, AIgnoredProps);
 end;
 
 end.
