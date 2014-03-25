@@ -125,6 +125,12 @@ function BrookDumpStack(const AEOL: ShortString = BR): string;
 function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
+{ Checks if a string exists in an array of strings. }
+function BrookExists(const S: string; const
+  AParts: array of string): Boolean; overload;
+{ Checks (ignoring case) if a string exists in an array of strings. }
+function BrookExists(const S: string; const AParts: array of string;
+  const AIgnoreCase: Boolean): Boolean; overload;
 { Fills a published property of an object passing the property as
   @code(PPropInfo) and value as @code(string). }
 procedure BrookStringToObject(AObject: TObject; APropInfo: PPropInfo;
@@ -138,10 +144,29 @@ procedure BrookStringToObject(AObject: TObject; const AName,
 procedure BrookSafeStringToObject(AObject: TObject; const AName, AValue: string);
 { Fills the published properties of an object passing the names and values as
   a list of strings. }
-procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings);
+procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings); overload;
+{ Fills the published properties of an object passing the names and values as
+  a list of strings. Allows to ignore properties via an array of strings. }
+procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string); overload;
+{ Fills the published properties of an object passing the names and values as
+  a list of strings. Allows to ignore properties via a list of strings. }
+procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings); overload;
 { Fills the published properties of an object passing the names and values as
   a list of strings and checking the params. }
-procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings);
+procedure BrookSafeStringsToObject(AObject: TObject;
+  AStrings: TStrings); overload;
+{ Fills the published properties of an object passing the names and values as
+  a list of strings and checking the params. Allows to ignore properties via an
+  array of strings. }
+procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string); overload;
+{ Fills the published properties of an object passing the names and values as
+  a list of strings and checking the params. Allows to ignore properties via a
+  list of strings. }
+procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings); overload;
 { Reads a published property of an object passing the property as
   @code(PPropInfo) and getting the value as @code(string). }
 procedure BrookObjectToString(AObject: TObject; APropInfo: PPropInfo;
@@ -156,10 +181,28 @@ procedure BrookSafeObjectToString(AObject: TObject; const AName: string;
   out AValue: string);
 { Reads the published properties of an object getting the names and values as
   a list of strings. }
-procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings);
+procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings); overload;
+{ Reads the published properties of an object getting the names and values as
+  a list of strings. Allows to ignore properties via an array of strings. }
+procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string); overload;
+{ Reads the published properties of an object getting the names and values as
+  a list of strings. Allows to ignore properties via a list of strings. }
+procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings); overload;
 { Read the published properties of an object getting the names and values as
   a list of strings and checking the params. }
-procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings);
+procedure BrookSafeObjectToStrings(AObject: TObject;
+  AStrings: TStrings); overload;
+{ Read the published properties of an object getting the names and values as
+  a list of strings and checking the params. Allows to ignore properties via an
+  array of strings. }
+procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string); overload;
+{ Read the published properties of an object getting the names and values as
+  a list of strings and checking the params. }
+procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings); overload;
 
 implementation
 
@@ -301,6 +344,38 @@ begin
     Result += US;
 end;
 
+function BrookExists(const S: string; const AParts: array of string): Boolean;
+var
+  I: Integer;
+begin
+  for I := 0 to High(AParts) do
+  begin
+    Result := S = AParts[I];
+    if Result then
+      Exit;
+  end;
+  Result := False;
+end;
+
+function BrookExists(const S: string; const AParts: array of string;
+  const AIgnoreCase: Boolean): Boolean;
+var
+  I: Integer;
+begin
+  if AIgnoreCase then
+  begin
+    for I := 0 to High(AParts) do
+    begin
+      Result := CompareText(S, AParts[I]) = 0;
+      if Result then
+        Exit;
+    end;
+    Result := False;
+  end
+  else
+    Result := BrookUtils.BrookExists(S, AParts);
+end;
+
 procedure BrookStringToObject(AObject: TObject; APropInfo: PPropInfo;
   const AValue: string);
 begin
@@ -356,15 +431,70 @@ begin
   end;
 end;
 
+procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string);
+var
+  I: Integer;
+  N, V: string;
+begin
+  for I := 0 to Pred(AStrings.Count) do
+  begin
+    AStrings.GetNameValue(I, N, V);
+    if not BrookExists(N, AIgnoredProps, True) then
+      BrookStringToObject(AObject, N, V);
+  end;
+end;
+
+procedure BrookStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings);
+var
+  I: Integer;
+  N, V: string;
+begin
+  for I := 0 to Pred(AStrings.Count) do
+  begin
+    AStrings.GetNameValue(I, N, V);
+    if AIgnoredProps.IndexOf(N) = -1 then
+      BrookStringToObject(AObject, N, V);
+  end;
+end;
+
 procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings);
 begin
-  if not Assigned(AStrings) then
-    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
-      ['AStrings']);
   if not Assigned(AObject) then
     raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
       ['AObject']);
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
+      ['AStrings']);
   BrookStringsToObject(AObject, AStrings);
+end;
+
+procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string);
+begin
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
+      ['AObject']);
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
+      ['AStrings']);
+  BrookStringsToObject(AObject, AStrings, AIgnoredProps);
+end;
+
+procedure BrookSafeStringsToObject(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings);
+begin
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
+      ['AObject']);
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
+      ['AStrings']);
+  if not Assigned(AIgnoredProps) then
+    raise EBrook.CreateFmt('BrookSafeStringsToObject', SBrookNotNilError,
+      ['AIgnoredProps']);
+  BrookStringsToObject(AObject, AStrings, AIgnoredProps);
 end;
 
 procedure BrookObjectToString(AObject: TObject; APropInfo: PPropInfo;
@@ -433,15 +563,98 @@ begin
     end;
 end;
 
+procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string);
+var
+  S: Char;
+  V: string;
+  I, C: Integer;
+  PI: PPropInfo;
+  PL: PPropList = nil;
+begin
+  C := GetPropList(PTypeInfo(AObject.ClassInfo), PL);
+  if Assigned(PL) then
+    try
+      S := AStrings.NameValueSeparator;
+      if S = NU then
+        S := EQ;
+      for I := 0 to Pred(C) do
+      begin
+        PI := PL^[I];
+        if BrookExists(PI^.Name, AIgnoredProps, True) then
+          Continue;
+        BrookObjectToString(AObject, PI, V);
+        AStrings.Add(PI^.Name + S + V);
+      end;
+    finally
+      FreeMem(PL);
+    end;
+end;
+
+procedure BrookObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings);
+var
+  S: Char;
+  V: string;
+  I, C: Integer;
+  PI: PPropInfo;
+  PL: PPropList = nil;
+begin
+  C := GetPropList(PTypeInfo(AObject.ClassInfo), PL);
+  if Assigned(PL) then
+    try
+      S := AStrings.NameValueSeparator;
+      if S = NU then
+        S := EQ;
+      for I := 0 to Pred(C) do
+      begin
+        PI := PL^[I];
+        if AIgnoredProps.IndexOf(PI^.Name) > -1 then
+          Continue;
+        BrookObjectToString(AObject, PI, V);
+        AStrings.Add(PI^.Name + S + V);
+      end;
+    finally
+      FreeMem(PL);
+    end;
+end;
+
 procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings);
 begin
-  if not Assigned(AStrings) then
-    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
-      ['AStrings']);
   if not Assigned(AObject) then
     raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
       ['AObject']);
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AStrings']);
   BrookObjectToStrings(AObject, AStrings);
+end;
+
+procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: array of string);
+begin
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AObject']);
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AStrings']);
+  BrookObjectToStrings(AObject, AStrings, AIgnoredProps);
+end;
+
+procedure BrookSafeObjectToStrings(AObject: TObject; AStrings: TStrings;
+  const AIgnoredProps: TStrings);
+begin
+  if not Assigned(AObject) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AObject']);
+  if not Assigned(AStrings) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AStrings']);
+  if not Assigned(AIgnoredProps) then
+    raise EBrook.CreateFmt('BrookSafeObjectToStrings', SBrookNotNilError,
+      ['AIgnoredProps']);
+  BrookObjectToStrings(AObject, AStrings, AIgnoredProps);
 end;
 
 end.
