@@ -31,6 +31,19 @@ type
   TjTableAfterMakeLimitEvent = procedure(var ASelect: string) of object;
   TjTableAfterCountRecordsEvent = procedure(var AWhere: string) of object;
 
+  { TjTableParams }
+
+  TjTableParams = class(TObject)
+  private
+    FjtPageSize: Integer;
+    FjtSorting: string;
+    FjtStartIndex: Integer;
+  published
+    property jtSorting: string read FjtSorting write FjtSorting;
+    property jtPageSize: Integer read FjtPageSize write FjtPageSize;
+    property jtStartIndex: Integer read FjtStartIndex write FjtStartIndex;
+  end;
+
   { TjTableGOpf }
 
   generic TjTableGOpf<T> = class(specialize TdGOpf<TdSQLdbConnector, TdSQLdbQuery, T>)
@@ -47,6 +60,7 @@ type
     FOnBeforeMakeSelect: TjTableBeforeMakeSelectEvent;
     FOnBeforeMakeFields: TjTableBeforeMakeFieldsEvent;
     FOnBeforeMakeWhere: TjTableBeforeMakeWhereEvent;
+    FParams: TjTableParams;
     FUnlistedFields: TStrings;
   protected
     procedure DoMakeFields(var AFields: string); virtual;
@@ -61,6 +75,8 @@ type
     destructor Destroy; override;
     procedure ListData(AEntity: T; AEntities: TEntities;
       AParamsStr: TStrings; AParams: TObject; var AWhere: string);
+    property Params: TjTableParams read FParams;
+  published
     property UnlistedFields: TStrings read FUnlistedFields;
     property OnBeforeMakeFields: TjTableBeforeMakeFieldsEvent
       read FOnBeforeMakeFields write FOnBeforeMakeFields;
@@ -104,6 +120,7 @@ type
     FOnBeforeMakeSelect: TjTableBeforeMakeSelectEvent;
     FOnBeforeMakeFields: TjTableBeforeMakeFieldsEvent;
     FOnBeforeMakeWhere: TjTableBeforeMakeWhereEvent;
+    FParams: TjTableParams;
     FUnlistedFields: TStrings;
   protected
     procedure DoMakeFields(var AFields: string); virtual;
@@ -118,6 +135,8 @@ type
     destructor Destroy; override;
     procedure ListData(AEntity: T; AEntities: TEntities;
       AParamsStr: TStrings; AParams: TObject; var AWhere: string); virtual;
+  published
+    property Params: TjTableParams read FParams;
     property UnlistedFields: TStrings read FUnlistedFields;
     property OnBeforeMakeFields: TjTableBeforeMakeFieldsEvent
       read FOnBeforeMakeFields write FOnBeforeMakeFields;
@@ -165,16 +184,8 @@ type
   { TjTableGListAction }
 
   generic TjTableGListAction<T1, T2> = class(specialize TjTableGAction<T1, T2>)
-  private
-    FjtPageSize: Integer;
-    FjtSorting: string;
-    FjtStartIndex: Integer;
   public
     procedure Post; override;
-  published
-    property jtSorting: string read FjtSorting write FjtSorting;
-    property jtPageSize: Integer read FjtPageSize write FjtPageSize;
-    property jtStartIndex: Integer read FjtStartIndex write FjtStartIndex;
   end;
 
   { TjTableGCreateAction }
@@ -214,12 +225,14 @@ implementation
 constructor TjTableGOpf.Create;
 begin
   inherited Create(dbutils.con, '');
+  FParams := TjTableParams.Create;
   FUnlistedFields := TStringList.Create;
 end;
 
 destructor TjTableGOpf.Destroy;
 begin
   FUnlistedFields.Free;
+  FParams.Free;
   inherited Destroy;
 end;
 
@@ -333,12 +346,14 @@ end;
 constructor TjTableGEntityOpf.Create;
 begin
   inherited Create(dbutils.con, '');
+  FParams := TjTableParams.Create;
   FUnlistedFields := TStringList.Create;
 end;
 
 destructor TjTableGEntityOpf.Destroy;
 begin
   FUnlistedFields.Free;
+  FParams.Free;
   inherited Destroy;
 end;
 
@@ -504,7 +519,7 @@ begin
   VEntities := T1.TEntities.Create;
   try
     BrookStringsToObject(Entity, Values);
-    GetParams(Self);
+    GetParams(Opf.Params);
     for I := 0 to Pred(Values.Count) do
     begin
       Values.GetNameValue(I, N, V);
@@ -515,7 +530,7 @@ begin
     end;
     SetLength(VWhere, Length(VWhere) - 4);
     StrLower(PChar(VWhere));
-    Opf.ListData(Entity, T1.TEntities(VEntities), Params, Self, VWhere);
+    Opf.ListData(Entity, T1.TEntities(VEntities), Params, Opf.Params, VWhere);
     VArray := TJSONArray.Create;
     for I := 0 to Pred(T1.TEntities(VEntities).Count) do
     begin
