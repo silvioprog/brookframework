@@ -164,9 +164,9 @@ begin
       if (VToken = PO) or (VToken = ES) then
         Continue;
       VValue := FCfg.Values[VClassName + DT + VPropName];
-      if SameText(VClassName, FTarget.ClassName) then
-        if IsPublishedProp(FTarget, VPropName) then
-        SetPropValue(FTarget, VPropName, VValue);
+      if SameText(VClassName, FTarget.ClassName) and
+        IsPublishedProp(FTarget, VPropName) then
+          SetPropValue(FTarget, VPropName, VValue);
     end
   else
     for I := 0 to Pred(FCfg.Count) do
