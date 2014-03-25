@@ -22,7 +22,7 @@
     <Description Value="Brook runtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Major="3"/>
-    <Files Count="24">
+    <Files Count="25">
       <Item1>
         <Filename Value="..\brokers\brookfclcgibroker.pas"/>
         <UnitName Value="BrookFCLCGIBroker"/>
@@ -104,21 +104,25 @@
         <UnitName Value="BrookMessages"/>
       </Item20>
       <Item21>
-        <Filename Value="..\core\brookrouter.pas"/>
-        <UnitName Value="BrookRouter"/>
+        <Filename Value="..\core\brookmiddleware.pas"/>
+        <UnitName Value="BrookMiddleware"/>
       </Item21>
       <Item22>
-        <Filename Value="..\core\brooksession.pas"/>
-        <UnitName Value="BrookSession"/>
+        <Filename Value="..\core\brookrouter.pas"/>
+        <UnitName Value="BrookRouter"/>
       </Item22>
       <Item23>
-        <Filename Value="..\core\brookutils.pas"/>
-        <UnitName Value="BrookUtils"/>
+        <Filename Value="..\core\brooksession.pas"/>
+        <UnitName Value="BrookSession"/>
       </Item23>
       <Item24>
+        <Filename Value="..\core\brookutils.pas"/>
+        <UnitName Value="BrookUtils"/>
+      </Item24>
+      <Item25>
         <Filename Value="..\includes\brook.inc"/>
         <Type Value="Include"/>
-      </Item24>
+      </Item25>
     </Files>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
