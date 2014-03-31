@@ -9,6 +9,8 @@ uses
   Classes, SysUtils, FPJSON;
 
 type
+  EjTable = class(Exception);
+
   TjTableBeforeMakeFieldsEvent =
     procedure(var AFields: string; var AHandled: Boolean) of object;
   TjTableBeforeMakeSelectEvent = procedure(var AFields, ASelect: string;
@@ -556,6 +558,8 @@ var
   VObject: TJSONObject;
 begin
   VObject := TJSONObject.Create;
+  if Trim(Opf.Table.Name) = '' then
+    raise EjTable.Create('Table name must not be empty.');
   if Entity.Id < 1 then
     Entity.Id := pgNextSeq(Opf.Table.Name + '_id_seq');
   Opf.Add(Entity, False);
