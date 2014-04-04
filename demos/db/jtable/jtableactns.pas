@@ -309,7 +309,7 @@ begin
     FOnBeforeCountRecords(AWhere, Result, VHandled);
   end;
   if not VHandled then
-    Result := pgCount(Table.Name, AWhere, AParams);
+    Result := pgCount(Table.Name, AWhere, AParams, Nulls);
   if Assigned(FOnAfterCountRecords) then
     FOnAfterCountRecords(AWhere);
 end;
@@ -430,7 +430,7 @@ begin
     FOnBeforeCountRecords(AWhere, Result, VHandled);
   end;
   if not VHandled then
-    Result := pgCount(Table.Name, AWhere, AParams);
+    Result := pgCount(Table.Name, AWhere, AParams, Nulls);
   if Assigned(FOnAfterCountRecords) then
     FOnAfterCountRecords(AWhere);
 end;
