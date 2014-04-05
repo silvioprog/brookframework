@@ -45,9 +45,9 @@ type
     FTimeOut: Integer;
   protected
     function IsStarted: Boolean;
-    procedure CheckSID(ARequest: TBrookRequest); virtual;
-    procedure CheckFileName; virtual;
-    procedure CheckCookie(AResponse: TBrookResponse); virtual;
+    procedure MakeSID(ARequest: TBrookRequest); virtual;
+    procedure SetFileName; virtual;
+    procedure SetCookie(AResponse: TBrookResponse); virtual;
     procedure Load; virtual;
     procedure Save; virtual;
   public
@@ -188,7 +188,7 @@ begin
   Result := FStarted;
 end;
 
-procedure TBrookSession.CheckSID(ARequest: TBrookRequest);
+procedure TBrookSession.MakeSID(ARequest: TBrookRequest);
 begin
   if FSID = ES then
     FSID := ARequest.CookieFields.Values[FCookieName];
@@ -196,12 +196,12 @@ begin
     FSID := GenerateID;
 end;
 
-procedure TBrookSession.CheckFileName;
+procedure TBrookSession.SetFileName;
 begin
   FFileName := IncludeTrailingPathDelimiter(FDirectory) + FFilePrefix + FSID;
 end;
 
-procedure TBrookSession.CheckCookie(AResponse: TBrookResponse);
+procedure TBrookSession.SetCookie(AResponse: TBrookResponse);
 var
   VCookie: TCookie;
 begin
@@ -236,8 +236,8 @@ procedure TBrookSession.Start(ARequest: TBrookRequest);
 begin
   if FStarted then
     Exit;
-  CheckSID(ARequest);
-  CheckFileName;
+  MakeSID(ARequest);
+  SetFileName;
   FStarted := True;
   Load;
 end;
@@ -246,7 +246,7 @@ procedure TBrookSession.Finish(AResponse: TBrookResponse);
 begin
   if not FStarted then
     Exit;
-  CheckCookie(AResponse);
+  SetCookie(AResponse);
   Save;
   FStarted := False;
 end;
@@ -261,7 +261,7 @@ begin
   FSID := ARequest.CookieFields.Values[FCookieName];
   if FSID = ES then
     Exit;
-  CheckFileName;
+  SetFileName;
   DeleteFile(FFileName);
   VCookie := AResponse.Cookies.Add;
   VCookie.Name := FCookieName;
