@@ -32,6 +32,7 @@ type
   TBrookSession = class(TBrookComponent)
   private
     FCookieDomain: string;
+    FCookieExpires: TDateTime;
     FCookieName: string;
     FCookiePath: string;
     FCookieSecure: Boolean;
@@ -80,6 +81,8 @@ type
     property CookiePath: string read FCookiePath write FCookiePath;
     { Set the session cookie secure. }
     property CookieSecure: Boolean read FCookieSecure write FCookieSecure;
+    { Set the session cookie expiration. }
+    property CookieExpires: TDateTime read FCookieExpires write FCookieExpires;
     { The session fields. }
     property Fields: TStrings read FFields;
     { Set the name of session directory. }
@@ -132,6 +135,7 @@ begin
   inherited Create(AOwner);
   FFields := TStringList.Create;
   FCookieName := BROOK_SESS_ID;
+  FCookieExpires := -1;
   FFilePrefix := BROOK_SESS_PREFIX;
   FDirectory := GetTempDir(False);
   if FDirectory = ES then
@@ -210,6 +214,7 @@ begin
   begin
     VCookie := AResponse.Cookies.Add;
     VCookie.Name := FCookieName;
+    VCookie.Expires := FCookieExpires;
     VCookie.Domain := FCookieDomain;
     VCookie.Path := FCookiePath;
     VCookie.Secure := FCookieSecure;
