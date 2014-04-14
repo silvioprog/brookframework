@@ -29,7 +29,7 @@ type
   TBrookSessionClass = class of TBrookSession;
 
   { Defines features to the section handling. }
-  TBrookSession = class(TBrookObject)
+  TBrookSession = class(TBrookComponent)
   private
     FCookieDomain: string;
     FCookieName: string;
@@ -52,7 +52,7 @@ type
     procedure Save; virtual;
   public
     { Creates an instance of a @link(TBrookSession) class. }
-    constructor Create; virtual;
+    constructor Create(AOwner: TComponent); override;
     { Frees an instance of @link(TBrookSession) class. }
     destructor Destroy; override;
     { Get an object with the fields coming from session. }
@@ -116,7 +116,7 @@ type
     procedure Save; override;
   public
     { Creates an instance of a @link(TBrookGSession) class. }
-    constructor Create; override;
+    constructor Create(AOwner: TComponent); override;
     { Frees an instance of @link(TBrookGSession) class. }
     destructor Destroy; override;
     { Maps field values to object. }
@@ -127,9 +127,9 @@ implementation
 
 { TBrookSession }
 
-constructor TBrookSession.Create;
+constructor TBrookSession.Create(AOwner: TComponent);
 begin
-  inherited Create;
+  inherited Create(AOwner);
   FFields := TStringList.Create;
   FCookieName := BROOK_SESS_ID;
   FFilePrefix := BROOK_SESS_PREFIX;
@@ -276,9 +276,9 @@ end;
 
 { TBrookGSession }
 
-constructor TBrookGSession.Create;
+constructor TBrookGSession.Create(AOwner: TComponent);
 begin
-  inherited Create;
+  inherited Create(AOwner);
   FEntity := CreateEntity;
 end;
 
