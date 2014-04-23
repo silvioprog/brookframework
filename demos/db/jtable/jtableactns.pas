@@ -214,6 +214,8 @@ type
   { TjTableGLookupAction }
 
   generic TjTableGLookupAction<T1, T2> = class(specialize TjTableGAction<T1, T2>)
+  protected
+    procedure DoMakeSelect(var ASelect, ADisplayText, AValue: string); virtual;
   public
     class function DisplayText: string; virtual;
     class function Value: string; virtual;
@@ -596,6 +598,13 @@ end;
 
 { TjTableGLookupAction }
 
+procedure TjTableGLookupAction.DoMakeSelect(var ASelect, ADisplayText,
+  AValue: string);
+begin
+  ASelect := 'select ' + ADisplayText + ' as "DisplayText", ' + AValue +
+    ' as "Value" from ' + Opf.Table.Name;
+end;
+
 class function TjTableGLookupAction.DisplayText: string;
 begin
   Result := 'TjTableGLookupAction.DisplayText not implemented.';
@@ -611,11 +620,15 @@ var
   VArray: TJSONArray;
   VObject: TJSONObject;
   VQuery: TdSQLdbQuery;
+  VSelect: string = '';
+  VDisplayText, VValue: string;
 begin
   VQuery := TdSQLdbQuery.Create(dbutils.con);
   try
-    VQuery.SQL.Text := 'select ' + DisplayText + ' as "DisplayText", ' + Value +
-      ' as "Value" from ' + Opf.Table.Name;
+    VDisplayText := DisplayText;
+    VValue := Value;
+    DoMakeSelect(VSelect, VDisplayText, VValue);
+    VQuery.SQL.Text := VSelect;
     VQuery.Open;
     VArray := TJSONArray.Create;
     while not VQuery.EOF do
