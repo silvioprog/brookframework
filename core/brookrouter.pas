@@ -131,7 +131,7 @@ type
     class procedure RegisterService;
     { Unregisters the service  provided by this class. }
     class procedure UnregisterService;
-    { Return a instance of this class. }
+    { Return an instance of this class. }
     class function Service: TBrookRouter;
     { Return the root URL. }
     class function RootUrl: string;

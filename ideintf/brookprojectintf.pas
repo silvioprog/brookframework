@@ -157,9 +157,9 @@ resourcestring
   SBrookAppName = 'Full CGI/FastCGI Application';
   SBrookAppDesc = 'Create a full CGI or FastCGI application.';
   SBrookHttpAppName = 'Embedded server';
-  SBrookHttpAppDesc = 'Create a embedded HTTP webserver.';
+  SBrookHttpAppDesc = 'Create an embedded HTTP webserver.';
   SBrookHttpDaemonName = 'Embedded daemon server';
-  SBrookHttpDaemonDesc = 'Create a embedded daemon HTTP webserver.';
+  SBrookHttpDaemonDesc = 'Create an embedded daemon HTTP webserver.';
   SBrookSimpleCGIAppName = 'Simple CGI application';
   SBrookSimpleCGIAppDesc = 'Create a simple CGI application.';
   SBrookSimpleFastCGIAppName = 'Simple FastCGI application';
@@ -167,7 +167,7 @@ resourcestring
   SBrookBrokersName = 'Brokers unit';
   SBrookBrokersDesc = 'Create a brokers unit.';
   SBrookActionName = 'Action unit';
-  SBrookActionDesc = 'Create a action unit.';
+  SBrookActionDesc = 'Create an action unit.';
 
 procedure Register;
 function BrookNewProjectDlg: TfrBrookNewProject;

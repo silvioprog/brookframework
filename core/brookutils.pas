@@ -113,7 +113,7 @@ function BrookGetPathLevel(const APath: string; const AIndex: SizeInt = 0;
   @code(BrookGetPathLevels('/a/b/c/', 1)) = b/c/. }
 function BrookGetPathLevels(const APath: string; const AIndex: SizeInt = 0;
   const ADelimiter: Char = US): string;
-{ Checks if a string is equivalent a enumerator representing a HTTP request
+{ Checks if a string is equivalent an enumerator representing a HTTP request
   method. }
 function BrookMatchMethod(const ABrookMethod: TBrookRequestMethod;
   const AMethod: string): Boolean;

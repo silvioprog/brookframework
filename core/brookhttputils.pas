@@ -45,9 +45,9 @@ function BrookMimeTypeFromFileExt(const AValue: string): string;
 function BrookMimeTypeFromFileName(const AValue: string): string;
 { Returns a file extension by MIME type. }
 function BrookFileExtFromMimeType(const AValue: string): string;
-{ Extracts the file name of a URL. }
+{ Extracts the file name of an URL. }
 function BrookExtractUrlFileName(const AUrl: string): string;
-{ Extracts the file name of a URL and escapes it. }
+{ Extracts the file name of an URL and escapes it. }
 function BrookExtractUrlFileName(const AUrl: string;
   const AEscapeQueryString: Boolean): string;
 { Returns the string corresponding to a @code(TBrookRequestMethod). }

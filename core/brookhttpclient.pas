@@ -87,7 +87,7 @@ type
     { Sends request by a DELETE HTTP request method. }
     class function Delete(const AUrl: string;
       AResponse: TStream): Boolean; virtual; abstract;
-    { Sends request by a OPTIONS HTTP request method. }
+    { Sends request by an OPTIONS HTTP request method. }
     class function Options(const AUrl: string;
       AResponse: TStream): Boolean; virtual; abstract;
     { Sends request by a HEAD HTTP request method. }
@@ -163,7 +163,7 @@ type
     class function Put(const AUrl: string; AResponse: TStream): Boolean;
     { Sends request by a DELETE HTTP request method. }
     class function Delete(const AUrl: string; AResponse: TStream): Boolean;
-    { Sends request by a OPTIONS HTTP request method. }
+    { Sends request by an OPTIONS HTTP request method. }
     class function Options(const AUrl: string; AResponse: TStream): Boolean;
     { Sends request by a HEAD HTTP request method. }
     class function Head(const AUrl: string; AHeaders: TStrings): Boolean;

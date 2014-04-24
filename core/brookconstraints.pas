@@ -60,7 +60,7 @@ type
     procedure Error(const AMsg: string); overload;
     { Raises a formated message for constraint exceptions. }
     procedure Error(const AMsg: string; const AArgs: array of const); overload;
-    { Stops the code execution showing a exception message. }
+    { Stops the code execution showing an exception message. }
     procedure Stop(const AMsg: string); overload;
     { Stops the code execution showing a formatted exception message. }
     procedure Stop(const AMsg: string; const AArgs: array of const); overload;
@@ -113,7 +113,7 @@ type
     class procedure RegisterService;
     { Unregisters the service  provided by this class. }
     class procedure UnregisterService;
-    { Return a instance of this class. }
+    { Return an instance of this class. }
     class function Service: TBrookConstraints;
     { Adds a constraint item. }
     procedure Add(AActionClass: TBrookActionClass;
