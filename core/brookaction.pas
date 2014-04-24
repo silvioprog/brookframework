@@ -206,7 +206,7 @@ initialization
     procedure Delete; virtual;
     { Is triggered by a HEAD HTTP request method. }
     procedure Head; virtual;
-    { Is triggered by a OPTIONS HTTP request method. }
+    { Is triggered by an OPTIONS HTTP request method. }
     procedure Options; virtual;
     { Redirects to an URL. }
     procedure Redirect(const AUrl: string); overload;
@@ -222,7 +222,7 @@ initialization
     procedure Error(const AMsg: string); overload;
     { Raises a formated message for action exceptions. }
     procedure Error(const AMsg: string; const AArgs: array of const); overload;
-    { Stops the action showing a exception message. }
+    { Stops the action showing an exception message. }
     procedure Stop(const AMsg: string); overload;
     { Stops the action showing a formatted exception message. }
     procedure Stop(const AMsg: string; const AArgs: array of const); overload;
@@ -243,6 +243,8 @@ initialization
     procedure Write(const AInteger: Integer); overload;
     { Writes a float. }
     procedure Write(const AFloat: Double); overload;
+    { Writes an object. }
+    procedure Write(AObject: TObject); overload;
     { Writes a content of stream. }
     procedure Write(AStream: TStream); overload;
     { Writes a formatted string. }
@@ -515,6 +517,11 @@ end;
 procedure TBrookAction.Write(const AFloat: Double);
 begin
   Write(FloatToStr(AFloat));
+end;
+
+procedure TBrookAction.Write(AObject: TObject);
+begin
+  BrookObjectToStrings(AObject, FTheResponse.Contents);
 end;
 
 procedure TBrookAction.Write(AStream: TStream);
