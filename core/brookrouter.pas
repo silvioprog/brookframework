@@ -238,7 +238,7 @@ begin
       if (PRoute^.ActionClass = AActionClass) and
         (PRoute^.Pattern = APattern) and (PRoute^.Method = AMethod) then
         raise EBrookRoutes.CreateFmt(Self, SBrookActionAlreadyRegisteredError,
-          [AActionClass]);
+          [AActionClass.ClassName]);
       if (PRoute^.Pattern = APattern) and (PRoute^.Method = AMethod) then
         raise EBrookRoutes.CreateFmt(Self, SBrookPatternAlreadyRegisteredError,
           [APattern]);
@@ -248,7 +248,7 @@ begin
       if (PRoute^.ActionClass = AActionClass) and
         (PRoute^.Pattern = APattern) then
         raise EBrookRoutes.CreateFmt(Self, SBrookActionAlreadyRegisteredError,
-          [AActionClass]);
+          [AActionClass.ClassName]);
       if PRoute^.Pattern = APattern then
         raise EBrookRoutes.CreateFmt(Self, SBrookPatternAlreadyRegisteredError,
           [APattern]);
