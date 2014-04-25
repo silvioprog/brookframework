@@ -76,12 +76,15 @@ type
     function GetItems(const AIndex: Integer): PBrookRoute;
     procedure SetItems(const AIndex: Integer; const AValue: PBrookRoute);
   protected
+    procedure FreeRoutes; virtual;
     property List: TFPList read FList;
   public
     { Creates an instance of a @link(TBrookRoutes) class. }
     constructor Create;
     { Frees an instance of @link(TBrookRoutes) class. }
     destructor Destroy; override;
+    { Clears all routes. }
+    procedure Clear;
     { Returns the number of registered routes. }
     function Count: Integer;
     { Adds a route item. }
@@ -201,13 +204,16 @@ begin
 end;
 
 destructor TBrookRoutes.Destroy;
-var
-  P: PBrookRoute;
 begin
-  for P in FList do
-    Dispose(P);
+  FreeRoutes;
   FList.Free;
   inherited Destroy;
+end;
+
+procedure TBrookRoutes.Clear;
+begin
+  FreeRoutes;
+  FList.Clear;
 end;
 
 function TBrookRoutes.Count: Integer;
@@ -223,6 +229,14 @@ end;
 procedure TBrookRoutes.SetItems(const AIndex: Integer; const AValue: PBrookRoute);
 begin
   FList.Items[AIndex] := AValue;
+end;
+
+procedure TBrookRoutes.FreeRoutes;
+var
+  P: PBrookRoute;
+begin
+  for P in FList do
+    Dispose(P);
 end;
 
 function TBrookRoutes.Add(AActionClass: TBrookActionClass;
