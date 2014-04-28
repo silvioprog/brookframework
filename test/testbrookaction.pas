@@ -6,7 +6,7 @@ interface
 
 uses
   BrookAction, BrookRouter, BrookHttpDefs, BrookUtils, fpcunit, testregistry,
-  Classes, sysutils, dateutils;
+  Classes, sysutils, dateutils, typinfo;
 
 type
   TMyEnum = (enum1, enum2, enum3);
@@ -52,15 +52,22 @@ type
   TAction2 = class(TAction1)
   end;
 
+  { TEntityAction }
+
+  TEntityAction = class(specialize TBrookGAction<TMyType>)
+  public
+    procedure Post; override;
+  end;
+
   { TTestBrookAction }
 
   TTestBrookAction = class(TTestCase)
   private
     Fac: TBrookAction;
     Fvals: TStrings;
-    procedure AfterExecuteAction(ASender: TObject; AAction: TBrookAction;
-      ARequest: TBrookRequest; AResponse: TBrookResponse; ARoute: TBrookRoute;
-      var AHandled: Boolean);
+    procedure AfterExecuteAction({%H-}ASender: TObject; AAction: TBrookAction;
+      {%H-}ARequest: TBrookRequest;{%H-}AResponse: TBrookResponse;
+      {%H-}ARoute: TBrookRoute;{%H-}var AHandled: Boolean);
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -83,6 +90,13 @@ type
     procedure TestValues;
   end;
 
+  { TTestBrookGAction }
+
+  TTestBrookGAction = class(TTestCase)
+  published
+    procedure TestEntity;
+  end;
+
 implementation
 
 { TAction1 }
@@ -90,6 +104,22 @@ implementation
 procedure TAction1.Get;
 begin
   Write('Test');
+end;
+
+{ TEntityAction }
+
+procedure TEntityAction.Post;
+begin
+  Write(Entity.MyChar);
+  Write(Entity.MyString);
+  Write(Entity.MyInteger);
+  Write(Entity.MyInt64);
+  Write(Entity.MyFloat);
+  Write(Entity.MyCurrency);
+  Write(Entity.MyBoolean);
+  Write(DateTimeToStr(Entity.MyDateTime));
+  Write(GetEnumProp(Entity, 'MyEnum'));
+  Write(GetSetProp(Entity, 'MySet'));
 end;
 
 { TTestBrookAction }
@@ -487,8 +517,6 @@ end;
 
 procedure TTestBrookAction.TestValues;
 var
-//  a: TBrookAction;
-//  ac: TBrookActionClass = nil;
   rq: TBrookRequest;
   rs: TBrookResponse;
   rt: TBrookRouter;
@@ -510,8 +538,54 @@ begin
   end;
 end;
 
+{ TTestBrookGAction }
+
+procedure TTestBrookGAction.TestEntity;
+var
+  a: TEntityAction;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+  dt: TDateTime;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TEntityAction.Create(rq, rs);
+  try
+    dt := EncodeDateTime(2000, 12, 31, 23, 59, 59, 999);
+    rq.ContentFields.Add('MyChar=A');
+    rq.ContentFields.Add('MyString=ABC123');
+    rq.ContentFields.Add('MyInteger=123');
+    rq.ContentFields.Add('MyInt64=456');
+    rq.ContentFields.Add('MyFloat=' + FloatToStr(123.456));
+    rq.ContentFields.Add('MyCurrency=' + CurrToStr(456.789));
+    rq.ContentFields.Add('MyBoolean=on');
+    rq.ContentFields.Add('MyDateTime=' + DateTimeToStr(dt));
+    rq.ContentFields.Add('MyEnum=enum2');
+    rq.ContentFields.Add('MySet=[enum1,enum3]');
+    rq.Method := 'POST';
+    a.DoRequest(rq, rs);
+    AssertEquals(a.Entity.MyChar, 'A');
+    AssertEquals(a.Entity.MyString, 'ABC123');
+    AssertEquals(a.Entity.MyInteger, 123);
+    AssertEquals(a.Entity.MyInt64, 456);
+    AssertEquals(a.Entity.MyFloat, 123.456);
+    AssertEquals(a.Entity.MyCurrency, 456.789);
+    AssertEquals(a.Entity.MyBoolean, True);
+    AssertEquals(a.Entity.MyDateTime, dt);
+    AssertEquals(GetEnumProp(a.Entity, 'MyEnum'), 'enum2');
+    AssertEquals(GetSetProp(a.Entity, 'MySet'), 'enum1,enum3');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
 initialization
   RegisterTest(TTestBrookAction);
+  RegisterTest(TTestBrookGAction);
 
 end.
 
