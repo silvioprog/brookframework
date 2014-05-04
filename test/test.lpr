@@ -3,7 +3,7 @@ program test;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, testbrookaction;
+  Interfaces, Forms, GuiTestRunner, testbrookaction, testbrookapplication;
 
 begin
   Application.Initialize;
