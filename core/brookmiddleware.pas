@@ -37,7 +37,7 @@ type
       var AHandled: Boolean); virtual;
   public
     { Creates an instance of a @link(TBrookMiddleware) class. }
-    constructor Create(ABoundEvent: PBrookExecuteActionEvent); virtual;
+    constructor Create(ABoundEvent: PBrookExecuteActionEvent); overload; virtual;
     { Is triggered when the @code(TBrookExecuteActionEvent) event bound in this
       class is executed. }
     procedure Execute({%H-}ASender: TObject;{%H-}AAction: TBrookAction;
