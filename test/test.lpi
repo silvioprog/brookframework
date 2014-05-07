@@ -39,7 +39,7 @@
         <PackageName Value="FPCUnitTestRunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="5">
       <Unit0>
         <Filename Value="test.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -70,6 +70,12 @@
         <UnitName Value="testbrookconfigurator"/>
         <UsageCount Value="20"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="testbrookhttpclient.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testbrookhttpclient"/>
+        <UsageCount Value="20"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
