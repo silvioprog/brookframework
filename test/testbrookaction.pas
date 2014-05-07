@@ -154,9 +154,9 @@ begin
   TAction2.Register('/action2', rmPost);
   AssertEquals(2, rts.Count);
   AssertEquals('TAction1', rts.Items[0]^.ActionClass.ClassName);
-  AssertEquals(True, rts.Items[0]^.Default);
+  AssertTrue(rts.Items[0]^.Default);
   AssertEquals('/action1', rts.Items[0]^.Pattern);
-  AssertEquals(True, BrookSettings.Mapped);
+  AssertTrue(BrookSettings.Mapped);
   AssertTrue('Invalid method', rts.Items[0]^.Method = rmGet);
 end;
 
@@ -376,7 +376,7 @@ begin
     AssertEquals('ABC', rs.Contents[0]);
     AssertEquals(123, StrToInt(rs.Contents[1]));
     AssertEquals(123.456, StrToFloat(rs.Contents[2]));
-    AssertEquals(True, StrToBool(rs.Contents[3]));
+    AssertTrue(StrToBool(rs.Contents[3]));
   finally
     rs.Free;
     rq.Free;

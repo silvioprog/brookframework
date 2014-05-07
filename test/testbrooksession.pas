@@ -162,7 +162,7 @@ begin
       rq.CookieFields.Values[BROOK_SESS_ID] := co;
     se.Start(rq);
     FileSetDate(se.FileName, DateTimeToFileDate(EncodeDate(2000, 1, 1)));
-    AssertEquals(True, se.IsExpired);
+    AssertTrue(se.IsExpired);
     DeleteFiles(se.Directory, NullDate, ES, BROOK_SESS_PREFIX);
   finally
     rs.Free;

@@ -269,15 +269,15 @@ var
 begin
   rt := TBrookRouter.Service;
   mp := rt.MatchPattern('/action', '/action/', rd, ns, vls);
-  AssertEquals(False, mp);
+  AssertFalse(mp);
   mp := rt.MatchPattern('/action', '/action', rd, ns, vls);
-  AssertEquals(True, mp);
-  AssertEquals(False, rd);
+  AssertTrue(mp);
+  AssertFalse(rd);
   AssertEquals(-1, High(ns));
   AssertEquals(-1, High(vls));
   mp := rt.MatchPattern('/action/', '/action', rd, ns, vls);
-  AssertEquals(True, mp);
-  AssertEquals(True, rd);
+  AssertTrue(mp);
+  AssertTrue(rd);
   mp := rt.MatchPattern('/action/:myvar1/:myvar2', '/action/abc/123', rd, ns,
     vls);
   AssertEquals('myvar1', ns[0]);
@@ -291,7 +291,7 @@ begin
   AssertEquals('abc', vls[0]);
   AssertEquals('123', vls[1]);
   mp := rt.MatchPattern('/action/*', '/action/abc/123', rd, ns, vls);
-  AssertEquals(True, mp);
+  AssertTrue(mp);
 end;
 
 procedure TTestBrookRouter.TestRoute;

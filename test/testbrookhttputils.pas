@@ -44,7 +44,7 @@ end;
 
 procedure TTestBrookHttpUtils.TestSameURL;
 begin
-  AssertEquals(True, BrookSameURL('http://localhost', 'http://localhost/'));
+  AssertTrue(BrookSameURL('http://localhost', 'http://localhost/'));
 end;
 
 procedure TTestBrookHttpUtils.TestStatusCodeToReasonPhrase;
@@ -64,8 +64,7 @@ end;
 
 procedure TTestBrookHttpUtils.TestGetAcceptEncoding;
 begin
-  AssertEquals(True, BrookGetAcceptEncodingSet('deflate,gzip') =
-    [aeDeflate, aeGzip]);
+  AssertTrue(BrookGetAcceptEncodingSet('deflate,gzip') = [aeDeflate, aeGzip]);
 end;
 
 procedure TTestBrookHttpUtils.TestMimeTypeFromFileExt;
@@ -104,13 +103,13 @@ end;
 
 procedure TTestBrookHttpUtils.StrToRequestMethod;
 begin
-  AssertEquals(True, BrookStrToRequestMethod('GET') = rmGet);
-  AssertEquals(True, BrookStrToRequestMethod('POST') = rmPost);
-  AssertEquals(True, BrookStrToRequestMethod('PUT') = rmPut);
-  AssertEquals(True, BrookStrToRequestMethod('DELETE') = rmDelete);
-  AssertEquals(True, BrookStrToRequestMethod('HEAD') = rmHead);
-  AssertEquals(True, BrookStrToRequestMethod('OPTIONS') = rmOptions);
-  AssertEquals(True, BrookStrToRequestMethod('TRACE') = rmTrace);
+  AssertTrue(BrookStrToRequestMethod('GET') = rmGet);
+  AssertTrue(BrookStrToRequestMethod('POST') = rmPost);
+  AssertTrue(BrookStrToRequestMethod('PUT') = rmPut);
+  AssertTrue(BrookStrToRequestMethod('DELETE') = rmDelete);
+  AssertTrue(BrookStrToRequestMethod('HEAD') = rmHead);
+  AssertTrue(BrookStrToRequestMethod('OPTIONS') = rmOptions);
+  AssertTrue(BrookStrToRequestMethod('TRACE') = rmTrace);
 end;
 
 procedure TTestBrookHttpUtils.HttpRequest;
@@ -118,7 +117,7 @@ var
   VResult: TBrookHttpResult;
 begin
   VResult := BrookHttpRequest('http://silvioprog.github.io/brookframework/');
-  AssertEquals(True, VResult.Content <> '');
+  AssertTrue(VResult.Content <> '');
   VResult := BrookHttpRequest('http://brookframework.org/cgi-bin/cgi1.bf/' +
     'personlist?jtStartIndex=0&jtPageSize=5&jtSorting=id%20ASC', rmPost);
   AssertEquals('{ "Result" : "OK", "TotalRecordCount" : 11, "Records" : ' +

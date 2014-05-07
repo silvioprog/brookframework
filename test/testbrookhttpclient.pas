@@ -38,7 +38,7 @@ begin
     VResult := VClient.Request(URL);
     AssertEquals(SOK, VResult.ReasonPhrase);
     AssertEquals(OK, VResult.StatusCode);
-    AssertEquals(True, Length(VResult.Content) > 0);
+    AssertTrue(Length(VResult.Content) > 0);
   finally
     VClient.Free
   end;
@@ -60,10 +60,10 @@ begin
     VResult := VClient.Request(VHttp);
     AssertEquals(SOK, VResult.ReasonPhrase);
     AssertEquals(OK, VResult.StatusCode);
-    AssertEquals(True, Length(VResult.Content) > 0);
-    AssertEquals(True, VHttp.Contents.Count > 0);
-    AssertEquals(True, VHttp.Document.Size > 0);
-    AssertEquals(True, VHttp.Cookies.Count = 0);
+    AssertTrue(Length(VResult.Content) > 0);
+    AssertTrue(VHttp.Contents.Count > 0);
+    AssertTrue(VHttp.Document.Size > 0);
+    AssertTrue(VHttp.Cookies.Count = 0);
   finally
     VHttp.Free;
     VClient.Free

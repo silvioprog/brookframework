@@ -91,7 +91,7 @@ begin
     AssertEquals(456, VTarget1.MyInt64);
     AssertEquals(12.3, VTarget1.MyFloat);
     AssertEquals(45.6, VTarget1.MyCurrency);
-    AssertEquals(True, VTarget1.MyBoolean);
+    AssertTrue(VTarget1.MyBoolean);
     AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget1.MyDateTime);
     AssertTrue(VTarget1.MyEnum = enum2);
     AssertTrue(VTarget1.MySet = [enum1, enum3]);
@@ -118,7 +118,7 @@ begin
     AssertEquals(456, VTarget1.MyInt64);
     AssertEquals(12.3, VTarget1.MyFloat);
     AssertEquals(45.6, VTarget1.MyCurrency);
-    AssertEquals(True, VTarget1.MyBoolean);
+    AssertTrue(VTarget1.MyBoolean);
     AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget1.MyDateTime);
     AssertTrue(VTarget1.MyEnum = enum2);
     AssertTrue(VTarget1.MySet = [enum1, enum3]);
@@ -151,7 +151,7 @@ begin
     AssertEquals(0, VTarget1.MyInt64);
     AssertEquals(0, VTarget1.MyFloat);
     AssertEquals(0, VTarget1.MyCurrency);
-    AssertEquals(False, VTarget1.MyBoolean);
+    AssertFalse(VTarget1.MyBoolean);
     AssertEquals(NullDateTime, VTarget1.MyDateTime);
     AssertTrue(VTarget1.MyEnum = enum1);
     AssertTrue(VTarget1.MySet = []);
@@ -163,7 +163,7 @@ begin
     AssertEquals(456, VTarget2.MyInt64);
     AssertEquals(12.3, VTarget2.MyFloat);
     AssertEquals(45.6, VTarget2.MyCurrency);
-    AssertEquals(True, VTarget2.MyBoolean);
+    AssertTrue(VTarget2.MyBoolean);
     AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget2.MyDateTime);
     AssertTrue(VTarget2.MyEnum = enum2);
     AssertTrue(VTarget2.MySet = [enum1, enum3]);
