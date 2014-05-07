@@ -5,8 +5,7 @@ unit testbrookconfigurator;
 interface
 
 uses
-  BrookConfigurator, BrookUtils, BrookConsts, fpcunit, testregistry, sysutils,
-  typinfo;
+  BrookConfigurator, BrookUtils, BrookConsts, fpcunit, testregistry, sysutils;
 
 type
   TMyEnum = (enum1, enum2, enum3);
@@ -94,8 +93,8 @@ begin
     AssertEquals(45.6, VTarget1.MyCurrency);
     AssertEquals(True, VTarget1.MyBoolean);
     AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget1.MyDateTime);
-    AssertEquals('enum2', GetEnumProp(VTarget1, 'MyEnum'));
-    AssertEquals('enum1,enum3', GetSetProp(VTarget1, 'MySet'));
+    AssertTrue(VTarget1.MyEnum = enum2);
+    AssertTrue(VTarget1.MySet = [enum1, enum3]);
   finally
     VTarget1.Free;
     VCfg.Free;
@@ -121,8 +120,8 @@ begin
     AssertEquals(45.6, VTarget1.MyCurrency);
     AssertEquals(True, VTarget1.MyBoolean);
     AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget1.MyDateTime);
-    AssertEquals('enum2', GetEnumProp(VTarget1, 'MyEnum'));
-    AssertEquals('enum1,enum3', GetSetProp(VTarget1, 'MySet'));
+    AssertTrue(VTarget1.MyEnum = enum2);
+    AssertTrue(VTarget1.MySet = [enum1, enum3]);
   finally
     VTarget1.Free;
     VCfg.Free;
@@ -154,8 +153,8 @@ begin
     AssertEquals(0, VTarget1.MyCurrency);
     AssertEquals(False, VTarget1.MyBoolean);
     AssertEquals(NullDateTime, VTarget1.MyDateTime);
-    AssertEquals('enum1', GetEnumProp(VTarget1, 'MyEnum'));
-    AssertEquals('', GetSetProp(VTarget1, 'MySet'));
+    AssertTrue(VTarget1.MyEnum = enum1);
+    AssertTrue(VTarget1.MySet = []);
     VCfg.Target := VTarget2;
     VCfg.Configure;
     AssertEquals('A', VTarget2.MyChar);
@@ -166,8 +165,8 @@ begin
     AssertEquals(45.6, VTarget2.MyCurrency);
     AssertEquals(True, VTarget2.MyBoolean);
     AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget2.MyDateTime);
-    AssertEquals('enum2', GetEnumProp(VTarget2, 'MyEnum'));
-    AssertEquals('enum1,enum3', GetSetProp(VTarget2, 'MySet'));
+    AssertTrue(VTarget2.MyEnum = enum2);
+    AssertTrue(VTarget2.MySet = [enum1, enum3]);
   finally
     VTarget1.Free;
     VTarget2.Free;
