@@ -4,7 +4,7 @@ program test;
 
 uses
   Interfaces, Forms, GuiTestRunner, testbrookaction, testbrookapplication,
-  testbrookconfigurator, testbrookhttpclient;
+  testbrookconfigurator, testbrookhttpclient, testbrookhttputils;
 
 begin
   Application.Initialize;
