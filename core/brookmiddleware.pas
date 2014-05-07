@@ -13,7 +13,7 @@
 
 unit BrookMiddleware;
 
-{$mode objfpc}{$H+}
+{$i brook.inc}
 
 interface
 
