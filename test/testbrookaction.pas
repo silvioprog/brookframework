@@ -526,6 +526,7 @@ begin
   rs := TBrookResponse.Create(rq);
 {$WARNINGS ON}
   try
+    TBrookRouter.Service.Routes.Clear;
     TAction1.Register('/path/:var');
     rq.PathInfo := '/path/ABC123';
     rt := TBrookRouter.Service;
