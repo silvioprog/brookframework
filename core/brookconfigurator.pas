@@ -19,7 +19,7 @@ interface
 
 uses
   BrookClasses, BrookUtils, BrookException, BrookMessages, BrookConsts, Classes,
-  SysUtils, TypInfo;
+  SysUtils;
 
 type
   { Handles exceptions for @link(TBrookConfigurator). }
@@ -164,9 +164,8 @@ begin
       if (VToken = PO) or (VToken = ES) then
         Continue;
       VValue := FCfg.Values[VClassName + DT + VPropName];
-      if SameText(VClassName, FTarget.ClassName) and
-        IsPublishedProp(FTarget, VPropName) then
-          SetPropValue(FTarget, VPropName, VValue);
+      if SameText(VClassName, FTarget.ClassName) then
+        BrookStringToObject(FTarget, VPropName, VValue);
     end
   else
     for I := 0 to Pred(FCfg.Count) do
@@ -176,8 +175,7 @@ begin
       if (VToken = PO) or (VToken = ES) then
         Continue;
       VValue := FCfg.Values[VPropName];
-      if IsPublishedProp(FTarget, VPropName) then
-        SetPropValue(FTarget, VPropName, VValue);
+      BrookStringToObject(FTarget, VPropName, VValue);
     end;
 end;
 
