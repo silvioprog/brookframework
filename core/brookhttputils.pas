@@ -375,27 +375,72 @@ function BrookHttpRequest(const AUrl: string; const AMethod: TBrookRequestMethod
   const AHttpClientLibrary: string): TBrookHTTPResult;
 var
   VMethod, VLibrary: string;
-  VClient: TBrookHTTPClient;
+  VClient: TBrookHttpClient;
+  VHttp: TBrookHttpDef = nil;
 begin
   if AHttpClientLibrary <> ES then
     VLibrary := AHttpClientLibrary
   else
     VLibrary := BROOK_HTTP_CLIENT_DEFAULT_LIBRARY;
-  VClient := TBrookHTTPClient.Create(VLibrary);
+  VClient := TBrookHttpClient.Create(VLibrary);
   try
-    case AMethod of
-      rmGet: VMethod := BROOK_HTTP_REQUEST_METHOD_GET;
-      rmPost: VMethod := BROOK_HTTP_REQUEST_METHOD_POST;
-      rmPut: VMethod := BROOK_HTTP_REQUEST_METHOD_PUT;
-      rmDelete: VMethod := BROOK_HTTP_REQUEST_METHOD_DELETE;
-      rmHead: VMethod := BROOK_HTTP_REQUEST_METHOD_HEAD;
-      rmOptions: VMethod := BROOK_HTTP_REQUEST_METHOD_OPTIONS;
-      rmTrace: VMethod := BROOK_HTTP_REQUEST_METHOD_TRACE;
-    else
-      raise EBrookHTTPClient.CreateFmt(SBrookInvalidRequestMethodError,
-        [BrookRequestMethodToStr(AMethod)]);
+    VClient.Prepare(VHttp);
+    try
+      case AMethod of
+        rmPost:
+          begin
+            VHttp.Document.WriteByte(13);
+            VHttp.Document.WriteByte(10);
+            VHttp.ContentType := 'application/x-www-form-urlencoded';
+            VHttp.Method := 'POST';
+          end;
+        rmPut:
+          begin
+            VHttp.Document.WriteByte(13);
+            VHttp.Document.WriteByte(10);
+            VHttp.ContentType := 'application/x-www-form-urlencoded';
+            VHttp.Method := 'PUT';
+          end;
+        rmDelete:
+          begin
+            VHttp.Document.WriteByte(13);
+            VHttp.Document.WriteByte(10);
+            VHttp.ContentType := 'application/x-www-form-urlencoded';
+            VHttp.Method := 'DELETE';
+          end;
+        rmGet:
+          begin
+            VHttp.ContentType := 'text/plain';
+            VHttp.Method := 'GET';
+          end;
+        rmHead:
+          begin
+            VHttp.ContentType := 'text/plain';
+            VHttp.Method := 'HEAD';
+          end;
+        rmOptions:
+          begin
+            VHttp.ContentType := 'text/plain';
+            VHttp.Method := 'OPTIONS';
+          end;
+        rmTrace:
+          begin
+            VHttp.ContentType := 'text/plain';
+            VHttp.Method := 'TRACE';
+          end;
+      else
+        raise EBrookHTTPClient.CreateFmt(SBrookInvalidRequestMethodError,
+          [BrookRequestMethodToStr(AMethod)]);
+      end;
+      VHttp.Url := AUrl;
+      VHttp.Request;
+      Result.StatusCode := VHttp.StatusCode;
+      Result.ReasonPhrase := VHttp.ReasonPhrase;
+      Result.Header := VHttp.Headers.Text;
+      Result.Content := VHttp.Contents.Text;
+    finally
+      FreeAndNil(VHttp);
     end;
-    Result := VClient.Request(VMethod, AUrl);
   finally
     VClient.Free;
   end;
