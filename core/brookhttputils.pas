@@ -374,7 +374,7 @@ end;
 function BrookHttpRequest(const AUrl: string; const AMethod: TBrookRequestMethod;
   const AHttpClientLibrary: string): TBrookHTTPResult;
 var
-  VMethod, VLibrary: string;
+  VLibrary: string;
   VClient: TBrookHttpClient;
   VHttp: TBrookHttpDef = nil;
 begin
