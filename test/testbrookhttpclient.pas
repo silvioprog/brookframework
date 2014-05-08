@@ -30,17 +30,17 @@ implementation
 
 procedure TTestBrookHTTPClient.TestClient;
 var
-  VClient: TBrookHTTPClient;
-  VResult: TBrookHTTPResult;
+  cl: TBrookHTTPClient;
+  r: TBrookHTTPResult;
 begin
-  VClient := TBrookHTTPClient.Create(LIB);
+  cl := TBrookHTTPClient.Create(LIB);
   try
-    VResult := VClient.Request(URL);
-    AssertEquals(SOK, VResult.ReasonPhrase);
-    AssertEquals(OK, VResult.StatusCode);
-    AssertTrue(Length(VResult.Content) > 0);
+    r := cl.Request(URL);
+    AssertEquals(SOK, r.ReasonPhrase);
+    AssertEquals(OK, r.StatusCode);
+    AssertTrue(Length(r.Content) > 0);
   finally
-    VClient.Free
+    cl.Free
   end;
 end;
 
@@ -48,25 +48,25 @@ end;
 
 procedure TTestBrookHTTPClient.TestHttpDef;
 var
-  VClient: TBrookHTTPClient;
-  VHttp: TBrookHTTPDef = nil;
-  VResult: TBrookHTTPResult;
+  cl: TBrookHTTPClient;
+  ht: TBrookHTTPDef = nil;
+  r: TBrookHTTPResult;
 begin
-  VClient := TBrookHTTPClient.Create(LIB);
+  cl := TBrookHTTPClient.Create(LIB);
   try
-    VClient.Prepare(VHttp);
-    VHttp.Method := GET;
-    VHttp.Url := URL;
-    VResult := VClient.Request(VHttp);
-    AssertEquals(SOK, VResult.ReasonPhrase);
-    AssertEquals(OK, VResult.StatusCode);
-    AssertTrue(Length(VResult.Content) > 0);
-    AssertTrue(VHttp.Contents.Count > 0);
-    AssertTrue(VHttp.Document.Size > 0);
-    AssertTrue(VHttp.Cookies.Count = 0);
+    cl.Prepare(ht);
+    ht.Method := GET;
+    ht.Url := URL;
+    r := cl.Request(ht);
+    AssertEquals(SOK, r.ReasonPhrase);
+    AssertEquals(OK, r.StatusCode);
+    AssertTrue(Length(r.Content) > 0);
+    AssertTrue(ht.Contents.Count > 0);
+    AssertTrue(ht.Document.Size > 0);
+    AssertTrue(ht.Cookies.Count = 0);
   finally
-    VHttp.Free;
-    VClient.Free
+    ht.Free;
+    cl.Free
   end;
 end;
 

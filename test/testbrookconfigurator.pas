@@ -69,108 +69,110 @@ begin
     ThousandSeparator := '.';
     ShortDateFormat := 'yyyy/mm/dd';
     ShortTimeFormat := 'hh:nn:ss';
+    DateSeparator := '/';
+    TimeSeparator := ':';
   end;
 end;
 
 procedure TTestBrookConfigurator.TestConfigureFromString;
 var
-  VTarget1: TTarget1;
-  VCfg: TBrookConfigurator;
+  tg: TTarget1;
+  cf: TBrookConfigurator;
 begin
-  VCfg := TBrookConfigurator.Create(
+  cf := TBrookConfigurator.Create(
     'mychar=A;mystring=ABC;myinteger=123;myint64=456;myfloat=12,3;' +
     'mycurrency=45,6;myboolean=true;mydatetime=2014/02/01 11:59:01;' +
     'myenum=enum2;myset=[enum1, enum3]');
-  VTarget1 := TTarget1.Create;
+  tg := TTarget1.Create;
   try
-    VCfg.Target := VTarget1;
-    VCfg.Configure;
-    AssertEquals('A', VTarget1.MyChar);
-    AssertEquals('ABC', VTarget1.MyString);
-    AssertEquals(123, VTarget1.MyInteger);
-    AssertEquals(456, VTarget1.MyInt64);
-    AssertEquals(12.3, VTarget1.MyFloat);
-    AssertEquals(45.6, VTarget1.MyCurrency);
-    AssertTrue(VTarget1.MyBoolean);
-    AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget1.MyDateTime);
-    AssertTrue(VTarget1.MyEnum = enum2);
-    AssertTrue(VTarget1.MySet = [enum1, enum3]);
+    cf.Target := tg;
+    cf.Configure;
+    AssertEquals('A', tg.MyChar);
+    AssertEquals('ABC', tg.MyString);
+    AssertEquals(123, tg.MyInteger);
+    AssertEquals(456, tg.MyInt64);
+    AssertEquals(12.3, tg.MyFloat);
+    AssertEquals(45.6, tg.MyCurrency);
+    AssertTrue(tg.MyBoolean);
+    AssertEquals(StrToDateTime('2014/02/01 11:59:01'), tg.MyDateTime);
+    AssertTrue(tg.MyEnum = enum2);
+    AssertTrue(tg.MySet = [enum1, enum3]);
   finally
-    VTarget1.Free;
-    VCfg.Free;
+    tg.Free;
+    cf.Free;
   end;
 end;
 
 procedure TTestBrookConfigurator.TestConfigureFromFile;
 var
-  VTarget1: TTarget1;
-  VCfg: TBrookConfigurator;
+  tg: TTarget1;
+  cf: TBrookConfigurator;
 begin
   BrookSettings.Configuration := '';
-  VCfg := TBrookConfigurator.Create(ExtractFilePath(ParamStr(0)) + 'test.cfg');
-  VTarget1 := TTarget1.Create;
+  cf := TBrookConfigurator.Create(ExtractFilePath(ParamStr(0)) + 'test.cfg');
+  tg := TTarget1.Create;
   try
-    VCfg.Target := VTarget1;
-    VCfg.Configure;
-    AssertEquals('A', VTarget1.MyChar);
-    AssertEquals('ABC', VTarget1.MyString);
-    AssertEquals(123, VTarget1.MyInteger);
-    AssertEquals(456, VTarget1.MyInt64);
-    AssertEquals(12.3, VTarget1.MyFloat);
-    AssertEquals(45.6, VTarget1.MyCurrency);
-    AssertTrue(VTarget1.MyBoolean);
-    AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget1.MyDateTime);
-    AssertTrue(VTarget1.MyEnum = enum2);
-    AssertTrue(VTarget1.MySet = [enum1, enum3]);
+    cf.Target := tg;
+    cf.Configure;
+    AssertEquals('A', tg.MyChar);
+    AssertEquals('ABC', tg.MyString);
+    AssertEquals(123, tg.MyInteger);
+    AssertEquals(456, tg.MyInt64);
+    AssertEquals(12.3, tg.MyFloat);
+    AssertEquals(45.6, tg.MyCurrency);
+    AssertTrue(tg.MyBoolean);
+    AssertEquals(StrToDateTime('2014/02/01 11:59:01'), tg.MyDateTime);
+    AssertTrue(tg.MyEnum = enum2);
+    AssertTrue(tg.MySet = [enum1, enum3]);
   finally
-    VTarget1.Free;
-    VCfg.Free;
+    tg.Free;
+    cf.Free;
   end;
 end;
 
 procedure TTestBrookConfigurator.TestClassChecking;
 var
-  VTarget1: TTarget1;
-  VTarget2: TTarget2;
-  VCfg: TBrookConfigurator;
+  tg1: TTarget1;
+  tg2: TTarget2;
+  cf: TBrookConfigurator;
 begin
-  VCfg := TBrookConfigurator.Create(
+  cf := TBrookConfigurator.Create(
     'ttarget2.mychar=A;ttarget2.mystring=ABC;ttarget2.myinteger=123;' +
     'ttarget2.myint64=456;ttarget2.myfloat=12,3;ttarget2.mycurrency=45,6;' +
     'ttarget2.myboolean=true;ttarget2.mydatetime=2014/02/01 11:59:01;' +
     'ttarget2.myenum=enum2;ttarget2.myset=[enum1, enum3]');
-  VTarget1 := TTarget1.Create;
-  VTarget2 := TTarget2.Create;
+  tg1 := TTarget1.Create;
+  tg2 := TTarget2.Create;
   try
-    VCfg.ClassChecking := True;
-    VCfg.Target := VTarget1;
-    VCfg.Configure;
-    AssertEquals(#0, VTarget1.MyChar);
-    AssertEquals('', VTarget1.MyString);
-    AssertEquals(0, VTarget1.MyInteger);
-    AssertEquals(0, VTarget1.MyInt64);
-    AssertEquals(0, VTarget1.MyFloat);
-    AssertEquals(0, VTarget1.MyCurrency);
-    AssertFalse(VTarget1.MyBoolean);
-    AssertEquals(NullDateTime, VTarget1.MyDateTime);
-    AssertTrue(VTarget1.MyEnum = enum1);
-    AssertTrue(VTarget1.MySet = []);
-    VCfg.Target := VTarget2;
-    VCfg.Configure;
-    AssertEquals('A', VTarget2.MyChar);
-    AssertEquals('ABC', VTarget2.MyString);
-    AssertEquals(123, VTarget2.MyInteger);
-    AssertEquals(456, VTarget2.MyInt64);
-    AssertEquals(12.3, VTarget2.MyFloat);
-    AssertEquals(45.6, VTarget2.MyCurrency);
-    AssertTrue(VTarget2.MyBoolean);
-    AssertEquals(StrToDateTime('2014/02/01 11:59:01'), VTarget2.MyDateTime);
-    AssertTrue(VTarget2.MyEnum = enum2);
-    AssertTrue(VTarget2.MySet = [enum1, enum3]);
+    cf.ClassChecking := True;
+    cf.Target := tg1;
+    cf.Configure;
+    AssertEquals(#0, tg1.MyChar);
+    AssertEquals('', tg1.MyString);
+    AssertEquals(0, tg1.MyInteger);
+    AssertEquals(0, tg1.MyInt64);
+    AssertEquals(0, tg1.MyFloat);
+    AssertEquals(0, tg1.MyCurrency);
+    AssertFalse(tg1.MyBoolean);
+    AssertEquals(NullDateTime, tg1.MyDateTime);
+    AssertTrue(tg1.MyEnum = enum1);
+    AssertTrue(tg1.MySet = []);
+    cf.Target := tg2;
+    cf.Configure;
+    AssertEquals('A', tg2.MyChar);
+    AssertEquals('ABC', tg2.MyString);
+    AssertEquals(123, tg2.MyInteger);
+    AssertEquals(456, tg2.MyInt64);
+    AssertEquals(12.3, tg2.MyFloat);
+    AssertEquals(45.6, tg2.MyCurrency);
+    AssertTrue(tg2.MyBoolean);
+    AssertEquals(StrToDateTime('2014/02/01 11:59:01'), tg2.MyDateTime);
+    AssertTrue(tg2.MyEnum = enum2);
+    AssertTrue(tg2.MySet = [enum1, enum3]);
   finally
-    VTarget1.Free;
-    VTarget2.Free;
-    VCfg.Free;
+    tg1.Free;
+    tg2.Free;
+    cf.Free;
   end;
 end;
 

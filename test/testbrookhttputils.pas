@@ -114,19 +114,19 @@ end;
 
 procedure TTestBrookHttpUtils.HttpRequest;
 var
-  VResult: TBrookHttpResult;
+  r: TBrookHttpResult;
 begin
-  VResult := BrookHttpRequest('http://silvioprog.github.io/brookframework/');
-  AssertTrue(VResult.Content <> '');
-  VResult := BrookHttpRequest('http://brookframework.org/cgi-bin/cgi1.bf/' +
+  r := BrookHttpRequest('http://silvioprog.github.io/brookframework/');
+  AssertTrue(r.Content <> '');
+  r := BrookHttpRequest('http://brookframework.org/cgi-bin/cgi1.bf/' +
     'personlist?jtStartIndex=0&jtPageSize=5&jtSorting=id%20ASC', rmPost);
   AssertEquals('{ "Result" : "OK", "TotalRecordCount" : 11, "Records" : ' +
     '[{ "id" : 1, "name" : "Silvio Clecio" }, { "id" : 2, "name" : ' +
     '"Luciano Souza" }, { "id" : 3, "name" : "Joao Morais" }, { "id" : 4, ' +
     '"name" : "Waldir Paim" }, { "id" : 5, "name" : "Gilson Nunes" }] }',
-    Trim(VResult.Content));
-  AssertEquals('OK', VResult.ReasonPhrase);
-  AssertEquals(200, VResult.StatusCode);
+    Trim(r.Content));
+  AssertEquals('OK', r.ReasonPhrase);
+  AssertEquals(200, r.StatusCode);
 end;
 
 initialization

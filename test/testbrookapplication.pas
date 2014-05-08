@@ -83,11 +83,11 @@ end;
 
 procedure TTestBrookApplication.TestRun;
 var
-  VApp: TObject;
+  ap: TObject;
 begin
   BrookApp.Run;
-  VApp := BrookApp.Instance;
-  AssertTrue('No running', (VApp is TApp) and TApp(VApp).Test);
+  ap := BrookApp.Instance;
+  AssertTrue('No running', (ap is TApp) and TApp(ap).Test);
 end;
 
 initialization
