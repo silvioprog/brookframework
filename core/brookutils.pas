@@ -719,7 +719,7 @@ begin
     if Assigned(P) then
       case PI^.PropType^.Kind of
         tkAString: SetStrProp(ATo, P, GetStrProp(AFrom, PI));
-        tkInteger, tkChar, tkEnumeration, tkSet, tkClass:
+        tkInteger, tkBool, tkChar, tkEnumeration, tkSet, tkClass:
           SetOrdProp(ATo, P, GetOrdProp(AFrom, PI));
         tkInt64: SetInt64Prop(ATo, P, GetInt64Prop(AFrom, PI));
         tkFloat: SetFloatProp(ATo, P, GetFloatProp(AFrom, PI));
@@ -743,7 +743,7 @@ begin
     if Assigned(P) then
       case PI^.PropType^.Kind of
         tkAString: SetStrProp(ATo, P, GetStrProp(AFrom, PI));
-        tkInteger, tkChar, tkEnumeration, tkSet, tkClass:
+        tkInteger, tkBool, tkChar, tkEnumeration, tkSet, tkClass:
           SetOrdProp(ATo, P, GetOrdProp(AFrom, PI));
         tkInt64: SetInt64Prop(ATo, P, GetInt64Prop(AFrom, PI));
         tkFloat: SetFloatProp(ATo, P, GetFloatProp(AFrom, PI));
@@ -767,7 +767,7 @@ begin
     if Assigned(P) then
       case PI^.PropType^.Kind of
         tkAString: SetStrProp(ATo, P, GetStrProp(AFrom, PI));
-        tkInteger, tkChar, tkEnumeration, tkSet, tkClass:
+        tkInteger, tkBool, tkChar, tkEnumeration, tkSet, tkClass:
           SetOrdProp(ATo, P, GetOrdProp(AFrom, PI));
         tkInt64: SetInt64Prop(ATo, P, GetInt64Prop(AFrom, PI));
         tkFloat: SetFloatProp(ATo, P, GetFloatProp(AFrom, PI));
