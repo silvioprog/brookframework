@@ -112,7 +112,7 @@ end;
 constructor TAuth.Create;
 begin
   inherited Create;
-  FSession := TBrookSession.Create;
+  FSession := TBrookSession.Create(nil);
   FSession.CookieSecure := True;
   FSession.TimeOut := 0;
 end;

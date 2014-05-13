@@ -13,7 +13,7 @@ type
 
   TMiddleware = class(TBrookMiddleware)
   public
-    procedure Execute(ASender: TObject; AAction: TBrookAction;
+    procedure Execute({%H-}ASender: TObject; AAction: TBrookAction;
       ARoute: TBrookRoute); override;
   end;
 

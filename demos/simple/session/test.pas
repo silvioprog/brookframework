@@ -40,7 +40,7 @@ implementation
 constructor TMyAction.Create;
 begin
   inherited Create;
-  FSession := TSession.Create;
+  FSession := TSession.Create(nil);
 end;
 
 destructor TMyAction.Destroy;
