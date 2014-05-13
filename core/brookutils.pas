@@ -121,6 +121,8 @@ function BrookMatchMethod(const ABrookMethod: TBrookRequestMethod;
 function BrookFileDate(const AFileName: TFileName): TDateTime;
 { Writes a backtrace of the current exception. }
 function BrookDumpStack(const AEOL: ShortString = BR): string;
+{ Writes a stack trace of the current exception. }
+function BrookDumpStackTrace(const AEOL: ShortString = BR): string;
 { Ensures Url ends without delimiter. }
 function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 { Ensures Url ends with delimiter. }
@@ -367,13 +369,47 @@ end;
 function BrookDumpStack(const AEOL: ShortString): string;
 var
   I: Integer;
-  VFrames: PPointer;
   VReport: string;
+  VFrames: PPointer;
 begin
   VReport := BackTraceStrFunc(ExceptAddr);
   VFrames := ExceptFrames;
   for I := 0 to Pred(ExceptFrameCount) do
     VReport += AEOL + BackTraceStrFunc(VFrames[I]);
+  Result := VReport;
+end;
+
+function BrookDumpStackTrace(const AEOL: ShortString): string;
+var
+  I: Longint;
+  VReport: string;
+  Vprevbp, VCallerFrame, VCallerAddress, Vbp: Pointer;
+const
+  MaxDepth = 50;
+begin
+  VReport := ES;
+  Vbp := get_frame;
+  // This trick skip SendCallstack item
+  // Vbp:= get_caller_frame(get_frame);
+  try
+    Vprevbp := Vbp - 1;
+    I := 0;
+    while Vbp > Vprevbp do
+    begin
+      VCallerAddress := get_caller_addr(Vbp);
+      VCallerFrame := get_caller_frame(Vbp);
+      if VCallerAddress = nil then
+        Break;
+      VReport := VReport + BackTraceStrFunc(VCallerAddress) + AEOL;
+      Inc(I);
+      if (I >= MaxDepth) or (VCallerFrame = nil) then
+        Break;
+      Vprevbp := Vbp;
+      Vbp := VCallerFrame;
+    end;
+  except
+    { Prevent endless dump if an exception occured. }
+  end;
   Result := VReport;
 end;
 
