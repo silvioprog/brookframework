@@ -367,10 +367,14 @@ end;
 function BrookDumpStack(const AEOL: ShortString): string;
 var
   I: Integer;
+  VFrames: PPointer;
+  VReport: string;
 begin
-  Result := BackTraceStrFunc(ExceptAddr) + AEOL;
+  VReport := BackTraceStrFunc(ExceptAddr);
+  VFrames := ExceptFrames;
   for I := 0 to Pred(ExceptFrameCount) do
-    Result += BackTraceStrFunc(ExceptFrames[I]) + AEOL;
+    VReport += AEOL + BackTraceStrFunc(VFrames[I]);
+  Result := VReport;
 end;
 
 function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
