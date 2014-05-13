@@ -123,7 +123,7 @@ The source code of the Brook framework is distributed under the GNU Lesser Gener
 
 ##SYSTEM REQUIREMENTS
 
-**Free Pascal 2.6.2 or newer**. If you prefer the Lazarus interface, choose the **1.0.8 version or newer**.
+**Free Pascal 2.6.4**. If you prefer the Lazarus interface, choose the **1.2.2** version.
 
 ##DOCUMENTATION
 
