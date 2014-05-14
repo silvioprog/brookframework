@@ -105,6 +105,7 @@ Save and compile the project. Copy the resulting file to the CGI directory of yo
 
 ## PLUGINS
 
+* <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[dOPF](https://github.com/silvioprog/dopf)** – This plugin is sleek, intuitive and fast object persistence for faster and easier database development.
 * <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[RUtils](https://github.com/silvioprog/rutils)** – This plugin offers some general purpose routines on string conversions, parsings, encodings and others.
 * <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[JTemplate](http://silvioprog.github.io/jtemplate)** – This plugin helps you to fill variables in a template file.
 * <img src="https://dl.dropboxusercontent.com/u/135304375/cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[QTemplate](https://github.com/leledumbo/QTemplate)** – This plugin implements an alternative to FPTemplate engine.
