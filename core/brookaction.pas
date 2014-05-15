@@ -245,6 +245,11 @@ initialization
     procedure Write(const AFloat: Double); overload;
     { Writes an object. }
     procedure Write(AObject: TObject); overload;
+    { Writes an object allowing to ignore properties via an array of strings. }
+    procedure Write(AObject: TObject; const AIgnoredProps: TStrings); overload;
+    { Writes an object allowing to ignore properties via a list of strings. }
+    procedure Write(AObject: TObject;
+      const AIgnoredProps: array of string); overload;
     { Writes a content of stream. }
     procedure Write(AStream: TStream); overload;
     { Writes a formatted string. }
@@ -522,6 +527,17 @@ end;
 procedure TBrookAction.Write(AObject: TObject);
 begin
   BrookObjectToStrings(AObject, FTheResponse.Contents);
+end;
+
+procedure TBrookAction.Write(AObject: TObject; const AIgnoredProps: TStrings);
+begin
+  BrookObjectToStrings(AObject, FTheResponse.Contents, AIgnoredProps);
+end;
+
+procedure TBrookAction.Write(AObject: TObject;
+  const AIgnoredProps: array of string);
+begin
+  BrookObjectToStrings(AObject, FTheResponse.Contents, AIgnoredProps);
 end;
 
 procedure TBrookAction.Write(AStream: TStream);
