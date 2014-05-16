@@ -18,8 +18,9 @@ unit BrookFCLHttpAppBroker;
 interface
 
 uses
-  BrookClasses, BrookApplication, BrookRouter, BrookUtils, BrookHttpDefsBroker,
-  HttpDefs, CustWeb, CustHttpApp, FPHttpServer, Classes, SysUtils;
+  BrookClasses, BrookApplication, BrookRouter, BrookUtils, BrookConsts,
+  BrookHttpConsts, BrookHttpDefsBroker, BrookMessages, HttpDefs, CustWeb,
+  CustHttpApp, FPHttpServer, Classes, SysUtils;
 
 type
   TBrookHttpApplication = class;
@@ -50,6 +51,11 @@ type
 
   TBrookHttpConnectionRequest = class(TFPHttpConnectionRequest)
   protected
+    procedure DeleteTempUploadedFiles; override;
+    function GetTempUploadFileName(
+      const {%H-}AName, AFileName: string; {%H-}ASize: Int64): string; override;
+    function RequestUploadDir: string; override;
+    procedure InitRequestVars; override;
     procedure HandleUnknownEncoding(
       const AContentType: string; AStream: TStream); override;
   end;
@@ -57,6 +63,8 @@ type
   { TBrookHttpConnectionResponse }
 
   TBrookHttpConnectionResponse = class(TFPHttpConnectionResponse)
+  protected
+    procedure CollectHeaders(AHeaders: TStrings); override;
   end;
 
  { TBrookEmbeddedHttpServer }
@@ -126,11 +134,63 @@ end;
 
 { TBrookHttpConnectionRequest }
 
+procedure TBrookHttpConnectionRequest.DeleteTempUploadedFiles;
+begin
+  if BrookSettings.DeleteUploadedFiles then
+    inherited;
+end;
+
+function TBrookHttpConnectionRequest.GetTempUploadFileName(const AName,
+  AFileName: string; ASize: Int64): string;
+begin
+  if BrookSettings.KeepUploadedNames then
+    Result := RequestUploadDir + AFileName
+  else
+    Result := inherited GetTempUploadFileName(AName, AFileName, ASize);
+end;
+
+function TBrookHttpConnectionRequest.RequestUploadDir: string;
+begin
+  Result := BrookSettings.DirectoryForUploads;
+  if Result = '' then
+    Result := GetTempDir;
+  Result := IncludeTrailingPathDelimiter(Result);
+end;
+
+procedure TBrookHttpConnectionRequest.InitRequestVars;
+var
+  VMethod: ShortString;
+begin
+  VMethod := Method;
+  if VMethod = ES then
+    raise Exception.Create(SBrookNoRequestMethodError);
+  case VMethod of
+    BROOK_HTTP_REQUEST_METHOD_DELETE, BROOK_HTTP_REQUEST_METHOD_PUT,
+      BROOK_HTTP_REQUEST_METHOD_PATCH:
+      begin
+        InitPostVars;
+        if HandleGetOnPost then
+          InitGetVars;
+      end;
+  else
+    inherited;
+  end;
+end;
+
 procedure TBrookHttpConnectionRequest.HandleUnknownEncoding(
   const AContentType: string; AStream: TStream);
 begin
   if not BrookHandleUnknownEncoding(Self, AContentType, AStream) then
     inherited HandleUnknownEncoding(AContentType, AStream);
+end;
+
+{ TBrookHttpConnectionResponse }
+
+procedure TBrookHttpConnectionResponse.CollectHeaders(AHeaders: TStrings);
+begin
+  AHeaders.Add(BROOK_HTTP_HEADER_X_POWERED_BY + HS +
+    'Brook framework and FCL-Web.');
+  inherited CollectHeaders(AHeaders);
 end;
 
 { TBrookEmbeddedHttpServer }
@@ -150,15 +210,16 @@ end;
 
 function TBrookHttpServerHandler.CreateServer: TEmbeddedHttpServer;
 begin
-  Result:=TBrookEmbeddedHttpServer.Create(Self);
+  Result := TBrookEmbeddedHttpServer.Create(Self);
 end;
 
 procedure TBrookHttpServerHandler.HandleRequest(ARequest: TRequest;
   AResponse: TResponse);
 begin
+  AResponse.ContentType := BrookFormatContentType;
   try
-    AResponse.ContentType := BrookFormatContentType;
     TBrookRouter.Service.Route(ARequest, AResponse);
+    TBrookHttpConnectionRequest(ARequest).DeleteTempUploadedFiles;
   except
     on E: Exception do
       ShowRequestException(AResponse, E);
