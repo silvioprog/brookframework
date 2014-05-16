@@ -148,7 +148,7 @@ end;
 
 procedure TBrookCGIRequest.InitRequestVars;
 var
-  VMethod: ShortString;
+  VMethod: string;
 begin
 {$IFDEF BROOK_DEBUG}
   try

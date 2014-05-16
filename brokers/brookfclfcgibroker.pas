@@ -150,7 +150,7 @@ end;
 
 procedure TBrookFCGIRequest.InitRequestVars;
 var
-  VMethod: ShortString;
+  VMethod: string;
 begin
   VMethod := Method;
   if VMethod = ES then

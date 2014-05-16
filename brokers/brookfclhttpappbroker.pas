@@ -159,7 +159,7 @@ end;
 
 procedure TBrookHttpConnectionRequest.InitRequestVars;
 var
-  VMethod: ShortString;
+  VMethod: string;
 begin
   VMethod := Method;
   if VMethod = ES then
