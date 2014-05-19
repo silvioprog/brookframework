@@ -162,7 +162,7 @@ end;
 
 procedure TTestBrookAction.TestGetPath;
 begin
-  AssertEquals('action1', TAction1.GetPath);
+  AssertEquals('/action1', TAction1.GetPath);
 end;
 
 procedure TTestBrookAction.TestDoRequest;

@@ -269,6 +269,17 @@ end;
 
 procedure BrookExtractPathLevels(S: string; var R: string; out ALvl: string;
   out AEndDelim: Boolean; const ADelimiter: Char = US);
+
+  function IncHttpPathDelim(const P: string): string; inline;
+  var
+    L: Integer;
+  begin
+    Result := P;
+    L := Length(Result);
+    if (L > 0) and (Result[L] <> US) then
+      Result += US;
+  end;
+
 var
   P, L: Integer;
 begin
@@ -278,12 +289,12 @@ begin
     Delete(S, L, 1);
   if (S <> ES) and (S[1] = ADelimiter) then
     Delete(S, 1, 1);
-  Delete(S, 1, Length(BrookIncludeTrailingUrlDelimiter(R)));
+  Delete(S, 1, Length(IncHttpPathDelim(R)));
   P := Pos(ADelimiter, S);
   if P = 0 then
     P := Length(S) + 1;
   ALvl := Copy(S, 1, P - 1);
-  R := BrookIncludeTrailingUrlDelimiter(R) + ALvl;
+  R := IncHttpPathDelim(R) + ALvl;
 end;
 
 function BrookGetPathLevel(const APath: string; const AIndex: SizeInt;
@@ -429,7 +440,7 @@ var
 begin
   Result := AUrl;
   L := Length(Result);
-  if (L > 0) and (Result[L] <> US) then
+  if (L = 0) or (Result[L] <> US) then
     Result += US;
 end;
 
