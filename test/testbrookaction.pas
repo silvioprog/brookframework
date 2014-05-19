@@ -359,6 +359,7 @@ end;
 
 procedure TTestBrookAction.TestWrite;
 var
+  o: TMyType;
   a: TAction1;
   rq: TBrookRequest;
   rs: TBrookResponse;
@@ -368,6 +369,7 @@ begin
   rs := TBrookResponse.Create(rq);
 {$WARNINGS ON}
   a := TAction1.Create(rq, rs);
+  o := TMyType.Create;
   try
     a.Write('ABC');
     a.Write(123);
@@ -377,7 +379,24 @@ begin
     AssertEquals(123, StrToInt(rs.Contents[1]));
     AssertEquals(123.456, StrToFloat(rs.Contents[2]));
     AssertTrue(StrToBool(rs.Contents[3]));
+    a.Clear;
+    o.MyString := 'ABC';
+    o.MyBoolean := True;
+    o.MyInteger := 123;
+    a.Write(o);
+    AssertEquals('ABC', rs.Contents.Values['mystring']);
+    AssertEquals(True, StrToBool(rs.Contents.Values['myboolean']));
+    AssertEquals(123, StrToInt(rs.Contents.Values['myinteger']));
+    a.Clear;
+    o.MyString := 'ABC';
+    o.MyBoolean := True;
+    o.MyInteger := 123;
+    a.Write(o, ['myboolean', 'myinteger']);
+    AssertEquals('ABC', rs.Contents.Values['mystring']);
+    AssertEquals(False, StrToBoolDef(rs.Contents.Values['myboolean'], False));
+    AssertEquals(0, StrToIntDef(rs.Contents.Values['myinteger'], 0));
   finally
+    o.Free;
     rs.Free;
     rq.Free;
     a.Free;
