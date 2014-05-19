@@ -129,6 +129,8 @@ end;
 
 procedure TTestBrookUtils.TestExcludeTrailingUrlDelimiter;
 begin
+  AssertEquals('', BrookExcludeTrailingUrlDelimiter(''));
+  AssertEquals('', BrookExcludeTrailingUrlDelimiter('/'));
   AssertEquals('http://localhost',
     BrookExcludeTrailingUrlDelimiter('http://localhost/'));
 end;

@@ -428,10 +428,10 @@ function BrookExcludeTrailingUrlDelimiter(const AUrl: string): string;
 var
   L: Integer;
 begin
-  Result := AUrl;
-  L := Length(Result);
-  if (L > 0) and (Result[L] = US) then
-    Delete(Result, L, 1);
+  L := Length(AUrl);
+  if (L > 0) and (AUrl[L] = US) then
+    Dec(L);
+  Result := Copy(AUrl, 1, L);
 end;
 
 function BrookIncludeTrailingUrlDelimiter(const AUrl: string): string;
