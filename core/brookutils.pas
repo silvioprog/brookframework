@@ -71,6 +71,10 @@ type
     RootUrl: string;
     { Set the default application port. }
     Port: Word;
+    { Enables the application log. }
+    LogActive: Boolean;
+    { Set a name for the application log file. }
+    LogFile: TFileName;
     { Handles the application exceptions. }
     OnError: TOnShowRequestException;
   end;
@@ -92,6 +96,8 @@ var
     Configuration: ES;
     RootUrl: ES;
     Port: 0;
+    LogActive: False;
+    LogFile: ES;
     OnError: nil;
   );
 
