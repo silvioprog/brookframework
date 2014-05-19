@@ -16,6 +16,7 @@
         <CompilerMessages>
           <MsgFileName Value=""/>
         </CompilerMessages>
+        <CustomOptions Value="-dBROOK_LOG"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
