@@ -198,7 +198,7 @@ begin
     begin
       WriteLn('Content-Type: text/plain');
       WriteLn;
-      WriteLn('Catastrophic error:');
+      WriteLn('Catastrophic error: ', E.Message);
       raise;
     end;
   end;
