@@ -14,11 +14,13 @@ type
   TLog = class
   private
     FLogFile: TStrings;
+    FLogInFile: Boolean;
   public
     constructor Create; virtual;
     destructor Destroy; override;
     procedure Log(const S: string);
     property LogFile: TStrings read FLogFile;
+    property LogInFile: Boolean read FLogInFile write FLogInFile;
   end;
 
   { TBrokerLog }
@@ -50,6 +52,7 @@ type
     procedure TestWarn;
     procedure TestDebug;
     procedure TestError;
+    procedure TestOutput;
   end;
 
 implementation
@@ -70,7 +73,8 @@ end;
 
 procedure TLog.Log(const S: string);
 begin
-  FLogFile.Add(S);
+  if FLogInFile then
+    FLogFile.Add(S);
 end;
 
 { TBrokerLog }
@@ -79,7 +83,8 @@ constructor TBrokerLog.Create;
 begin
   inherited Create;
   FLog := TLog.Create;
-  FOutput := loSystem;
+  Output := loSystem;
+  SetOutput(loFile);
 end;
 
 destructor TBrokerLog.Destroy;
@@ -96,6 +101,7 @@ end;
 procedure TBrokerLog.SetOutput(const AValue: TBrookLogOutput);
 begin
   FOutput := AValue;
+  FLog.LogInFile := AValue = loFile;
 end;
 
 function TBrokerLog.GetOutput: TBrookLogOutput;
@@ -167,6 +173,11 @@ begin
   finally
     e.Free;
   end;
+end;
+
+procedure TTestBrookLogger.TestOutput;
+begin
+  AssertTrue(BrookLog.Output = loFile);
 end;
 
 initialization
