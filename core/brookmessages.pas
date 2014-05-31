@@ -40,6 +40,8 @@ var
   SBrookConstraintAlreadyRegisteredError: string = 'The constraint "%s" is already registered.';
   SBrookConstraintsServiceAlreadyRegisteredError: string = 'The constraints service is already registered.';
   SBrookNoConstraintsServiceRegisteredError: string = 'No constraints service registered.';
+  SBrookNoLoggerRegisteredError: string = 'No logger registered.';
+  SBrookLoggerAlreadyRegisteredError: string = 'The logger is already registered.';
 
 implementation
 
