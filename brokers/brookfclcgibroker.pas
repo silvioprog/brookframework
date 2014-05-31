@@ -18,12 +18,9 @@ unit BrookFCLCGIBroker;
 interface
 
 uses
-{$IFDEF BROOK_LOG}
-  EventLog,
-{$ENDIF}
-  BrookClasses, BrookApplication, BrookMessages, BrookConsts, BrookHttpConsts,
-  BrookRouter, BrookUtils, BrookHttpDefsBroker, HttpDefs, CustWeb, CustCGI,
-  Classes, SysUtils;
+  BrookClasses, BrookApplication, BrookLogger, BrookMessages, BrookConsts,
+  BrookHttpConsts, BrookRouter, BrookUtils, BrookHttpDefsBroker, HttpDefs,
+  CustWeb, CustCGI, Classes, SysUtils;
 
 type
   TBrookCGIApplication = class;
@@ -48,11 +45,6 @@ type
   TBrookCGIApplication = class(TCustomCGIApplication)
   protected
     function InitializeWebHandler: TWebHandler; override;
-{$IFDEF BROOK_LOG}
-    procedure DoRun; override;
-  public
-    constructor Create(AOwner: TComponent); override;
-{$ENDIF}
   end;
 
   { TBrookCGIRequest }
@@ -123,23 +115,6 @@ begin
 end;
 
 { TBrookCGIApplication }
-
-{$IFDEF BROOK_LOG}
-constructor TBrookCGIApplication.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  EventLog.Active := False;
-  EventLog.RaiseExceptionOnError := False;
-  EventLog.LogType := ltFile;
-  EventLog.AppendContent := True;
-end;
-
-procedure TBrookCGIApplication.DoRun;
-begin
-  EventLog.FileName := BrookSettings.LogFile;
-  inherited DoRun;
-end;
-{$ENDIF}
 
 function TBrookCGIApplication.InitializeWebHandler: TWebHandler;
 begin
@@ -236,58 +211,42 @@ begin
 end;
 
 procedure TBrookCGIHandler.HandleRequest(ARequest: TRequest; AResponse: TResponse);
-{$IFDEF BROOK_LOG}
 var
   VLog: string;
-  VLogger: TEventLog;
-{$ENDIF}
 begin
   AResponse.ContentType := BrookFormatContentType;
+  if BrookSettings.LogActive then
+  begin
+    VLog := LineEnding;
+    if ARequest.PathInfo <> ES then
+      VLog += '<PathInfo>' + LineEnding + ARequest.PathInfo + LineEnding +
+        '</PathInfo>' + LineEnding;
+    if ARequest.CookieFields.Count > 0 then
+      VLog += '<Cookies>' + LineEnding + ARequest.CookieFields.Text +
+        '</Cookies>' + LineEnding;
+    if ARequest.ContentFields.Count > 0 then
+      VLog += '<Fields>' + LineEnding + ARequest.ContentFields.Text +
+        '</Fields>' + LineEnding;
+    if ARequest.QueryFields.Count > 0 then
+      VLog += '<Params>' + LineEnding + ARequest.QueryFields.Text +
+        '</Params>' + LineEnding;
+  end;
   try
-{$IFDEF BROOK_LOG}
-    VLogger := (BrookApp.Instance as TCustomWebApplication).EventLog;
-    VLogger.Active := BrookSettings.LogActive;
-    if VLogger.Active then
-    begin
-      if ARequest.PathInfo <> ES then
-        VLog := '<REQUEST.PATH_INFO>:' + LineEnding + ARequest.PathInfo +
-          LineEnding;
-      if ARequest.CookieFields.Count > 0 then
-        VLog += '<REQUEST.COOKIES>:' + LineEnding + ARequest.CookieFields.Text;
-      if ARequest.ContentFields.Count > 0 then
-        VLog += '<REQUEST.FIELDS>:' + LineEnding + ARequest.ContentFields.Text;
-      if ARequest.QueryFields.Count > 0 then
-        VLog += '<REQUEST.PARAMS>:' + LineEnding + ARequest.QueryFields.Text;
-    end;
-{$ENDIF}
     TBrookRouter.Service.Route(ARequest, AResponse);
     TBrookCGIRequest(ARequest).DeleteTempUploadedFiles;
-{$IFDEF BROOK_LOG}
-    if BrookSettings.LogActive and VLogger.Active then
+    if BrookSettings.LogActive and (AResponse.Contents.Count > 0) then
     begin
-      if AResponse.Contents.Count > 0 then
-        VLog += '<RESPONSE.CONTENT>:' + LineEnding + AResponse.Contents.Text;
-      VLogger.Info('[BROOK]:' + LineEnding + VLog);
+      VLog += '<Content>' + LineEnding + AResponse.Contents.Text +
+        '</Content>';
+      BrookLog.Info(VLog);
     end;
-{$ENDIF}
   except
     on E: Exception do
-{$IFDEF BROOK_LOG}
     begin
-      if BrookSettings.LogActive and VLogger.Active then
-      begin
-        VLog :=
-          '<ERROR>:' + LineEnding + E.Message + LineEnding +
-          '<STACK>:' + LineEnding + BrookDumpStack(LineEnding) + LineEnding +
-          '<STACK_TRACE>:' + LineEnding + BrookDumpStackTrace(LineEnding) +
-            LineEnding  + VLog;
-        VLogger.Error('[BROOK]:' + LineEnding + VLog);
-      end;
-{$ENDIF}
+      if BrookSettings.LogActive then
+        BrookLog.Error(VLog, E);
       ShowRequestException(AResponse, E);
-{$IFDEF BROOK_LOG}
     end;
-{$ENDIF}
   end;
 end;
 
