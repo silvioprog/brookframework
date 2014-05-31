@@ -6,7 +6,7 @@ interface
 
 uses
   BrookAction, BrookRouter, BrookHttpDefs, BrookUtils, fpcunit, testregistry,
-  Classes, sysutils, dateutils, typinfo;
+  HTTPDefs, Classes, sysutils, dateutils, typinfo;
 
 type
   TMyEnum = (enum1, enum2, enum3);
@@ -88,6 +88,9 @@ type
     procedure TestFields;
     procedure TestParams;
     procedure TestValues;
+    procedure TestSetCookie;
+    procedure TestGetCookie;
+    procedure TestDeleteCookie;
   end;
 
   { TTestBrookGAction }
@@ -555,6 +558,91 @@ begin
   finally
     rs.Free;
     rq.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestSetCookie;
+var
+  c: TCookie;
+  a: TAction1;
+  dt: TDateTime;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    dt := Now;
+    a.SetCookie('mycookie', 'abc123', dt, '/mytest', 'mydomain', True, True);
+    c := rs.Cookies.CookieByName('mycookie');
+    AssertTrue(Assigned(c));
+    AssertEquals(c.Value, 'abc123');
+    AssertEquals(c.Expires, dt);
+    AssertEquals(c.Path, '/mytest');
+    AssertEquals(c.Domain, 'mydomain');
+    AssertTrue(c.Secure);
+    AssertTrue(c.HttpOnly);
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestGetCookie;
+var
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.CookieFields.Values['mycookie'] := 'abc123';
+    AssertEquals(a.GetCookie('mycookie'), 'abc123');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestDeleteCookie;
+var
+  c: TCookie;
+  a: TAction1;
+  dt: TDateTime;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    c := rs.Cookies.Add;
+    c.Name := 'mycookie';
+    c.Path := '/mypath';
+    c.Domain := 'mydomain';
+    c.Expire;
+    c := nil;
+    c := rs.Cookies.CookieByName('mycookie');
+    dt := EncodeDate(1970, 1, 1);
+    AssertEquals(c.Name, 'mycookie');
+    AssertEquals(c.Path, '/mypath');
+    AssertEquals(c.Domain, 'mydomain');
+    AssertEquals(c.Expires, dt);
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
   end;
 end;
 

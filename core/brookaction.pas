@@ -19,7 +19,7 @@ interface
 
 uses
   BrookClasses, BrookHttpDefs, BrookException, BrookMessages, BrookUtils,
-  BrookHTTPUtils, BrookHTTPConsts, Classes, SysUtils;
+  BrookConsts, BrookHTTPUtils, BrookHTTPConsts, Classes, SysUtils;
 
 type
   { Handles exceptions for @link(TBrookAction). }
@@ -161,6 +161,16 @@ initialization
 
       @code(/cgi-bin/cgi1/myaction). }
     class function GetPath: string;
+    { Creates a cookie. }
+    procedure SetCookie(const AName, AValue: string;
+      const AExpires: TDateTime = NullDate; const APath: string = ES;
+      const ADomain: string = ES; const ASecure: Boolean = False;
+      const AHttpOnly: Boolean = False);
+    { Get a cookie value. }
+    function GetCookie(const AName: string): string;
+    { Deletes a cookie. }
+    procedure DeleteCookie(const AName: string; const APath: string = ES;
+      const ADomain: string = ES);
     { Calls the method @link(TBrookAction.Request). }
     procedure DoRequest(ARequest: TBrookRequest;
       AResponse: TBrookResponse); virtual;
@@ -363,6 +373,40 @@ class function TBrookAction.GetPath: string;
 begin
   Result := BrookIncludeTrailingUrlDelimiter(TBrookRouter.RootUrl) +
     LowerCase(Copy(ClassName, 2, MaxInt));
+end;
+
+procedure TBrookAction.SetCookie(const AName, AValue: string;
+  const AExpires: TDateTime; const APath: string; const ADomain: string;
+  const ASecure: Boolean; const AHttpOnly: Boolean);
+var
+  VCookie: TBrookCookie;
+begin
+  VCookie := FTheResponse.Cookies.Add;
+  VCookie.Name := AName;
+  VCookie.Value := AValue;
+  if AExpires <> NullDate then
+    VCookie.Expires := AExpires;
+  VCookie.Path := APath;
+  VCookie.Domain := ADomain;
+  VCookie.Secure := ASecure;
+  VCookie.HttpOnly := AHTTPOnly;
+end;
+
+function TBrookAction.GetCookie(const AName: string): string;
+begin
+  Result := FTheRequest.CookieFields.Values[AName];
+end;
+
+procedure TBrookAction.DeleteCookie(const AName: string; const APath: string;
+  const ADomain: string);
+var
+  VCookie: TBrookCookie;
+begin
+  VCookie := FTheResponse.Cookies.Add;
+  VCookie.Name := AName;
+  VCookie.Path := APath;
+  VCookie.Domain := ADomain;
+  VCookie.Expire;
 end;
 
 function TBrookAction.UrlFor(AActionClass: TBrookActionClass;
