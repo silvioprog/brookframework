@@ -33,6 +33,12 @@ type
   { Alias to @code(TUploadedFiles). }
   TBrookUploadedFiles = TUploadedFiles;
 
+  { Alias to @code(TCookie). }
+  TBrookCookie = TCookie;
+
+  { Alias to @code(TCookies). }
+  TBrookCookies = TCookies;
+
 implementation
 
 end.
