@@ -34,6 +34,7 @@ type
   protected
     procedure InternalLog(const L: TEventType; const S: string;
       const ACode: Word; const E: Exception);
+    function Logger: TEventLog;
   public
     constructor Create; virtual;
     function Instance: TObject;
@@ -55,6 +56,28 @@ begin
   SetOutput(loFile);
 end;
 
+function TBrookAppLogger.Logger: TEventLog;
+begin
+  if not Assigned(FLogger) then
+  begin
+    if Assigned(BrookApp) and Assigned(BrookApp.Instance) and
+      (BrookApp.Instance is TCustomWebApplication) then
+      FLogger := (BrookApp.Instance as TCustomWebApplication).EventLog;
+    if not Assigned(FLogger) then
+      Exit(nil);
+    FLogger.Active := False;
+    case Self.Output of
+      loFile: FLogger.LogType := EventLog.ltFile;
+      loSystem: FLogger.LogType := EventLog.ltSystem;
+    end;
+    FLogger.FileName := BrookSettings.LogFile;
+    FLogger.RaiseExceptionOnError := False;
+    FLogger.AppendContent := True;
+    FLogger.Active := True;
+  end;
+  Result := FLogger;
+end;
+
 procedure TBrookAppLogger.SetOutput(const AValue: TBrookLogOutput);
 begin
   if AValue <> FOutput then
@@ -73,20 +96,6 @@ var
 begin
   if not BrookSettings.LogActive then
     Exit;
-  if Assigned(BrookApp) and Assigned(BrookApp.Instance) and
-    (BrookApp.Instance is TCustomWebApplication) then
-    FLogger := (BrookApp.Instance as TCustomWebApplication).EventLog;
-  if not Assigned(FLogger) then
-    Exit;
-  FLogger.Active := False;
-  case Self.Output of
-    loFile: FLogger.LogType := EventLog.ltFile;
-    loSystem: FLogger.LogType := EventLog.ltSystem;
-  end;
-  FLogger.FileName := BrookSettings.LogFile;
-  FLogger.RaiseExceptionOnError := False;
-  FLogger.AppendContent := True;
-  FLogger.Active := True;
   X := S;
   if Assigned(E) then
     X += '<Error>' + LineEnding +
@@ -97,13 +106,13 @@ begin
   case L of
     etCustom:
       begin
-        FLogger.CustomLogType := ACode;
-        FLogger.Log(etCustom, X);
+        Logger.CustomLogType := ACode;
+        Logger.Log(etCustom, X);
       end;
-    etInfo: FLogger.Log(etInfo, X);
-    etWarning: FLogger.Log(etWarning, X);
-    etError: FLogger.Log(etError, X);
-    etDebug: FLogger.Log(etDebug, X);
+    etInfo: Logger.Log(etInfo, X);
+    etWarning: Logger.Log(etWarning, X);
+    etError: Logger.Log(etError, X);
+    etDebug: Logger.Log(etDebug, X);
   end;
 end;
 
