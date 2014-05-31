@@ -22,6 +22,7 @@ type
 
   TBrokerApp = class(TBrookInterfacedObject, IBrookApplication)
   private
+    FTerminated: Boolean;
     FApp: TApp;
   public
     constructor Create;
@@ -38,6 +39,8 @@ type
   published
     procedure TestInstance;
     procedure TestRun;
+    procedure TestTerminate;
+    procedure GetTerminated;
   end;
 
 implementation
@@ -57,11 +60,12 @@ end;
 
 function TBrokerApp.GetTerminated: Boolean;
 begin
-  Result := False;
+  Result := FTerminated;
 end;
 
 procedure TBrokerApp.Terminate;
 begin
+  FTerminated := True;
 end;
 
 function TBrokerApp.Instance: TObject;
@@ -88,6 +92,16 @@ begin
   BrookApp.Run;
   ap := BrookApp.Instance;
   AssertTrue('No running', (ap is TApp) and TApp(ap).Test);
+end;
+
+procedure TTestBrookApplication.TestTerminate;
+begin
+  BrookApp.Terminate;
+end;
+
+procedure TTestBrookApplication.GetTerminated;
+begin
+  AssertTrue(BrookApp.Terminated);
 end;
 
 initialization
