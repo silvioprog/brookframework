@@ -7,4 +7,6 @@
 *.exe
 *.dll
 *.dbg
+brookrt.pas
+brookex.pas
 packages/lib
