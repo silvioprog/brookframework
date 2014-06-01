@@ -62,21 +62,21 @@
         <UsageCount Value="20"/>
       </Unit1>
       <Unit2>
-        <Filename Value="brokers.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Brokers"/>
-        <UsageCount Value="20"/>
-      </Unit2>
-      <Unit3>
         <Filename Value="dbutils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="dbutils"/>
         <UsageCount Value="20"/>
-      </Unit3>
-      <Unit4>
+      </Unit2>
+      <Unit3>
         <Filename Value="person.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="person"/>
+        <UsageCount Value="20"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\..\brokers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="brokers"/>
         <UsageCount Value="20"/>
       </Unit4>
     </Units>
@@ -89,6 +89,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\.."/>
     </SearchPaths>
     <Other>
       <CompilerMessages>

@@ -67,9 +67,9 @@
         <UsageCount Value="20"/>
       </Unit2>
       <Unit3>
-        <Filename Value="brokers.pas"/>
+        <Filename Value="..\brokers.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Brokers"/>
+        <UnitName Value="brokers"/>
         <UsageCount Value="20"/>
       </Unit3>
     </Units>
@@ -82,6 +82,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value=".."/>
     </SearchPaths>
     <CodeGeneration>
       <Optimizations>
