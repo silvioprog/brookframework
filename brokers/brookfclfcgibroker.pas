@@ -18,9 +18,9 @@ unit BrookFCLFCGIBroker;
 interface
 
 uses
-  BrookClasses, BrookApplication, BrookMessages, BrookConsts, BrookHttpConsts,
-  BrookRouter, BrookUtils, BrookHttpDefsBroker, HttpDefs, CustWeb, CustFCGI,
-  Classes, SysUtils;
+  BrookClasses, BrookApplication, BrookLogger, BrookMessages, BrookConsts,
+  BrookHttpConsts, BrookRouter, BrookUtils, BrookHttpDefsBroker, HttpDefs,
+  CustWeb, CustFCGI, Classes, SysUtils;
 
 type
   TBrookFCGIApplication = class;
@@ -199,14 +199,42 @@ begin
 end;
 
 procedure TBrookFCGIHandler.HandleRequest(ARequest: TRequest; AResponse: TResponse);
+var
+  VLog: string;
 begin
   AResponse.ContentType := BrookFormatContentType;
+  if BrookSettings.LogActive then
+  begin
+    VLog := LineEnding;
+    if ARequest.PathInfo <> ES then
+      VLog += '<PathInfo>' + LineEnding + ARequest.PathInfo + LineEnding +
+        '</PathInfo>' + LineEnding;
+    if ARequest.CookieFields.Count > 0 then
+      VLog += '<Cookies>' + LineEnding + ARequest.CookieFields.Text +
+        '</Cookies>' + LineEnding;
+    if ARequest.ContentFields.Count > 0 then
+      VLog += '<Fields>' + LineEnding + ARequest.ContentFields.Text +
+        '</Fields>' + LineEnding;
+    if ARequest.QueryFields.Count > 0 then
+      VLog += '<Params>' + LineEnding + ARequest.QueryFields.Text +
+        '</Params>' + LineEnding;
+  end;
   try
     TBrookRouter.Service.Route(ARequest, AResponse);
     TBrookFCGIRequest(ARequest).DeleteTempUploadedFiles;
+    if BrookSettings.LogActive and (AResponse.Contents.Count > 0) then
+    begin
+      VLog += '<Content>' + LineEnding + AResponse.Contents.Text +
+        '</Content>';
+      BrookLog.Info(VLog);
+    end;
   except
     on E: Exception do
+    begin
+      if BrookSettings.LogActive then
+        BrookLog.Error(VLog, E);
       ShowRequestException(AResponse, E);
+    end;
   end;
 end;
 
