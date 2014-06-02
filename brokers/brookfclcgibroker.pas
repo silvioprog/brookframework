@@ -106,6 +106,8 @@ end;
 
 procedure TBrookApplication.Run;
 begin
+  if BrookSettings.RootUrl <> '' then
+    FApp.ApplicationURL := BrookSettings.RootUrl;
   FApp.Run;
 end;
 

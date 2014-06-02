@@ -86,7 +86,6 @@ type
     procedure ShowRequestException(R: TResponse; E: Exception); override;
   end;
 
-
 implementation
 
 { TBrookApplication }
@@ -117,6 +116,8 @@ procedure TBrookApplication.Run;
 begin
   if BrookSettings.Port <> 0 then
     FApp.Port := BrookSettings.Port;
+  if BrookSettings.RootUrl <> '' then
+    FApp.ApplicationURL := BrookSettings.RootUrl;
   FApp.Run;
 end;
 
