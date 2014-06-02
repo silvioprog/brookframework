@@ -304,12 +304,12 @@ begin
   Result := inherited InitProject(AProject);
   AProject.MainFile.SetSourceText(
     'program cgi1;'+le+
-    ''+le+
+    le+
     '{$mode objfpc}{$H+}'+le+
-    ''+le+
+    le+
     'uses'+le+
     '  BrookApplication, Brokers;'+le+
-    ''+le+
+    le+
     'begin'+le+
     '  BrookApp.Run;'+le+
     'end.');
@@ -407,12 +407,12 @@ begin
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
   AProject.MainFile.SetSourceText(
     'program project1;'+le+
-    ''+le+
+    le+
     '{$mode objfpc}{$H+}'+le+
-    ''+le+
+    le+
     'uses'+le+
     '  BrookApplication, Brokers;'+le+
-    ''+le+
+    le+
     'begin'+le+
     '  BrookApp.Run;'+le+
     'end.');
@@ -590,12 +590,12 @@ begin
   AProject.MainFileID := 0;
   S :=
     'program '+VDlg.edAppName.Text+';'+le+
-    ''+le+
+    le+
     '{$mode objfpc}{$H+}'+le+
-    ''+le+
+    le+
     'uses'+le+
     '  BrookApplication, Brokers;'+le+
-    ''+le+
+    le+
     'begin'+le+
     '  BrookApp.Run;'+le+
     'end.';
@@ -656,39 +656,39 @@ begin
     VDlg := BrookNewProjectDlg;
     Result :=
     'unit Brokers;'+le+
-    ''+le+
+    le+
     '{$mode objfpc}{$H+}'+le+
-    ''+le+
+    le+
     'interface'+le+
-    ''+le+
+    le+
     'uses'+le+
     '  '+VBroker+', BrookHttpConsts, BrookUtils, Classes, SysUtils;'+le+
-    ''+le+
+    le+
     'const'+le+
     '  PUBLIC_HTML = '+QuotedStr(IncludeTrailingPathDelimiter(VDlg.edPubHTMLDir.Text))+';'+le+
-    ''+le+
+    le+
     'implementation'+le+
-    ''+le+
+    le+
     'initialization'+le+
     '  BrookSettings.Charset := ' + VCharset + ';'+le+
     '  BrookSettings.Page404File := PUBLIC_HTML + ''404.html'';'+le+
     '  BrookSettings.Page500File := PUBLIC_HTML + ''500.html'';'+le+
-    ''+le+
+    le+
     'end.';
   end
   else
     Result :=
     'unit Brokers;'+le+
-    ''+le+
+    le+
     '{$mode objfpc}{$H+}'+le+
-    ''+le+
+    le+
     'interface'+le+
-    ''+le+
+    le+
     'uses'+le+
     '  '+VBroker+';'+le+
-    ''+le+
+    le+
     'implementation'+le+
-    ''+le+
+    le+
     'end.';
   FAppType := 0;
   FAppDefCharset := 0;
@@ -739,30 +739,30 @@ begin
     VActDefault := ', True';
   Result :=
     'unit '+ASourceName+';'+le+
-    ''+le+
+    le+
     '{$mode objfpc}{$H+}'+le+
-    ''+le+
+    le+
     'interface'+le+
-    ''+le+
+    le+
     'uses'+le+
     '  BrookAction;'+le+
-    ''+le+
+    le+
     'type'+le+
     '  T'+FActName+' = class(TBrookAction)'+le+
     '  public'+le+
     '    procedure Get; override;'+le+
     '  end;'+le+
-    ''+le+
+    le+
     'implementation'+le+
-    ''+le+
+    le+
     'procedure T'+FActName+'.Get;'+le+
     'begin'+le+
     '  Write(''Your content here ...'');'+le+
     'end;'+le+
-    ''+le+
+    le+
     'initialization'+le+
     '  T'+FActName+'.Register('+QuotedStr(FActPattern)+VActDefault+');'+le+
-    ''+le+
+    le+
     'end.';
   FActName := '';
   FActPattern := '';
