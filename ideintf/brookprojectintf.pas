@@ -179,7 +179,7 @@ const
     'padding:30px;font:12px/1.5 Helvetica,Arial,Verdana,sans-serif;}h1{mar'+
     'gin:0;font-size:48px;font-weight:normal;line-height:48px;}strong{disp'+
     'lay:inline-block;width:65px;}</style></head><body><h1>404 - Page not '+
-    'found</h1><br />Go to <a href="%s">home page</a> ...'+
+    'found</h1><br />Go to <a href="@path">home page</a> ...'+
     '</body></html>';
   PAGE_500_TPL =
     '<html><head><title>Internal server error</title><style>body{margin:0;'+
@@ -678,7 +678,7 @@ begin
     'interface'+le+
     le+
     'uses'+le+
-    '  '+VBroker+', BrookHttpConsts, BrookUtils, Classes, SysUtils;'+le+
+    '  '+VBroker+', BrookHttpConsts, Classes, SysUtils;'+le+
     le+
     'const'+le+
     '  PUBLIC_HTML = '+QuotedStr(IncludeTrailingPathDelimiter(VDlg.edPubHTMLDir.Text))+';'+le+
@@ -686,6 +686,7 @@ begin
     'implementation'+le+
     le+
     'initialization'+le+
+    '  BrookSettings.Port := 8080;'+le+
     '  BrookSettings.Charset := ' + VCharset + ';'+le+
     '  BrookSettings.Page404File := PUBLIC_HTML + ''404.html'';'+le+
     '  BrookSettings.Page500File := PUBLIC_HTML + ''500.html'';'+le+
