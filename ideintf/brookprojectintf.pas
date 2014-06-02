@@ -633,13 +633,35 @@ function TBrookBrokersFileDescPascalUnit.CreateSource(const AFileName,
   ASourceName, AResourceName: string): string;
 var
   VDlg: TfrBrookNewProject;
-  VCharset, VBroker: string;
+  VCharset, VBroker, VInitPort: string;
 begin
   case FAppType of
-    0: VBroker := 'BrookFCLCGIBroker';
-    1: VBroker := 'BrookFCLFCGIBroker';
-    2: VBroker := 'BrookFCLHttpAppBroker';
-    3: VBroker := 'BrookFCLHttpDaemonBroker';
+    0:
+      begin
+        VBroker := 'BrookFCLCGIBroker';
+        VInitPort := '';
+      end;
+    1:
+      begin
+        VBroker := 'BrookFCLFCGIBroker';
+        VInitPort := '';
+      end;
+    2:
+      begin
+        VBroker := 'BrookFCLHttpAppBroker, BrookUtils';
+        VInitPort :=
+          'initialization'+le+
+          '  BrookSettings.Port := 8080;'+le+
+          le;
+      end;
+    3:
+      begin
+        VBroker := 'BrookFCLHttpDaemonBroker, BrookUtils';
+        VInitPort :=
+          'initialization'+le+
+          '  BrookSettings.Port := 8080;'+le+
+          le;
+      end;
   end;
   case FAppDefCharset of
     0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
@@ -683,6 +705,7 @@ begin
     le+
     'implementation'+le+
     le+
+      VInitPort+
     'end.';
   FAppType := 0;
   FAppDefCharset := 0;
