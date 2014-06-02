@@ -86,6 +86,11 @@ type
     procedure ShowRequestException(R: TResponse; E: Exception); override;
   end;
 
+var
+  SBrookHttpServerTerminalMsg: string =
+    'Open the ''%s'' URL in your browser.'
+{$IFDEF UNIX} + LineEnding + LineEnding + 'Use [Ctrl+C] to quit ...'{$ENDIF};
+
 implementation
 
 { TBrookApplication }
@@ -113,11 +118,20 @@ begin
 end;
 
 procedure TBrookApplication.Run;
+var
+  VUrl: string;
 begin
   if BrookSettings.Port <> 0 then
     FApp.Port := BrookSettings.Port;
   if BrookSettings.RootUrl <> '' then
     FApp.ApplicationURL := BrookSettings.RootUrl;
+  if FApp.ApplicationURL = '' then
+    VUrl := 'http://localhost'
+  else
+    VUrl := FApp.ApplicationURL;
+  if not (FApp.Port in [0, 80]) then
+    VUrl += ':' + IntToStr(FApp.Port);
+  WriteLn(Format(SBrookHttpServerTerminalMsg, [VUrl]));
   FApp.Run;
 end;
 
