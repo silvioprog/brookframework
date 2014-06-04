@@ -796,6 +796,7 @@ var
   DefDate: TDate = NullDate;
   DefDateTime: TDateTime = NullDateTime;
   DefFloat: Double = 0;
+  DefCurrency: Currency = 0;
   BROOK_HTTP_DAEMON_DESCRIPTION: string = 'Brook HTTP daemon.';
   BROOK_HTTP_DAEMON_DISPLAYNAME: string = 'Brook daemon';
   BROOK_HTTP_DAEMON_NAME: string = 'BrookHttpDaemon';

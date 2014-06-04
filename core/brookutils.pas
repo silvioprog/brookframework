@@ -484,6 +484,30 @@ end;
 
 procedure BrookStringToObject(AObject: TObject; APropInfo: PPropInfo;
   const AValue: string);
+
+  function OnlyNumb(const S: string): string;
+  var
+    I: Integer;
+    PSrc, PDest: PChar;
+  begin
+    SetLength(Result, Length(S));
+    PSrc := PChar(S);
+    PDest := PChar(Result);
+    I := 0;
+    while PSrc^ <> #0 do
+    begin
+      if PSrc^ in ['0'..'9', '-', '+', DefaultFormatSettings.ThousandSeparator,
+        DefaultFormatSettings.DecimalSeparator] then
+      begin
+        PDest^ := PSrc^;
+        Inc(PDest);
+        Inc(I);
+      end;
+      Inc(PSrc);
+    end;
+    SetLength(Result, I);
+  end;
+
 begin
   if Assigned(APropInfo) then
     case APropInfo^.PropType^.Kind of
@@ -503,6 +527,8 @@ begin
             StrToTimeDef(AValue, DefTime));
           'TDateTime': SetFloatProp(AObject, APropInfo,
             StrToDateTimeDef(AValue, DefDateTime));
+          'Currency': SetFloatProp(AObject, APropInfo,
+            StrToCurrDef(OnlyNumb(AValue), DefCurrency));
         else
           SetFloatProp(AObject, APropInfo, StrToFloatDef(AValue, DefFloat));
         end;
