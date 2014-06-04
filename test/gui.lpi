@@ -39,11 +39,11 @@
         <PackageName Value="FPCUnitTestRunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
-        <Filename Value="test.lpr"/>
+        <Filename Value="gui.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="test"/>
+        <UnitName Value="gui"/>
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
@@ -112,6 +112,12 @@
         <UnitName Value="testbrooklogger"/>
         <UsageCount Value="20"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="alltestsrt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="alltestsrt"/>
+        <UsageCount Value="20"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
