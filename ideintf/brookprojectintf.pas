@@ -746,15 +746,17 @@ end;
 function TBrookActionFileDescPascalUnit.CreateSource(const AFileName,
   ASourceName, AResourceName: string): string;
 var
+  VClassName: ShortString = '';
   VActDefault: ShortString = '';
 begin
   if FActName = '' then
     FActName := ASourceName;
   FActName := UpperCase(Copy(FActName, 1, 1)) + Copy(FActName, 2, MaxInt);
   if FActPattern = '' then
-    FActPattern := '/' + LowerCase(ASourceName) + '/';
+    FActPattern := '/' + LowerCase(ASourceName);
   if FActDefault then
     VActDefault := ', True';
+  VClassName := 'T'+FActName;
   Result :=
     'unit '+ASourceName+';'+le+
     le+
@@ -766,12 +768,17 @@ begin
     '  BrookAction;'+le+
     le+
     'type'+le+
-    '  T'+FActName+' = class(TBrookAction)'+le+
+    le+
+    '  { '+VClassName+' }'+le+
+    le+
+    '  '+VClassName+' = class(TBrookAction)'+le+
     '  public'+le+
     '    procedure Get; override;'+le+
     '  end;'+le+
     le+
     'implementation'+le+
+    le+
+    '{ '+VClassName+' }'+le+
     le+
     'procedure T'+FActName+'.Get;'+le+
     'begin'+le+

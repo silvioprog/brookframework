@@ -83,7 +83,7 @@ procedure TfrBrookActEdit.edNameExit(Sender: TObject);
 begin
   if (edName.Text <> '') and (edPattern.Text = '') then
   begin
-    edPattern.Text := '/' + LowerCase(edName.Text) + '/';
+    edPattern.Text := '/' + LowerCase(edName.Text);
     edPattern.SetFocus;
   end;
 end;
