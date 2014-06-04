@@ -494,7 +494,7 @@ procedure BrookStringToObject(AObject: TObject; APropInfo: PPropInfo;
     PSrc := PChar(S);
     PDest := PChar(Result);
     I := 0;
-    while PSrc^ <> #0 do
+    while PSrc^ <> NU do
     begin
       if PSrc^ in ['0'..'9', '-', '+', DefaultFormatSettings.ThousandSeparator,
         DefaultFormatSettings.DecimalSeparator] then
