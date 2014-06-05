@@ -56,8 +56,6 @@ type
       const {%H-}AName, AFileName: string; {%H-}ASize: Int64): string; override;
     function RequestUploadDir: string; override;
     procedure InitRequestVars; override;
-    procedure HandleUnknownEncoding(
-      const AContentType: string; AStream: TStream); override;
   end;
 
   { TBrookHttpConnectionResponse }
@@ -190,13 +188,6 @@ begin
   else
     inherited;
   end;
-end;
-
-procedure TBrookHttpConnectionRequest.HandleUnknownEncoding(
-  const AContentType: string; AStream: TStream);
-begin
-  if not BrookHandleUnknownEncoding(Self, AContentType, AStream) then
-    inherited HandleUnknownEncoding(AContentType, AStream);
 end;
 
 { TBrookHttpConnectionResponse }

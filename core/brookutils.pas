@@ -60,8 +60,6 @@ type
     DeleteUploadedFiles: Boolean;
     { Keeps the original name of the uploaded files. }
     KeepUploadedNames: Boolean;
-    { Defines if the application allows JSON formated requests. }
-    AcceptsJSONContent: Boolean;
     { Set a configuration for the application or for its object members. }
     Configuration: string;
     { Set the default root URL. This is used by methods such as
@@ -92,7 +90,6 @@ var
     DirectoryForUploads: ES;
     DeleteUploadedFiles: False;
     KeepUploadedNames: True;
-    AcceptsJSONContent: False;
     Configuration: ES;
     RootUrl: ES;
     Port: 0;

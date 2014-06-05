@@ -22,15 +22,10 @@ uses
   Classes, SysUtils, StrUtils;
 
 function BrookFormatContentType: string;
-function BrookHandleUnknownEncoding(ARequest: TRequest;
-  const AContentType: string; AStream: TStream): Boolean;
 procedure BrookShowRequestException(AHandler: TWebHandler;
   R: TResponse; E: Exception);
 
 implementation
-
-uses
-  FPJSON, JSONParser;
 
 function BrookFormatContentType: string;
 begin
@@ -39,59 +34,6 @@ begin
       BrookSettings.Charset
   else
     Result := BrookSettings.ContentType;
-end;
-
-function BrookHandleUnknownEncoding(ARequest: TRequest;
-  const AContentType: string; AStream: TStream): Boolean;
-
-  procedure ProcessJSONObject(AJSON: TJSONObject);
-  var
-    I: integer;
-  begin
-    for I := 0 to Pred(AJSON.Count) do
-      ARequest.ContentFields.Add(AJSON.Names[I] + EQ + AJSON.Items[I].AsString);
-  end;
-
-  procedure ProcessJSONArray(AJSON: TJSONArray);
-  var
-    I: integer;
-  begin
-    for I := 0 to Pred(AJSON.Count) do
-      if AJSON[I].JSONType = jtObject then
-        ProcessJSONObject(AJSON.Objects[I])
-      else
-        raise Exception.CreateFmt('%s: Unsupported JSON format.',
-          [ARequest.ClassName]);
-  end;
-
-var
-  VJSON: TJSONData;
-  VParser: TJSONParser;
-begin
-  Result := False;
-  if Copy(AContentType, 1, Length(BROOK_HTTP_CONTENT_TYPE_APP_JSON)) =
-    BROOK_HTTP_CONTENT_TYPE_APP_JSON then
-  begin
-    if BrookSettings.AcceptsJSONContent then
-    begin
-      AStream.Position := 0;
-      VParser := TJSONParser.Create(AStream);
-      try
-        VJSON := VParser.Parse;
-        case VJSON.JSONType of
-          jtArray: ProcessJSONArray(TJSONArray(VJSON));
-          jtObject: ProcessJSONObject(TJSONObject(VJSON));
-        else
-          raise Exception.CreateFmt('%s: Unsupported JSON format.',
-            [ARequest.ClassName]);
-        end;
-      finally
-        VJSON.Free;
-        VParser.Free;
-      end;
-      Result := True;
-    end;
-  end;
 end;
 
 procedure BrookShowRequestException(AHandler: TWebHandler;
@@ -119,8 +61,6 @@ var
   end;
 
   procedure HandleHttp500;
-  var
-    VExceptionMessage, VStackDumpString: TJSONStringType;
   begin
     if not R.HeadersSent then
     begin
@@ -132,31 +72,14 @@ var
       FileExists(BrookSettings.Page500File) then
     begin
       R.Contents.LoadFromFile(BrookSettings.Page500File);
-      R.Content := StringsReplace(R.Content, ['@error'], [E.Message],
+      R.Content := StringReplace(R.Content, '@error', E.Message,
         [rfIgnoreCase, rfReplaceAll]);
-      if Pos('@trace', LowerCase(R.Content)) > 0 then
-        R.Content := StringsReplace(R.Content, ['@trace'],
-          [BrookDumpStack], [rfIgnoreCase, rfReplaceAll]);
-      // DumpStack is slow and not thread safe
     end
     else
     begin
       R.Content := BrookSettings.Page500;
-      VStackDumpString := '';
-      if BrookSettings.ContentType = BROOK_HTTP_CONTENT_TYPE_APP_JSON then
-      begin
-        VExceptionMessage := StringToJSONString(E.Message);
-        if Pos('@trace', LowerCase(R.Content)) > 0 then
-          VStackDumpString := StringToJSONString(BrookDumpStack(LF));
-      end
-      else
-      begin
-        VExceptionMessage := E.Message;
-        if Pos('@trace', LowerCase(R.Content)) > 0 then
-          VStackDumpString := BrookDumpStack;
-      end;
-      R.Content := StringsReplace(BrookSettings.Page500, ['@error', '@trace'],
-        [VExceptionMessage, VStackDumpString], [rfIgnoreCase, rfReplaceAll]);
+      R.Content := StringReplace(BrookSettings.Page500, '@error', E.Message,
+        [rfIgnoreCase, rfReplaceAll]);
     end;
     R.SendContent;
     VHandled := True;
