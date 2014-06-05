@@ -15,9 +15,9 @@ type
 begin
   with TMyTestRunner.Create(nil) do
   try
-    Application.Initialize;
-    Application.Run;
+    Initialize;
+    Run;
   finally
-    Application.Free;
+    Free;
   end;
 end.
