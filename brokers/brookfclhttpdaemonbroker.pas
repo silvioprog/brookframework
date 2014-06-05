@@ -57,7 +57,6 @@ type
     function Uninstall: Boolean; override;
     function Start: Boolean; override;
     function Stop: Boolean; override;
-    procedure Log(const AMsg: string);
   end;
 
   { TBrookHttpDaemonMapper }
@@ -75,7 +74,10 @@ var
 function BrookHttpApp: IBrookApplication;
 begin
   if not Assigned(_BrookHttpApp) then
+  begin
     _BrookHttpApp := TBrookApplication.Create;
+    TBrookHttpApplication(_BrookHttpApp.Instance).ShowTermMsg := False;
+  end;
   Result := _BrookHttpApp;
 end;
 
@@ -126,14 +128,12 @@ begin
   Result := inherited Start;
   FThread := TBrookDaemonThread.Create;
   FThread.Start;
-  Log('Start.');
 end;
 
 function TBrookHttpDaemon.Stop: Boolean;
 begin
   Result := inherited Stop;
   FThread.Terminate;
-  Log('Stop.');
 end;
 
 function TBrookHttpDaemon.Install: Boolean;
@@ -154,8 +154,8 @@ begin
     VSM.Free;
   end;
 {$ENDIF}
-  Log('Install.');
   WriteLn('Service installed.');
+  WriteLn(BrookHttpServerTerminalMsg);
 end;
 
 function TBrookHttpDaemon.Uninstall: Boolean;
@@ -176,13 +176,7 @@ begin
     VSM.Free;
   end;
 {$ENDIF}
-  Log('Uninstall.');
   WriteLn('Service uninstalled.');
-end;
-
-procedure TBrookHttpDaemon.Log(const AMsg: string);
-begin
-  Application.Log(etCustom, ClassName + ': ' + AMsg);
 end;
 
 { TBrookHttpDaemonMapper }

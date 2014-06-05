@@ -43,8 +43,12 @@ type
   { TBrookHttpApplication }
 
   TBrookHttpApplication = class(TCustomHttpApplication)
+  private
+    FShowTermMsg: Boolean;
   protected
     function InitializeWebHandler: TWebHandler; override;
+  public
+    property ShowTermMsg: Boolean read FShowTermMsg write FShowTermMsg;
   end;
 
   { TBrookHttpConnectionRequest }
@@ -89,7 +93,24 @@ var
     'Open the ''%s'' URL in your browser.'
 {$IFDEF UNIX} + LineEnding + LineEnding + 'Use [Ctrl+C] to quit ...'{$ENDIF};
 
+function BrookHttpServerTerminalMsg: string;
+
 implementation
+
+function BrookHttpServerTerminalMsg: string;
+var
+  VUrl: string;
+begin
+  if BrookSettings.RootUrl = '' then
+    VUrl := 'http://localhost'
+  else
+    VUrl := BrookSettings.RootUrl;
+  if VUrl[Length(VUrl)] = US then
+    System.Delete(VUrl, Length(VUrl), 1);
+  if not (BrookSettings.Port in [0, 80]) then
+    VUrl += ':' + IntToStr(BrookSettings.Port);
+  Result := Format(SBrookHttpServerTerminalMsg, [VUrl]);
+end;
 
 { TBrookApplication }
 
@@ -102,6 +123,7 @@ constructor TBrookApplication.Create;
 begin
   FApp := TBrookHttpApplication.Create(nil);
   FApp.Initialize;
+  FApp.ShowTermMsg := True;
 end;
 
 destructor TBrookApplication.Destroy;
@@ -116,20 +138,13 @@ begin
 end;
 
 procedure TBrookApplication.Run;
-var
-  VUrl: string;
 begin
   if BrookSettings.Port <> 0 then
     FApp.Port := BrookSettings.Port;
   if BrookSettings.RootUrl <> '' then
     FApp.ApplicationURL := BrookSettings.RootUrl;
-  if FApp.ApplicationURL = '' then
-    VUrl := 'http://localhost'
-  else
-    VUrl := FApp.ApplicationURL;
-  if not (FApp.Port in [0, 80]) then
-    VUrl += ':' + IntToStr(FApp.Port);
-  WriteLn(Format(SBrookHttpServerTerminalMsg, [VUrl]));
+  if FApp.ShowTermMsg then
+    WriteLn(BrookHttpServerTerminalMsg);
   FApp.Run;
 end;
 
