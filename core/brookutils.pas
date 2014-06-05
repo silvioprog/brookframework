@@ -481,30 +481,6 @@ end;
 
 procedure BrookStringToObject(AObject: TObject; APropInfo: PPropInfo;
   const AValue: string);
-
-  function OnlyNumb(const S: string): string;
-  var
-    I: Integer;
-    PSrc, PDest: PChar;
-  begin
-    SetLength(Result, Length(S));
-    PSrc := PChar(S);
-    PDest := PChar(Result);
-    I := 0;
-    while PSrc^ <> NU do
-    begin
-      if PSrc^ in ['0'..'9', '-', '+', DefaultFormatSettings.ThousandSeparator,
-        DefaultFormatSettings.DecimalSeparator] then
-      begin
-        PDest^ := PSrc^;
-        Inc(PDest);
-        Inc(I);
-      end;
-      Inc(PSrc);
-    end;
-    SetLength(Result, I);
-  end;
-
 begin
   if Assigned(APropInfo) then
     case APropInfo^.PropType^.Kind of
@@ -525,7 +501,7 @@ begin
           'TDateTime': SetFloatProp(AObject, APropInfo,
             StrToDateTimeDef(AValue, DefDateTime));
           'Currency': SetFloatProp(AObject, APropInfo,
-            StrToCurrDef(OnlyNumb(AValue), DefCurrency));
+            StrToCurrDef(AValue, DefCurrency));
         else
           SetFloatProp(AObject, APropInfo, StrToFloatDef(AValue, DefFloat));
         end;
@@ -641,8 +617,7 @@ begin
           'TDate': AValue := DateToStr(GetFloatProp(AObject, APropInfo));
           'TTime': AValue := TimeToStr(GetFloatProp(AObject, APropInfo));
           'TDateTime': AValue := DateTimeToStr(GetFloatProp(AObject, APropInfo));
-          'Currency': AValue :=
-            CurrToStrF(GetFloatProp(AObject, APropInfo), ffCurrency, -1);
+          'Currency': AValue := CurrToStr(GetFloatProp(AObject, APropInfo));
         else
           AValue := FloatToStr(GetFloatProp(AObject, APropInfo));
         end;
