@@ -6,7 +6,7 @@ interface
 
 uses
   BrookMiddleware, BrookRouter, BrookAction, BrookHttpDefs, fpcunit,
-  testregistry, sysutils,dialogs;
+  testregistry, sysutils;
 
 type
 
