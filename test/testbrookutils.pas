@@ -278,7 +278,7 @@ begin
     AssertEquals(st.ValueFromIndex[2], '123');
     AssertEquals(st.ValueFromIndex[3], '456');
     AssertEquals(st.ValueFromIndex[4], FloatToStr(123.456));
-    AssertEquals(st.ValueFromIndex[5], CurrToStrF(456.789, ffCurrency, -1));
+    AssertEquals(st.ValueFromIndex[5], CurrToStr(456.789));
     AssertEquals(st.ValueFromIndex[6], 'True');
     AssertEquals(st.ValueFromIndex[7], DateTimeToStr(dt));
     AssertEquals(st.ValueFromIndex[8], 'enum2');
@@ -315,7 +315,7 @@ begin
     AssertEquals(st.ValueFromIndex[2], '123');
     AssertEquals(st.ValueFromIndex[3], '456');
     AssertEquals(st.ValueFromIndex[4], FloatToStr(123.456));
-    AssertEquals(st.ValueFromIndex[5], CurrToStrF(456.789, ffCurrency, -1));
+    AssertEquals(st.ValueFromIndex[5], CurrToStr(456.789));
     AssertEquals(st.ValueFromIndex[6], 'True');
     AssertEquals(st.ValueFromIndex[7], DateTimeToStr(dt));
     AssertEquals(st.ValueFromIndex[8], 'enum2');
