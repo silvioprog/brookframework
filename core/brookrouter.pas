@@ -556,7 +556,7 @@ begin
   Result := False;
   ARedirect := False;
   if APattern = ES then
-     Exit; // Maybe empty pattern should match any path?
+    Exit(True);
   Delete(APattern, Pos(QU, APattern), MaxInt);
   Delete(APathInfo, Pos(QU, APathInfo), MaxInt);
   if BrookStartsChar(US, APattern) then
@@ -616,10 +616,7 @@ begin
           else
             // *path/const
             if not ((VPat = ES) and (VLeftPat = ES)) and (VPat <> VVal) then
-            begin
-              Result := False;
-              Exit;
-            end;
+              Exit(False);
           // Check if we already done
           if (VLeftPat = ES) or (VLeftVal = ES) then
           begin
@@ -630,39 +627,29 @@ begin
               ANames[VCount - 1] := VName;
               AValues[VCount - 1] := VLeftVal + VVal;
               Inc(VCount);
-              Result := True;
-              Exit;
+              Exit(True);
             end;
-            Result := False;
-            Exit;
+            Exit(False);
           end;
         until False;
       end
       else
         // const
         if VPat <> VVal then
-        begin
-          Result := False;
-          Exit;
-        end;
+          Exit(False);
     // Check if we already done
     if (VRightPat = ES) or (VRightVal = ES) then
     begin
       if (VRightPat = ES) and (VRightVal = ES) then
-      begin
-        Result := True;
-        Exit;
-      end
+        Exit(True)
       else
       // if AutoAddSlash ...
       if VRightPat = US then
       begin
-        Result := True;
         ARedirect := True;
-        Exit;
+        Exit(True);
       end;
-      Result := False;
-      Exit;
+      Exit(False);
     end;
   until False;
   if Assigned(FAfterMatchPattern) then
