@@ -28,8 +28,8 @@ type
     FDocument: TMemoryStream;
     FMethod: string;
     FUrl: string;
-    class procedure InternalRequest(AHttp: TFPHttpClient; AResponse: TStream;
-      const AMethod, AUrl: string);
+    class function InternalRequest(AHttp: TFPHttpClient; AResponse: TStream;
+      const AMethod, AUrl: string): Boolean;
   protected
     function GetClient: TObject; override;
     function GetContents: TStrings; override;
@@ -150,16 +150,21 @@ begin
   FUrl := AValue;
 end;
 
-class procedure TBrookFPHttpClientDef.InternalRequest(AHttp: TFPHttpClient;
-  AResponse: TStream; const AMethod, AUrl: string);
+class function TBrookFPHttpClientDef.InternalRequest(AHttp: TFPHttpClient;
+  AResponse: TStream; const AMethod, AUrl: string): Boolean;
 begin
+  AHttp.RequestHeaders.Add('Connection: Close');
   if Assigned(AResponse) then
-    AHttp.HttpMethod(AMethod, AUrl, AResponse, [])
+  begin
+    AHttp.HttpMethod(AMethod, AUrl, AResponse, []);
+    Result := AHttp.ResponseStatusCode = 200;
+  end
   else
   begin
     AResponse := TMemoryStream.Create;
     try
       AHttp.HttpMethod(AMethod, AUrl, AResponse, []);
+      Result := AHttp.ResponseStatusCode = 200;
     finally
       FreeAndNil(AResponse);
     end;
@@ -178,9 +183,7 @@ var
 begin
   VHttp := TFPHttpClient.Create(nil);
   try
-    VHttp.RequestHeaders.Add('Connection: Close');
-    InternalRequest(VHttp, AResponse, 'GET', AUrl);
-    Result := VHttp.ResponseStatusCode = 200;
+    Result := InternalRequest(VHttp, AResponse, 'GET', AUrl);
   finally
     VHttp.Free;
   end;
@@ -193,9 +196,7 @@ var
 begin
   VHttp := TFPHttpClient.Create(nil);
   try
-    VHttp.RequestHeaders.Add('Connection: Close');
-    InternalRequest(VHttp, AResponse, 'POST', AUrl);
-    Result := VHttp.ResponseStatusCode = 200;
+    Result := InternalRequest(VHttp, AResponse, 'POST', AUrl);
   finally
     VHttp.Free;
   end;
@@ -208,9 +209,7 @@ var
 begin
   VHttp := TFPHttpClient.Create(nil);
   try
-    VHttp.RequestHeaders.Add('Connection: Close');
-    InternalRequest(VHttp, AResponse, 'PUT', AUrl);
-    Result := VHttp.ResponseStatusCode = 200;
+    Result := InternalRequest(VHttp, AResponse, 'PUT', AUrl);
   finally
     VHttp.Free;
   end;
@@ -223,9 +222,7 @@ var
 begin
   VHttp := TFPHttpClient.Create(nil);
   try
-    VHttp.RequestHeaders.Add('Connection: Close');
-    InternalRequest(VHttp, AResponse, 'DELETE', AUrl);
-    Result := VHttp.ResponseStatusCode = 200;
+    Result := InternalRequest(VHttp, AResponse, 'DELETE', AUrl);
   finally
     VHttp.Free;
   end;
@@ -238,9 +235,7 @@ var
 begin
   VHttp := TFPHttpClient.Create(nil);
   try
-    VHttp.RequestHeaders.Add('Connection: Close');
-    InternalRequest(VHttp, AResponse, 'OPTIONS', AUrl);
-    Result := VHttp.ResponseStatusCode = 200;
+    Result := InternalRequest(VHttp, AResponse, 'OPTIONS', AUrl);
   finally
     VHttp.Free;
   end;
@@ -271,9 +266,7 @@ begin
   try
     VHttp.RequestBody := AFormData;
     VHttp.AddHeader('Content-Type', 'application/x-www-form-urlencoded');
-    VHttp.RequestHeaders.Add('Connection: Close');
-    InternalRequest(VHttp, AResponse, 'POST', AUrl);
-    Result := VHttp.ResponseStatusCode = 200;
+    Result := InternalRequest(VHttp, AResponse, 'POST', AUrl);
   finally
     VHttp.Free;
   end;
@@ -313,12 +306,9 @@ begin
     S := CRLF + '--' + VSep + '--' + CRLF;
     VData.Write(Pointer(S)^, Length(S));
     VHttp.AddHeader('Content-Type', 'multipart/form-data; boundary=' + VSep);
-    VHttp.RequestHeaders.Add('Connection: Close');
     VData.Seek(0, 0);
     VHttp.RequestBody := VData;
-    VHttp.RequestHeaders.Add('Connection: Close');
-    InternalRequest(VHttp, AResponse, 'POST', AUrl);
-    Result := VHttp.ResponseStatusCode = 200;
+    Result := InternalRequest(VHttp, AResponse, 'POST', AUrl);
   finally
     VData.Free;
     VHttp.RequestBody := nil;
