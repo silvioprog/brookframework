@@ -56,6 +56,8 @@ type
     class function Head(const AUrl: string; AHeaders: TStrings): Boolean; override;
     class function PostForm(const AUrl, AFormData: string; AResponse: TStream): Boolean; override;
     class function PostForm(const AUrl: string; AFormData, AResponse: TStream): Boolean; override;
+    class function PutForm(const AUrl, AFormData: string; AResponse: TStream): Boolean; override;
+    class function PutForm(const AUrl: string; AFormData, AResponse: TStream): Boolean; override;
     class function PostFile(const AUrl, AFieldName, AFileName: string;
       AResponse: TStream): Boolean; override;
     class function PostFile(const AUrl, AFieldName, AFileName: string;
@@ -280,6 +282,35 @@ begin
   VFormData := TStringStream.Create(AFormData);
   try
     Result := PostForm(AUrl, VFormData, AResponse);
+  finally
+    VFormData.Free;
+    VFormData := nil;
+  end;
+end;
+
+class function TBrookFPHttpClientDef.PutForm(const AUrl: string; AFormData,
+  AResponse: TStream): Boolean;
+var
+  VHttp: TFPHttpClient;
+begin
+  VHttp := TFPHttpClient.Create(nil);
+  try
+    VHttp.RequestBody := AFormData;
+    VHttp.AddHeader('Content-Type', 'application/x-www-form-urlencoded');
+    Result := InternalRequest(VHttp, AResponse, 'PUT', AUrl);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookFPHttpClientDef.PutForm(const AUrl, AFormData: string;
+  AResponse: TStream): Boolean;
+var
+  VFormData: TStringStream;
+begin
+  VFormData := TStringStream.Create(AFormData);
+  try
+    Result := PutForm(AUrl, VFormData, AResponse);
   finally
     VFormData.Free;
     VFormData := nil;

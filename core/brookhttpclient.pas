@@ -101,6 +101,14 @@ type
       parameter. }
     class function PostForm(const AUrl, AFormData: string;
       AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a PUT HTTP request method, passing a form-data as
+      parameter. }
+    class function PutForm(const AUrl: string;
+      AFormData, AResponse: TStream): Boolean; virtual; abstract;
+    { Sends request by a PUT HTTP request method, passing a form-data as
+      parameter. }
+    class function PutForm(const AUrl, AFormData: string;
+      AResponse: TStream): Boolean; virtual; abstract;
     { Sends request by a POST HTTP request method, passing a file as
       parameter. }
     class function PostFile(const AUrl, AFieldName, AFileName: string;
@@ -174,6 +182,14 @@ type
     { Sends request by a POST HTTP request method, passing a form-data as
       parameter. }
     class function PostForm(const AUrl, AFormData: string;
+      AResponse: TStream): Boolean;
+    { Sends request by a PUT HTTP request method, passing a form-data as
+      parameter. }
+    class function PutForm(const AUrl: string; AFormData,
+      AResponse: TStream): Boolean;
+    { Sends request by a PUT HTTP request method, passing a form-data as
+      parameter. }
+    class function PutForm(const AUrl, AFormData: string;
       AResponse: TStream): Boolean;
     { Sends request by a POST HTTP request method, passing a file as
       parameter. }
@@ -349,6 +365,32 @@ begin
   Prepare(VHttp);
   try
     Result := VHttp.PostForm(AUrl, AFormData, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHttpClient.PutForm(const AUrl: string; AFormData,
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHttpDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.PutForm(AUrl, AFormData, AResponse);
+  finally
+    VHttp.Free;
+  end;
+end;
+
+class function TBrookHttpClient.PutForm(const AUrl, AFormData: string;
+  AResponse: TStream): Boolean;
+var
+  VHttp: TBrookHttpDef = nil;
+begin
+  Prepare(VHttp);
+  try
+    Result := VHttp.PutForm(AUrl, AFormData, AResponse);
   finally
     VHttp.Free;
   end;
