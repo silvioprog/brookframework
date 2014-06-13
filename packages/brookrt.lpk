@@ -19,7 +19,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="Brook runtime package."/>
+    <Description Value="Brook run time package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Major="3" Release="9"/>
     <Files Count="27">
