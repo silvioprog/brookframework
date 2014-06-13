@@ -21,12 +21,12 @@
     </CompilerOptions>
     <Description Value="Brook experts package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
-    <Version Major="1" Minor="3" Release="9"/>
+    <Version Major="1" Minor="9" Release="9"/>
     <Files Count="6">
       <Item1>
-        <Filename Value="..\ideintf\brookprojectintf.pas"/>
+        <Filename Value="..\ideintf\brookideintf.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="BrookProjectIntf"/>
+        <UnitName Value="BrookIDEIntf"/>
       </Item1>
       <Item2>
         <Filename Value="..\ideintf\frmbrookactedit.pas"/>

@@ -1,5 +1,5 @@
 (*
-  Brook framework, Project Intf Unit
+  Brook framework, IDE Intf Unit
 
   Copyright (C) 2014 Silvio Clecio
 
@@ -11,7 +11,7 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *)
 
-unit BrookProjectIntf;
+unit BrookIDEIntf;
 
 {$i brook.inc}
 

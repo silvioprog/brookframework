@@ -88,7 +88,7 @@ implementation
 {$R *.lfm}
 
 uses
-  frmBrookActEdit, BrookProjectIntf;
+  frmBrookActEdit, BrookIDEIntf;
 
 procedure OnlyAlphaNumeric(var Key: Char);
 begin
