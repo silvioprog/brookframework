@@ -40,6 +40,10 @@ type
   TBrookComponent = class(TComponent)
   end;
 
+  { Is the main data module for Brook. }
+  TBrookDataModule = class(TDataModule)
+  end;
+
 implementation
 
 end.
