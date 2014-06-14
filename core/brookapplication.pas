@@ -40,6 +40,8 @@ type
 
 { Returns the application instance. }
 function BrookApp: IBrookApplication;
+{ Returns the application instance maintaining compatibility with legacy code. }
+function Application: IBrookApplication;
 { Register the application. }
 procedure BrookRegisterApp(AApp: IBrookApplication);
 { Unregister the application. }
@@ -56,6 +58,11 @@ begin
     raise EBrookApplication.Create('BrookApp',
       SBrookNoApplicationRegisteredError);
   Result := _BrookAppService;
+end;
+
+function Application: IBrookApplication;
+begin
+  Result := BrookApp;
 end;
 
 procedure BrookRegisterApp(AApp: IBrookApplication);
