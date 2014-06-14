@@ -34,6 +34,7 @@ type
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    procedure CreateForm(AInstanceClass: TComponentClass; out AReference);
     function Instance: TObject;
     procedure Run;
     procedure Terminate;
@@ -130,6 +131,15 @@ destructor TBrookApplication.Destroy;
 begin
   FApp.Free;
   inherited Destroy;
+end;
+
+procedure TBrookApplication.CreateForm(AInstanceClass: TComponentClass; out
+  AReference);
+var
+  VReference: TComponent absolute AReference;
+begin
+  VReference := AInstanceClass.Create(nil);
+  FApp.InsertComponent(VReference);
 end;
 
 function TBrookApplication.Instance: TObject;

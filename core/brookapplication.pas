@@ -18,7 +18,7 @@ unit BrookApplication;
 interface
 
 uses
-  BrookConsts, BrookClasses, BrookException, BrookMessages;
+  BrookConsts, BrookClasses, BrookException, BrookMessages, Classes;
 
 type
   { Handles exceptions for application. }
@@ -26,6 +26,10 @@ type
 
   { Interface of the application. }
   IBrookApplication = interface(IBrookInterface)[BROOK_APP_GUID]
+    { Creates an instance of the type specified by the @code(AInstanceClass)
+      parameter and assigns it to the variable given by the @code(AReference)
+      parameter. The owner of the new instance is the @code(Application) object. }
+    procedure CreateForm(AInstanceClass: TComponentClass; out AReference);
     { Gets whether the application is terminated. }
     function GetTerminated: Boolean;
     { Returns the instance of broker application. }

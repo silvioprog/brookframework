@@ -34,6 +34,7 @@ type
   public
     constructor Create;
     function Instance: TObject;
+    procedure CreateForm(AInstanceClass: TComponentClass; out AReference);
     procedure Run;
     procedure Terminate;
     property Terminated: Boolean read GetTerminated;
@@ -96,6 +97,18 @@ end;
 function TBrookDaemonApplication.Instance: TObject;
 begin
   Result := BrookHttpApp.Instance;
+end;
+
+procedure TBrookDaemonApplication.CreateForm(AInstanceClass: TComponentClass;
+  out AReference);
+var
+  VInstance: TObject;
+  VReference: TComponent absolute AReference;
+begin
+  VReference := AInstanceClass.Create(nil);
+  VInstance := Instance;
+  if VInstance is TComponent then
+    TComponent(VInstance).InsertComponent(VReference);
 end;
 
 procedure TBrookDaemonApplication.Run;
