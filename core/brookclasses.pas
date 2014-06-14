@@ -18,7 +18,7 @@ unit BrookClasses;
 interface
 
 uses
-  BrookConsts, Classes;
+  BrookConsts, Classes, RtlConsts;
 
 type
   { Is the main interface for Brook. }
@@ -42,8 +42,24 @@ type
 
   { Is the main data module for Brook. }
   TBrookDataModule = class(TDataModule)
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
 
 implementation
+
+{ TBrookDataModule }
+
+constructor TBrookDataModule.Create(AOwner: TComponent);
+begin
+  CreateNew(AOwner);
+  if (ClassType <> TBrookDataModule) and not (csDesigning in ComponentState) then
+  begin
+    if not InitInheritedComponent(Self, TBrookDataModule) then
+      raise EStreamError.CreateFmt(SErrNoStreaming, [ClassName]);
+    if OldCreateOrder then
+      DoCreate;
+  end;
+end;
 
 end.
