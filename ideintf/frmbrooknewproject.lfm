@@ -11,25 +11,24 @@ object frBrookNewProject: TfrBrookNewProject
   OnShow = FormShow
   Position = poDesktopCenter
   SessionProperties = 'edAppName.Text;rgAppType.ItemIndex;rgDefaultCharset.ItemIndex;edPubHTMLDir.Directory'
-  LCLVersion = '1.1'
+  LCLVersion = '1.2.2.0'
   object pnBottom: TPanel
     Left = 0
-    Height = 36
-    Top = 394
+    Height = 40
+    Top = 390
     Width = 540
     Align = alBottom
     AutoSize = True
-    ClientHeight = 36
+    ClientHeight = 40
     ClientWidth = 540
     TabOrder = 1
     object btNext: TBitBtn
-      Left = 316
+      Left = 296
       Height = 26
-      Top = 5
-      Width = 69
+      Top = 7
+      Width = 75
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Caption = '&Next'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100
@@ -71,13 +70,12 @@ object frBrookNewProject: TfrBrookNewProject
       TabOrder = 1
     end
     object btCancel: TBitBtn
-      Left = 454
+      Left = 458
       Height = 26
-      Top = 5
-      Width = 81
+      Top = 7
+      Width = 75
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Cancel = True
       Caption = '&Cancel'
       Kind = bkCancel
@@ -85,13 +83,12 @@ object frBrookNewProject: TfrBrookNewProject
       TabOrder = 3
     end
     object btPrior: TBitBtn
-      Left = 242
+      Left = 215
       Height = 26
-      Top = 5
-      Width = 70
+      Top = 7
+      Width = 75
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Caption = '&Prior'
       Enabled = False
       Glyph.Data = {
@@ -134,13 +131,12 @@ object frBrookNewProject: TfrBrookNewProject
       TabOrder = 0
     end
     object btOK: TBitBtn
-      Left = 389
+      Left = 377
       Height = 26
-      Top = 5
-      Width = 61
+      Top = 7
+      Width = 75
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Caption = '&OK'
       Default = True
       Kind = bkOK
@@ -151,7 +147,7 @@ object frBrookNewProject: TfrBrookNewProject
   end
   object pcWizard: TPageControl
     Left = 0
-    Height = 379
+    Height = 375
     Top = 0
     Width = 540
     ActivePage = tsApp
@@ -164,17 +160,17 @@ object frBrookNewProject: TfrBrookNewProject
     OnChanging = pcWizardChanging
     object tsApp: TTabSheet
       Caption = 'Application'
-      ClientHeight = 371
+      ClientHeight = 367
       ClientWidth = 532
       object sbApp: TScrollBox
         Left = 0
-        Height = 309
+        Height = 305
         Top = 62
         Width = 532
         HorzScrollBar.Page = 528
-        VertScrollBar.Page = 305
+        VertScrollBar.Page = 301
         Align = alClient
-        ClientHeight = 305
+        ClientHeight = 301
         ClientWidth = 528
         TabOrder = 0
         object rgAppType: TRadioGroup
@@ -1359,24 +1355,24 @@ object frBrookNewProject: TfrBrookNewProject
     end
     object tsActions: TTabSheet
       Caption = 'Actions'
-      ClientHeight = 237
-      ClientWidth = 425
+      ClientHeight = 367
+      ClientWidth = 532
       object sbActions: TScrollBox
         Left = 0
-        Height = 237
+        Height = 367
         Top = 0
-        Width = 425
-        HorzScrollBar.Page = 421
-        VertScrollBar.Page = 233
+        Width = 532
+        HorzScrollBar.Page = 528
+        VertScrollBar.Page = 363
         Align = alClient
-        ClientHeight = 233
-        ClientWidth = 421
+        ClientHeight = 363
+        ClientWidth = 528
         TabOrder = 0
         object lbActions: TLabel
           Left = 4
-          Height = 20
+          Height = 15
           Top = 4
-          Width = 413
+          Width = 520
           Align = alTop
           BorderSpacing.Around = 4
           Caption = '&Actions *'
@@ -1384,9 +1380,9 @@ object frBrookNewProject: TfrBrookNewProject
         end
         object lvActions: TListView
           Left = 4
-          Height = 161
-          Top = 28
-          Width = 413
+          Height = 296
+          Top = 23
+          Width = 520
           Align = alClient
           BorderSpacing.Around = 4
           Columns = <          
@@ -1412,24 +1408,22 @@ object frBrookNewProject: TfrBrookNewProject
           OnSelectItem = lvActionsSelectItem
         end
         object pnActsBottom: TPanel
-          Left = 4
-          Height = 36
-          Top = 193
-          Width = 413
+          Left = 0
+          Height = 40
+          Top = 323
+          Width = 528
           Align = alBottom
           AutoSize = True
-          BorderSpacing.Around = 4
-          ClientHeight = 36
-          ClientWidth = 413
+          ClientHeight = 40
+          ClientWidth = 528
           TabOrder = 1
           object btAddAct: TBitBtn
-            Left = 3
-            Height = 30
-            Top = 3
-            Width = 73
+            Left = 7
+            Height = 26
+            Top = 7
+            Width = 75
             Align = alLeft
-            AutoSize = True
-            BorderSpacing.Around = 2
+            BorderSpacing.Around = 6
             Caption = '&Add'
             Glyph.Data = {
               36040000424D3604000000000000360000002800000010000000100000000100
@@ -1471,13 +1465,12 @@ object frBrookNewProject: TfrBrookNewProject
             TabOrder = 0
           end
           object btEditAct: TBitBtn
-            Left = 78
-            Height = 30
-            Top = 3
-            Width = 71
+            Left = 88
+            Height = 26
+            Top = 7
+            Width = 75
             Align = alLeft
-            AutoSize = True
-            BorderSpacing.Around = 2
+            BorderSpacing.Around = 6
             Caption = '&Edit'
             Enabled = False
             Glyph.Data = {
@@ -1520,13 +1513,12 @@ object frBrookNewProject: TfrBrookNewProject
             TabOrder = 1
           end
           object btDeleteAct: TBitBtn
-            Left = 151
-            Height = 30
-            Top = 3
-            Width = 89
+            Left = 169
+            Height = 26
+            Top = 7
+            Width = 75
             Align = alLeft
-            AutoSize = True
-            BorderSpacing.Around = 2
+            BorderSpacing.Around = 6
             Caption = '&Delete'
             Enabled = False
             Glyph.Data = {
@@ -1569,13 +1561,13 @@ object frBrookNewProject: TfrBrookNewProject
             TabOrder = 2
           end
           object btHelp: TBitBtn
-            Left = 279
-            Height = 30
-            Top = 3
-            Width = 131
+            Left = 406
+            Height = 26
+            Top = 7
+            Width = 115
             Align = alRight
             AutoSize = True
-            BorderSpacing.Around = 2
+            BorderSpacing.Around = 6
             Caption = 'Patterns help'
             Glyph.Data = {
               36040000424D3604000000000000360000002800000010000000100000000100
@@ -1621,17 +1613,17 @@ object frBrookNewProject: TfrBrookNewProject
     end
     object tsFinish: TTabSheet
       Caption = 'Finish'
-      ClientHeight = 237
-      ClientWidth = 425
+      ClientHeight = 367
+      ClientWidth = 532
       OnShow = tsFinishShow
       object lbInfo3: TLabel
         AnchorSideLeft.Control = tsFinish
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = tsFinish
         AnchorSideTop.Side = asrCenter
-        Left = 36
+        Left = 90
         Height = 40
-        Top = 98
+        Top = 163
         Width = 353
         Alignment = taCenter
         AutoSize = False
@@ -1646,9 +1638,9 @@ object frBrookNewProject: TfrBrookNewProject
         AnchorSideLeft.Control = lbInfo3
         AnchorSideLeft.Side = asrCenter
         AnchorSideBottom.Control = lbInfo3
-        Left = 148
+        Left = 202
         Height = 21
-        Top = 75
+        Top = 140
         Width = 128
         Alignment = taCenter
         Anchors = [akLeft, akBottom]
@@ -1663,7 +1655,7 @@ object frBrookNewProject: TfrBrookNewProject
   object lbInfo1: TLabel
     Left = 0
     Height = 15
-    Top = 379
+    Top = 375
     Width = 540
     Align = alBottom
     Alignment = taCenter

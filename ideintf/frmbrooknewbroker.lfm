@@ -8,26 +8,26 @@ object frBrookNewBroker: TfrBrookNewBroker
   ClientHeight = 260
   ClientWidth = 340
   Position = poDesktopCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.2.2.0'
   object pnCliente: TPanel
     Left = 0
-    Height = 224
+    Height = 220
     Top = 0
     Width = 340
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
-    ClientHeight = 224
+    ClientHeight = 220
     ClientWidth = 340
     TabOrder = 0
     object sbClient: TScrollBox
       Left = 1
-      Height = 222
+      Height = 218
       Top = 1
       Width = 338
       HorzScrollBar.Page = 334
-      VertScrollBar.Page = 218
+      VertScrollBar.Page = 214
       Align = alClient
-      ClientHeight = 218
+      ClientHeight = 214
       ClientWidth = 334
       TabOrder = 0
       object rgType: TRadioGroup
@@ -66,22 +66,21 @@ object frBrookNewBroker: TfrBrookNewBroker
   end
   object pnBottom: TPanel
     Left = 0
-    Height = 36
-    Top = 224
+    Height = 40
+    Top = 220
     Width = 340
     Align = alBottom
     AutoSize = True
-    ClientHeight = 36
+    ClientHeight = 40
     ClientWidth = 340
     TabOrder = 1
     object btOK: TBitBtn
-      Left = 189
+      Left = 170
       Height = 26
-      Top = 5
-      Width = 61
+      Top = 7
+      Width = 75
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Default = True
       DefaultCaption = True
       Kind = bkOK
@@ -89,13 +88,12 @@ object frBrookNewBroker: TfrBrookNewBroker
       TabOrder = 0
     end
     object btCancel: TBitBtn
-      Left = 254
+      Left = 251
       Height = 26
-      Top = 5
-      Width = 81
+      Top = 7
+      Width = 82
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Cancel = True
       Caption = '&Cancel'
       Kind = bkCancel

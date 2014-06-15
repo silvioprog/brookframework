@@ -9,21 +9,21 @@ object frBrookActEdit: TfrBrookActEdit
   ClientWidth = 340
   OnCloseQuery = FormCloseQuery
   Position = poDesktopCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.2.2.0'
   object pnClient: TPanel
     Left = 0
-    Height = 234
+    Height = 230
     Top = 0
     Width = 340
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
-    ClientHeight = 234
+    ClientHeight = 230
     ClientWidth = 340
     TabOrder = 0
     object lbInfo: TLabel
       Left = 1
       Height = 15
-      Top = 218
+      Top = 214
       Width = 338
       Align = alBottom
       Alignment = taCenter
@@ -34,13 +34,13 @@ object frBrookActEdit: TfrBrookActEdit
     end
     object sbClient: TScrollBox
       Left = 1
-      Height = 217
+      Height = 213
       Top = 1
       Width = 338
       HorzScrollBar.Page = 334
-      VertScrollBar.Page = 213
+      VertScrollBar.Page = 209
       Align = alClient
-      ClientHeight = 213
+      ClientHeight = 209
       ClientWidth = 334
       TabOrder = 0
       object lbName: TLabel
@@ -110,22 +110,21 @@ object frBrookActEdit: TfrBrookActEdit
   end
   object pnBottom: TPanel
     Left = 0
-    Height = 36
-    Top = 234
+    Height = 40
+    Top = 230
     Width = 340
     Align = alBottom
     AutoSize = True
-    ClientHeight = 36
+    ClientHeight = 40
     ClientWidth = 340
     TabOrder = 1
     object btOK: TBitBtn
-      Left = 189
+      Left = 177
       Height = 26
-      Top = 5
-      Width = 61
+      Top = 7
+      Width = 75
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Default = True
       DefaultCaption = True
       Kind = bkOK
@@ -133,13 +132,12 @@ object frBrookActEdit: TfrBrookActEdit
       TabOrder = 0
     end
     object btCancel: TBitBtn
-      Left = 254
+      Left = 258
       Height = 26
-      Top = 5
-      Width = 81
+      Top = 7
+      Width = 75
       Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 4
+      BorderSpacing.Around = 6
       Cancel = True
       Caption = '&Cancel'
       Kind = bkCancel
