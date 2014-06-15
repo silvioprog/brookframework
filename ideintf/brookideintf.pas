@@ -624,7 +624,7 @@ begin
   Name := SBrookBrokersName;
   DefaultFileName := 'brokers.pas';
   DefaultSourceName := 'Brokers';
-  FQuiet := True;
+  FQuiet := False;
 end;
 
 function TBrookBrokersFileDescPascalUnit.Init(var ANewFilename: string;
@@ -680,7 +680,7 @@ begin
   begin
     VDlg := BrookNewProjectDlg;
     Result :=
-    'unit Brokers;'+le+
+    'unit '+ASourceName+';'+le+
     le+
     '{$mode objfpc}{$H+}'+le+
     le+
@@ -704,7 +704,7 @@ begin
   end
   else
     Result :=
-    'unit Brokers;'+le+
+    'unit '+ASourceName+';'+le+
     le+
     '{$mode objfpc}{$H+}'+le+
     le+
