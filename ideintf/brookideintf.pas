@@ -302,6 +302,9 @@ begin
     '{$mode objfpc}{$H+}'+le+
     le+
     'uses'+le+
+    '{$IFDEF UNIX}{$IFDEF UseCThreads}'+le+
+    '  cthreads,'+le+
+    '{$ENDIF}{$ENDIF}'+le+
     '  BrookApplication, Brokers;'+le+
     le+
     'begin'+le+
@@ -405,6 +408,9 @@ begin
     '{$mode objfpc}{$H+}'+le+
     le+
     'uses'+le+
+    '{$IFDEF UNIX}{$IFDEF UseCThreads}'+le+
+    '  cthreads,'+le+
+    '{$ENDIF}{$ENDIF}'+le+
     '  BrookApplication, Brokers;'+le+
     le+
     'begin'+le+
@@ -588,6 +594,9 @@ begin
     '{$mode objfpc}{$H+}'+le+
     le+
     'uses'+le+
+    '{$IFDEF UNIX}{$IFDEF UseCThreads}'+le+
+    '  cthreads,'+le+
+    '{$ENDIF}{$ENDIF}'+le+
     '  BrookApplication, Brokers;'+le+
     le+
     'begin'+le+
