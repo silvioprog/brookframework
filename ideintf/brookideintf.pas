@@ -644,40 +644,34 @@ var
   VDlg: TfrBrookNewProject;
   VCharset, VBroker, VInitPort: string;
 begin
-  case FAppType of
-    0:
-      begin
-        VBroker := 'BrookFCLCGIBroker';
-        VInitPort := '';
-      end;
-    1:
-      begin
-        VBroker := 'BrookFCLFCGIBroker';
-        VInitPort := '';
-      end;
-    2:
-      begin
-        VBroker := 'BrookFCLHttpAppBroker, BrookUtils';
-        VInitPort :=
-          'initialization'+le+
-          '  BrookSettings.Port := 8080;'+le+
-          le;
-      end;
-    3:
-      begin
-        VBroker := 'BrookFCLHttpDaemonBroker, BrookUtils';
-        VInitPort :=
-          'initialization'+le+
-          '  BrookSettings.Port := 8080;'+le+
-          le;
-      end;
-  end;
-  case FAppDefCharset of
-    0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
-    1: VCharset := 'BROOK_HTTP_CHARSET_ISO_8859_1';
-  end;
   if FFullBrk then
   begin
+    case FAppType of
+      0:
+        begin
+          VBroker := 'BrookFCLCGIBroker';
+          VInitPort := '';
+        end;
+      1:
+        begin
+          VBroker := 'BrookFCLFCGIBroker';
+          VInitPort := '';
+        end;
+      2:
+        begin
+          VBroker := 'BrookFCLHttpAppBroker';
+          VInitPort := '  BrookSettings.Port := 8080;'+le;
+        end;
+      3:
+        begin
+          VBroker := 'BrookFCLHttpDaemonBroker';
+          VInitPort := '  BrookSettings.Port := 8080;'+le;
+        end;
+    end;
+    case FAppDefCharset of
+      0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
+      1: VCharset := 'BROOK_HTTP_CHARSET_ISO_8859_1';
+    end;
     VDlg := BrookNewProjectDlg;
     Result :=
     'unit '+ASourceName+';'+le+
@@ -687,7 +681,7 @@ begin
     'interface'+le+
     le+
     'uses'+le+
-    '  '+VBroker+', BrookHttpConsts, Classes, SysUtils;'+le+
+    '  '+VBroker+', BrookUtils, BrookHttpConsts, Classes, SysUtils;'+le+
     le+
     'const'+le+
     '  PUBLIC_HTML = '+QuotedStr(IncludeTrailingPathDelimiter(VDlg.edPubHTMLDir.Text))+';'+le+
@@ -695,7 +689,7 @@ begin
     'implementation'+le+
     le+
     'initialization'+le+
-    '  BrookSettings.Port := 8080;'+le+
+       VInitPort+
     '  BrookSettings.Charset := ' + VCharset + ';'+le+
     '  BrookSettings.Page404File := PUBLIC_HTML + ''404.html'';'+le+
     '  BrookSettings.Page500File := PUBLIC_HTML + ''500.html'';'+le+
@@ -703,6 +697,35 @@ begin
     'end.';
   end
   else
+  begin
+    case FAppType of
+      0:
+        begin
+          VBroker := 'BrookFCLCGIBroker';
+          VInitPort := '';
+        end;
+      1:
+        begin
+          VBroker := 'BrookFCLFCGIBroker';
+          VInitPort := '';
+        end;
+      2:
+        begin
+          VBroker := 'BrookFCLHttpAppBroker, BrookUtils';
+          VInitPort :=
+            'initialization'+le+
+            '  BrookSettings.Port := 8080;'+le+
+            le;
+        end;
+      3:
+        begin
+          VBroker := 'BrookFCLHttpDaemonBroker, BrookUtils';
+          VInitPort :=
+            'initialization'+le+
+            '  BrookSettings.Port := 8080;'+le+
+            le;
+        end;
+    end;
     Result :=
     'unit '+ASourceName+';'+le+
     le+
@@ -717,6 +740,7 @@ begin
     le+
       VInitPort+
     'end.';
+  end;
   FAppType := 0;
   FAppDefCharset := 0;
   FFullBrk := False;
