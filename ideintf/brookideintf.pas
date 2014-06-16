@@ -18,9 +18,9 @@ unit BrookIDEIntf;
 interface
 
 uses
-  frmBrookNewProject, frmBrookNewBroker, frmBrookActEdit, ProjectIntf,
-  NewItemIntf, LazIDEIntf, Classes, SysUtils, Controls, ComCtrls, Forms,
-  Dialogs;
+  BrookClasses, frmBrookNewProject, frmBrookNewBroker, frmBrookActEdit,
+  ProjectIntf, NewItemIntf, LazIDEIntf, ProjectResourcesIntf, FormEditingIntf,
+  Classes, SysUtils, Controls, ComCtrls, Forms, Dialogs;
 
 type
   TBrookBrokersFileDescPascalUnit = class;
@@ -106,6 +106,13 @@ type
     FQuiet: Boolean;
   end;
 
+  { TBrookFileDescPascalUnitWithResource }
+
+  TBrookFileDescPascalUnitWithResource = class(TFileDescPascalUnitWithResource)
+  protected
+    function GetResourceType: TResourceType; override;
+  end;
+
   { TBrookBrokersFileDescPascalUnit }
 
   TBrookBrokersFileDescPascalUnit = class(TBrookFileDescPascalUnit)
@@ -143,6 +150,16 @@ type
     property ActDefault: Boolean read FActDefault write FActDefault;
   end;
 
+  { TBrookDataModuleFileDescPascalUnitWithResource }
+
+  TBrookDataModuleFileDescPascalUnitWithResource = class(TBrookFileDescPascalUnitWithResource)
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
 const
   le = LineEnding;
 
@@ -162,6 +179,8 @@ resourcestring
   SBrookBrokersDesc = 'Create a brokers unit.';
   SBrookActionName = 'Action unit';
   SBrookActionDesc = 'Create an action unit.';
+  SBrookDataModuleName = 'Data module';
+  SBrookDataModuleDesc = 'Create a new unit with a data module.';
 
 procedure Register;
 function BrookNewProjectDlg: TfrBrookNewProject;
@@ -202,10 +221,13 @@ begin
     SBrookIDEItemCategoryName);
   RegisterProjectDescriptor(TBrookProjectDescriptor.Create,
     SBrookIDEItemCategoryName);
-  RegisterProjectFileDescriptor(TBrookBrokersFileDescPascalUnit.Create,
+  RegisterProjectFileDescriptor(TBrookDataModuleFileDescPascalUnitWithResource.Create,
     SBrookIDEItemCategoryName);
   RegisterProjectFileDescriptor(TBrookActionFileDescPascalUnit.Create,
     SBrookIDEItemCategoryName);
+  RegisterProjectFileDescriptor(TBrookBrokersFileDescPascalUnit.Create,
+    SBrookIDEItemCategoryName);
+  FormEditingHook.RegisterDesignerBaseClass(TBrookDataModule);
 end;
 
 function BrookNewProjectDlg: TfrBrookNewProject;
@@ -616,6 +638,17 @@ begin
   Result := SBrookAppDesc;
 end;
 
+{ TBrookFileDescPascalUnitWithResource }
+
+function TBrookFileDescPascalUnitWithResource.GetResourceType: TResourceType;
+begin
+  if LazarusIDE.ActiveProject.Resources is TAbstractProjectResources then
+    Result := TAbstractProjectResources(
+      LazarusIDE.ActiveProject.Resources).ResourceType
+  else
+    Result := inherited GetResourceType;
+end;
+
 { TBrookBrokersFileDescPascalUnit }
 
 constructor TBrookBrokersFileDescPascalUnit.Create;
@@ -836,6 +869,35 @@ end;
 function TBrookActionFileDescPascalUnit.GetLocalizedDescription: string;
 begin
   Result := SBrookActionDesc;
+end;
+
+{ TBrookDataModuleFileDescPascalUnitWithResource }
+
+constructor TBrookDataModuleFileDescPascalUnitWithResource.Create;
+begin
+  inherited Create;
+  Name := SBrookDataModuleName;
+  RequiredPackages := 'BrookRT';
+  ResourceClass := TBrookDataModule;
+  UseCreateFormStatements := True;
+end;
+
+function TBrookDataModuleFileDescPascalUnitWithResource.GetInterfaceUsesSection: string;
+begin
+  Result := 'BrookClasses';
+  if GetResourceType = rtLRS then
+    Result := Result + ', LResources';
+  Result += ', Classes, SysUtils';
+end;
+
+function TBrookDataModuleFileDescPascalUnitWithResource.GetLocalizedName: string;
+begin
+  Result := SBrookDataModuleName;
+end;
+
+function TBrookDataModuleFileDescPascalUnitWithResource.GetLocalizedDescription: string;
+begin
+  Result := SBrookDataModuleDesc;
 end;
 
 finalization
