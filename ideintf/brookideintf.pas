@@ -18,9 +18,9 @@ unit BrookIDEIntf;
 interface
 
 uses
-  BrookClasses, frmBrookNewProject, frmBrookNewBroker, frmBrookActEdit,
-  ProjectIntf, NewItemIntf, LazIDEIntf, ProjectResourcesIntf, FormEditingIntf,
-  Classes, SysUtils, Controls, ComCtrls, Forms, Dialogs;
+  BrookClasses, frmBrookChooseProjectType, frmBrookNewProject, frmBrookNewBroker,
+  frmBrookActEdit, ProjectIntf, NewItemIntf, LazIDEIntf, ProjectResourcesIntf,
+  FormEditingIntf, Classes, SysUtils, Controls, ComCtrls, Forms, Dialogs;
 
 type
   TBrookBrokersFileDescPascalUnit = class;
@@ -28,12 +28,17 @@ type
   { TBrookCustomSimpleCGIProjectDescriptor }
 
   TBrookCustomSimpleCGIProjectDescriptor = class(TProjectDescriptor)
+  private
+    FProjectType: Integer;
+  protected
+    function DoInitDescriptor: TModalResult; override;
   public
     constructor Create; override;
     function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
+    property ProjectType: Integer read FProjectType write FProjectType; // 0 - runtime, 1 - designtime
   end;
 
   { TBrookSimpleCGIProjectDescriptor }
@@ -90,13 +95,17 @@ type
   { TBrookProjectDescriptor }
 
   TBrookProjectDescriptor = class(TProjectDescriptor)
+  private
+    FProjectType: Integer;
+  protected
+    function DoInitDescriptor: TModalResult; override;
   public
     constructor Create; override;
     function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function DoInitDescriptor: TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
+    property ProjectType: Integer read FProjectType write FProjectType;
   end;
 
   { TBrookFileDescPascalUnit }
@@ -183,7 +192,7 @@ resourcestring
   SBrookDataModuleDesc = 'Create a new unit with a data module.';
 
 procedure Register;
-function BrookNewProjectDlg: TfrBrookNewProject;
+function BrookNewProjectDlg(const AProjectType: Integer): TfrBrookNewProject;
 function BrookGetExpertsConfigPath: string;
 function BrookGetExpertsConfigFileName: string;
 
@@ -230,10 +239,10 @@ begin
   FormEditingHook.RegisterDesignerBaseClass(TBrookDataModule);
 end;
 
-function BrookNewProjectDlg: TfrBrookNewProject;
+function BrookNewProjectDlg(const AProjectType: Integer): TfrBrookNewProject;
 begin
   if not Assigned(_NewProjectDlg) then
-    _NewProjectDlg := TfrBrookNewProject.Create(Application);
+    _NewProjectDlg := TfrBrookNewProject.Create(Application, AProjectType);
   Result := _NewProjectDlg;
 end;
 
@@ -270,23 +279,42 @@ function TBrookCustomSimpleCGIProjectDescriptor.CreateStartFiles(
 var
   VActItem: TBrookActionFileDescPascalUnit;
 begin
-  VActItem := ProjectFileDescriptors.FindByName(
-    SBrookActionName) as TBrookActionFileDescPascalUnit;
-  VActItem.FQuiet := True;
-  VActItem.ActName := 'MyAction';
-  VActItem.ActPattern := '*';
-  VActItem.ActDefault := False;
-  LazarusIDE.DoNewEditorFile(VActItem, '', '',
-    [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
+  case FProjectType of
+    0:
+      begin
+        VActItem := ProjectFileDescriptors.FindByName(
+          SBrookActionName) as TBrookActionFileDescPascalUnit;
+        VActItem.FQuiet := True;
+        VActItem.ActName := 'MyAction';
+        VActItem.ActPattern := '*';
+        VActItem.ActDefault := False;
+        LazarusIDE.DoNewEditorFile(VActItem, '', '',
+          [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
+      end;
+    1:
+      LazarusIDE.DoNewEditorFile(ProjectFileDescriptors.FindByName(
+        SBrookDataModuleName), '', '', [nfIsPartOfProject, nfOpenInEditor,
+        nfCreateDefaultSrc]);
+  end;
   Result := mrOK;
+end;
+
+function TBrookCustomSimpleCGIProjectDescriptor.DoInitDescriptor: TModalResult;
+begin
+  FProjectType := TfrBrookChooseProjectType.Execute;
+  if FProjectType > -1 then
+    Result := mrOK
+  else
+    Result := mrCancel;
 end;
 
 function TBrookCustomSimpleCGIProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 begin
   AProject.AddPackageDependency('BrookRT');
-  AProject.Flags := AProject.Flags -
-    [pfMainUnitHasCreateFormStatements, pfRunnable];
+  AProject.Flags := AProject.Flags - [pfRunnable];
+  if FProjectType = 0 then
+    AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
   AProject.LazCompilerOptions.Win32GraphicApp := False;
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   AProject.SessionStorage := pssInProjectInfo;
@@ -315,9 +343,15 @@ end;
 
 function TBrookSimpleCGIProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
+var
+  VApp: string;
 begin
   CreateProjectFile(AProject);
   Result := inherited InitProject(AProject);
+  case FProjectType of
+    0: VApp := 'BrookApp.Run';
+    1: VApp := 'Application.Run';
+  end;
   AProject.MainFile.SetSourceText(
     'program cgi1;'+le+
     le+
@@ -330,7 +364,7 @@ begin
     '  BrookApplication, Brokers;'+le+
     le+
     'begin'+le+
-    '  BrookApp.Run;'+le+
+    '  '+VApp+';'+le+
     'end.');
   AProject.LazCompilerOptions.TargetFileName := 'cgi1.bf';
 end;
@@ -420,10 +454,16 @@ end;
 
 function TBrookHttpAppProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
+var
+  VApp: string;
 begin
   Result := inherited InitProject(AProject);
   AProject.Flags := AProject.Flags + [pfRunnable];
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := True;
+  case FProjectType of
+    0: VApp := 'BrookApp.Run';
+    1: VApp := 'Application.Run';
+  end;
   AProject.MainFile.SetSourceText(
     'program project1;'+le+
     le+
@@ -436,7 +476,7 @@ begin
     '  BrookApplication, Brokers;'+le+
     le+
     'begin'+le+
-    '  BrookApp.Run;'+le+
+    '  '+VApp+';'+le+
     'end.');
   AProject.LazCompilerOptions.TargetFileName := 'project1';
 end;
@@ -533,9 +573,9 @@ var
   VActItem: TBrookActionFileDescPascalUnit;
   VBrkItem: TBrookBrokersFileDescPascalUnit;
 begin
-  VDlg := BrookNewProjectDlg;
-  VActItem := ProjectFileDescriptors.FindByName(
-    SBrookActionName) as TBrookActionFileDescPascalUnit;
+  VDlg := BrookNewProjectDlg(FProjectType);
+  VActItem := ProjectFileDescriptors.FindByName(SBrookActionName) as
+    TBrookActionFileDescPascalUnit;
   for I := 0 to Pred(VDlg.lvActions.Items.Count) do
   begin
     VActItem.FQuiet := True;
@@ -546,6 +586,10 @@ begin
     LazarusIDE.DoNewEditorFile(VActItem, '', '',
       [nfIsPartOfProject, nfOpenInEditor, nfCreateDefaultSrc]);
   end;
+  if FProjectType = 1 then
+    LazarusIDE.DoNewEditorFile(ProjectFileDescriptors.FindByName(
+      SBrookDataModuleName), '', '', [nfIsPartOfProject, nfOpenInEditor,
+      nfCreateDefaultSrc]);
   VBrkItem := ProjectFileDescriptors.FindByName(
     SBrookBrokersName) as TBrookBrokersFileDescPascalUnit;
   VBrkItem.FQuiet := True;
@@ -573,7 +617,10 @@ end;
 
 function TBrookProjectDescriptor.DoInitDescriptor: TModalResult;
 begin
-  Result := BrookNewProjectDlg.ShowModal;
+  FProjectType := TfrBrookChooseProjectType.Execute;
+  if FProjectType = -1 then
+    Exit(mrCancel);
+  Result := BrookNewProjectDlg(FProjectType).ShowModal;
   if Result <> mrOK then
     BrookFreeNewProjectDlg;
 end;
@@ -581,16 +628,23 @@ end;
 function TBrookProjectDescriptor.InitProject(
   AProject: TLazProject): TModalResult;
 var
-  S: string;
+  S, VApp: string;
   VDlg: TfrBrookNewProject;
   VProject: TLazProjectFile;
 begin
-  VDlg := BrookNewProjectDlg;
+  VDlg := BrookNewProjectDlg(FProjectType);
   VProject := AProject.CreateProjectFile(VDlg.edAppName.Text + '.lpr');
   VProject.IsPartOfProject := True;
   AProject.AddFile(VProject, False);
   AProject.AddPackageDependency('BrookRT');
-  AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
+  case FProjectType of
+    0:
+      begin
+        AProject.Flags := AProject.Flags - [pfMainUnitHasCreateFormStatements];
+        VApp := 'BrookApp.Run';
+      end;
+    1: VApp := 'Application.Run';
+  end;
   AProject.LazCompilerOptions.TargetFileName := VDlg.edAppName.Text;
   AProject.LazCompilerOptions.TargetFilenameApplyConventions := False;
   AProject.LazCompilerOptions.Win32GraphicApp := False;
@@ -622,7 +676,7 @@ begin
     '  BrookApplication, Brokers;'+le+
     le+
     'begin'+le+
-    '  BrookApp.Run;'+le+
+    '  '+VApp+';'+le+
     'end.';
   AProject.MainFile.SetSourceText(S);
   Result := mrOK;
@@ -705,7 +759,7 @@ begin
       0: VCharset := 'BROOK_HTTP_CHARSET_UTF_8';
       1: VCharset := 'BROOK_HTTP_CHARSET_ISO_8859_1';
     end;
-    VDlg := BrookNewProjectDlg;
+    VDlg := BrookNewProjectDlg(0);
     Result :=
     'unit '+ASourceName+';'+le+
     le+

@@ -73,12 +73,15 @@ type
     procedure pcWizardChanging(Sender: TObject; var AllowChange: Boolean);
     procedure tsFinishShow(Sender: TObject);
   private
+    FProjectType: Integer;
     class var FInstante: TfrBrookNewProject;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent;
+      const AProjectType: Integer); reintroduce;
     procedure ValidateData(const AName, APattern: string;
       const ADefault: Boolean);
     class property Instante: TfrBrookNewProject read FInstante;
+    property ProjectType: Integer read FProjectType write FProjectType;
   end;
 
 procedure OnlyAlphaNumeric(var Key: Char);
@@ -96,11 +99,13 @@ begin
     Key := #0;
 end;
 
-constructor TfrBrookNewProject.Create(AOwner: TComponent);
+constructor TfrBrookNewProject.Create(AOwner: TComponent;
+  const AProjectType: Integer);
 begin
   inherited Create(AOwner);
   xml.FileName := BrookGetExpertsConfigFileName;
   FInstante := Self;
+  FProjectType := AProjectType;
 end;
 
 procedure TfrBrookNewProject.btNextClick(Sender: TObject);
@@ -255,7 +260,7 @@ begin
         end;
       end;
     1:
-      if lvActions.Items.Count = 0 then
+      if (FProjectType <> 1{designtime}) and (lvActions.Items.Count = 0) then
       begin
         ShowMessage('Please add at least one action.');
         Exit;
