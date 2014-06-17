@@ -57,7 +57,7 @@
         <Loaded Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\..\brokers.pas"/>
+        <Filename Value="..\..\..\brokers.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="brokers"/>
         <UsageCount Value="20"/>
@@ -72,7 +72,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="..\.."/>
+      <OtherUnitFiles Value="..\..\.."/>
     </SearchPaths>
     <Other>
       <CompilerMessages>
