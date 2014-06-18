@@ -36,7 +36,9 @@ type
     FConfiguration: string;
     FTarget: TObject;
     FClassChecking: Boolean;
-    function GetValues(AName: string): string;
+    function GetParam(const AName: string): string;
+    function GetParams: TStrings;
+    procedure SetParam(const AName: string; const AValue: string);
   public
     { Creates an instance of a @link(TBrookConfigurator) class. }
     constructor Create;
@@ -75,8 +77,11 @@ type
     property Configuration: string read FConfiguration write FConfiguration;
     { Defines the object to be configured. }
     property Target: TObject read FTarget write FTarget;
-    { Devolve o valor de um parâmetro. }
-    property Values[AName: string]: string read GetValues; default;
+    { Handles a string list of params of a configuration.  }
+    property Param[const AName: string]: string read GetParam
+      write SetParam; default;
+    { Handles the params of a configuration. }
+    property Params: TStrings read GetParams;
     { Enables the class name checking, i.e., if the class of the configuring
       object is a 'TObject1', the following string will be informed as
       configuration:
@@ -139,15 +144,25 @@ begin
   FCfg.Clear;
 end;
 
-function TBrookConfigurator.GetValues(AName: string): string;
+function TBrookConfigurator.GetParam(const AName: string): string;
 begin
   Result := FCfg.Values[AName];
+end;
+
+function TBrookConfigurator.GetParams: TStrings;
+begin
+  Result := FCfg;
+end;
+
+procedure TBrookConfigurator.SetParam(const AName: string; const AValue: string);
+begin
+  FCfg.Values[AName] := AValue;
 end;
 
 procedure TBrookConfigurator.Configure;
 var
   I: Integer;
-  VValue, VPropName, VToken, VClassName: string;
+  VParam, VPropName, VToken, VClassName: string;
 begin
   if not Assigned(FTarget) then
     Exit;
@@ -163,9 +178,9 @@ begin
       VToken := Copy(VPropName, 1, 1);
       if (VToken = PO) or (VToken = ES) then
         Continue;
-      VValue := FCfg.Values[VClassName + DT + VPropName];
+      VParam := FCfg.Values[VClassName + DT + VPropName];
       if SameText(VClassName, FTarget.ClassName) then
-        BrookStringToObject(FTarget, VPropName, VValue);
+        BrookStringToObject(FTarget, VPropName, VParam);
     end
   else
     for I := 0 to Pred(FCfg.Count) do
@@ -174,8 +189,8 @@ begin
       VToken := Copy(VPropName, 1, 1);
       if (VToken = PO) or (VToken = ES) then
         Continue;
-      VValue := FCfg.Values[VPropName];
-      BrookStringToObject(FTarget, VPropName, VValue);
+      VParam := FCfg.Values[VPropName];
+      BrookStringToObject(FTarget, VPropName, VParam);
     end;
 end;
 
