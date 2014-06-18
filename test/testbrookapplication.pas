@@ -5,13 +5,13 @@ unit testbrookapplication;
 interface
 
 uses
-  BrookApplication, BrookClasses, fpcunit, testregistry;
+  BrookApplication, BrookClasses, fpcunit, testregistry, Classes;
 
 type
 
   { TApp }
 
-  TApp = class
+  TApp = class(TComponent)
   private
     FTest: Boolean;
   public
@@ -27,6 +27,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure CreateForm(AInstanceClass: TComponentClass; out AReference);
     function GetTerminated: Boolean;
     procedure Terminate;
     function Instance: TObject;
@@ -37,6 +38,7 @@ type
 
   TTestBrookApplication = class(TTestCase)
   published
+    procedure TestCreateForm;
     procedure TestInstance;
     procedure TestRun;
     procedure TestTerminate;
@@ -49,13 +51,21 @@ implementation
 
 constructor TBrokerApp.Create;
 begin
-  FApp := TApp.Create;
+  FApp := TApp.Create(nil);
 end;
 
 destructor TBrokerApp.Destroy;
 begin
   FApp.Free;
   inherited Destroy;
+end;
+
+procedure TBrokerApp.CreateForm(AInstanceClass: TComponentClass; out AReference);
+var
+  r: TComponent absolute AReference;
+begin
+  r := AInstanceClass.Create(nil);
+  FApp.InsertComponent(r);
 end;
 
 function TBrokerApp.GetTerminated: Boolean;
@@ -79,6 +89,11 @@ begin
 end;
 
 { TTestBrookApplication }
+
+procedure TTestBrookApplication.TestCreateForm;
+begin
+  AssertTrue(Assigned(TApp(BrookApp.Instance).FindComponent('MyComp1')));
+end;
 
 procedure TTestBrookApplication.TestInstance;
 begin
@@ -104,8 +119,17 @@ begin
   AssertTrue(BrookApp.Terminated);
 end;
 
+type
+  TMyComp = class(TComponent)
+  end;
+
+var
+  MyComp: TMyComp;
+
 initialization
   BrookRegisterApp(TBrokerApp.Create);
+  BrookApp.CreateForm(TMyComp, MyComp);
+  MyComp.Name := 'MyComp1';
   RegisterTest(TTestBrookApplication);
 
 end.
