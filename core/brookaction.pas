@@ -225,7 +225,7 @@ initialization
     { Redirects to an URL informing the root URL. }
     procedure Redirect(const AUrl: string; const AUseRootUrl: Boolean); overload;
     { Redirects to an URL informing the (302, 307) status code and the
-      ScriptName. }
+      @code(ScriptName). }
     procedure Redirect(const AUrl: string; const AUseRootUrl: Boolean;
       const AStatusCode: Word); overload;
     { Raises a message for action exceptions. }
@@ -264,13 +264,13 @@ initialization
     procedure Write(AStream: TStream); overload;
     { Writes a formatted string. }
     procedure Write(const AFmt: string; const AArgs: array of const); overload;
-    { The list of files coming from a request called by the POST method. }
+    { Handles a file list of fields of a form. }
     property Files: TBrookUploadedFiles read FFiles;
-    { The list of variables coming from a request called by the POST method. }
+    { Handles a string list of fields of a form. }
     property Fields: TStrings read FFields;
-    { The list of variables coming from a request called by the GET method. }
+    { Handles a string list of the Query_String parameters of a URL. }
     property Params: TStrings read FParams;
-    { The list of variables received from a parametrized URL. }
+    { Handles a string list of variables from a parametrized URL. }
     property Values: TStrings read FValues;
     { Returns the HTTP request method. }
     property Method: string read GetMethod;
