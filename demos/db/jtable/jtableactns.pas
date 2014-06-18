@@ -488,9 +488,9 @@ var
   I: Integer;
   N, V: string;
 begin
-  for I := 0 to Pred(Values.Count) do
+  for I := 0 to Pred(Variables.Count) do
   begin
-    Values.GetNameValue(I, N, V);
+    Variables.GetNameValue(I, N, V);
     Fields.Values[N] := V;
   end;
   inherited Request(ARequest, AResponse);
@@ -522,11 +522,11 @@ var
 begin
   VEntities := T1.TEntities.Create;
   try
-    BrookStringsToObject(Entity, Values);
+    BrookStringsToObject(Entity, Variables);
     GetParams(Opf.Params);
-    for I := 0 to Pred(Values.Count) do
+    for I := 0 to Pred(Variables.Count) do
     begin
-      Values.GetNameValue(I, N, V);
+      Variables.GetNameValue(I, N, V);
       if Opf.Table.IgnoredFields.IndexOf(N) > -1 then
         Continue;
       Params.Add(N + '=' + V);

@@ -36,8 +36,14 @@ type
     FParams: TStrings;
     FTheRequest: TBrookRequest;
     FTheResponse: TBrookResponse;
-    FValues: TStrings;
+    FVariables: TStrings;
+    function GetField(const AName: string): string;
     function GetMethod: string;
+    function GetParam(const AName: string): string;
+    function GetVariable(const AName: string): string;
+    procedure SetField(const AName: string; const AValue: string);
+    procedure SetParam(const AName: string; const AValue: string);
+    procedure SetVariable(const AName: string; const AValue: string);
   protected
     property TheRequest: TBrookRequest read FTheRequest;
     property TheResponse: TBrookResponse read FTheResponse;
@@ -63,9 +69,11 @@ type
          @code(TMyAction.Register('/foo/:myvar');)
 
          Value of a variable @code("myvar") can be read from the property
-         @link(Values), e.g.:
+         @link(Variables) or @link(Variable), e.g.:
 
-         @code(Write(Values.Values['myvar']);)
+         @code(Write(Variables.Values['myvar']);)
+
+         @code(Write(Variable['myvar']);)
 
          Any number of variables can be combined:
 
@@ -83,7 +91,7 @@ type
          http://localhost/cgi-bin/cgi1/home/dir/file @br
          http://localhost/cgi-bin/cgi1/home/dir/subdir/file etc.
 
-         Variable @code(Values.Values['path']) will receive @code('file'),
+         Variable @code(Variables.Values['path']) will receive @code('file'),
          @code('dir/file') or @code('dir/subdir/file') correspondingly.
 
          You can also add static text after variable part:
@@ -183,7 +191,7 @@ initialization
     { Get an object with the params coming from a @code(QUERY_STRING). }
     procedure GetParams(AObject: TObject);
     { Get an object with the variables coming from an URL. }
-    procedure GetValues(AObject: TObject);
+    procedure GetVariables(AObject: TObject);
     { Creates an URL for action. }
     function UrlFor(AActionClass: TBrookActionClass): string; overload;
     { Creates an URL for an action informing an array of parameters. Exemple:
@@ -264,6 +272,14 @@ initialization
     procedure Write(AStream: TStream); overload;
     { Writes a formatted string. }
     procedure Write(const AFmt: string; const AArgs: array of const); overload;
+    { Handles the fields of a form. }
+    property Field[const AName: string]: string read GetField
+      write SetField; default;
+    { Handles the Query_String parameters of a URL. }
+    property Param[const AName: string]: string read GetParam write SetParam;
+    { Handles variables from a parametrized URL. }
+    property Variable[const AName: string]: string read GetVariable
+      write SetVariable;
     { Handles a file list of fields of a form. }
     property Files: TBrookUploadedFiles read FFiles;
     { Handles a string list of fields of a form. }
@@ -271,7 +287,7 @@ initialization
     { Handles a string list of the Query_String parameters of a URL. }
     property Params: TStrings read FParams;
     { Handles a string list of variables from a parametrized URL. }
-    property Values: TStrings read FValues;
+    property Variables: TStrings read FVariables;
     { Returns the HTTP request method. }
     property Method: string read GetMethod;
   end;
@@ -307,7 +323,7 @@ uses
 constructor TBrookAction.Create;
 begin
   inherited Create;
-  FValues := TStringList.Create;
+  FVariables := TStringList.Create;
 end;
 
 constructor TBrookAction.Create(ARequest: TBrookRequest;
@@ -323,13 +339,43 @@ end;
 
 destructor TBrookAction.Destroy;
 begin
-  FValues.Free;
+  FVariables.Free;
   inherited Destroy;
 end;
 
 function TBrookAction.GetMethod: string;
 begin
   Result := FTheRequest.Method;
+end;
+
+function TBrookAction.GetField(const AName: string): string;
+begin
+  Result := FFields.Values[AName];
+end;
+
+function TBrookAction.GetParam(const AName: string): string;
+begin
+  Result := FParams.Values[AName];
+end;
+
+function TBrookAction.GetVariable(const AName: string): string;
+begin
+  Result := FVariables.Values[AName];
+end;
+
+procedure TBrookAction.SetField(const AName: string; const AValue: string);
+begin
+  FFields.Values[AName] := AValue;
+end;
+
+procedure TBrookAction.SetParam(const AName: string; const AValue: string);
+begin
+  FParams.Values[AName] := AValue;
+end;
+
+procedure TBrookAction.SetVariable(const AName: string; const AValue: string);
+begin
+  FVariables.Values[AName] := AValue;
 end;
 
 procedure TBrookAction.DoRequest(ARequest: TBrookRequest;
@@ -348,9 +394,9 @@ begin
   BrookSafeStringsToObject(AObject, FTheRequest.QueryFields);
 end;
 
-procedure TBrookAction.GetValues(AObject: TObject);
+procedure TBrookAction.GetVariables(AObject: TObject);
 begin
-  BrookSafeStringsToObject(AObject, FValues);
+  BrookSafeStringsToObject(AObject, FVariables);
 end;
 
 class procedure TBrookAction.Register(const APattern: string;

@@ -64,13 +64,16 @@ type
   TTestBrookAction = class(TTestCase)
   private
     Fac: TBrookAction;
-    Fvals: TStrings;
+    Fvars: TStrings;
     procedure AfterExecuteAction({%H-}ASender: TObject; AAction: TBrookAction;
       {%H-}ARequest: TBrookRequest;{%H-}AResponse: TBrookResponse;
       {%H-}ARoute: TBrookRoute;{%H-}var AHandled: Boolean);
+    function Getv(const AName: string): string;
+    procedure Setv(const AName: string; const AValue: string);
   public
     constructor Create; override;
     destructor Destroy; override;
+    property v[const AName: string]: string read Getv write Setv;
   published
     procedure TestRegister;
     procedure TestGetPath;
@@ -78,16 +81,19 @@ type
     procedure TestRequest;
     procedure TestGetFields;
     procedure TestGetParams;
-    procedure TestGetValues;
+    procedure TestGetVariables;
     procedure TestUrlFor;
     procedure TestWrite;
     procedure TestRedirect;
     procedure TestRender;
     procedure TestClear;
     procedure TestExists;
+    procedure TestField;
+    procedure TestParam;
+    procedure TestVariable;
     procedure TestFields;
     procedure TestParams;
-    procedure TestValues;
+    procedure TestVariables;
     procedure TestSetCookie;
     procedure TestGetCookie;
     procedure TestDeleteCookie;
@@ -130,12 +136,12 @@ end;
 constructor TTestBrookAction.Create;
 begin
   inherited Create;
-  Fvals := TStringList.Create;
+  Fvars := TStringList.Create;
 end;
 
 destructor TTestBrookAction.Destroy;
 begin
-  Fvals.Free;
+  Fvars.Free;
   inherited Destroy;
 end;
 
@@ -144,7 +150,17 @@ procedure TTestBrookAction.AfterExecuteAction(ASender: TObject;
   ARoute: TBrookRoute; var AHandled: Boolean);
 begin
   Fac := AAction;
-  Fvals.Assign(Fac.Values);
+  Fvars.Assign(Fac.Variables);
+end;
+
+function TTestBrookAction.Getv(const AName: string): string;
+begin
+  Result := Fvars.Values[AName];
+end;
+
+procedure TTestBrookAction.Setv(const AName: string; const AValue: string);
+begin
+  Fvars.Values[AName] := AValue;
 end;
 
 procedure TTestBrookAction.TestRegister;
@@ -302,7 +318,7 @@ begin
   end;
 end;
 
-procedure TTestBrookAction.TestGetValues;
+procedure TTestBrookAction.TestGetVariables;
 var
   o: TMyType;
   dt: TDateTime;
@@ -312,17 +328,17 @@ begin
   o := TMyType.Create;
   try
     dt := EncodeDateTime(2000, 12, 31, 23, 59, 59, 999);
-    a.Values.Add('MyChar=A');
-    a.Values.Add('MyString=ABC123');
-    a.Values.Add('MyInteger=123');
-    a.Values.Add('MyInt64=456');
-    a.Values.Add('MyFloat=' + FloatToStr(123.456));
-    a.Values.Add('MyCurrency=' + CurrToStr(456.789));
-    a.Values.Add('MyBoolean=on');
-    a.Values.Add('MyDateTime=' + DateTimeToStr(dt));
-    a.Values.Add('MyEnum=enum2');
-    a.Values.Add('MySet=[enum1,enum3]');
-    a.GetValues(o);
+    a.Variables.Add('MyChar=A');
+    a.Variables.Add('MyString=ABC123');
+    a.Variables.Add('MyInteger=123');
+    a.Variables.Add('MyInt64=456');
+    a.Variables.Add('MyFloat=' + FloatToStr(123.456));
+    a.Variables.Add('MyCurrency=' + CurrToStr(456.789));
+    a.Variables.Add('MyBoolean=on');
+    a.Variables.Add('MyDateTime=' + DateTimeToStr(dt));
+    a.Variables.Add('MyEnum=enum2');
+    a.Variables.Add('MySet=[enum1,enum3]');
+    a.GetVariables(o);
     AssertEquals(o.MyChar, 'A');
     AssertEquals(o.MyString, 'ABC123');
     AssertEquals(o.MyInteger, 123);
@@ -495,6 +511,78 @@ begin
   end;
 end;
 
+procedure TTestBrookAction.TestField;
+var
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.ContentFields.Values['Foo'] := 'Value';
+    AssertEquals(a['Foo'], 'Value');
+    a['Foo'] := 'ABC123';
+    AssertEquals(a['Foo'], 'ABC123');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestParam;
+var
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.QueryFields.Values['Foo'] := 'Value';
+    AssertEquals(a.Param['Foo'], 'Value');
+    a.Param['Foo'] := 'ABC123';
+    AssertEquals(a.Param['Foo'], 'ABC123');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestVariable;
+var
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+  rt: TBrookRouter;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  try
+    TBrookRouter.Service.Routes.Clear;
+    TAction1.Register('/path/:var');
+    rq.PathInfo := '/path/ABC123';
+    rt := TBrookRouter.Service;
+    rt.AfterExecuteAction := @AfterExecuteAction;
+    rt.Route(rq, rs);
+    AssertEquals(v['var'], 'ABC123');
+    v['var'] := 'ABC123';
+    AssertEquals(v['var'], 'ABC123');
+  finally
+    rs.Free;
+    rq.Free;
+  end;
+end;
+
 procedure TTestBrookAction.TestFields;
 var
   a: TAction1;
@@ -537,7 +625,7 @@ begin
   end;
 end;
 
-procedure TTestBrookAction.TestValues;
+procedure TTestBrookAction.TestVariables;
 var
   rq: TBrookRequest;
   rs: TBrookResponse;
@@ -554,7 +642,7 @@ begin
     rt := TBrookRouter.Service;
     rt.AfterExecuteAction := @AfterExecuteAction;
     rt.Route(rq, rs);
-    AssertEquals(Fvals.Values['var'], 'ABC123');
+    AssertEquals(Fvars.Values['var'], 'ABC123');
   finally
     rs.Free;
     rq.Free;

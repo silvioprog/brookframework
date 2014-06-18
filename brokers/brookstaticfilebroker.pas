@@ -106,7 +106,7 @@ begin
   VPathInfo := TheRequest.PathInfo;
   VLastSlashPos := RPos('/', VPathInfo);
   System.Delete(VPathInfo, VLastSlashPos + 1, Length(VPathInfo) - VLastSlashPos);
-  VFilePath := RequestDirectoryMap[VPathInfo] + Values.Values['file'];
+  VFilePath := RequestDirectoryMap[VPathInfo] + Variables.Values['file'];
   if FileExists(VFilePath) then
   begin
     VContentType := MimeTypes.GetMimeType(ExtractFileExt(VFilePath));

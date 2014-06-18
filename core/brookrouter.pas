@@ -387,9 +387,9 @@ var
 begin
   if Assigned(FBeforeExecuteAction) then
     FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
-  AAction.Values.Clear;
+  AAction.Variables.Clear;
   for I := 0 to High(ANames) do
-    AAction.Values.Add(ANames[I] + EQ + AValues[I]);
+    AAction.Variables.Add(ANames[I] + EQ + AValues[I]);
   if not VHandled then
     AAction.DoRequest(ARequest, AResponse);
   if Assigned(FAfterExecuteAction) then
