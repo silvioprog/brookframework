@@ -264,7 +264,7 @@ const
   BROOK_HTTP_RESPONSE_TEMPLATE_INTERNAL_SERVER_ERROR =
     '<html><head><title>Internal server error</title></head><body>' +
     '<h1>500 - Internal server error</h1>' +
-    '<p style="color: red;" >Error: @error</p>' +
+    '<p style="color: red;" >@error</p>' +
     '</body></html>';
 
 var
