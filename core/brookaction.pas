@@ -273,8 +273,7 @@ initialization
     { Writes a formatted string. }
     procedure Write(const AFmt: string; const AArgs: array of const); overload;
     { Handles the fields of a form. }
-    property Field[const AName: string]: string read GetField
-      write SetField; default;
+    property Field[const AName: string]: string read GetField write SetField;
     { Handles the Query_String parameters of a URL. }
     property Param[const AName: string]: string read GetParam write SetParam;
     { Handles variables from a parametrized URL. }
