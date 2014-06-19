@@ -50,15 +50,16 @@ type
   PBrookRoute = ^TBrookRoute;
 
   { Is a type to @code(*MatchPattern) event. }
-  TBrookMatchPatternEvent = procedure(ASender: TObject;
+  TBrookMatchPatternEvent = function(ASender: TObject;
     APattern, APathInfo: string; out ARedirect: Boolean;
-    out ANames, AValues: TBrookArrayOfString) of object;
+    out ANames, AValues: TBrookArrayOfString;
+    var AHandled: Boolean): Boolean of object;
   { Defines a pointer to the match pattern event.}
   PBrookMatchPatternEvent = ^TBrookMatchPatternEvent;
 
   { Is a type to @code(*Route) event. }
   TBrookRouteEvent = procedure(ASender: TObject; ARequest: TBrookRequest;
-    AResponse: TBrookResponse) of object;
+    AResponse: TBrookResponse; var AHandled: Boolean) of object;
   { Defines a pointer to the route event.}
   PBrookRouteEvent = ^TBrookRouteEvent;
 
@@ -549,10 +550,15 @@ function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
 
 var
   VCount: Integer;
+  VResult: Boolean;
+  VHandled: Boolean = False;
   VLeftPat, VRightPat, VLeftVal, VRightVal, VVal, VPat, VName: string;
 begin
   if Assigned(FBeforeMatchPattern) then
-    FBeforeMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues);
+    VResult := FBeforeMatchPattern(Self, APattern, APathInfo, ARedirect, ANames,
+      AValues, VHandled);
+  if VHandled then
+    Exit(VResult);
   Result := False;
   ARedirect := False;
   if APattern = ES then
@@ -653,21 +659,25 @@ begin
     end;
   until False;
   if Assigned(FAfterMatchPattern) then
-    FAfterMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues);
+    FAfterMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues,
+      VHandled);
 end;
 
 procedure TBrookRouter.Route(ARequest: TBrookRequest; AResponse: TBrookResponse);
 var
   I, C: Integer;
   PRoute: PBrookRoute;
-  VNames, VValues: TBrookArrayOfString;
   VAct: TBrookAction;
+  VHandled: Boolean = False;
   VActClass: TBrookActionClass = nil;
+  VNames, VValues: TBrookArrayOfString;
   VDefaultActClass: TBrookActionClass = nil;
   VRedirect, VMatchMethod, VMatchPattern: Boolean;
 begin
   if Assigned(FBeforeRoute) then
-    FBeforeRoute(Self, ARequest, AResponse);
+    FBeforeRoute(Self, ARequest, AResponse, VHandled);
+  if VHandled then
+    Exit;
   C := FRoutes.List.Count;
   if C = 0 then
     raise EBrookRouter.Create(Self, SBrookNoRouteRegisteredError);
@@ -727,7 +737,7 @@ begin
         raise EBrookHTTP404.Create(ARequest.PathInfo);
   end;
   if Assigned(FAfterRoute) then
-    FAfterRoute(Self, ARequest, AResponse);
+    FAfterRoute(Self, ARequest, AResponse, VHandled);
   VAct := CreateAction(VActClass, ARequest, AResponse);
   try
     ExecuteAction(VAct, ARequest, AResponse, VNames, VValues, PRoute^);
