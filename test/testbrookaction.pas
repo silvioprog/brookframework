@@ -524,9 +524,9 @@ begin
   a := TAction1.Create(rq, rs);
   try
     rq.ContentFields.Values['Foo'] := 'Value';
-    AssertEquals(a['Foo'], 'Value');
-    a['Foo'] := 'ABC123';
-    AssertEquals(a['Foo'], 'ABC123');
+    AssertEquals(a.Field['Foo'], 'Value');
+    a.Field['Foo'] := 'ABC123';
+    AssertEquals(a.Field['Foo'], 'ABC123');
   finally
     rs.Free;
     rq.Free;
