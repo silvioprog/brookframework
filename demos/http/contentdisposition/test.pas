@@ -36,7 +36,7 @@ var
 begin
   if not FileExists(AFileName) then
     Stop(SBrookFileNotFoundError);
-  TheResponse.ContentType := ES;
+  HttpResponse.ContentType := ES;
   VHeaders := fieldContentType + CO + SP + AContentType + CRLF +
     BROOK_HTTP_HEADER_CONTENT_DISPOSITION + CO + SP + ADispositionType;
   if AFileName <> ES then
@@ -49,17 +49,17 @@ begin
       VHeaders += CRLF + BROOK_HTTP_HEADER_CONTENT_DESCRIPTION +
         AContentDescription;
   end;
-  TheResponse.CustomHeaders.NameValueSeparator := CO;
-  TheResponse.CustomHeaders.Add(VHeaders);
+  HttpResponse.CustomHeaders.NameValueSeparator := CO;
+  HttpResponse.CustomHeaders.Add(VHeaders);
   if FileExists(AFileName) then
   begin
-    TheResponse.ContentStream := TFileStream.Create(AFileName,
+    HttpResponse.ContentStream := TFileStream.Create(AFileName,
       fmOpenRead or fmShareDenyWrite);
     try
-      TheResponse.SendContent;
+      HttpResponse.SendContent;
     finally
-      TheResponse.ContentStream.Free;
-      TheResponse.ContentStream := nil;
+      HttpResponse.ContentStream.Free;
+      HttpResponse.ContentStream := nil;
     end;
   end;
 end;

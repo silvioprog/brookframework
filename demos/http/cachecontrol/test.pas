@@ -22,7 +22,7 @@ implementation
 
 procedure TMyAction.Get;
 begin
-  TheResponse.SetCustomHeader(BROOK_HTTP_HEADER_CACHE_CONTROL,
+  HttpResponse.SetCustomHeader(BROOK_HTTP_HEADER_CACHE_CONTROL,
     BROOK_HTTP_CACHE_CONTROL_PUBLIC + ', ' +
     BROOK_HTTP_CACHE_CONTROL_MAX_AGE + '10');
   Write('<!DOCTYPE HTML>');

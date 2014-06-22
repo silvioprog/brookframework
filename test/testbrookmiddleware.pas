@@ -15,7 +15,6 @@ type
   TAction1 = class(TBrookAction)
   public
     procedure Get; override;
-    property TheResponse;
   end;
 
   { TMiddleware }
@@ -53,7 +52,7 @@ end;
 procedure TMiddleware.Execute(ASender: TObject; AAction: TBrookAction;
   ARoute: TBrookRoute);
 begin
-  FMyContent := Trim(TAction1(AAction).TheResponse.Contents.Text);
+  FMyContent := Trim(TAction1(AAction).HttpResponse.Contents.Text);
   inherited Execute(ASender, AAction, ARoute);
 end;
 

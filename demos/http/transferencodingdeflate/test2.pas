@@ -17,7 +17,7 @@ implementation
 
 procedure TTest2Action.Get;
 begin
-  TheResponse.SetCustomHeader('Content-Encoding', 'deflate');
+  HttpResponse.SetCustomHeader('Content-Encoding', 'deflate');
   Write(ZCompressStr('Hello world! (compressed content)'));
 end;
 

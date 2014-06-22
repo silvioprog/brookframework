@@ -34,8 +34,8 @@ type
     FFields: TStrings;
     FFiles: TBrookUploadedFiles;
     FParams: TStrings;
-    FTheRequest: TBrookRequest;
-    FTheResponse: TBrookResponse;
+    FHttpRequest: TBrookRequest;
+    FHttpResponse: TBrookResponse;
     FVariables: TStrings;
     function GetField(const AName: string): string;
     function GetMethod: string;
@@ -44,9 +44,6 @@ type
     procedure SetField(const AName: string; const AValue: string);
     procedure SetParam(const AName: string; const AValue: string);
     procedure SetVariable(const AName: string; const AValue: string);
-  protected
-    property TheRequest: TBrookRequest read FTheRequest;
-    property TheResponse: TBrookResponse read FTheResponse;
   public
     { Creates an instance of a @link(TBrookAction) class. }
     constructor Create; overload; virtual;
@@ -289,6 +286,11 @@ initialization
     property Variables: TStrings read FVariables;
     { Returns the HTTP request method. }
     property Method: string read GetMethod;
+    { Provides services related to HTTP requests drived to a webserver. }
+    property HttpRequest: TBrookRequest read FHttpRequest;
+    { Provides services related to the HTTP responses comming back from a
+      webserver. }
+    property HttpResponse: TBrookResponse read FHttpResponse;
   end;
 
   { Provides features to handle HTTP requests and responses mapping URIs to
@@ -329,11 +331,11 @@ constructor TBrookAction.Create(ARequest: TBrookRequest;
   AResponse: TBrookResponse);
 begin
   Create;
-  FTheRequest := ARequest;
-  FTheResponse := AResponse;
-  FFields := FTheRequest.ContentFields;
-  FParams := FTheRequest.QueryFields;
-  FFiles := FTheRequest.Files;
+  FHttpRequest := ARequest;
+  FHttpResponse := AResponse;
+  FFields := FHttpRequest.ContentFields;
+  FParams := FHttpRequest.QueryFields;
+  FFiles := FHttpRequest.Files;
 end;
 
 destructor TBrookAction.Destroy;
@@ -344,7 +346,7 @@ end;
 
 function TBrookAction.GetMethod: string;
 begin
-  Result := FTheRequest.Method;
+  Result := FHttpRequest.Method;
 end;
 
 function TBrookAction.GetField(const AName: string): string;
@@ -385,12 +387,12 @@ end;
 
 procedure TBrookAction.GetFields(AObject: TObject);
 begin
-  BrookSafeStringsToObject(AObject, FTheRequest.ContentFields);
+  BrookSafeStringsToObject(AObject, FHttpRequest.ContentFields);
 end;
 
 procedure TBrookAction.GetParams(AObject: TObject);
 begin
-  BrookSafeStringsToObject(AObject, FTheRequest.QueryFields);
+  BrookSafeStringsToObject(AObject, FHttpRequest.QueryFields);
 end;
 
 procedure TBrookAction.GetVariables(AObject: TObject);
@@ -426,7 +428,7 @@ procedure TBrookAction.SetCookie(const AName, AValue: string;
 var
   VCookie: TBrookCookie;
 begin
-  VCookie := FTheResponse.Cookies.Add;
+  VCookie := FHttpResponse.Cookies.Add;
   VCookie.Name := AName;
   VCookie.Value := AValue;
   if AExpires <> NullDate then
@@ -439,7 +441,7 @@ end;
 
 function TBrookAction.GetCookie(const AName: string): string;
 begin
-  Result := FTheRequest.CookieFields.Values[AName];
+  Result := FHttpRequest.CookieFields.Values[AName];
 end;
 
 procedure TBrookAction.DeleteCookie(const AName: string; const APath: string;
@@ -447,7 +449,7 @@ procedure TBrookAction.DeleteCookie(const AName: string; const APath: string;
 var
   VCookie: TBrookCookie;
 begin
-  VCookie := FTheResponse.Cookies.Add;
+  VCookie := FHttpResponse.Cookies.Add;
   VCookie.Name := AName;
   VCookie.Path := APath;
   VCookie.Domain := ADomain;
@@ -491,64 +493,64 @@ end;
 
 procedure TBrookAction.Get;
 begin
-  TBrookRouter.MethodNotAllowed(FTheResponse);
+  TBrookRouter.MethodNotAllowed(FHttpResponse);
 end;
 
 procedure TBrookAction.Post;
 begin
-  TBrookRouter.MethodNotAllowed(FTheResponse);
+  TBrookRouter.MethodNotAllowed(FHttpResponse);
 end;
 
 procedure TBrookAction.Put;
 begin
-  TBrookRouter.MethodNotAllowed(FTheResponse);
+  TBrookRouter.MethodNotAllowed(FHttpResponse);
 end;
 
 procedure TBrookAction.Delete;
 begin
-  TBrookRouter.MethodNotAllowed(FTheResponse);
+  TBrookRouter.MethodNotAllowed(FHttpResponse);
 end;
 
 procedure TBrookAction.Head;
 begin
-  TBrookRouter.MethodNotAllowed(FTheResponse);
+  TBrookRouter.MethodNotAllowed(FHttpResponse);
 end;
 
 procedure TBrookAction.Options;
 begin
-  TBrookRouter.MethodNotAllowed(FTheResponse);
+  TBrookRouter.MethodNotAllowed(FHttpResponse);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string);
 begin
-  FTheResponse.SendRedirect(AUrl);
+  FHttpResponse.SendRedirect(AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string; const AStatusCode: Word);
 begin
-  FTheResponse.Code := AStatusCode;
-  FTheResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
-  FTheResponse.SetCustomHeader('Location', AUrl);
+  FHttpResponse.Code := AStatusCode;
+  FHttpResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
+  FHttpResponse.SetCustomHeader('Location', AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string; const AUseRootUrl: Boolean);
 begin
   if AUseRootUrl then
-    FTheResponse.SendRedirect(TBrookRouter.RootUrl + AUrl)
+    FHttpResponse.SendRedirect(TBrookRouter.RootUrl + AUrl)
   else
-    FTheResponse.SendRedirect(AUrl);
+    FHttpResponse.SendRedirect(AUrl);
 end;
 
 procedure TBrookAction.Redirect(const AUrl: string;
   const AUseRootUrl: Boolean; const AStatusCode: Word);
 begin
-  FTheResponse.Code := AStatusCode;
-  FTheResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
+  FHttpResponse.Code := AStatusCode;
+  FHttpResponse.CodeText := BrookStatusCodeToReasonPhrase(AStatusCode);
   if AUseRootUrl then
-    FTheResponse.SetCustomHeader('Location',
-      TBrookRouter.RootUrl(FTheRequest) + AUrl)
+    FHttpResponse.SetCustomHeader('Location',
+      TBrookRouter.RootUrl(FHttpRequest) + AUrl)
   else
-    FTheResponse.SetCustomHeader('Location', AUrl);
+    FHttpResponse.SetCustomHeader('Location', AUrl);
 end;
 
 procedure TBrookAction.Error(const AMsg: string);
@@ -573,19 +575,19 @@ end;
 
 procedure TBrookAction.Render(const AFileName: TFileName);
 begin
-  FTheResponse.Contents.LoadFromFile(AFileName);
+  FHttpResponse.Contents.LoadFromFile(AFileName);
 end;
 
 procedure TBrookAction.Render(const AFileName: TFileName;
   const AArgs: array of const);
 begin
-  FTheResponse.Contents.LoadFromFile(AFileName);
-  FTheResponse.Contents.Text := Format(FTheResponse.Contents.Text, AArgs);
+  FHttpResponse.Contents.LoadFromFile(AFileName);
+  FHttpResponse.Contents.Text := Format(FHttpResponse.Contents.Text, AArgs);
 end;
 
 procedure TBrookAction.Clear;
 begin
-  FTheResponse.Contents.Clear;
+  FHttpResponse.Contents.Clear;
 end;
 
 function TBrookAction.Exists(const AName: string): Boolean;
@@ -595,7 +597,7 @@ end;
 
 procedure TBrookAction.Write(const AString: string);
 begin
-  FTheResponse.Contents.Add(AString);
+  FHttpResponse.Contents.Add(AString);
 end;
 
 procedure TBrookAction.Write(const ABoolean: Boolean);
@@ -615,23 +617,23 @@ end;
 
 procedure TBrookAction.Write(AObject: TObject);
 begin
-  BrookObjectToStrings(AObject, FTheResponse.Contents);
+  BrookObjectToStrings(AObject, FHttpResponse.Contents);
 end;
 
 procedure TBrookAction.Write(AObject: TObject; const AIgnoredProps: TStrings);
 begin
-  BrookObjectToStrings(AObject, FTheResponse.Contents, AIgnoredProps);
+  BrookObjectToStrings(AObject, FHttpResponse.Contents, AIgnoredProps);
 end;
 
 procedure TBrookAction.Write(AObject: TObject;
   const AIgnoredProps: array of string);
 begin
-  BrookObjectToStrings(AObject, FTheResponse.Contents, AIgnoredProps);
+  BrookObjectToStrings(AObject, FHttpResponse.Contents, AIgnoredProps);
 end;
 
 procedure TBrookAction.Write(AStream: TStream);
 begin
-  FTheResponse.Contents.LoadFromStream(AStream);
+  FHttpResponse.Contents.LoadFromStream(AStream);
 end;
 
 procedure TBrookAction.Write(const AFmt: string; const AArgs: array of const);

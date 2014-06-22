@@ -24,7 +24,7 @@ implementation
 
 procedure TMyAction.Get;
 begin
-  TheResponse.SetCustomHeader(fieldLastModified, '01/01/2000');
+  HttpResponse.SetCustomHeader(fieldLastModified, '01/01/2000');
   Write('<!DOCTYPE HTML>');
   Write('<html lang="en-US">');
   Write('<head>');

@@ -103,7 +103,7 @@ var
   VLastSlashPos: Integer;
   VPathInfo, VFilePath, VBuffer, VContentType: string;
 begin
-  VPathInfo := TheRequest.PathInfo;
+  VPathInfo := HttpRequest.PathInfo;
   VLastSlashPos := RPos('/', VPathInfo);
   System.Delete(VPathInfo, VLastSlashPos + 1, Length(VPathInfo) - VLastSlashPos);
   VFilePath := RequestDirectoryMap[VPathInfo] + Variables.Values['file'];
@@ -112,7 +112,7 @@ begin
     VContentType := MimeTypes.GetMimeType(ExtractFileExt(VFilePath));
     if VContentType = '' then
       VContentType := 'application/octet-stream';
-    TheResponse.ContentType := VContentType;
+    HttpResponse.ContentType := VContentType;
     with TFileStream.Create(VFilePath, fmOpenRead) do
       try
         SetLength(VBuffer, Size);

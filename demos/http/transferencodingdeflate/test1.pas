@@ -35,7 +35,7 @@ var
   S: string;
   VOutput: TMemoryStream;
 begin
-  if aeDeflate in BrookGetAcceptEncodingSet(TheRequest.AcceptEncoding) then
+  if aeDeflate in BrookGetAcceptEncodingSet(HttpRequest.AcceptEncoding) then
   begin
     VOutput := TMemoryStream.Create;
     try
@@ -47,9 +47,9 @@ begin
         Free;
       end;
       VOutput.Seek(0, 0);
-      TheResponse.SetCustomHeader('Content-Encoding', 'deflate');
-      TheResponse.ContentStream := VOutput;
-      TheResponse.SendContent;
+      HttpResponse.SetCustomHeader('Content-Encoding', 'deflate');
+      HttpResponse.ContentStream := VOutput;
+      HttpResponse.SendContent;
     finally
       VOutput.Free;
     end;

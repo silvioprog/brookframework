@@ -166,7 +166,7 @@ begin
     Add(MSG, [VName]);
     Save;
     Session.Fields.Add('name=' + VName);
-    Session.Finish(TheResponse);
+    Session.Finish(HttpResponse);
     Location('TChatGetMsg');
   end;
 end;

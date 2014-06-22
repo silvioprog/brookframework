@@ -27,7 +27,7 @@ implementation
 
 procedure TMyAction.Get;
 begin
-  TheResponse.SetCustomHeader(BROOK_HTTP_HEADER_ETAG, ETAG);
+  HttpResponse.SetCustomHeader(BROOK_HTTP_HEADER_ETAG, ETAG);
   Write('<!DOCTYPE HTML>');
   Write('<html lang="en-US">');
   Write('<head>');
@@ -36,7 +36,7 @@ begin
   Write('</head>');
   Write('<body>');
   if GetEnvironmentVariable(BROOK_CLT_ENV_HTTP_IF_NONE_MATCH) = ETAG then
-    TheResponse.Code := BROOK_HTTP_STATUS_CODE_NOT_MODIFIED
+    HttpResponse.Code := BROOK_HTTP_STATUS_CODE_NOT_MODIFIED
   else
     Write('	Hello world!');
   Write('</body>');

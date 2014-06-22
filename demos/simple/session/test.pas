@@ -51,7 +51,7 @@ end;
 
 procedure TMyAction.Get;
 begin
-  FSession.Start(TheRequest);
+  FSession.Start(HttpRequest);
   Write('<!DOCTYPE HTML>');
   Write('<html lang="en-US">');
   Write('<head>');
@@ -71,7 +71,7 @@ begin
   end;
   Write('</body>');
   Write('</html>');
-  FSession.Finish(TheResponse);
+  FSession.Finish(HttpResponse);
 end;
 
 initialization
