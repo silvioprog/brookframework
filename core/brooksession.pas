@@ -41,6 +41,7 @@ type
     FFileName: TFileName;
     FFilePrefix: ShortString;
     FHttpOnly: Boolean;
+    FIgnoredFields: TStrings;
     FSID: string;
     FStarted: Boolean;
     FTimeOut: Integer;
@@ -85,6 +86,8 @@ type
     property CookieExpires: TDateTime read FCookieExpires write FCookieExpires;
     { The session fields. }
     property Fields: TStrings read FFields;
+    { The ignored fields by the session. }
+    property IgnoredFields: TStrings read FIgnoredFields;
     { Set the name of session directory. }
     property Directory: string read FDirectory write FDirectory;
     { Returns @code(True) if the session has expired.}
@@ -134,6 +137,7 @@ constructor TBrookSession.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FFields := TStringList.Create;
+  FIgnoredFields := TStringList.Create;
   FCookieName := BROOK_SESS_ID;
   FCookieExpires := -1;
   FFilePrefix := BROOK_SESS_PREFIX;
@@ -147,12 +151,13 @@ end;
 destructor TBrookSession.Destroy;
 begin
   FFields.Free;
+  FIgnoredFields.Free;
   inherited Destroy;
 end;
 
 procedure TBrookSession.GetFields(AObject: TObject);
 begin
-  BrookSafeStringsToObject(AObject, FFields);
+  BrookSafeStringsToObject(AObject, FFields, FIgnoredFields);
 end;
 
 function TBrookSession.IsExpired: Boolean;
@@ -305,13 +310,13 @@ end;
 
 procedure TBrookGSession.FillEntity;
 begin
-  BrookStringsToObject(FEntity, Fields);
+  BrookStringsToObject(FEntity, Fields, IgnoredFields);
 end;
 
 procedure TBrookGSession.ReadEntity;
 begin
   Fields.Clear;
-  BrookObjectToStrings(FEntity, Fields);
+  BrookObjectToStrings(FEntity, Fields, IgnoredFields);
 end;
 
 procedure TBrookGSession.Load;
