@@ -23,7 +23,7 @@
     <Description Value="Brook designtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Minor="9" Release="9"/>
-    <Files Count="2">
+    <Files Count="3">
       <Item1>
         <Filename Value="..\design\brookregallcomp.pas"/>
         <HasRegisterProc Value="True"/>
@@ -33,6 +33,10 @@
         <Filename Value="..\design\brookrouterhandler.pas"/>
         <UnitName Value="BrookRouterHandler"/>
       </Item2>
+      <Item3>
+        <Filename Value="..\design\brooksessionhandler.pas"/>
+        <UnitName Value="BrookSessionHandler"/>
+      </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

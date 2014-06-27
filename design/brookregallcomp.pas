@@ -18,7 +18,7 @@ unit BrookRegAllComp;
 interface
 
 uses
-  BrookRouterHandler, Classes;
+  BrookRouterHandler, BrookSessionHandler, Classes;
 
 procedure Register;
 
@@ -26,7 +26,8 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Brook framework', [TBrookRouterHandler]);
+  RegisterComponents('Brook framework', [TBrookRouterHandler,
+    TBrookSessionHandler]);
 end;
 
 end.
