@@ -45,6 +45,8 @@ type
     FSID: string;
     FStarted: Boolean;
     FTimeOut: Integer;
+    function GetField(const AName: string): string;
+    procedure SetField(const AName: string; const AValue: string);
     procedure SetFields(AValue: TStrings);
     procedure SetIgnoredFields(AValue: TStrings);
   protected
@@ -86,6 +88,8 @@ type
     property CookieSecure: Boolean read FCookieSecure write FCookieSecure;
     { Set the session cookie expiration. }
     property CookieExpires: TDateTime read FCookieExpires write FCookieExpires;
+    { Handles the session fields. }
+    property Field[const AName: string]: string read GetField write SetField;
     { The session fields. }
     property Fields: TStrings read FFields write SetFields;
     { The ignored fields by the session. }
@@ -105,7 +109,7 @@ type
     { The session file prefix. }
     property FilePrefix: ShortString read FFilePrefix write FFilePrefix;
     { The remaining seconds for the session finish. }
-    property TimeOut: Integer read FTimeOut write FTimeOut;
+    property TimeOut: Integer read FTimeOut write FTimeOut default BROOK_SESS_DEFAULT_TIMEOUT;
     { Informs if the session cookie is accessible only by HTTP requests,
       if @code(True), the JavaScript access is not allowed. }
     property HttpOnly: Boolean read FHttpOnly write FHttpOnly;
@@ -198,6 +202,16 @@ procedure TBrookSession.SetFields(AValue: TStrings);
 begin
   if Assigned(AValue) then
     FFields.Assign(AValue);
+end;
+
+function TBrookSession.GetField(const AName: string): string;
+begin
+  Result := FFields.Values[AName];
+end;
+
+procedure TBrookSession.SetField(const AName: string; const AValue: string);
+begin
+  FFields.Values[AName] := AValue;
 end;
 
 procedure TBrookSession.SetIgnoredFields(AValue: TStrings);
