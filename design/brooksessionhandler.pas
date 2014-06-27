@@ -40,10 +40,6 @@ type
     property IgnoredFields;
     { Set the name of session directory. }
     property Directory;
-    { Get or set the session ID. }
-    property SID;
-    { The session file name. }
-    property FileName;
     { The session file prefix. }
     property FilePrefix;
     { The remaining seconds for the session finish. }
