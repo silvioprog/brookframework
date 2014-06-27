@@ -386,15 +386,18 @@ var
   I: Integer;
   VHandled: Boolean = False;
 begin
-  if Assigned(FBeforeExecuteAction) then
-    FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
-  AAction.Variables.Clear;
-  for I := 0 to High(ANames) do
-    AAction.Variables.Add(ANames[I] + EQ + AValues[I]);
-  if not VHandled then
-    AAction.DoRequest(ARequest, AResponse);
-  if Assigned(FAfterExecuteAction) then
-    FAfterExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
+  try
+    if Assigned(FBeforeExecuteAction) then
+      FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
+    AAction.Variables.Clear;
+    for I := 0 to High(ANames) do
+      AAction.Variables.Add(ANames[I] + EQ + AValues[I]);
+    if not VHandled then
+      AAction.DoRequest(ARequest, AResponse);
+  finally
+    if Assigned(FAfterExecuteAction) then
+      FAfterExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
+  end;
 end;
 
 class procedure TBrookRouter.RegisterService;
@@ -554,113 +557,116 @@ var
   VHandled: Boolean = False;
   VLeftPat, VRightPat, VLeftVal, VRightVal, VVal, VPat, VName: string;
 begin
-  if Assigned(FBeforeMatchPattern) then
-    VResult := FBeforeMatchPattern(Self, APattern, APathInfo, ARedirect, ANames,
-      AValues, VHandled);
-  if VHandled then
-    Exit(VResult);
-  Result := False;
-  ARedirect := False;
-  if APattern = ES then
-    Exit(True);
-  Delete(APattern, Pos(QU, APattern), MaxInt);
-  Delete(APathInfo, Pos(QU, APathInfo), MaxInt);
-  if BrookStartsChar(US, APattern) then
-    Delete(APattern, 1, 1);
-  if BrookStartsChar(US, APathInfo) then
-    Delete(APathInfo, 1, 1);
-  VLeftPat := ES;
-  VLeftVal := ES;
-  VPat := US; // init value is '/', not ''
-  VVal := US; // init value is '/', not ''
-  VRightPat := APattern;
-  VRightVal := APathInfo;
-  VCount := 1;
-  repeat
-    // Extract next part
-    ExtractNextPathLevel(VLeftPat, VPat, VRightPat);
-    ExtractNextPathLevel(VLeftVal, VVal, VRightVal);
-    if BrookStartsChar(CO, VPat) then
-    begin
-      // :field
-      SetLength(ANames, VCount);
-      SetLength(AValues, VCount);
-      ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
-      AValues[VCount - 1] := VVal;
-      Inc(VCount);
-    end
-    else
-      if BrookStartsChar(AK, VPat) then
+  try
+    if Assigned(FBeforeMatchPattern) then
+      VResult := FBeforeMatchPattern(Self, APattern, APathInfo, ARedirect,
+        ANames, AValues, VHandled);
+    if VHandled then
+      Exit(VResult);
+    Result := False;
+    ARedirect := False;
+    if APattern = ES then
+      Exit(True);
+    Delete(APattern, Pos(QU, APattern), MaxInt);
+    Delete(APathInfo, Pos(QU, APathInfo), MaxInt);
+    if BrookStartsChar(US, APattern) then
+      Delete(APattern, 1, 1);
+    if BrookStartsChar(US, APathInfo) then
+      Delete(APathInfo, 1, 1);
+    VLeftPat := ES;
+    VLeftVal := ES;
+    VPat := US; // init value is '/', not ''
+    VVal := US; // init value is '/', not ''
+    VRightPat := APattern;
+    VRightVal := APathInfo;
+    VCount := 1;
+    repeat
+      // Extract next part
+      ExtractNextPathLevel(VLeftPat, VPat, VRightPat);
+      ExtractNextPathLevel(VLeftVal, VVal, VRightVal);
+      if BrookStartsChar(CO, VPat) then
       begin
-        // *path
-        VName := Copy(VPat, 2, MaxInt);
-        VLeftPat := VRightPat;
-        VLeftVal := VVal + VRightVal;
-        VPat := US; // init value is '/', not ''
-        VVal := US; // init value is '/', not ''
-        VRightPat := ES;
-        VRightVal := ES;
-        // if AutoAddSlash ...
-        if BrookEndsChar(US, VLeftPat) and not BrookEndsChar(US, VLeftVal) then
-        begin
-          Delete(VLeftPat, Length(VLeftPat), 1);
-          ARedirect := True; // Will be Redirect if match
-        end;
-        repeat
-          // Extract backwards
-          ExtractPrevPathLevel(VLeftPat, VPat, VRightPat);
-          ExtractPrevPathLevel(VLeftVal, VVal, VRightVal);
-          if BrookStartsChar(CO, VPat) then
-          begin
-            // *path/:field
-            SetLength(ANames, VCount);
-            SetLength(AValues, VCount);
-            ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
-            AValues[VCount - 1] := VVal;
-            Inc(VCount);
-          end
-          else
-            // *path/const
-            if not ((VPat = ES) and (VLeftPat = ES)) and (VPat <> VVal) then
-              Exit(False);
-          // Check if we already done
-          if (VLeftPat = ES) or (VLeftVal = ES) then
-          begin
-            if VLeftPat = ES then
-            begin
-              SetLength(ANames, VCount);
-              SetLength(AValues, VCount);
-              ANames[VCount - 1] := VName;
-              AValues[VCount - 1] := VLeftVal + VVal;
-              Inc(VCount);
-              Exit(True);
-            end;
-            Exit(False);
-          end;
-        until False;
+        // :field
+        SetLength(ANames, VCount);
+        SetLength(AValues, VCount);
+        ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
+        AValues[VCount - 1] := VVal;
+        Inc(VCount);
       end
       else
-        // const
-        if VPat <> VVal then
-          Exit(False);
-    // Check if we already done
-    if (VRightPat = ES) or (VRightVal = ES) then
-    begin
-      if (VRightPat = ES) and (VRightVal = ES) then
-        Exit(True)
-      else
-      // if AutoAddSlash ...
-      if VRightPat = US then
+        if BrookStartsChar(AK, VPat) then
+        begin
+          // *path
+          VName := Copy(VPat, 2, MaxInt);
+          VLeftPat := VRightPat;
+          VLeftVal := VVal + VRightVal;
+          VPat := US; // init value is '/', not ''
+          VVal := US; // init value is '/', not ''
+          VRightPat := ES;
+          VRightVal := ES;
+          // if AutoAddSlash ...
+          if BrookEndsChar(US, VLeftPat) and not BrookEndsChar(US, VLeftVal) then
+          begin
+            Delete(VLeftPat, Length(VLeftPat), 1);
+            ARedirect := True; // Will be Redirect if match
+          end;
+          repeat
+            // Extract backwards
+            ExtractPrevPathLevel(VLeftPat, VPat, VRightPat);
+            ExtractPrevPathLevel(VLeftVal, VVal, VRightVal);
+            if BrookStartsChar(CO, VPat) then
+            begin
+              // *path/:field
+              SetLength(ANames, VCount);
+              SetLength(AValues, VCount);
+              ANames[VCount - 1] := Copy(VPat, 2, MaxInt);
+              AValues[VCount - 1] := VVal;
+              Inc(VCount);
+            end
+            else
+              // *path/const
+              if not ((VPat = ES) and (VLeftPat = ES)) and (VPat <> VVal) then
+                Exit(False);
+            // Check if we already done
+            if (VLeftPat = ES) or (VLeftVal = ES) then
+            begin
+              if VLeftPat = ES then
+              begin
+                SetLength(ANames, VCount);
+                SetLength(AValues, VCount);
+                ANames[VCount - 1] := VName;
+                AValues[VCount - 1] := VLeftVal + VVal;
+                Inc(VCount);
+                Exit(True);
+              end;
+              Exit(False);
+            end;
+          until False;
+        end
+        else
+          // const
+          if VPat <> VVal then
+            Exit(False);
+      // Check if we already done
+      if (VRightPat = ES) or (VRightVal = ES) then
       begin
-        ARedirect := True;
-        Exit(True);
+        if (VRightPat = ES) and (VRightVal = ES) then
+          Exit(True)
+        else
+        // if AutoAddSlash ...
+        if VRightPat = US then
+        begin
+          ARedirect := True;
+          Exit(True);
+        end;
+        Exit(False);
       end;
-      Exit(False);
-    end;
-  until False;
-  if Assigned(FAfterMatchPattern) then
-    FAfterMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues,
-      VHandled);
+    until False;
+  finally
+    if Assigned(FAfterMatchPattern) then
+      FAfterMatchPattern(Self, APattern, APathInfo, ARedirect, ANames, AValues,
+        VHandled);
+  end;
 end;
 
 procedure TBrookRouter.Route(ARequest: TBrookRequest; AResponse: TBrookResponse);
@@ -674,70 +680,73 @@ var
   VDefaultActClass: TBrookActionClass = nil;
   VRedirect, VMatchMethod, VMatchPattern: Boolean;
 begin
-  if Assigned(FBeforeRoute) then
-    FBeforeRoute(Self, ARequest, AResponse, VHandled);
-  if VHandled then
-    Exit;
-  C := FRoutes.List.Count;
-  if C = 0 then
-    raise EBrookRouter.Create(Self, SBrookNoRouteRegisteredError);
-  FRoutes.GetDefaultActionClass(VDefaultActClass, I);
-  if I > -1 then
-    FRoutes.List.Move(I, C - 1);
-  if BrookSettings.Mapped then
-  begin
-    VMatchMethod := False;
-    VMatchPattern := False;
-    for PRoute in FRoutes.List do
-      if MatchPattern(PRoute^.Pattern, ARequest.PathInfo, VRedirect,
-        VNames, VValues) then
-      begin
-        if VRedirect and Canonicalize(ARequest, AResponse) then
-          Exit;
-        VMatchPattern := True;
-        if not BrookMatchMethod(PRoute^.Method, ARequest.Method) then
-          Continue;
-        VMatchMethod := True;
-        VActClass := PRoute^.ActionClass;
-//        if PRoute^.Method <> rmAll then Please see issue #64
-          Break;
-      end;
-    if VMatchPattern then
+  try
+    if Assigned(FBeforeRoute) then
+      FBeforeRoute(Self, ARequest, AResponse, VHandled);
+    if VHandled then
+      Exit;
+    C := FRoutes.List.Count;
+    if C = 0 then
+      raise EBrookRouter.Create(Self, SBrookNoRouteRegisteredError);
+    FRoutes.GetDefaultActionClass(VDefaultActClass, I);
+    if I > -1 then
+      FRoutes.List.Move(I, C - 1);
+    if BrookSettings.Mapped then
     begin
-      if VMatchMethod then
+      VMatchMethod := False;
+      VMatchPattern := False;
+      for PRoute in FRoutes.List do
+        if MatchPattern(PRoute^.Pattern, ARequest.PathInfo, VRedirect,
+          VNames, VValues) then
+        begin
+          if VRedirect and Canonicalize(ARequest, AResponse) then
+            Exit;
+          VMatchPattern := True;
+          if not BrookMatchMethod(PRoute^.Method, ARequest.Method) then
+            Continue;
+          VMatchMethod := True;
+          VActClass := PRoute^.ActionClass;
+//          if PRoute^.Method <> rmAll then Please see issue #64
+            Break;
+        end;
+      if VMatchPattern then
       begin
-        if not Assigned(VActClass) then
-          if Assigned(VDefaultActClass) then
-            VActClass := VDefaultActClass;
+        if VMatchMethod then
+        begin
+          if not Assigned(VActClass) then
+            if Assigned(VDefaultActClass) then
+              VActClass := VDefaultActClass;
+        end
+        else
+        begin
+          TBrookRouter.MethodNotAllowed(AResponse);
+          Exit;
+        end;
       end
       else
-      begin
-        TBrookRouter.MethodNotAllowed(AResponse);
-        Exit;
-      end;
+        raise EBrookHTTP404.Create(ARequest.PathInfo);
     end
     else
-      raise EBrookHTTP404.Create(ARequest.PathInfo);
-  end
-  else
-  begin
-    for PRoute in FRoutes.List do
-      if MatchPattern(PRoute^.Pattern, ARequest.PathInfo, VRedirect,
-        VNames, VValues) then
-      begin
-        if VRedirect and Canonicalize(ARequest, AResponse) then
-          Exit;
-        VActClass := PRoute^.ActionClass;
-        Break;
-      end;
-    if not Assigned(VActClass) then
-      if Assigned(VDefaultActClass) then
-        VActClass := VDefaultActClass
-      else
-        raise EBrookHTTP404.Create(ARequest.PathInfo);
+    begin
+      for PRoute in FRoutes.List do
+        if MatchPattern(PRoute^.Pattern, ARequest.PathInfo, VRedirect,
+          VNames, VValues) then
+        begin
+          if VRedirect and Canonicalize(ARequest, AResponse) then
+            Exit;
+          VActClass := PRoute^.ActionClass;
+          Break;
+        end;
+      if not Assigned(VActClass) then
+        if Assigned(VDefaultActClass) then
+          VActClass := VDefaultActClass
+        else
+          raise EBrookHTTP404.Create(ARequest.PathInfo);
+    end;
+  finally
+    if Assigned(FAfterRoute) then
+      FAfterRoute(Self, ARequest, AResponse, VHandled);
   end;
-  if Assigned(FAfterRoute) then
-    FAfterRoute(Self, ARequest, AResponse, VHandled);
   VAct := CreateAction(VActClass, ARequest, AResponse);
   try
     ExecuteAction(VAct, ARequest, AResponse, VNames, VValues, PRoute^);
