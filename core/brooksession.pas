@@ -45,6 +45,8 @@ type
     FSID: string;
     FStarted: Boolean;
     FTimeOut: Integer;
+    procedure SetFields(AValue: TStrings);
+    procedure SetIgnoredFields(AValue: TStrings);
   protected
     function IsStarted: Boolean;
     procedure MakeSID(ARequest: TBrookRequest); virtual;
@@ -85,9 +87,9 @@ type
     { Set the session cookie expiration. }
     property CookieExpires: TDateTime read FCookieExpires write FCookieExpires;
     { The session fields. }
-    property Fields: TStrings read FFields;
+    property Fields: TStrings read FFields write SetFields;
     { The ignored fields by the session. }
-    property IgnoredFields: TStrings read FIgnoredFields;
+    property IgnoredFields: TStrings read FIgnoredFields write SetIgnoredFields;
     { Set the name of session directory. }
     property Directory: string read FDirectory write FDirectory;
     { Returns @code(True) if the session has expired.}
@@ -190,6 +192,18 @@ begin
   StrLFmt(PChar(Result), 32, BROOK_UUID_MASK, [VGuid.D1, VGuid.D2, VGuid.D3,
     VGuid.D4[0], VGuid.D4[1], VGuid.D4[2], VGuid.D4[3], VGuid.D4[4],
     VGuid.D4[5], VGuid.D4[6], VGuid.D4[7]]);
+end;
+
+procedure TBrookSession.SetFields(AValue: TStrings);
+begin
+  if Assigned(AValue) then
+    FFields.Assign(AValue);
+end;
+
+procedure TBrookSession.SetIgnoredFields(AValue: TStrings);
+begin
+  if Assigned(AValue) then
+    FIgnoredFields.Assign(AValue);
 end;
 
 function TBrookSession.IsStarted: Boolean;
