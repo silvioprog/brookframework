@@ -1,5 +1,5 @@
 (*
-  Brook framework, Router Handler Classe
+  Brook framework, Router Handler Class
 
   Copyright (C) 2014 Silvio Clecio
 
