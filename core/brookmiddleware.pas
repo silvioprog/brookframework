@@ -73,8 +73,11 @@ end;
 
 procedure TBrookMiddleware.BindExecution(AEvent: PBrookExecuteActionEvent);
 begin
-  FOldExecute := AEvent^;
-  AEvent^ := @DoExecute;
+  if Assigned(AEvent) then
+  begin
+    FOldExecute := AEvent^;
+    AEvent^ := @DoExecute;
+  end;
 end;
 
 end.
