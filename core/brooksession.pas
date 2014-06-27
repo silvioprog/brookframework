@@ -28,7 +28,7 @@ type
   { Is a metaclass for @link(TBrookSession) class. }
   TBrookSessionClass = class of TBrookSession;
 
-  { Defines features to the section handling. }
+  { Defines features to the session handling. }
   TBrookSession = class(TBrookComponent)
   private
     FCookieDomain: string;
