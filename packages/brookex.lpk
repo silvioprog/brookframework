@@ -22,40 +22,44 @@
     <Description Value="Brook experts package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Major="1" Minor="9" Release="9"/>
-    <Files Count="8">
+    <Files Count="9">
       <Item1>
         <Filename Value="..\ideintf\brookideintf.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookIDEIntf"/>
       </Item1>
       <Item2>
-        <Filename Value="..\ideintf\frmbrookactedit.pas"/>
-        <UnitName Value="frmBrookActEdit"/>
+        <Filename Value="..\ideintf\brookpropedits.pas"/>
+        <UnitName Value="BrookPropEdits"/>
       </Item2>
       <Item3>
-        <Filename Value="..\ideintf\frmbrookactedit.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="..\ideintf\frmbrookactedit.pas"/>
+        <UnitName Value="frmBrookActEdit"/>
       </Item3>
       <Item4>
-        <Filename Value="..\ideintf\frmbrookchooseprojecttype.pas"/>
-        <UnitName Value="frmBrookChooseProjectType"/>
+        <Filename Value="..\ideintf\frmbrookactedit.lfm"/>
+        <Type Value="LFM"/>
       </Item4>
       <Item5>
-        <Filename Value="..\ideintf\frmbrookchooseprojecttype.lfm"/>
-        <Type Value="LFM"/>
+        <Filename Value="..\ideintf\frmbrookchooseprojecttype.pas"/>
+        <UnitName Value="frmBrookChooseProjectType"/>
       </Item5>
       <Item6>
-        <Filename Value="..\ideintf\frmbrooknewbroker.pas"/>
-        <UnitName Value="frmBrookNewBroker"/>
+        <Filename Value="..\ideintf\frmbrookchooseprojecttype.lfm"/>
+        <Type Value="LFM"/>
       </Item6>
       <Item7>
-        <Filename Value="..\ideintf\frmbrooknewproject.pas"/>
-        <UnitName Value="frmBrookNewProject"/>
+        <Filename Value="..\ideintf\frmbrooknewbroker.pas"/>
+        <UnitName Value="frmBrookNewBroker"/>
       </Item7>
       <Item8>
+        <Filename Value="..\ideintf\frmbrooknewproject.pas"/>
+        <UnitName Value="frmBrookNewProject"/>
+      </Item8>
+      <Item9>
         <Filename Value="..\ideintf\frmbrooknewproject.lfm"/>
         <Type Value="LFM"/>
-      </Item8>
+      </Item9>
     </Files>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="3">
