@@ -28,7 +28,7 @@ type
   TBrookMiddlewareClass = class of TBrookMiddleware;
 
   { Intermediates two classes through a @code(TBrookExecuteActionEvent) event. }
-  TBrookMiddleware = class(TBrookObject)
+  TBrookMiddleware = class(TBrookComponent)
   private
     FOldExecute: TBrookExecuteActionEvent;
   protected
@@ -53,7 +53,7 @@ implementation
 
 constructor TBrookMiddleware.Create(ABoundEvent: PBrookExecuteActionEvent);
 begin
-  inherited Create;
+  inherited Create(nil);
   BindExecution(ABoundEvent);
 end;
 
