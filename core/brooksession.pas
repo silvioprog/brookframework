@@ -257,17 +257,61 @@ begin
 end;
 
 procedure TBrookSession.Load;
+var
+  I: Integer;
+  N, V: string;
+  VFields: TStrings;
 begin
   if IsExpired then
     Exit;
   if FileExists(FFileName) then
-    FFields.LoadFromFile(FFileName);
+    if FIgnoredFields.Count > 0 then
+    begin
+      VFields := TStringList.Create;
+      try
+        VFields.LoadFromFile(FFileName);
+        for I := 0 to Pred(VFields.Count) do
+        begin
+          VFields.GetNameValue(I, N, V);
+          if FIgnoredFields.IndexOf(N) > -1 then
+            FFields.Values[N] := ES
+          else
+            FFields.Values[N] := V;
+        end;
+      finally
+        VFields.Free;
+      end;
+    end
+    else
+      FFields.LoadFromFile(FFileName);
 end;
 
 procedure TBrookSession.Save;
+var
+  I: Integer;
+  N, V: string;
+  VFields: TStrings;
 begin
   if FFileName <> ES then
-    FFields.SaveToFile(FFileName);
+    if FIgnoredFields.Count > 0 then
+    begin
+      VFields := TStringList.Create;
+      try
+        for I := 0 to Pred(FFields.Count) do
+        begin
+          FFields.GetNameValue(I, N, V);
+          if FIgnoredFields.IndexOf(N) > -1 then
+            VFields.Add(N + EQ)
+          else
+            VFields.Add(N + EQ + V);
+        end;
+        VFields.SaveToFile(FFileName);
+      finally
+        VFields.Free;
+      end;
+    end
+    else
+      FFields.SaveToFile(FFileName);
 end;
 
 procedure TBrookSession.Start(ARequest: TBrookRequest);
