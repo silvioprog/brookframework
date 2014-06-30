@@ -27,10 +27,17 @@ type
   { Is a metaclass for @link(TBrookMiddleware) class. }
   TBrookMiddlewareClass = class of TBrookMiddleware;
 
+  { Is a type to @code(*Middleware.OnExecute) event. }
+  TBrookMiddlewareExecuteEvent = procedure(ASender: TObject;
+    AAction: TBrookAction; ARoute: TBrookRoute) of object;
+  { Defines a pointer to the @code(TBrookMiddlewareExecuteEvent) type.}
+  PBrookMiddlewareExecuteEvent = ^TBrookMiddlewareExecuteEvent;
+
   { Intermediates two classes through a @code(TBrookExecuteActionEvent) event. }
   TBrookMiddleware = class(TBrookComponent)
   private
     FOldExecute: TBrookExecuteActionEvent;
+    FOnExecute: TBrookMiddlewareExecuteEvent;
   protected
     procedure DoExecute(ASender: TObject; AAction: TBrookAction;
       ARequest: TBrookRequest; AResponse: TBrookResponse; ARoute: TBrookRoute;
@@ -38,13 +45,17 @@ type
   public
     { Creates an instance of a @link(TBrookMiddleware) class. }
     constructor Create(ABoundEvent: PBrookExecuteActionEvent); overload; virtual;
-    { Is triggered when the @code(TBrookExecuteActionEvent) event bound in this
-      class is executed. }
+    { Is triggered when the @code(DoExecute) method bound in this class is
+      executed. }
     procedure Execute({%H-}ASender: TObject;{%H-}AAction: TBrookAction;
       {%H-}ARoute: TBrookRoute); virtual;
     { Bindes a @code(TBrookExecuteActionEvent) event to this class keeping the
       implementation of a previously declared event. }
     procedure BindExecution(AEvent: PBrookExecuteActionEvent);
+    { Is triggered when the @code(Execute) method bound in this class is
+      executed. }
+    property OnExecute: TBrookMiddlewareExecuteEvent read FOnExecute
+      write FOnExecute;
   end;
 
 implementation
@@ -69,6 +80,8 @@ end;
 procedure TBrookMiddleware.Execute(ASender: TObject; AAction: TBrookAction;
   ARoute: TBrookRoute);
 begin
+  if Assigned(FOnExecute) then
+    FOnExecute(Self, AAction, ARoute);
 end;
 
 procedure TBrookMiddleware.BindExecution(AEvent: PBrookExecuteActionEvent);
