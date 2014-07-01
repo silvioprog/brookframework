@@ -18,14 +18,16 @@ unit BrookMessages_ptBR;
 interface
 
 uses
-  BrookMessages;
+  BrookMessages, BrookUtils, BrookHttpConsts;
 
-procedure BrookTranslate;
+procedure BrookTranslateMsgs;
+procedure BrookTranslateHttpMsgs;
 
 implementation
 
-procedure BrookTranslate;
+procedure BrookTranslateMsgs;
 begin
+  SBrookActiveLanguage := 'pt-BR';
   SBrookInvalidRequestMethodError := 'Método de solicitação inválido: %s.';
   SBrookItemNotFoundError := 'Item "%s" não encontrado.';
   SBrookFileNotFoundError := 'Arquivo não encontrado: %s';
@@ -48,6 +50,18 @@ begin
   SBrookNoConstraintsServiceRegisteredError := 'Serviço de restrições não registrado.';
   SBrookNoLoggerRegisteredError := 'Logger não registrado.';
   SBrookLoggerAlreadyRegisteredError := 'O logger já está registrado.';
+end;
+
+procedure BrookTranslateHttpMsgs;
+begin
+  BrookSettings.Page404 :=
+    '<html><head><title>Página não encontrada</title></head><body>' +
+    '<h1>404 - Página não encontrada</h1></body></html>';
+  BrookSettings.Page500 :=
+    '<html><head><title>Erro interno do servidor</title></head><body>' +
+    '<h1>500 - Erro interno do servidor</h1>' +
+    '<p style="color: red;" >@error</p>' +
+    '</body></html>';
 end;
 
 end.
