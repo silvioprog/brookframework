@@ -22,7 +22,7 @@ uses
 
 type
   { Handles exceptions for @link(TBrookMiddlewareHandler). }
-  EBrookMiddlewareHandler = class(EBrook);
+  EBrookMiddlewareHandler = class(EBrookMiddleware);
 
   { Is a metaclass for @link(TBrookMiddlewareHandler) class. }
   TBrookMiddlewareHandlerClass = class of TBrookMiddlewareHandler;
