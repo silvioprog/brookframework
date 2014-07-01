@@ -18,7 +18,8 @@ unit BrookRegAllComp;
 interface
 
 uses
-  BrookRouterHandler, BrookSessionHandler, BrookMiddlewareHandler, Classes;
+  BrookRouterHandler, BrookSessionHandler, BrookMiddlewareHandler,
+  BrookMessagesHandler_ptBR, Classes;
 
 procedure Register;
 
@@ -27,7 +28,7 @@ implementation
 procedure Register;
 begin
   RegisterComponents('Brook framework', [TBrookRouterHandler,
-    TBrookSessionHandler, TBrookMiddlewareHandler]);
+    TBrookSessionHandler, TBrookMiddlewareHandler, TBrookMessagesHandler_ptBR]);
 end;
 
 end.
