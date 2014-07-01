@@ -21,6 +21,12 @@ uses
   BrookClasses, BrookRouter, BrookAction, BrookHttpDefs, BrookUtils, Classes;
 
 type
+  { Handles exceptions for @link(TBrookRouterHandler). }
+  EBrookRouterHandler = class(EBrookRouter);
+
+  { Is a metaclass for @link(BrookRouterHandler) class. }
+  TBrookRouterHandlerClass = class of TBrookRouterHandler;
+
   { Handles the router events. }
   TBrookRouterHandler = class(TBrookComponent)
   private
