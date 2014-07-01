@@ -273,13 +273,13 @@ begin
     begin
       VLog += '<Content>' + LineEnding + AResponse.Contents.Text +
         '</Content>';
-      BrookLog.Info(VLog);
+      TBrookLogger.Service.Info(VLog);
     end;
   except
     on E: Exception do
     begin
       if BrookSettings.LogActive then
-        BrookLog.Error(VLog, E);
+        TBrookLogger.Service.Error(VLog, E);
       ShowRequestException(AResponse, E);
     end;
   end;

@@ -48,8 +48,8 @@ begin
   SBrookConstraintAlreadyRegisteredError := 'A restrição "%s" já está registrada.';
   SBrookConstraintsServiceAlreadyRegisteredError := 'O serviço de restrições já está registrado.';
   SBrookNoConstraintsServiceRegisteredError := 'Serviço de restrições não registrado.';
-  SBrookNoLoggerRegisteredError := 'Logger não registrado.';
-  SBrookLoggerAlreadyRegisteredError := 'O logger já está registrado.';
+  SBrookNoLoggerServiceRegisteredError := 'Serviço de logger não registrado.';
+  SBrookLoggerServiceAlreadyRegisteredError := 'O serviço de logger já está registrado.';
 end;
 
 procedure BrookTranslateHttpMsgs;
