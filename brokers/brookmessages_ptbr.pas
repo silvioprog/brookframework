@@ -27,7 +27,7 @@ implementation
 
 procedure BrookTranslateMsgs;
 begin
-  SBrookActiveLanguage := 'pt-BR';
+  SBrookDefaultLocale := 'pt-BR';
   SBrookInvalidRequestMethodError := 'Método de solicitação inválido: %s.';
   SBrookItemNotFoundError := 'Item "%s" não encontrado.';
   SBrookFileNotFoundError := 'Arquivo não encontrado: %s';
