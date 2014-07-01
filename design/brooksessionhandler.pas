@@ -22,10 +22,10 @@ uses
 
 type
   { Handles exceptions for @link(TBrookSession). }
-  EBrookSessionHandler = class(EBrook);
+  EBrookSessionHandler = class(EBrookSession);
 
   { Is a metaclass for @link(TBrookSessionHandler) class. }
-  TBrookSessionHandlerClass = class of TBrookSession;
+  TBrookSessionHandlerClass = class of TBrookSessionHandler;
 
   { Handles the session features. }
   TBrookSessionHandler = class(TBrookSession)
