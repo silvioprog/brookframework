@@ -18,12 +18,14 @@ unit BrookPropEdits;
 interface
 
 uses
-  BrookSession, PropEdits;
+  BrookClasses, PropEdits;
 
 implementation
 
 initialization
-  RegisterPropertyEditor(TypeInfo(AnsiString), TBrookSession, 'Directory',
+  RegisterPropertyEditor(TypeInfo(AnsiString), TBrookComponent, 'Directory',
     TDirectoryPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(AnsiString), TBrookComponent, 'FileName',
+    TFileNamePropertyEditor);
 
 end.
