@@ -18,6 +18,7 @@ unit BrookMessages;
 interface
 
 var
+  SBrookActiveLanguage: string = 'en-US';
   { Error msgs }
   { }
   SBrookInvalidRequestMethodError: string = 'Invalid request method: %s';
