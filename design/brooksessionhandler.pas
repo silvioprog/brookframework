@@ -18,9 +18,15 @@ unit BrookSessionHandler;
 interface
 
 uses
-  BrookSession;
+  BrookSession, BrookException;
 
 type
+  { Handles exceptions for @link(TBrookSession). }
+  EBrookSessionHandler = class(EBrook);
+
+  { Is a metaclass for @link(TBrookSessionHandler) class. }
+  TBrookSessionHandlerClass = class of TBrookSession;
+
   { Handles the session features. }
   TBrookSessionHandler = class(TBrookSession)
   published

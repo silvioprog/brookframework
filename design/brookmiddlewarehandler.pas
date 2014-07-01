@@ -18,9 +18,15 @@ unit BrookMiddlewareHandler;
 interface
 
 uses
-  BrookMiddleware, BrookRouter, BrookAction, BrookHttpDefs;
+  BrookMiddleware, BrookRouter, BrookAction, BrookHttpDefs, BrookException;
 
 type
+  { Handles exceptions for @link(TBrookMiddlewareHandler). }
+  EBrookMiddlewareHandler = class(EBrook);
+
+  { Is a metaclass for @link(TBrookMiddlewareHandler) class. }
+  TBrookMiddlewareHandlerClass = class of TBrookMiddlewareHandler;
+
   { Defines an enumerator to represent the middleware execution modes. }
   TBrookMiddlewareExecMode = (emBefore, emAfter);
 
