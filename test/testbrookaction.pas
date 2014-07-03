@@ -911,8 +911,23 @@ begin
 end;
 
 procedure TTestBrookAction.TestFiles;
+var
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
 begin
-  { TODO: }
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    AssertTrue(Assigned(a.Files));
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
 end;
 
 procedure TTestBrookAction.TestFields;
@@ -1004,13 +1019,43 @@ begin
 end;
 
 procedure TTestBrookAction.TestHttpRequest;
+var
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
 begin
-  { TODO: }
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    AssertTrue(Assigned(a.HttpRequest));
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
 end;
 
 procedure TTestBrookAction.TestHttpResponse;
+var
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
 begin
-  { TODO: }
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    AssertTrue(Assigned(a.HttpResponse));
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
 end;
 
 { TTestBrookGAction }
