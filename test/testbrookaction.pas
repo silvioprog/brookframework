@@ -45,6 +45,11 @@ type
   TAction1 = class(TBrookAction)
   public
     procedure Get; override;
+    procedure Post; override;
+    procedure Put; override;
+    procedure Delete; override;
+    procedure Head; override;
+    procedure Options; override;
   end;
 
   { TAction2 }
@@ -77,26 +82,38 @@ type
   published
     procedure TestRegister;
     procedure TestGetPath;
+    procedure TestSetCookie;
+    procedure TestGetCookie;
+    procedure TestDeleteCookie;
     procedure TestDoRequest;
     procedure TestRequest;
     procedure TestGetFields;
     procedure TestGetParams;
     procedure TestGetVariables;
     procedure TestUrlFor;
-    procedure TestWrite;
+    procedure TestGet;
+    procedure TestPost;
+    procedure TestPut;
+    procedure TestDelete;
+    procedure TestHead;
+    procedure TestOptions;
     procedure TestRedirect;
+    procedure TestError;
+    procedure TestStop;
     procedure TestRender;
     procedure TestClear;
     procedure TestExists;
+    procedure TestWrite;
     procedure TestField;
     procedure TestParam;
     procedure TestVariable;
+    procedure TestFiles;
     procedure TestFields;
     procedure TestParams;
     procedure TestVariables;
-    procedure TestSetCookie;
-    procedure TestGetCookie;
-    procedure TestDeleteCookie;
+    procedure TestMethod;
+    procedure TestHttpRequest;
+    procedure TestHttpResponse;
   end;
 
   { TTestBrookGAction }
@@ -111,6 +128,31 @@ implementation
 { TAction1 }
 
 procedure TAction1.Get;
+begin
+  Write('Test');
+end;
+
+procedure TAction1.Post;
+begin
+  Write('Test');
+end;
+
+procedure TAction1.Put;
+begin
+  Write('Test');
+end;
+
+procedure TAction1.Delete;
+begin
+  Write('Test');
+end;
+
+procedure TAction1.Head;
+begin
+  Write('Test');
+end;
+
+procedure TAction1.Options;
 begin
   Write('Test');
 end;
@@ -182,6 +224,91 @@ end;
 procedure TTestBrookAction.TestGetPath;
 begin
   AssertEquals('/action1', TAction1.GetPath);
+end;
+
+procedure TTestBrookAction.TestSetCookie;
+var
+  c: TCookie;
+  a: TAction1;
+  dt: TDateTime;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    dt := Now;
+    a.SetCookie('mycookie', 'abc123', dt, '/mytest', 'mydomain', True, True);
+    c := rs.Cookies.CookieByName('mycookie');
+    AssertTrue(Assigned(c));
+    AssertEquals(c.Value, 'abc123');
+    AssertEquals(c.Expires, dt);
+    AssertEquals(c.Path, '/mytest');
+    AssertEquals(c.Domain, 'mydomain');
+    AssertTrue(c.Secure);
+    AssertTrue(c.HttpOnly);
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestGetCookie;
+var
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.CookieFields.Values['mycookie'] := 'abc123';
+    AssertEquals(a.GetCookie('mycookie'), 'abc123');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestDeleteCookie;
+var
+  c: TCookie;
+  a: TAction1;
+  dt: TDateTime;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    c := rs.Cookies.Add;
+    c.Name := 'mycookie';
+    c.Path := '/mypath';
+    c.Domain := 'mydomain';
+    c.Expire;
+    c := nil;
+    c := rs.Cookies.CookieByName('mycookie');
+    dt := EncodeDate(1970, 1, 1);
+    AssertEquals(c.Name, 'mycookie');
+    AssertEquals(c.Path, '/mypath');
+    AssertEquals(c.Domain, 'mydomain');
+    AssertEquals(c.Expires, dt);
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
 end;
 
 procedure TTestBrookAction.TestDoRequest;
@@ -376,46 +503,132 @@ begin
   end;
 end;
 
-procedure TTestBrookAction.TestWrite;
+procedure TTestBrookAction.TestGet;
 var
-  o: TMyType;
-  a: TAction1;
   rq: TBrookRequest;
   rs: TBrookResponse;
+  a: TBrookAction;
 begin
   rq := TBrookRequest.Create;
 {$WARNINGS OFF}
   rs := TBrookResponse.Create(rq);
 {$WARNINGS ON}
   a := TAction1.Create(rq, rs);
-  o := TMyType.Create;
   try
-    a.Write('ABC');
-    a.Write(123);
-    a.Write(123.456);
-    a.Write(True);
-    AssertEquals('ABC', rs.Contents[0]);
-    AssertEquals(123, StrToInt(rs.Contents[1]));
-    AssertEquals(123.456, StrToFloat(rs.Contents[2]));
-    AssertTrue(StrToBool(rs.Contents[3]));
-    a.Clear;
-    o.MyString := 'ABC';
-    o.MyBoolean := True;
-    o.MyInteger := 123;
-    a.Write(o);
-    AssertEquals('ABC', rs.Contents.Values['mystring']);
-    AssertEquals(True, StrToBool(rs.Contents.Values['myboolean']));
-    AssertEquals(123, StrToInt(rs.Contents.Values['myinteger']));
-    a.Clear;
-    o.MyString := 'ABC';
-    o.MyBoolean := True;
-    o.MyInteger := 123;
-    a.Write(o, ['myboolean', 'myinteger']);
-    AssertEquals('ABC', rs.Contents.Values['mystring']);
-    AssertEquals(False, StrToBoolDef(rs.Contents.Values['myboolean'], False));
-    AssertEquals(0, StrToIntDef(rs.Contents.Values['myinteger'], 0));
+    rq.Method := 'GET';
+    a.DoRequest(rq, rs);
+    AssertEquals(Trim(rs.Contents.Text), 'Test');
   finally
-    o.Free;
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestPost;
+var
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+  a: TBrookAction;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.Method := 'POST';
+    a.DoRequest(rq, rs);
+    AssertEquals(Trim(rs.Contents.Text), 'Test');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestPut;
+var
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+  a: TBrookAction;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.Method := 'PUT';
+    a.DoRequest(rq, rs);
+    AssertEquals(Trim(rs.Contents.Text), 'Test');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestDelete;
+var
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+  a: TBrookAction;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.Method := 'DELETE';
+    a.DoRequest(rq, rs);
+    AssertEquals(Trim(rs.Contents.Text), 'Test');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestHead;
+var
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+  a: TBrookAction;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.Method := 'HEAD';
+    a.DoRequest(rq, rs);
+    AssertEquals(Trim(rs.Contents.Text), 'Test');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestOptions;
+var
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+  a: TBrookAction;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    rq.Method := 'OPTIONS';
+    a.DoRequest(rq, rs);
+    AssertEquals(Trim(rs.Contents.Text), 'Test');
+  finally
     rs.Free;
     rq.Free;
     a.Free;
@@ -436,6 +649,74 @@ begin
   try
     a.Redirect('/some-url');
     AssertEquals('/some-url', rs.Location);
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestError;
+var
+  s: string;
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    try
+      a.Error('Error');
+    except
+      on E: EBrookAction do
+        s := E.Message;
+    end;
+    AssertEquals(s, a.ClassName + ': Error');
+    try
+      a.Error('Error: %s: %d', ['abc', 123]);
+    except
+      on E: EBrookAction do
+        s := E.Message;
+    end;
+    AssertEquals(s, a.ClassName + ': Error: abc: 123');
+  finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestStop;
+var
+  s: string;
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  try
+    try
+      a.Stop('Error');
+    except
+      on E: EBrookAction do
+        s := E.Message;
+    end;
+    AssertEquals(s, 'Error');
+    try
+      a.Stop('Error: %s: %d', ['abc', 123]);
+    except
+      on E: EBrookAction do
+        s := E.Message;
+    end;
+    AssertEquals(s, 'Error: abc: 123');
   finally
     rs.Free;
     rq.Free;
@@ -505,6 +786,52 @@ begin
     rq.ContentFields.Values['Foo'] := 'Value';
     AssertEquals(a.Exists('Foo'), True);
   finally
+    rs.Free;
+    rq.Free;
+    a.Free;
+  end;
+end;
+
+procedure TTestBrookAction.TestWrite;
+var
+  o: TMyType;
+  a: TAction1;
+  rq: TBrookRequest;
+  rs: TBrookResponse;
+begin
+  rq := TBrookRequest.Create;
+{$WARNINGS OFF}
+  rs := TBrookResponse.Create(rq);
+{$WARNINGS ON}
+  a := TAction1.Create(rq, rs);
+  o := TMyType.Create;
+  try
+    a.Write('ABC');
+    a.Write(123);
+    a.Write(123.456);
+    a.Write(True);
+    AssertEquals('ABC', rs.Contents[0]);
+    AssertEquals(123, StrToInt(rs.Contents[1]));
+    AssertEquals(123.456, StrToFloat(rs.Contents[2]));
+    AssertTrue(StrToBool(rs.Contents[3]));
+    a.Clear;
+    o.MyString := 'ABC';
+    o.MyBoolean := True;
+    o.MyInteger := 123;
+    a.Write(o);
+    AssertEquals('ABC', rs.Contents.Values['mystring']);
+    AssertEquals(True, StrToBool(rs.Contents.Values['myboolean']));
+    AssertEquals(123, StrToInt(rs.Contents.Values['myinteger']));
+    a.Clear;
+    o.MyString := 'ABC';
+    o.MyBoolean := True;
+    o.MyInteger := 123;
+    a.Write(o, ['myboolean', 'myinteger']);
+    AssertEquals('ABC', rs.Contents.Values['mystring']);
+    AssertEquals(False, StrToBoolDef(rs.Contents.Values['myboolean'], False));
+    AssertEquals(0, StrToIntDef(rs.Contents.Values['myinteger'], 0));
+  finally
+    o.Free;
     rs.Free;
     rq.Free;
     a.Free;
@@ -583,6 +910,11 @@ begin
   end;
 end;
 
+procedure TTestBrookAction.TestFiles;
+begin
+  { TODO: }
+end;
+
 procedure TTestBrookAction.TestFields;
 var
   a: TAction1;
@@ -649,11 +981,9 @@ begin
   end;
 end;
 
-procedure TTestBrookAction.TestSetCookie;
+procedure TTestBrookAction.TestMethod;
 var
-  c: TCookie;
-  a: TAction1;
-  dt: TDateTime;
+  a: TBrookAction;
   rq: TBrookRequest;
   rs: TBrookResponse;
 begin
@@ -663,16 +993,9 @@ begin
 {$WARNINGS ON}
   a := TAction1.Create(rq, rs);
   try
-    dt := Now;
-    a.SetCookie('mycookie', 'abc123', dt, '/mytest', 'mydomain', True, True);
-    c := rs.Cookies.CookieByName('mycookie');
-    AssertTrue(Assigned(c));
-    AssertEquals(c.Value, 'abc123');
-    AssertEquals(c.Expires, dt);
-    AssertEquals(c.Path, '/mytest');
-    AssertEquals(c.Domain, 'mydomain');
-    AssertTrue(c.Secure);
-    AssertTrue(c.HttpOnly);
+    rq.Method := 'TEST';
+    a.DoRequest(rq, rs);
+    AssertEquals(rq.Method, 'TEST');
   finally
     rs.Free;
     rq.Free;
@@ -680,58 +1003,14 @@ begin
   end;
 end;
 
-procedure TTestBrookAction.TestGetCookie;
-var
-  a: TAction1;
-  rq: TBrookRequest;
-  rs: TBrookResponse;
+procedure TTestBrookAction.TestHttpRequest;
 begin
-  rq := TBrookRequest.Create;
-{$WARNINGS OFF}
-  rs := TBrookResponse.Create(rq);
-{$WARNINGS ON}
-  a := TAction1.Create(rq, rs);
-  try
-    rq.CookieFields.Values['mycookie'] := 'abc123';
-    AssertEquals(a.GetCookie('mycookie'), 'abc123');
-  finally
-    rs.Free;
-    rq.Free;
-    a.Free;
-  end;
+  { TODO: }
 end;
 
-procedure TTestBrookAction.TestDeleteCookie;
-var
-  c: TCookie;
-  a: TAction1;
-  dt: TDateTime;
-  rq: TBrookRequest;
-  rs: TBrookResponse;
+procedure TTestBrookAction.TestHttpResponse;
 begin
-  rq := TBrookRequest.Create;
-{$WARNINGS OFF}
-  rs := TBrookResponse.Create(rq);
-{$WARNINGS ON}
-  a := TAction1.Create(rq, rs);
-  try
-    c := rs.Cookies.Add;
-    c.Name := 'mycookie';
-    c.Path := '/mypath';
-    c.Domain := 'mydomain';
-    c.Expire;
-    c := nil;
-    c := rs.Cookies.CookieByName('mycookie');
-    dt := EncodeDate(1970, 1, 1);
-    AssertEquals(c.Name, 'mycookie');
-    AssertEquals(c.Path, '/mypath');
-    AssertEquals(c.Domain, 'mydomain');
-    AssertEquals(c.Expires, dt);
-  finally
-    rs.Free;
-    rq.Free;
-    a.Free;
-  end;
+  { TODO: }
 end;
 
 { TTestBrookGAction }
