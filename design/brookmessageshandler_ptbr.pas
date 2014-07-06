@@ -49,8 +49,8 @@ end;
 
 procedure TBrookMessagesHandler_ptBR.Translate;
 begin
-  BrookMessages_ptBR.BrookTranslateMsgs;
-  BrookMessages_ptBR.BrookTranslateHttpMsgs;
+  BrookMessages_ptBR.BrookTranslate;
+  BrookMessages_ptBR.BrookHttpTranslate;
 end;
 
 end.

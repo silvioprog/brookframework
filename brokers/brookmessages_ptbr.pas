@@ -20,12 +20,12 @@ interface
 uses
   BrookMessages, BrookUtils, BrookHttpConsts;
 
-procedure BrookTranslateMsgs;
-procedure BrookTranslateHttpMsgs;
+procedure BrookTranslate;
+procedure BrookHttpTranslate;
 
 implementation
 
-procedure BrookTranslateMsgs;
+procedure BrookTranslate;
 begin
   SBrookDefaultLocale := 'pt-BR';
   SBrookInvalidRequestMethodError := 'Método de solicitação inválido: %s.';
@@ -52,7 +52,7 @@ begin
   SBrookLoggerServiceAlreadyRegisteredError := 'O serviço de logger já está registrado.';
 end;
 
-procedure BrookTranslateHttpMsgs;
+procedure BrookHttpTranslate;
 begin
   BrookSettings.Page404 :=
     '<html><head><title>Página não encontrada</title></head><body>' +
