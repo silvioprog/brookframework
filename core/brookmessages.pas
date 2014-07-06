@@ -18,6 +18,8 @@ unit BrookMessages;
 interface
 
 var
+  { Default msgs }
+  { }
   SBrookDefaultLocale: string = 'en-US';
   { Error msgs }
   { }
