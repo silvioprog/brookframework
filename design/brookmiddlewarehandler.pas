@@ -18,7 +18,7 @@ unit BrookMiddlewareHandler;
 interface
 
 uses
-  BrookMiddleware, BrookRouter, BrookAction, BrookHttpDefs, BrookException;
+  BrookMiddleware, BrookRouter, BrookAction, BrookHttpDefs;
 
 type
   { Handles exceptions for @link(TBrookMiddlewareHandler). }

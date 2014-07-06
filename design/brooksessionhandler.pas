@@ -18,7 +18,7 @@ unit BrookSessionHandler;
 interface
 
 uses
-  BrookSession, BrookException;
+  BrookSession;
 
 type
   { Handles exceptions for @link(TBrookSession). }
