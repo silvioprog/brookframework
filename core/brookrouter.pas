@@ -566,7 +566,12 @@ begin
     Result := False;
     ARedirect := False;
     if APattern = ES then
+      Exit;
+    if (APattern = US) and (APathInfo = ES) then
+    begin
+      ARedirect := True;
       Exit(True);
+    end;
     Delete(APattern, Pos(QU, APattern), MaxInt);
     Delete(APathInfo, Pos(QU, APathInfo), MaxInt);
     if BrookStartsChar(US, APattern) then
