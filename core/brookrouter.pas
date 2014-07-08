@@ -94,6 +94,9 @@ type
     { Get the default action class. }
     procedure GetDefaultActionClass(out AClass: TBrookActionClass;
       out AIndex: Integer);
+    { Get the action class with empty pattern. }
+    procedure GetEmptyPatternActionClass(out AClass: TBrookActionClass;
+      out AIndex: Integer);
     { Get the registered pattern of a class. }
     function PatternByActionClass(AClass: TBrookActionClass): string;
     { Get the action class from a patter. }
@@ -289,6 +292,26 @@ begin
   begin
     PRoute := FList[I];
     if PRoute^.Default then
+    begin
+      AIndex := I;
+      AClass := PRoute^.ActionClass;
+      Exit;
+    end;
+  end;
+  AIndex := -1;
+  AClass := nil;
+end;
+
+procedure TBrookRoutes.GetEmptyPatternActionClass(out
+  AClass: TBrookActionClass; out AIndex: Integer);
+var
+  I: Integer;
+  PRoute: PBrookRoute;
+begin
+  for I := 0 to Pred(FList.Count) do
+  begin
+    PRoute := FList[I];
+    if PRoute^.Pattern = ES then
     begin
       AIndex := I;
       AClass := PRoute^.ActionClass;
@@ -508,8 +531,8 @@ begin
     AResponse.SendRedirect(LowerCase(VURL) + US + VQueryStr);
 end;
 
-function TBrookRouter.MatchPattern(APattern, APathInfo: string; out
-  ARedirect: Boolean; out ANames, AValues: TBrookArrayOfString): Boolean;
+function TBrookRouter.MatchPattern(APattern, APathInfo: string;
+  out ARedirect: Boolean; out ANames, AValues: TBrookArrayOfString): Boolean;
 
   procedure ExtractNextPathLevel(var ALeftPart: string;
     var ALvl: string; var ARightPart: string; const ADelimiter: Char = US);
@@ -682,7 +705,7 @@ var
   VHandled: Boolean = False;
   VActClass: TBrookActionClass = nil;
   VNames, VValues: TBrookArrayOfString;
-  VDefaultActClass: TBrookActionClass = nil;
+  VTempActClass: TBrookActionClass = nil;
   VRedirect, VMatchMethod, VMatchPattern: Boolean;
 begin
   try
@@ -693,9 +716,18 @@ begin
     C := FRoutes.List.Count;
     if C = 0 then
       raise EBrookRouter.Create(Self, SBrookNoRouteRegisteredError);
-    FRoutes.GetDefaultActionClass(VDefaultActClass, I);
-    if I > -1 then
-      FRoutes.List.Move(I, C - 1);
+    if ARequest.PathInfo = ES then
+    begin
+      FRoutes.GetEmptyPatternActionClass(VTempActClass, I);
+      if I > -1 then
+        FRoutes.List.Move(I, C - 1);
+    end;
+    if not Assigned(VTempActClass) then
+    begin
+      FRoutes.GetDefaultActionClass(VTempActClass, I);
+      if I > -1 then
+        FRoutes.List.Move(I, C - 1);
+    end;
     if BrookSettings.Mapped then
     begin
       VMatchMethod := False;
@@ -719,8 +751,8 @@ begin
         if VMatchMethod then
         begin
           if not Assigned(VActClass) then
-            if Assigned(VDefaultActClass) then
-              VActClass := VDefaultActClass;
+            if Assigned(VTempActClass) then
+              VActClass := VTempActClass;
         end
         else
         begin
@@ -743,8 +775,8 @@ begin
           Break;
         end;
       if not Assigned(VActClass) then
-        if Assigned(VDefaultActClass) then
-          VActClass := VDefaultActClass
+        if Assigned(VTempActClass) then
+          VActClass := VTempActClass
         else
           raise EBrookHTTP404.Create(ARequest.PathInfo);
     end;
