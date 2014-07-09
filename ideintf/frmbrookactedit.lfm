@@ -9,7 +9,7 @@ object frBrookActEdit: TfrBrookActEdit
   ClientWidth = 340
   OnCloseQuery = FormCloseQuery
   Position = poDesktopCenter
-  LCLVersion = '1.2.2.0'
+  LCLVersion = '1.2.4.0'
   object pnClient: TPanel
     Left = 0
     Height = 230
@@ -37,8 +37,8 @@ object frBrookActEdit: TfrBrookActEdit
       Height = 213
       Top = 1
       Width = 338
-      HorzScrollBar.Page = 334
-      VertScrollBar.Page = 209
+      HorzScrollBar.Page = 230
+      VertScrollBar.Page = 137
       Align = alClient
       ClientHeight = 209
       ClientWidth = 334
@@ -75,9 +75,9 @@ object frBrookActEdit: TfrBrookActEdit
         Left = 30
         Height = 15
         Top = 70
-        Width = 46
+        Width = 38
         BorderSpacing.Top = 2
-        Caption = '&Pattern *'
+        Caption = '&Pattern'
         FocusControl = edPattern
         ParentColor = False
       end

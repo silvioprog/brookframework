@@ -872,8 +872,6 @@ begin
   if FActName = '' then
     FActName := ASourceName;
   FActName := UpperCase(Copy(FActName, 1, 1)) + Copy(FActName, 2, MaxInt);
-  if FActPattern = '' then
-    FActPattern := '/' + LowerCase(ASourceName);
   if FActDefault then
     VActDefault := ', True';
   VClassName := 'T'+FActName;

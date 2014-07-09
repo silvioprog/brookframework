@@ -63,8 +63,6 @@ begin
   CanClose := False;
   AssertData(edName.Text <> '',
     'Please specify a name for the action.', edName);
-  AssertData(edPattern.Text <> '',
-    'Please specify a pattern for the action.', edPattern);
   if not FQuiet then
   begin
     VForm := TfrBrookNewProject.Instante;

@@ -11,7 +11,7 @@ object frBrookNewProject: TfrBrookNewProject
   OnShow = FormShow
   Position = poDesktopCenter
   SessionProperties = 'edAppName.Text;rgAppType.ItemIndex;rgDefaultCharset.ItemIndex;edPubHTMLDir.Directory'
-  LCLVersion = '1.2.2.0'
+  LCLVersion = '1.2.4.0'
   object pnBottom: TPanel
     Left = 0
     Height = 40
@@ -1399,11 +1399,13 @@ object frBrookNewProject: TfrBrookNewProject
               Caption = 'Default'
             end>
           GridLines = True
+          HideSelection = False
           ReadOnly = True
           RowSelect = True
           SortType = stText
           TabOrder = 0
           ViewStyle = vsReport
+          OnClick = lvActionsClick
           OnDblClick = lvActionsDblClick
           OnSelectItem = lvActionsSelectItem
         end

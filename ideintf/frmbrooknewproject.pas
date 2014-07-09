@@ -22,6 +22,9 @@ uses
   ComCtrls, LCLType, LCLIntf, EditBtn, XMLPropStorage;
 
 type
+
+  { TfrBrookNewProject }
+
   TfrBrookNewProject = class(TForm)
     btAddAct: TBitBtn;
     btDeleteAct: TBitBtn;
@@ -66,6 +69,7 @@ type
     procedure edAppNameKeyPress(Sender: TObject; var Key: char);
     procedure FormKeyDown(Sender: TObject; var Key: Word;{%H-}Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure lvActionsClick(Sender: TObject);
     procedure lvActionsDblClick(Sender: TObject);
     procedure lvActionsSelectItem(Sender: TObject;{%H-}Item: TListItem;
       Selected: Boolean);
@@ -125,6 +129,7 @@ var
   VDefault: Boolean;
   VName, VPattern: string;
 begin
+  lvActions.ItemFocused := nil;
   VName := '';
   VPattern := '';
   VDefault := False;
@@ -165,7 +170,10 @@ begin
   I := lvActions.ItemIndex;
   if MessageDlg('Delete', Format('Delete action "%s"?',
     [lvActions.Items[I].Caption]), mtConfirmation, mbYesNo, 0) = mrYes then
+  begin
     lvActions.Items.Delete(I);
+    lvActions.ItemFocused := nil;
+  end;
 end;
 
 procedure TfrBrookNewProject.btPriorClick(Sender: TObject);
@@ -203,6 +211,14 @@ end;
 procedure TfrBrookNewProject.FormShow(Sender: TObject);
 begin
   pcWizardChange(Sender);
+end;
+
+procedure TfrBrookNewProject.lvActionsClick(Sender: TObject);
+begin
+  if lvActions.ItemIndex > -1 then
+    lvActions.ItemFocused := lvActions.Items[lvActions.ItemIndex]
+  else
+    lvActions.ItemFocused := nil;
 end;
 
 procedure TfrBrookNewProject.lvActionsDblClick(Sender: TObject);
@@ -278,36 +294,66 @@ end;
 
 procedure TfrBrookNewProject.ValidateData(const AName, APattern: string;
   const ADefault: Boolean);
+
+  function IsActionAdded(AItem: TListItem; const AFmt: string): Boolean;
+  begin
+    Result := SameText(AName, AItem.Caption);
+    if Result then
+      ShowMessage(Format(AFmt, [AItem.Caption]));
+  end;
+
+  function IsActionWithPatternAdded(AItem: TListItem;
+    const AFmt: string): Boolean;
+  var
+    s: string;
+  begin
+    s := AItem.SubItems[0];
+    Result := SameText(Trim(APattern), Trim(s));
+    if Result then
+      ShowMessage(Format(AFmt, [s]));
+  end;
+
+  function IsDefaultActionAdded(AItem: TListItem; const AFmt: string): Boolean;
+  begin
+    Result := ADefault and StrToBool(AItem.SubItems[1]);
+    if Result then
+      ShowMessage(Format(AFmt, [AItem.Caption]));
+  end;
+
+const
+  CActionAdded = 'The action "%s" is already added.';
+  CActionAddedWithPattern =
+    'There is already an action added with the pattern "%s".';
+  CDefaultActionAdded = 'There is already a default action added.';
 var
   I: Integer;
-  VItem, VItemFocused: TListItem;
+  VItem, VSelected: TListItem;
 begin
-  VItemFocused := lvActions.ItemFocused;
-  for I := 0 to Pred(lvActions.Items.Count) do
-  begin
-    VItem := lvActions.Items[I];
-    if SameText(AName, VItem.Caption) and
-      SameText(APattern, VItem.SubItems[0]) and
-      (VItem.Index <> VItemFocused.Index) then
+  VSelected := lvActions.ItemFocused;
+  if Assigned(VSelected) then
+    for I := 0 to Pred(lvActions.Items.Count) do
     begin
-      ShowMessage(Format('The action "%s" is already added.',
-        [VItem.Caption]));
-      Abort;
-    end;
-    if SameText(APattern, VItem.SubItems[0]) and
-      (VItem.Index <> VItemFocused.Index) then
+      VItem := lvActions.Items[I];
+      if (VItem.Index <> VSelected.Index) and
+        IsActionAdded(VItem, CActionAdded) then
+        Abort;
+      if (VItem.Index <> VSelected.Index) and
+        IsActionWithPatternAdded(VItem, CActionAddedWithPattern) then
+        Abort;
+      if IsDefaultActionAdded(VItem, CDefaultActionAdded) then
+        Abort;
+    end
+  else
+    for I := 0 to Pred(lvActions.Items.Count) do
     begin
-      ShowMessage(Format('There is already an action added with the pattern "%s".',
-        [VItem.Caption]));
-      Abort;
+      VItem := lvActions.Items[I];
+      if IsActionAdded(VItem, CActionAdded) then
+        Abort;
+      if IsActionWithPatternAdded(VItem, CActionAddedWithPattern) then
+        Abort;
+      if IsDefaultActionAdded(VItem, CDefaultActionAdded) then
+        Abort;
     end;
-    if ADefault and StrToBool(VItem.SubItems[1]) then
-    begin
-      ShowMessage(Format('There is already a default action added.',
-        [VItem.Caption]));
-      Abort;
-    end;
-  end;
 end;
 
 end.
