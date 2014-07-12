@@ -30,7 +30,7 @@ type
     rmUnknown, rmAll, rmGet, rmPost, rmPut, rmDelete, rmHead, rmOptions, rmTrace
   );
 
-  { Stores the Brook configurations. }
+  { Stores the Brook settings. }
   TBrookSettings = record
     { Enables the mapping of HTTP request methods. }
     Mapped: Boolean;
