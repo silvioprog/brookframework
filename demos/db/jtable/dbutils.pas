@@ -5,7 +5,7 @@ unit dbutils;
 interface
 
 uses
-  dSQLdbBroker, dUtils, PQConnection, SysUtils;
+  BrookConfigurator, dSQLdbBroker, dUtils, PQConnection, SysUtils;
 
 function con: TdSQLdbConnector;
 function pgNextSeq(const ASeqName: string): Int64;
@@ -19,17 +19,21 @@ var
   _con: TdSQLdbConnector = nil;
 
 function con: TdSQLdbConnector;
+var
+  cfg: TBrookConfigurator;
 begin
   if not Assigned(_con) then
   begin
+    cfg := TBrookConfigurator.Create(nil);
     _con := TdSQLdbConnector.Create(nil);
-    _con.Logger.Active := True;
-    _con.Logger.FileName := 'OUTPUT.LOG';
-    _con.Driver := 'postgresql';
-    _con.Host := '127.0.0.1';
-    _con.Database := 'postgres';
-    _con.User := 'postgres';
-    _con.Password := 'postgres';
+    try
+      cfg.Target := _con;
+      cfg.Configure;
+//      _con.Logger.Active := True;
+//      _con.Logger.FileName := 'OUTPUT.LOG';
+    finally
+      cfg.Free;
+    end;
   end;
   Result := _con;
 end;
