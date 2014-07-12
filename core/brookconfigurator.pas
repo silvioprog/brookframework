@@ -29,169 +29,137 @@ type
   TBrookConfiguratorClass = class of TBrookConfigurator;
 
   { Configures objects by means of string or file. }
-  TBrookConfigurator = class(TBrookObject)
+  TBrookConfigurator = class(TBrookComponent)
   private
-    FAutoLoaded: Boolean;
-    FCfg: TStrings;
-    FConfiguration: string;
+    FIgnoredParams: TStrings;
+    FParams: TStrings;
     FTarget: TObject;
-    FClassChecking: Boolean;
+    function GetProp(const AName: string): string;
     function GetParam(const AName: string): string;
-    function GetParams: TStrings;
+    procedure SetIgnoredParams(AValue: TStrings);
+    procedure SetProp(const AName: string; const AValue: string);
     procedure SetParam(const AName: string; const AValue: string);
+    procedure SetParams(AValue: TStrings);
+  protected
+    function GetTarget: TObject; virtual;
+    procedure SetTarget(AValue: TObject); virtual;
   public
     { Creates an instance of a @link(TBrookConfigurator) class. }
-    constructor Create;
-    { Creates an instance of a @link(TBrookConfigurator) class passing the
-      configuration in its parameter. }
-    constructor Create(const AConfiguration: string); reintroduce;
+    constructor Create(AOwner: TComponent); override;
     { Frees an instance of @link(TBrookConfigurator) class. }
     destructor Destroy; override;
-    { Loads the configuration file to the memory. }
-    function Load: TBrookConfigurator; virtual;
-    { Clears the internal configuration. }
-    procedure Clear;
-    { Configures the object informed in the Target property. }
+    { Configures the target property. }
     procedure Configure;
-    { Defines if the configuration is read automatically. }
-    property AutoLoaded: Boolean read FAutoLoaded write FAutoLoaded;
-    { Defines the configuration using one of the following formats. Exemple:
-
-        @code(cfg.Configuration := 'param1=value1;param2=value2;param3=value2';)
-
-        or:
-
-        @code(cfg.Configuration := 'cgi1.cfg';)
-
-        This option requires the following file format:
-
-@longCode(
-  param1=value1
-  param2=value2
-  param3=value2
-)
-
-      NOTE: If a configuration is passed to @code(BrookSettings.Configuration),
-      the data informed in this property will be disregarded.
-    }
-    property Configuration: string read FConfiguration write FConfiguration;
     { Defines the object to be configured. }
-    property Target: TObject read FTarget write FTarget;
+    property Target: TObject read GetTarget write SetTarget;
+    { Handles the target properties. }
+    property Prop[const AName: string]: string read GetProp write SetProp;
     { Handles a string list of params of a configuration.  }
     property Param[const AName: string]: string read GetParam
       write SetParam; default;
-    { Handles the params of a configuration. }
-    property Params: TStrings read GetParams;
-    { Enables the class name checking, i.e., if the class of the configuring
-      object is a 'TObject1', the following string will be informed as
-      configuration:
-
-      @code('tobject1.param1=value1;tobject1.param2=value2;tobject1.param3=value3')
-
-      This feature is useful when more then one object will be configured in
-      one or more configurator objects. }
-    property ClassChecking: Boolean read FClassChecking write FClassChecking;
+    { Ignored params in the configuration. }
+    property IgnoredParams: TStrings read FIgnoredParams write SetIgnoredParams;
+    { Params of the configuration. }
+    property Params: TStrings read FParams write SetParams;
   end;
 
 implementation
 
-constructor TBrookConfigurator.Create;
+constructor TBrookConfigurator.Create(AOwner: TComponent);
 begin
-  inherited Create;
-  FCfg := TStringList.Create;
-  FCfg.Delimiter := SC;
-  FCfg.StrictDelimiter := True;
-  FAutoLoaded := True;
-end;
-
-constructor TBrookConfigurator.Create(const AConfiguration: string);
-begin
-  Create;
-  FConfiguration := AConfiguration;
-  Load;
+  inherited Create(AOwner);
+  FParams := TStringList.Create;
+  FIgnoredParams := TStringList.Create;
 end;
 
 destructor TBrookConfigurator.Destroy;
 begin
-  Target := nil;
-  FCfg.Free;
+  FTarget := nil;
+  FIgnoredParams.Free;
+  FParams.Free;
   inherited Destroy;
-end;
-
-function TBrookConfigurator.Load: TBrookConfigurator;
-begin
-  Result := Self;
-  if (FConfiguration = ES) and (BrookSettings.Configuration <> ES) then
-    FConfiguration := BrookSettings.Configuration;
-  if Trim(FConfiguration) = ES then
-  begin
-    FCfg.Clear;
-    Exit;
-  end;
-  if (Pos(SC, FConfiguration) <> 0) or (Pos(EQ, FConfiguration) <> 0) then
-    FCfg.DelimitedText := FConfiguration
-  else
-  begin
-    if not FileExists(FConfiguration) then
-      raise EBrookConfigurator.CreateFmt(Self,
-        SBrookCfgFileNotFoundError, [FConfiguration]);
-    FCfg.LoadFromFile(FConfiguration);
-  end;
-end;
-
-procedure TBrookConfigurator.Clear;
-begin
-  FCfg.Clear;
 end;
 
 function TBrookConfigurator.GetParam(const AName: string): string;
 begin
-  Result := FCfg.Values[AName];
+  Result := FParams.Values[AName];
 end;
 
-function TBrookConfigurator.GetParams: TStrings;
+procedure TBrookConfigurator.SetIgnoredParams(AValue: TStrings);
 begin
-  Result := FCfg;
+  if Assigned(AValue) then
+    FIgnoredParams.Assign(AValue);
+end;
+
+function TBrookConfigurator.GetProp(const AName: string): string;
+begin
+  if Assigned(FTarget) then
+    BrookObjectToString(FTarget, AName, Result)
+  else
+    Result := ES;
+end;
+
+procedure TBrookConfigurator.SetProp(const AName: string;
+  const AValue: string);
+begin
+  if Assigned(FTarget) then
+    BrookStringToObject(FTarget, AName, AValue);
+end;
+
+function TBrookConfigurator.GetTarget: TObject;
+begin
+  Result := FTarget;
 end;
 
 procedure TBrookConfigurator.SetParam(const AName: string; const AValue: string);
 begin
-  FCfg.Values[AName] := AValue;
+  FParams.Values[AName] := AValue;
+end;
+
+procedure TBrookConfigurator.SetParams(AValue: TStrings);
+begin
+  if Assigned(AValue) then
+    FParams.Assign(AValue);
+end;
+
+procedure TBrookConfigurator.SetTarget(AValue: TObject);
+begin
+  if AValue = Self then
+    FTarget := nil
+  else
+    FTarget := AValue;
 end;
 
 procedure TBrookConfigurator.Configure;
 var
-  I: Integer;
-  VParam, VPropName, VToken, VClassName: string;
+  VOldDelim: Char;
+  VOldStrictDelim: Boolean;
 begin
   if not Assigned(FTarget) then
     Exit;
-  if FAutoLoaded then
-    Load;
-  if FClassChecking then
-    for I := 0 to Pred(FCfg.Count) do
-    begin
-      VClassName := FCfg.Names[I];
-      Delete(VClassName, Pos(DT, VClassName), MaxInt);
-      VPropName := FCfg.Names[I];
-      Delete(VPropName, 1, Pos(DT, VPropName));
-      VToken := Copy(VPropName, 1, 1);
-      if (VToken = PO) or (VToken = ES) then
-        Continue;
-      VParam := FCfg.Values[VClassName + DT + VPropName];
-      if SameText(VClassName, FTarget.ClassName) then
-        BrookStringToObject(FTarget, VPropName, VParam);
-    end
-  else
-    for I := 0 to Pred(FCfg.Count) do
-    begin
-      VPropName := FCfg.Names[I];
-      VToken := Copy(VPropName, 1, 1);
-      if (VToken = PO) or (VToken = ES) then
-        Continue;
-      VParam := FCfg.Values[VPropName];
-      BrookStringToObject(FTarget, VPropName, VParam);
+  if (FParams.Count = 0) and (BrookSettings.Configuration <> ES) then
+  begin
+    VOldStrictDelim := FParams.StrictDelimiter;
+    VOldDelim := FParams.Delimiter;
+    try
+      FParams.StrictDelimiter := True;
+      FParams.Delimiter := SC;
+      if (Pos(SC, BrookSettings.Configuration) <> 0) or
+        (Pos(EQ, BrookSettings.Configuration) <> 0) then
+        FParams.DelimitedText := BrookSettings.Configuration
+      else
+      begin
+        if not FileExists(BrookSettings.Configuration) then
+          raise EBrookConfigurator.CreateFmt(Self,
+            SBrookCfgFileNotFoundError, [BrookSettings.Configuration]);
+        FParams.LoadFromFile(BrookSettings.Configuration);
+      end;
+    finally
+      FParams.StrictDelimiter := VOldStrictDelim;
+      FParams.Delimiter := VOldDelim;
     end;
+  end;
+  BrookStringsToObject(FTarget, FParams, FIgnoredParams);
 end;
 
 end.
