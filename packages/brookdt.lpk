@@ -23,32 +23,36 @@
     <Description Value="Brook designtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
     <Version Minor="9" Release="9"/>
-    <Files Count="6">
+    <Files Count="7">
       <Item1>
-        <Filename Value="..\design\brookfcleventloghandler.pas"/>
-        <UnitName Value="BrookFCLEventLogHandler"/>
+        <Filename Value="..\design\brookconfiguratorhandler.pas"/>
+        <UnitName Value="BrookConfiguratorHandler"/>
       </Item1>
       <Item2>
-        <Filename Value="..\design\brookmessageshandler_ptbr.pas"/>
-        <UnitName Value="BrookMessagesHandler_ptBR"/>
+        <Filename Value="..\design\brookfcleventloghandler.pas"/>
+        <UnitName Value="BrookFCLEventLogHandler"/>
       </Item2>
       <Item3>
-        <Filename Value="..\design\brookmiddlewarehandler.pas"/>
-        <UnitName Value="BrookMiddlewareHandler"/>
+        <Filename Value="..\design\brookmessageshandler_ptbr.pas"/>
+        <UnitName Value="BrookMessagesHandler_ptBR"/>
       </Item3>
       <Item4>
+        <Filename Value="..\design\brookmiddlewarehandler.pas"/>
+        <UnitName Value="BrookMiddlewareHandler"/>
+      </Item4>
+      <Item5>
         <Filename Value="..\design\brookregallcomp.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookRegAllComp"/>
-      </Item4>
-      <Item5>
-        <Filename Value="..\design\brookrouterhandler.pas"/>
-        <UnitName Value="BrookRouterHandler"/>
       </Item5>
       <Item6>
+        <Filename Value="..\design\brookrouterhandler.pas"/>
+        <UnitName Value="BrookRouterHandler"/>
+      </Item6>
+      <Item7>
         <Filename Value="..\design\brooksessionhandler.pas"/>
         <UnitName Value="BrookSessionHandler"/>
-      </Item6>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

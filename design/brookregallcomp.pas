@@ -19,7 +19,8 @@ interface
 
 uses
   BrookRouterHandler, BrookSessionHandler, BrookMiddlewareHandler,
-  BrookMessagesHandler_ptBR, BrookFCLEventLogHandler, Classes;
+  BrookMessagesHandler_ptBR, BrookFCLEventLogHandler, BrookConfiguratorHandler,
+  Classes;
 
 procedure Register;
 
@@ -29,7 +30,7 @@ procedure Register;
 begin
   RegisterComponents('Brook framework', [TBrookRouterHandler,
     TBrookSessionHandler, TBrookMiddlewareHandler, TBrookMessagesHandler_ptBR,
-    TBrookFCLEventLogHandler]);
+    TBrookFCLEventLogHandler, TBrookConfiguratorHandler]);
 end;
 
 end.
