@@ -44,6 +44,8 @@ type
     property IgnoredParams;
     property Params;
     property Target: TComponent read GetTargetComp write SetTargetComp;
+    property AfterConfigure;
+    property BeforeConfgure;
   end;
 
 implementation

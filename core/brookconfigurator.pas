@@ -28,9 +28,17 @@ type
   { Is a metaclass for @link(TBrookConfigurator) class. }
   TBrookConfiguratorClass = class of TBrookConfigurator;
 
+  { Is a type to configure event. }
+  TBrookConfigureEvent = procedure(ASender: TObject;
+    var AHandled: Boolean) of object;
+  { Defines a pointer to the configure event.}
+  PBrookConfigureEvent = ^TBrookConfigureEvent;
+
   { Configures objects by means of string or file. }
   TBrookConfigurator = class(TBrookComponent)
   private
+    FAfterConfigure: TBrookConfigureEvent;
+    FBeforeConfgure: TBrookConfigureEvent;
     FIgnoredParams: TStrings;
     FParams: TStrings;
     FTarget: TObject;
@@ -61,6 +69,12 @@ type
     property IgnoredParams: TStrings read FIgnoredParams write SetIgnoredParams;
     { Params of the configuration. }
     property Params: TStrings read FParams write SetParams;
+    { Is triggered after configure. }
+    property AfterConfigure: TBrookConfigureEvent read FAfterConfigure
+      write FAfterConfigure;
+    { Is triggered before configure. }
+    property BeforeConfgure: TBrookConfigureEvent read FBeforeConfgure
+      write FBeforeConfgure;
   end;
 
 implementation
@@ -134,32 +148,40 @@ procedure TBrookConfigurator.Configure;
 var
   VOldDelim: Char;
   VOldStrictDelim: Boolean;
+  VHandled: Boolean = False;
 begin
-  if not Assigned(FTarget) then
-    Exit;
-  if (FParams.Count = 0) and (BrookSettings.Configuration <> ES) then
-  begin
-    VOldStrictDelim := FParams.StrictDelimiter;
-    VOldDelim := FParams.Delimiter;
-    try
-      FParams.StrictDelimiter := True;
-      FParams.Delimiter := SC;
-      if (Pos(SC, BrookSettings.Configuration) <> 0) or
-        (Pos(EQ, BrookSettings.Configuration) <> 0) then
-        FParams.DelimitedText := BrookSettings.Configuration
-      else
-      begin
-        if not FileExists(BrookSettings.Configuration) then
-          raise EBrookConfigurator.CreateFmt(Self,
-            SBrookCfgFileNotFoundError, [BrookSettings.Configuration]);
-        FParams.LoadFromFile(BrookSettings.Configuration);
+  try
+    if Assigned(FBeforeConfgure) then
+      FBeforeConfgure(Self, VHandled);
+    if (not Assigned(FTarget)) or VHandled then
+      Exit;
+    if (FParams.Count = 0) and (BrookSettings.Configuration <> ES) then
+    begin
+      VOldStrictDelim := FParams.StrictDelimiter;
+      VOldDelim := FParams.Delimiter;
+      try
+        FParams.StrictDelimiter := True;
+        FParams.Delimiter := SC;
+        if (Pos(SC, BrookSettings.Configuration) <> 0) or
+          (Pos(EQ, BrookSettings.Configuration) <> 0) then
+          FParams.DelimitedText := BrookSettings.Configuration
+        else
+        begin
+          if not FileExists(BrookSettings.Configuration) then
+            raise EBrookConfigurator.CreateFmt(Self,
+              SBrookCfgFileNotFoundError, [BrookSettings.Configuration]);
+          FParams.LoadFromFile(BrookSettings.Configuration);
+        end;
+      finally
+        FParams.StrictDelimiter := VOldStrictDelim;
+        FParams.Delimiter := VOldDelim;
       end;
-    finally
-      FParams.StrictDelimiter := VOldStrictDelim;
-      FParams.Delimiter := VOldDelim;
     end;
+    BrookStringsToObject(FTarget, FParams, FIgnoredParams);
+  finally
+    if Assigned(FAfterConfigure) then
+      FAfterConfigure(Self, VHandled);
   end;
-  BrookStringsToObject(FTarget, FParams, FIgnoredParams);
 end;
 
 end.
