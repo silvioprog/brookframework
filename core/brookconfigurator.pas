@@ -150,6 +150,8 @@ var
   VOldStrictDelim: Boolean;
   VHandled: Boolean = False;
 begin
+  if (csDesigning in ComponentState) then
+    Exit;
   try
     if Assigned(FBeforeConfgure) then
       FBeforeConfgure(Self, VHandled);
