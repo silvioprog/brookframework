@@ -28,9 +28,33 @@ type
   { Is a metaclass for @link(TBrookSession) class. }
   TBrookSessionClass = class of TBrookSession;
 
+  { Is a type to the session start event. }
+  TBrookSessionStartEvent = procedure(ASender: TObject;
+    ARequest: TBrookRequest; var AHandled: Boolean) of object;
+  { Defines a pointer to the session start event.}
+  PBrookSessionStartEvent = ^TBrookSessionStartEvent;
+
+  { Is a type to the session finish event. }
+  TBrookSessionFinishEvent = procedure(ASender: TObject;
+    AResponse: TBrookResponse; var AHandled: Boolean) of object;
+  { Defines a pointer to the session finish event.}
+  PBrookSessionFinishEvent = ^TBrookSessionFinishEvent;
+
+  { Is a type to the session expire event. }
+  TBrookSessionExpireEvent = procedure(ASender: TObject; ARequest: TBrookRequest;
+    AResponse: TBrookResponse; var AHandled: Boolean) of object;
+  { Defines a pointer to the session expire event.}
+  PBrookSessionExpireEvent = ^TBrookSessionExpireEvent;
+
   { Defines features to the session handling. }
   TBrookSession = class(TBrookComponent)
   private
+    FAfterExpire: TBrookSessionExpireEvent;
+    FAfterFinish: TBrookSessionFinishEvent;
+    FAfterStart: TBrookSessionStartEvent;
+    FBeforeExpire: TBrookSessionExpireEvent;
+    FBeforeFinish: TBrookSessionFinishEvent;
+    FBeforeStart: TBrookSessionStartEvent;
     FCookieDomain: string;
     FCookieExpires: TDateTime;
     FCookieName: string;
@@ -44,7 +68,7 @@ type
     FIgnoredFields: TStrings;
     FSID: string;
     FStarted: Boolean;
-    FTimeOut: Integer;
+    FTimeout: Integer;
     function GetField(const AName: string): string;
     procedure SetField(const AName: string; const AValue: string);
     procedure SetFields(AValue: TStrings);
@@ -109,10 +133,29 @@ type
     { The session file prefix. }
     property FilePrefix: ShortString read FFilePrefix write FFilePrefix;
     { The remaining seconds for the session finish. }
-    property TimeOut: Integer read FTimeOut write FTimeOut default BROOK_SESS_DEFAULT_TIMEOUT;
+    property Timeout: Integer read FTimeout write FTimeout
+      default BROOK_SESS_DEFAULT_TIMEOUT;
     { Informs if the session cookie is accessible only by HTTP requests,
       if @code(True), the JavaScript access is not allowed. }
     property HttpOnly: Boolean read FHttpOnly write FHttpOnly;
+    { Is triggered after session start. }
+    property AfterStart: TBrookSessionStartEvent read FAfterStart
+      write FAfterStart;
+    { Is triggered before session start. }
+    property BeforeStart: TBrookSessionStartEvent read FBeforeStart
+      write FBeforeStart;
+    { Is triggered after session finish. }
+    property AfterFinish: TBrookSessionFinishEvent read FAfterFinish
+      write FAfterFinish;
+    { Is triggered before session finish. }
+    property BeforeFinish: TBrookSessionFinishEvent read FBeforeFinish
+      write FBeforeFinish;
+    { Is triggered after session expire. }
+    property AfterExpire: TBrookSessionExpireEvent read FAfterExpire
+      write FAfterExpire;
+    { Is triggered before session expire. }
+    property BeforeExpire: TBrookSessionExpireEvent read FBeforeExpire
+      write FBeforeExpire;
   end;
 
   { Defines features to the section mapping field values to object. }
@@ -150,7 +193,7 @@ begin
   FDirectory := GetTempDir(False);
   if FDirectory = ES then
     FDirectory := ExtractFilePath(ParamStr(0));
-  FTimeOut := BROOK_SESS_DEFAULT_TIMEOUT;
+  FTimeout := BROOK_SESS_DEFAULT_TIMEOUT;
   FHttpOnly := True;
 end;
 
@@ -168,13 +211,13 @@ end;
 
 function TBrookSession.IsExpired: Boolean;
 begin
-  Result := FTimeOut <> 0;
+  Result := FTimeout <> 0;
   if not Result then
     Exit;
   if FileExists(FFileName) then
   begin
-    if FTimeOut > 0 then
-      Result := IncSecond(BrookFileDate(FFileName), FTimeOut) < Now
+    if FTimeout > 0 then
+      Result := IncSecond(BrookFileDate(FFileName), FTimeout) < Now
     else
       Result := False;
   end
@@ -315,30 +358,45 @@ begin
 end;
 
 procedure TBrookSession.Start(ARequest: TBrookRequest);
+var
+  VHandled: Boolean = False;
 begin
-  if FStarted then
+  if Assigned(FBeforeStart) then
+    FBeforeStart(Self, ARequest, VHandled);
+  if FStarted or VHandled then
     Exit;
   MakeSID(ARequest);
   SetFileName;
   FStarted := True;
   Load;
+  if Assigned(FAfterStart) then
+    FAfterStart(Self, ARequest, VHandled);
 end;
 
 procedure TBrookSession.Finish(AResponse: TBrookResponse);
+var
+  VHandled: Boolean = False;
 begin
-  if not FStarted then
+  if Assigned(FBeforeFinish) then
+    FBeforeFinish(Self, AResponse, VHandled);
+  if (not FStarted) or VHandled then
     Exit;
   SetCookie(AResponse);
   Save;
   FStarted := False;
+  if Assigned(FAfterFinish) then
+    FAfterFinish(Self, AResponse, VHandled);
 end;
 
 procedure TBrookSession.Expire(ARequest: TBrookRequest;
   AResponse: TBrookResponse);
 var
   VCookie: TCookie;
+  VHandled: Boolean = False;
 begin
-  if IsExpired or not FStarted then
+  if Assigned(FBeforeExpire) then
+    FBeforeExpire(Self, ARequest, AResponse, VHandled);
+  if IsExpired or (not FStarted) or VHandled then
     Exit;
   FSID := ARequest.CookieFields.Values[FCookieName];
   if FSID = ES then
@@ -349,6 +407,8 @@ begin
   VCookie.Name := FCookieName;
   VCookie.Expire;
   FFields.Clear;
+  if Assigned(FAfterExpire) then
+    FAfterExpire(Self, ARequest, AResponse, VHandled);
 end;
 
 function TBrookSession.Exists(const AName: string): Boolean;

@@ -41,6 +41,12 @@ type
     property FilePrefix;
     property TimeOut;
     property HttpOnly;
+    property AfterStart;
+    property BeforeStart;
+    property AfterFinish;
+    property BeforeFinish;
+    property AfterExpire;
+    property BeforeExpire;
   end;
 
 implementation
