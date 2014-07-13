@@ -26,19 +26,14 @@ type
 
   TBrookFCLEventLog = class(TBrookLogger)
   private
-    FConfigured: Boolean;
     FLogger: TEventLog;
   protected
-    procedure SetActive(const AValue: Boolean); override;
-    procedure SetFileName(const AValue: TFileName); override;
-    procedure SetOutput(const AValue: TBrookLogOutput); override;
-    procedure InternalLog(const L: TEventType; const S: string;
-      const ACode: Word; const E: Exception); virtual;
+    procedure Prepare; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Configure; virtual;
-    procedure Unconfigure; virtual;
+    procedure Log(const AType: TBrookLogType; const S: string;
+      const ACode: Word; const E: Exception = nil); override;
     procedure Custom(const S: string; const ACode: Word); override;
     procedure Info(const S: string); override;
     procedure Warn(const S: string); override;
@@ -63,57 +58,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TBrookFCLEventLog.SetActive(const AValue: Boolean);
+procedure TBrookFCLEventLog.Prepare;
 begin
-  inherited SetActive(AValue);
-  Unconfigure;
-end;
-
-procedure TBrookFCLEventLog.SetFileName(const AValue: TFileName);
-begin
-  inherited SetFileName(AValue);
-  Unconfigure;
-end;
-
-procedure TBrookFCLEventLog.SetOutput(const AValue: TBrookLogOutput);
-begin
-  inherited SetOutput(AValue);
-  Unconfigure;
-end;
-
-procedure TBrookFCLEventLog.InternalLog(const L: TEventType; const S: string;
-  const ACode: Word; const E: Exception);
-var
-  X: string;
-begin
-  if not FConfigured then
-    Configure;
-  if FLogger.Active then
-  begin
-    X := S;
-    if Assigned(E) then
-      X += '<Error>' + LineEnding +
-        Format('%s exception was raised with the following message: %s',
-        [E.ClassName, E.Message]) + LineEnding +
-        BrookDumpStack(LineEnding) + LineEnding +
-        BrookDumpStackTrace(LineEnding) + '</Error>';
-    case L of
-      etCustom:
-        begin
-          FLogger.CustomLogType := ACode;
-          FLogger.Log(etCustom, X);
-        end;
-      etInfo: FLogger.Log(etInfo, X);
-      etWarning: FLogger.Log(etWarning, X);
-      etError: FLogger.Log(etError, X);
-      etDebug: FLogger.Log(etDebug, X);
-    end;
-  end;
-end;
-
-procedure TBrookFCLEventLog.Configure;
-begin
-  FConfigured := True;
+  inherited Prepare;
   FLogger.Active := False;
   case Output of
     loFile: FLogger.LogType := EventLog.ltFile;
@@ -131,34 +78,57 @@ begin
     FLogger.Active := BrookSettings.LogActive;
 end;
 
-procedure TBrookFCLEventLog.Unconfigure;
+procedure TBrookFCLEventLog.Log(const AType: TBrookLogType; const S: string;
+  const ACode: Word; const E: Exception);
+var
+  X: string;
 begin
-  FConfigured := False;
+  if FLogger.Active then
+  begin
+    X := S;
+    if Assigned(E) then
+      X += '<Error>' + LineEnding +
+        Format('%s exception was raised with the following message: %s',
+        [E.ClassName, E.Message]) + LineEnding +
+        BrookDumpStack(LineEnding) + LineEnding +
+        BrookDumpStackTrace(LineEnding) + '</Error>';
+    case AType of
+      ltCustom:
+        begin
+          FLogger.CustomLogType := ACode;
+          FLogger.Log(etCustom, X);
+        end;
+      ltInfo: FLogger.Log(etInfo, X);
+      ltWarning: FLogger.Log(etWarning, X);
+      ltError: FLogger.Log(etError, X);
+      ltDebug: FLogger.Log(etDebug, X);
+    end;
+  end;
 end;
 
 procedure TBrookFCLEventLog.Custom(const S: string; const ACode: Word);
 begin
-  InternalLog(etCustom, S, ACode, nil);
+  inherited InternalLog(ltCustom, S, ACode, nil);
 end;
 
 procedure TBrookFCLEventLog.Info(const S: string);
 begin
-  InternalLog(etInfo, S, 0, nil);
+  inherited InternalLog(ltInfo, S, 0, nil);
 end;
 
 procedure TBrookFCLEventLog.Warn(const S: string);
 begin
-  InternalLog(etWarning, S, 0, nil);
+  inherited InternalLog(ltWarning, S, 0, nil);
 end;
 
 procedure TBrookFCLEventLog.Debug(const S: string);
 begin
-  InternalLog(etDebug, S, 0, nil);
+  inherited InternalLog(ltDebug, S, 0, nil);
 end;
 
 procedure TBrookFCLEventLog.Error(const S: string; E: Exception);
 begin
-  InternalLog(etError, S, 0, E);
+  inherited InternalLog(ltError, S, 0, E);
 end;
 
 initialization

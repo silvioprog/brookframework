@@ -33,6 +33,8 @@ type
     property Active;
     property FileName;
     property Output;
+    property AfterLog;
+    property BeforeLog;
   end;
 
 implementation
