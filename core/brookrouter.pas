@@ -71,7 +71,7 @@ type
   PBrookExecuteActionEvent = ^TBrookExecuteActionEvent;
 
   { Defines a list of routes. }
-  TBrookRoutes = class(TBrookObject)
+  TBrookRoutes = class(TBrookComponent)
   private
     FList: TFPList;
     function GetItems(const AIndex: Integer): PBrookRoute;
@@ -81,7 +81,7 @@ type
     property List: TFPList read FList;
   public
     { Creates an instance of a @link(TBrookRoutes) class. }
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     { Frees an instance of @link(TBrookRoutes) class. }
     destructor Destroy; override;
     { Clears all routes. }
@@ -109,7 +109,7 @@ type
   end;
 
   { Provides features for the route handling. }
-  TBrookRouter = class(TBrookObject)
+  TBrookRouter = class(TBrookComponent)
   private
     FAfterExecuteAction: TBrookExecuteActionEvent;
     FAfterMatchPattern: TBrookMatchPatternEvent;
@@ -126,10 +126,10 @@ type
     procedure FreeAction(AAction: TBrookAction); virtual;
     procedure ExecuteAction(AAction: TBrookAction; ARequest: TBrookRequest;
       AResponse: TBrookResponse; ANames, AValues: TBrookArrayOfString;
-      ARoute: TBrookRoute); virtual;
+      ARoute: TBrookRoute); overload; virtual;
   public
     { Creates an instance of a @link(TBrookRouter) class. }
-    constructor Create; virtual;
+    constructor Create(AOwner: TComponent); override;
     { Frees an instance of @link(TBrookRouter) class. }
     destructor Destroy; override;
     { Return the service class provided by this class. }
@@ -202,8 +202,9 @@ var
 
 { TBrookRoutes }
 
-constructor TBrookRoutes.Create;
+constructor TBrookRoutes.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FList := TFPList.Create;
 end;
 
@@ -365,8 +366,9 @@ end;
 
 { TBrookRouter }
 
-constructor TBrookRouter.Create;
+constructor TBrookRouter.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FRoutes := CreateRoutes;
 end;
 
@@ -383,7 +385,7 @@ end;
 
 function TBrookRouter.CreateRoutes: TBrookRoutes;
 begin
-  Result := TBrookRoutes.Create;
+  Result := TBrookRoutes.Create(Self);
 end;
 
 procedure TBrookRouter.FreeRoutes(ARoutes: TBrookRoutes);
@@ -442,7 +444,7 @@ begin
   begin
     if not Assigned(_BrookRouterServiceClass) then
       raise EBrookRouter.Create(Self, SBrookNoRouterServiceRegisteredError);
-    _BrookRouterService := _BrookRouterServiceClass.Create;
+    _BrookRouterService := _BrookRouterServiceClass.Create(nil);
   end;
   Result := _BrookRouterService;
 end;
