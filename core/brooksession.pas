@@ -361,31 +361,37 @@ procedure TBrookSession.Start(ARequest: TBrookRequest);
 var
   VHandled: Boolean = False;
 begin
-  if Assigned(FBeforeStart) then
-    FBeforeStart(Self, ARequest, VHandled);
-  if FStarted or VHandled then
-    Exit;
-  MakeSID(ARequest);
-  SetFileName;
-  FStarted := True;
-  Load;
-  if Assigned(FAfterStart) then
-    FAfterStart(Self, ARequest, VHandled);
+  try
+    if Assigned(FBeforeStart) then
+      FBeforeStart(Self, ARequest, VHandled);
+    if FStarted or VHandled then
+      Exit;
+    MakeSID(ARequest);
+    SetFileName;
+    FStarted := True;
+    Load;
+  finally
+    if Assigned(FAfterStart) then
+      FAfterStart(Self, ARequest, VHandled);
+  end;
 end;
 
 procedure TBrookSession.Finish(AResponse: TBrookResponse);
 var
   VHandled: Boolean = False;
 begin
-  if Assigned(FBeforeFinish) then
-    FBeforeFinish(Self, AResponse, VHandled);
-  if (not FStarted) or VHandled then
-    Exit;
-  SetCookie(AResponse);
-  Save;
-  FStarted := False;
-  if Assigned(FAfterFinish) then
-    FAfterFinish(Self, AResponse, VHandled);
+  try
+    if Assigned(FBeforeFinish) then
+      FBeforeFinish(Self, AResponse, VHandled);
+    if (not FStarted) or VHandled then
+      Exit;
+    SetCookie(AResponse);
+    Save;
+    FStarted := False;
+  finally
+    if Assigned(FAfterFinish) then
+      FAfterFinish(Self, AResponse, VHandled);
+  end;
 end;
 
 procedure TBrookSession.Expire(ARequest: TBrookRequest;
@@ -394,21 +400,24 @@ var
   VCookie: TCookie;
   VHandled: Boolean = False;
 begin
-  if Assigned(FBeforeExpire) then
-    FBeforeExpire(Self, ARequest, AResponse, VHandled);
-  if IsExpired or (not FStarted) or VHandled then
-    Exit;
-  FSID := ARequest.CookieFields.Values[FCookieName];
-  if FSID = ES then
-    Exit;
-  SetFileName;
-  DeleteFile(FFileName);
-  VCookie := AResponse.Cookies.Add;
-  VCookie.Name := FCookieName;
-  VCookie.Expire;
-  FFields.Clear;
-  if Assigned(FAfterExpire) then
-    FAfterExpire(Self, ARequest, AResponse, VHandled);
+  try
+    if Assigned(FBeforeExpire) then
+      FBeforeExpire(Self, ARequest, AResponse, VHandled);
+    if IsExpired or (not FStarted) or VHandled then
+      Exit;
+    FSID := ARequest.CookieFields.Values[FCookieName];
+    if FSID = ES then
+      Exit;
+    SetFileName;
+    DeleteFile(FFileName);
+    VCookie := AResponse.Cookies.Add;
+    VCookie.Name := FCookieName;
+    VCookie.Expire;
+    FFields.Clear;
+  finally
+    if Assigned(FAfterExpire) then
+      FAfterExpire(Self, ARequest, AResponse, VHandled);
+  end;
 end;
 
 function TBrookSession.Exists(const AName: string): Boolean;
