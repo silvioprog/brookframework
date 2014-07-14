@@ -71,7 +71,7 @@ type
   PBrookExecuteActionEvent = ^TBrookExecuteActionEvent;
 
   { Defines a list of routes. }
-  TBrookRoutes = class(TBrookComponent)
+  TBrookRoutes = class(TBrookPersistent)
   private
     FList: TFPList;
     function GetItems(const AIndex: Integer): PBrookRoute;
@@ -81,7 +81,7 @@ type
     property List: TFPList read FList;
   public
     { Creates an instance of a @link(TBrookRoutes) class. }
-    constructor Create(AOwner: TComponent); override;
+    constructor Create; virtual;
     { Frees an instance of @link(TBrookRoutes) class. }
     destructor Destroy; override;
     { Clears all routes. }
@@ -202,9 +202,9 @@ var
 
 { TBrookRoutes }
 
-constructor TBrookRoutes.Create(AOwner: TComponent);
+constructor TBrookRoutes.Create;
 begin
-  inherited Create(AOwner);
+  inherited Create;
   FList := TFPList.Create;
 end;
 
@@ -385,7 +385,7 @@ end;
 
 function TBrookRouter.CreateRoutes: TBrookRoutes;
 begin
-  Result := TBrookRoutes.Create(Self);
+  Result := TBrookRoutes.Create;
 end;
 
 procedure TBrookRouter.FreeRoutes(ARoutes: TBrookRoutes);
