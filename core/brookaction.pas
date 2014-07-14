@@ -29,7 +29,7 @@ type
   TBrookActionClass = class of TBrookAction;
 
   { Provides features to handle HTTP requests and responses. }
-  TBrookAction = class(TBrookObject)
+  TBrookAction = class(TBrookPersistent)
   private
     FFields: TStrings;
     FFiles: TBrookUploadedFiles;
