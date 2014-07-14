@@ -28,9 +28,10 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Brook framework', [TBrookRouterHandler,
-    TBrookSessionHandler, TBrookMiddlewareHandler, TBrookMessagesHandler_ptBR,
-    TBrookFCLEventLogHandler, TBrookConfiguratorHandler]);
+  RegisterComponents('Brook Core', [TBrookConfiguratorHandler,
+    TBrookSessionHandler, TBrookMiddlewareHandler, TBrookRouterHandler,
+    TBrookMessagesHandler_ptBR]);
+  RegisterComponents('Brook Brokers', [TBrookFCLEventLogHandler]);
 end;
 
 end.
