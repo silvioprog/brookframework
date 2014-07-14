@@ -36,6 +36,10 @@ type
   TBrookInterfacedObject = class(TInterfacedObject)
   end;
 
+  { Is the main persistent for Brook. }
+  TBrookPersistent = class(TPersistent)
+  end;
+
   { Is the main component for Brook. }
   TBrookComponent = class(TComponent)
   end;
