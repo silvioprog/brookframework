@@ -629,6 +629,8 @@ begin
     VValue := Value;
     DoMakeSelect(VSelect, VDisplayText, VValue);
     VQuery.SQL.Text := VSelect;
+    if VQuery.Params.Count > 0 then
+      VQuery.SetParams(Entity);
     VQuery.Open;
     VArray := TJSONArray.Create;
     while not VQuery.EOF do
