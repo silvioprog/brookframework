@@ -64,9 +64,10 @@ type
   PBrookRouteEvent = ^TBrookRouteEvent;
 
   { Is a type to @code(*ExecuteAction) event. }
-  TBrookExecuteActionEvent = procedure(ASender: TObject;
-    AAction: TBrookAction; ARequest: TBrookRequest; AResponse: TBrookResponse;
-    ARoute: TBrookRoute; var AHandled: Boolean) of object;
+  TBrookExecuteActionEvent = procedure(ASender: TObject; AAction: TBrookAction;
+    ARequest: TBrookRequest; AResponse: TBrookResponse; const ANames,
+    AValues: TBrookArrayOfString; ARoute: TBrookRoute;
+    var AHandled: Boolean) of object;
   { Defines a pointer to the execute action event.}
   PBrookExecuteActionEvent = ^TBrookExecuteActionEvent;
 
@@ -125,7 +126,7 @@ type
       ARequest: TBrookRequest; AResponse: TBrookResponse): TBrookAction; virtual;
     procedure FreeAction(AAction: TBrookAction); virtual;
     procedure ExecuteAction(AAction: TBrookAction; ARequest: TBrookRequest;
-      AResponse: TBrookResponse; ANames, AValues: TBrookArrayOfString;
+      AResponse: TBrookResponse; const ANames, AValues: TBrookArrayOfString;
       ARoute: TBrookRoute); overload; virtual;
   public
     { Creates an instance of a @link(TBrookRouter) class. }
@@ -405,7 +406,7 @@ begin
 end;
 
 procedure TBrookRouter.ExecuteAction(AAction: TBrookAction;
-  ARequest: TBrookRequest; AResponse: TBrookResponse; ANames,
+  ARequest: TBrookRequest; AResponse: TBrookResponse; const ANames,
   AValues: TBrookArrayOfString; ARoute: TBrookRoute);
 var
   I: Integer;
@@ -413,7 +414,8 @@ var
 begin
   try
     if Assigned(FBeforeExecuteAction) then
-      FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
+      FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ANames, AValues,
+        ARoute, VHandled);
     AAction.Variables.Clear;
     for I := 0 to High(ANames) do
       AAction.Variables.Add(ANames[I] + EQ + AValues[I]);
@@ -421,7 +423,8 @@ begin
       AAction.DoRequest(ARequest, AResponse);
   finally
     if Assigned(FAfterExecuteAction) then
-      FAfterExecuteAction(Self, AAction, ARequest, AResponse, ARoute, VHandled);
+      FAfterExecuteAction(Self, AAction, ARequest, AResponse, ANames, AValues,
+        ARoute, VHandled);
   end;
 end;
 

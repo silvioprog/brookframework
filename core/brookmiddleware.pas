@@ -18,7 +18,8 @@ unit BrookMiddleware;
 interface
 
 uses
-  BrookClasses, BrookAction, BrookRouter, BrookException, BrookHttpDefs;
+  BrookClasses, BrookAction, BrookRouter, BrookException, BrookHttpDefs,
+  BrookUtils;
 
 type
   { Handles exceptions for @link(TBrookMiddleware). }
@@ -40,7 +41,8 @@ type
     FOnExecute: TBrookMiddlewareExecuteEvent;
   protected
     procedure DoExecute(ASender: TObject; AAction: TBrookAction;
-      ARequest: TBrookRequest; AResponse: TBrookResponse; ARoute: TBrookRoute;
+      ARequest: TBrookRequest; AResponse: TBrookResponse; const ANames,
+      AValues: TBrookArrayOfString; ARoute: TBrookRoute;
       var AHandled: Boolean); virtual;
   public
     { Creates an instance of a @link(TBrookMiddleware) class. }
@@ -68,13 +70,14 @@ begin
   BindExecution(ABoundEvent);
 end;
 
-procedure TBrookMiddleware.DoExecute(ASender: TObject;
-  AAction: TBrookAction; ARequest: TBrookRequest; AResponse: TBrookResponse;
-  ARoute: TBrookRoute; var AHandled: Boolean);
+procedure TBrookMiddleware.DoExecute(ASender: TObject; AAction: TBrookAction;
+  ARequest: TBrookRequest; AResponse: TBrookResponse; const ANames,
+  AValues: TBrookArrayOfString; ARoute: TBrookRoute; var AHandled: Boolean);
 begin
   Execute(ASender, AAction, ARoute);
   if Assigned(FOldExecute) then
-    FOldExecute(ASender, AAction, ARequest, AResponse, ARoute, AHandled);
+    FOldExecute(ASender, AAction, ARequest, AResponse, ANames, AValues, ARoute,
+      AHandled);
 end;
 
 procedure TBrookMiddleware.Execute(ASender: TObject; AAction: TBrookAction;

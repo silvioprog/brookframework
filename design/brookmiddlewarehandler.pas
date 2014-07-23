@@ -18,7 +18,7 @@ unit BrookMiddlewareHandler;
 interface
 
 uses
-  BrookMiddleware, BrookRouter, BrookAction, BrookHttpDefs;
+  BrookMiddleware, BrookRouter, BrookAction, BrookHttpDefs, BrookUtils;
 
 type
   { Handles exceptions for @link(TBrookMiddlewareHandler). }
@@ -38,8 +38,9 @@ type
   protected
     procedure Loaded; override;
     procedure DoExecute(ASender: TObject; AAction: TBrookAction;
-       ARequest: TBrookRequest; AResponse: TBrookResponse; ARoute: TBrookRoute;
-       var AHandled: Boolean); override;
+      ARequest: TBrookRequest; AResponse: TBrookResponse; const ANames,
+      AValues: TBrookArrayOfString; ARoute: TBrookRoute;
+      var AHandled: Boolean); override;
   published
     property OnExecute;
     { Defines if the middleware will be executed before or after the action
@@ -67,11 +68,14 @@ end;
 
 procedure TBrookMiddlewareHandler.DoExecute(ASender: TObject;
   AAction: TBrookAction; ARequest: TBrookRequest; AResponse: TBrookResponse;
-  ARoute: TBrookRoute; var AHandled: Boolean);
+  const ANames, AValues: TBrookArrayOfString; ARoute: TBrookRoute;
+  var AHandled: Boolean);
 begin
-  inherited DoExecute(ASender, AAction, ARequest, AResponse, ARoute, AHandled);
+  inherited DoExecute(ASender, AAction, ARequest, AResponse, ANames, AValues,
+    ARoute, AHandled);
   if Assigned(FOnExecAction) then
-    FOnExecAction(ASender, AAction, ARequest, AResponse, ARoute, AHandled);
+    FOnExecAction(ASender, AAction, ARequest, AResponse, ANames, AValues,
+      ARoute, AHandled);
 end;
 
 end.
