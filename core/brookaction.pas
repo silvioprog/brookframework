@@ -166,6 +166,14 @@ initialization
 
       @code(/cgi-bin/cgi1/myaction). }
     class function GetPath: string;
+    { Fills the @link(Variables) with the registered variables passed through
+      the URL. }
+    procedure DoFillVariables(const ANames,
+      AValues: TBrookArrayOfString); virtual;
+    { Fills the @link(Variables) with the registered variables passed one by one
+      through the URL. }
+    procedure DoFillingVariables(const AIndex: Integer; const ANames,
+      AValues: TBrookArrayOfString); virtual;
     { Creates a cookie. }
     procedure SetCookie(const AName, AValue: string;
       const AExpires: TDateTime = NullDate; const APath: string = ES;
@@ -420,6 +428,22 @@ class function TBrookAction.GetPath: string;
 begin
   Result := BrookIncludeTrailingUrlDelimiter(TBrookRouter.RootUrl) +
     LowerCase(Copy(ClassName, 2, MaxInt));
+end;
+
+procedure TBrookAction.DoFillVariables(const ANames,
+  AValues: TBrookArrayOfString);
+var
+  I: Integer;
+begin
+  FVariables.Clear;
+  for I := Low(ANames) to High(ANames) do
+    DoFillingVariables(I, ANames, AValues);
+end;
+
+procedure TBrookAction.DoFillingVariables(const AIndex: Integer; const ANames,
+  AValues: TBrookArrayOfString);
+begin
+  FVariables.Add(ANames[AIndex] + EQ + AValues[AIndex]);
 end;
 
 procedure TBrookAction.SetCookie(const AName, AValue: string;
