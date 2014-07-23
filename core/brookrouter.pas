@@ -409,18 +409,17 @@ procedure TBrookRouter.ExecuteAction(AAction: TBrookAction;
   ARequest: TBrookRequest; AResponse: TBrookResponse; const ANames,
   AValues: TBrookArrayOfString; ARoute: TBrookRoute);
 var
-  I: Integer;
   VHandled: Boolean = False;
 begin
   try
     if Assigned(FBeforeExecuteAction) then
       FBeforeExecuteAction(Self, AAction, ARequest, AResponse, ANames, AValues,
         ARoute, VHandled);
-    AAction.Variables.Clear;
-    for I := 0 to High(ANames) do
-      AAction.Variables.Add(ANames[I] + EQ + AValues[I]);
     if not VHandled then
+    begin
+      AAction.DoFillVariables(ANames, AValues);
       AAction.DoRequest(ARequest, AResponse);
+    end;
   finally
     if Assigned(FAfterExecuteAction) then
       FAfterExecuteAction(Self, AAction, ARequest, AResponse, ANames, AValues,
