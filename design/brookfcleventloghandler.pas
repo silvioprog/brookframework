@@ -33,6 +33,7 @@ type
     property Active;
     property FileName;
     property Output;
+    property Types;
     property AfterLog;
     property BeforeLog;
   end;

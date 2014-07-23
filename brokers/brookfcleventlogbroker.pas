@@ -27,18 +27,12 @@ type
   TBrookFCLEventLog = class(TBrookLogger)
   private
     FLogger: TEventLog;
-  protected
-    procedure Prepare; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Prepare; override;
     procedure Log(const AType: TBrookLogType; const S: string;
       const ACode: Word; const E: Exception = nil); override;
-    procedure Custom(const S: string; const ACode: Word); override;
-    procedure Info(const S: string); override;
-    procedure Warn(const S: string); override;
-    procedure Debug(const S: string); override;
-    procedure Error(const S: string; E: Exception = nil); override;
   end;
 
 implementation
@@ -83,6 +77,8 @@ procedure TBrookFCLEventLog.Log(const AType: TBrookLogType; const S: string;
 var
   X: string;
 begin
+  if not (AType in Types) then
+    Exit;
   if FLogger.Active then
   begin
     X := S;
@@ -104,31 +100,6 @@ begin
       ltDebug: FLogger.Log(etDebug, X);
     end;
   end;
-end;
-
-procedure TBrookFCLEventLog.Custom(const S: string; const ACode: Word);
-begin
-  inherited InternalLog(ltCustom, S, ACode, nil);
-end;
-
-procedure TBrookFCLEventLog.Info(const S: string);
-begin
-  inherited InternalLog(ltInfo, S, 0, nil);
-end;
-
-procedure TBrookFCLEventLog.Warn(const S: string);
-begin
-  inherited InternalLog(ltWarning, S, 0, nil);
-end;
-
-procedure TBrookFCLEventLog.Debug(const S: string);
-begin
-  inherited InternalLog(ltDebug, S, 0, nil);
-end;
-
-procedure TBrookFCLEventLog.Error(const S: string; E: Exception);
-begin
-  inherited InternalLog(ltError, S, 0, E);
 end;
 
 initialization
