@@ -626,6 +626,7 @@ var
 begin
   VQuery := TdSQLdbQuery.Create(dbutils.con);
   try
+    VQuery.UseUtf8 := FOpf.UseUtf8;
     VDisplayText := DisplayText;
     VValue := Value;
     DoMakeSelect(VSelect, VDisplayText, VValue);
@@ -634,14 +635,24 @@ begin
       VQuery.SetParams(Entity);
     VQuery.Open;
     VArray := TJSONArray.Create;
-    while not VQuery.EOF do
-    begin
-      VObject := TJSONObject.Create;
-      VObject.Add('DisplayText', VQuery.Fields[0].AsString);
-      VObject.Add('Value', VQuery.Fields[1].AsString);
-      VArray.Add(VObject);
-      VQuery.Next;
-    end;
+    if FOpf.UseUtf8 then
+      while not VQuery.EOF do
+      begin
+        VObject := TJSONObject.Create;
+        VObject.Add('DisplayText', UTF8Encode(VQuery.Fields[0].AsString));
+        VObject.Add('Value', UTF8Encode(VQuery.Fields[1].AsString));
+        VArray.Add(VObject);
+        VQuery.Next;
+      end
+    else
+      while not VQuery.EOF do
+      begin
+        VObject := TJSONObject.Create;
+        VObject.Add('DisplayText', VQuery.Fields[0].AsString);
+        VObject.Add('Value', VQuery.Fields[1].AsString);
+        VArray.Add(VObject);
+        VQuery.Next;
+      end;
     Data.Add('Options', VArray);
     inherited Post;
   finally
