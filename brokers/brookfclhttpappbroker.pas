@@ -124,7 +124,7 @@ constructor TBrookApplication.Create;
 begin
   FApp := TBrookHttpApplication.Create(nil);
   FApp.Initialize;
-  FApp.ShowTermMsg := True;
+  FApp.ShowTermMsg := System.IsConsole;
 end;
 
 destructor TBrookApplication.Destroy;
