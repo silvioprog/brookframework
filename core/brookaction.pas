@@ -250,7 +250,7 @@ initialization
     { Stops the action showing a formatted exception message. }
     procedure Stop(const AMsg: string; const AArgs: array of const); overload;
     { Writes the content of a file. }
-    procedure Render(const AFileName: TFileName); overload; virtual;
+    procedure Render(const AFileName: TFileName;ClearContent: Boolean=True); overload; virtual;
     { Writes the content of a file passing parameters to the output. }
     procedure Render(const AFileName: TFileName;
       const AArgs: array of const); overload; virtual;
@@ -597,9 +597,17 @@ begin
   raise EBrookAction.CreateFmt(AMsg, AArgs);
 end;
 
-procedure TBrookAction.Render(const AFileName: TFileName);
+procedure TBrookAction.Render(const AFileName: TFileName; ClearContent: Boolean);
+var ATmpContent:TStrings;
 begin
-  FHttpResponse.Contents.LoadFromFile(AFileName);
+   if ClearContent then
+  FHttpResponse.Contents.LoadFromFile(AFileName)
+  else begin
+   ATmpContent:=TStringList.Create;
+   ATmpContent.LoadFromFile(AFileName);
+   FHttpResponse.Contents.AddStrings(ATmpContent);
+  ATmpContent.free;
+  end;
 end;
 
 procedure TBrookAction.Render(const AFileName: TFileName;
