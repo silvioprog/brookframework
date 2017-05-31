@@ -26,7 +26,7 @@ procedure BrookStaticFileRegisterDirectory(ARequestPath, ADirectory: string);
 implementation
 
 uses
-  StrUtils, 
+  StrUtils,
   {$if fpc_fullversion >= 20701}
   ghashmap
   {$else fpc_fullversion >= 20701}
@@ -49,16 +49,16 @@ type
   end;
 
   TRequestDirectoryMap = specialize THashmap<string, string, TStringHash>;
-  
+
   {$else fpc_fullversion >= 20701}
-  
+
   TStrMap = specialize TFPGMap<string, string>;
-  
+
   TRequestDirectoryMap = class(TStrMap)
   public
     function Contains(const s: String): Boolean;
   end;
-  
+
   {$endif fpc_fullversion >= 20701}
 
   { TStaticFileAction }
@@ -106,6 +106,7 @@ begin
   VPathInfo := HttpRequest.PathInfo;
   VLastSlashPos := RPos('/', VPathInfo);
   System.Delete(VPathInfo, VLastSlashPos + 1, Length(VPathInfo) - VLastSlashPos);
+  VPathInfo := '/' + VPathInfo;
   VFilePath := RequestDirectoryMap[VPathInfo] + Variables.Values['file'];
   if FileExists(VFilePath) then
   begin
