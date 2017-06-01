@@ -1,12 +1,12 @@
 <strong>Aww yeah, Brook 4 is coming! :-)</strong>
 
-##INTRODUCTION
+## INTRODUCTION
 
 **Brook framework** is the perfect [Free Pascal](http://freepascal.org/) framework for your web applications. It's pure Pascal. You don't need to leave your preferred programming language.
 
 It's complete: simple actions or configurable actions for database access, advanced routing features, wizard for [Lazarus](http://lazarus.freepascal.org), support for internationalization, high compatibility with [JSON](http://json.org) structures, easy and elegant [REST](http://en.wikipedia.org/wiki/Representational_state_transfer) implementation, plugins for varied needs, extensible and decoupled brokers... In fact, you have several reasons to adopt Brook as your web development framework.
 
-##FEATURES
+## FEATURES
 
 * <img src="https://brookframework.org/old_cdn/img/glyphicons_083_random.png">&nbsp;**Advanced routes management** – Actions are performed by means of routes. Brook knows how to receive a request and choose the correct URL and the correct method to reply to it.
 * <img src="https://brookframework.org/old_cdn/img/glyphicons_141_database_plus.png">&nbsp;**Integrated data persistance** – Brook offers a table object where data can be handled. Less instantiations, less coding, with an elegant syntax.
@@ -14,7 +14,7 @@ It's complete: simple actions or configurable actions for database access, advan
 * <img src="https://brookframework.org/old_cdn/img/glyphicons_340_globe.png">&nbsp;**REST architecture support** – [REST](http://en.wikipedia.org/wiki/Representational_state_transfer) is an architecture able to simplify and standardize data requests and replies. Brook is powerful even if you don't use REST – but you will want to use it.
 * <img src="https://brookframework.org/old_cdn/img/glyphicons_009_magic.png">&nbsp;**Lazarus wizards for installation and usage** - With [Lazarus](http://www.lazarus.freepascal.org), development is easier; with the Brook wizards, only a few clicks are required to start and configure your Brook projects.
 
-##GET STARTED
+## GET STARTED
 
 #### <img src="https://brookframework.org/old_cdn/img/glyphicons_137_cogwheels.png">&nbsp; If you use Free Pascal only:
 
@@ -120,7 +120,7 @@ Save and compile the project. Copy the resulting file to the CGI directory of yo
 * <img src="https://brookframework.org/old_cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[HtmlDoc](https://github.com/silvioprog/htmldoc)** – Whith this plugin you can write headers, body and other relevant tags using Object Pascal.
 * <img src="https://brookframework.org/old_cdn/img/glyphicons_378_electrical_socket_eu.png">&nbsp;**[LJGridUtils](https://github.com/silvioprog/ljgridutils)** – This plugin offers easy conversion from LCL to JSON and vice versa.
 
-##LICENSE
+## LICENSE
 
 The source code of the Brook framework is distributed under the GNU Lesser General Public License. See the [project licence](https://github.com/silvioprog/brookframework/blob/master/LICENSE.txt) for copyright/license details.
 
@@ -128,11 +128,11 @@ The source code of the Brook framework is distributed under the GNU Lesser Gener
 
 Free Pascal **3.0.0** or the latest stable version. If you prefer the Lazarus interface, choose the **1.6.0** or the latest stable version.
 
-##DOCUMENTATION
+## DOCUMENTATION
 
 The project documentation is available in two formats: [HTML](https://brookframework.org/doc/index.html) and [PDF](https://brookframework.org/doc/brookframework-ref.pdf).
 
-##VERSIONING
+## VERSIONING
 
 For transparency and insight into our release cycle, and for striving to maintain backward compatibility, Brook framework will be maintained under the Semantic Versioning guidelines as much as possible.
 
@@ -148,11 +148,11 @@ And constructed with the following guidelines:
 
 For more information on SemVer, please visit [http://semver.org](http://semver.org).
 
-##SUPPORT, BUGS, CONTACT
+## SUPPORT, BUGS, CONTACT
 
 Please use the [issues page](https://github.com/silvioprog/brookframework/issues). Your cooperation will be appreciated.
 
-##CONTRIBUTORS
+## CONTRIBUTORS
 
 Brook would not be possible without important and active contributors. See their names [here](https://github.com/silvioprog/brookframework/blob/master/CONTRIBUTORS.txt).
 
