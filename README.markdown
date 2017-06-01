@@ -124,7 +124,7 @@ Save and compile the project. Copy the resulting file to the CGI directory of yo
 
 The source code of the Brook framework is distributed under the GNU Lesser General Public License. See the [project licence](https://github.com/silvioprog/brookframework/blob/master/LICENSE.txt) for copyright/license details.
 
-##SYSTEM REQUIREMENTS
+## SYSTEM REQUIREMENTS
 
 Free Pascal **3.0.0** or the latest stable version. If you prefer the Lazarus interface, choose the **1.6.0** or the latest stable version.
 
