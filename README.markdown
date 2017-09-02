@@ -1,4 +1,4 @@
-<strong>Aww yeah, Brook 4 is coming! :-)</strong>
+<strong>Aww yeah, [Brook 4 is coming!](https://github.com/brook-dev/brook4rest/tree/master/bindings/pascal) :-)</strong>
 
 ## INTRODUCTION
 
