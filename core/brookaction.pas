@@ -225,6 +225,8 @@ initialization
     procedure Post; virtual;
     { Is triggered by a PUT HTTP request method. }
     procedure Put; virtual;
+    { Is triggered by a PATCH HTTP request method. }
+    procedure Patch; virtual;
     { Is triggered by a DELETE HTTP request method. }
     procedure Delete; virtual;
     { Is triggered by a HEAD HTTP request method. }
@@ -509,6 +511,7 @@ begin
     BROOK_HTTP_REQUEST_METHOD_GET: Get;
     BROOK_HTTP_REQUEST_METHOD_POST: Post;
     BROOK_HTTP_REQUEST_METHOD_PUT: Put;
+    BROOK_HTTP_REQUEST_METHOD_PATCH: Patch;
     BROOK_HTTP_REQUEST_METHOD_DELETE: Delete;
     BROOK_HTTP_REQUEST_METHOD_HEAD: Head;
     BROOK_HTTP_REQUEST_METHOD_OPTIONS: Options;
@@ -526,6 +529,11 @@ begin
 end;
 
 procedure TBrookAction.Put;
+begin
+  TBrookRouter.MethodNotAllowed(FHttpResponse);
+end;
+
+procedure TBrookAction.Patch;
 begin
   TBrookRouter.MethodNotAllowed(FHttpResponse);
 end;
@@ -703,6 +711,11 @@ begin
       begin
         FillEntity;
         Put;
+      end;
+    BROOK_HTTP_REQUEST_METHOD_PATCH:
+      begin
+        FillEntity;
+        Patch;
       end;
     BROOK_HTTP_REQUEST_METHOD_DELETE:
       begin
