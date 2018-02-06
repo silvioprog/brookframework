@@ -1,0 +1,390 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>smtpsend: Class TSMTPSend</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TSMTPSend"></a><h1 class="cio">Class TSMTPSend</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#@Methods">Methods</a></td><td><a class="section"  href="#@Properties">Properties</a></td></tr></table>
+<a name="@Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="smtpsend.html">smtpsend</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TSMTPSend = class(<a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a>)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Implementation of SMTP and ESMTP procotol</p>
+<p>
+, include some ESMTP extensions, include SSL/TLS too.
+
+<p>Note: Are you missing properties for setting Username and Password for ESMTP? Look to parent <a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a> object!
+
+<p>Are you missing properties for specify server address and port? Look to parent <a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a> too!</p>
+<a name="@Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="ancestor"><a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a></li>
+<li class="thisitem">TSMTPSend</li></ul><h2 class="overview">Overview</h2>
+<a name="@Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a   href="smtpsend.TSMTPSend.html#Create">Create</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a   href="smtpsend.TSMTPSend.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#Login">Login</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#Logout">Logout</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#Reset">Reset</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#NoOp">NoOp</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#MailFrom">MailFrom</a></b>(const Value: string; Size: Integer): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#MailTo">MailTo</a></b>(const Value: string): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#MailData">MailData</a></b>(const Value: Tstrings): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#Etrn">Etrn</a></b>(const Value: string): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#Verify">Verify</a></b>(const Value: string): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#StartTLS">StartTLS</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#EnhCodeString">EnhCodeString</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="smtpsend.TSMTPSend.html#FindCap">FindCap</a></b>(const Value: string): string;</code></td>
+</tr>
+</table>
+<a name="@Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#ResultCode">ResultCode</a></b>: Integer read FResultCode;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#ResultString">ResultString</a></b>: string read FResultString;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#FullResult">FullResult</a></b>: TStringList read FFullResult;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#ESMTPcap">ESMTPcap</a></b>: TStringList read FESMTPcap;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#ESMTP">ESMTP</a></b>: Boolean read FESMTP;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#AuthDone">AuthDone</a></b>: Boolean read FAuthDone;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#ESMTPSize">ESMTPSize</a></b>: Boolean read FESMTPSize;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#MaxSize">MaxSize</a></b>: Integer read FMaxSize;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#EnhCode1">EnhCode1</a></b>: Integer read FEnhCode1;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#EnhCode2">EnhCode2</a></b>: Integer read FEnhCode2;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#EnhCode3">EnhCode3</a></b>: Integer read FEnhCode3;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#SystemName">SystemName</a></b>: string read FSystemName Write FSystemName;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#AutoTLS">AutoTLS</a></b>: Boolean read FAutoTLS Write FAutoTLS;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#FullSSL">FullSSL</a></b>: Boolean read FFullSSL Write FFullSSL;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="smtpsend.TSMTPSend.html#Sock">Sock</a></b>: <a   href="blcksock.TTCPBlockSocket.html">TTCPBlockSocket</a> read FSock;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Login"></a><code>function <b>Login</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+Connects to SMTP server (defined in <a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a>.<a class="normal" href="blcksock.TSynaClient.html#TargetHost">TargetHost</a>) and begin SMTP session. (First try ESMTP EHLO, next old HELO handshake). Parses ESMTP capabilites and if you specified Username and password and remote server can handle AUTH command, try login by AUTH command. Preffered login method is CRAM-MD5 (if safer!). If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Logout"></a><code>function <b>Logout</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+Close SMTP session (QUIT command) and disconnect from SMTP server.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Reset"></a><code>function <b>Reset</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+Send RSET SMTP command for reset SMTP session. If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="NoOp"></a><code>function <b>NoOp</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+Send NOOP SMTP command for keep SMTP session. If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="MailFrom"></a><code>function <b>MailFrom</b>(const Value: string; Size: Integer): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Send MAIL FROM SMTP command for set sender e-mail address. If sender's e-mail address is empty string, transmited message is error message.
+
+<p>If size not 0 and remote server can handle SIZE parameter, append SIZE parameter to request. If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="MailTo"></a><code>function <b>MailTo</b>(const Value: string): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Send RCPT TO SMTP command for set receiver e-mail address. It cannot be an empty string. If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="MailData"></a><code>function <b>MailData</b>(const Value: Tstrings): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Send DATA SMTP command and transmit message data. If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Etrn"></a><code>function <b>Etrn</b>(const Value: string): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Send ETRN SMTP command for start sending of remote queue for domain in Value. If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Verify"></a><code>function <b>Verify</b>(const Value: string): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Send VRFY SMTP command for check receiver e-mail address. It cannot be an empty string. If all OK, result is <code>True</code>, else result is <code>False</code>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="StartTLS"></a><code>function <b>StartTLS</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+Call STARTTLS command for upgrade connection to SSL/TLS mode.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="EnhCodeString"></a><code>function <b>EnhCodeString</b>: string;</code></td>
+</tr>
+</table>
+<p>
+Return string descriptive text for enhanced result codes stored in <a class="normal" href="smtpsend.TSMTPSend.html#EnhCode1">EnhCode1</a>, <a class="normal" href="smtpsend.TSMTPSend.html#EnhCode2">EnhCode2</a> and <a class="normal" href="smtpsend.TSMTPSend.html#EnhCode3">EnhCode3</a>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FindCap"></a><code>function <b>FindCap</b>(const Value: string): string;</code></td>
+</tr>
+</table>
+<p>
+Try to find specified capability in ESMTP response.</p>
+<h3 class="detail">Properties</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ResultCode"></a><code>property <b>ResultCode</b>: Integer read FResultCode;</code></td>
+</tr>
+</table>
+<p>
+result code of last SMTP command.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ResultString"></a><code>property <b>ResultString</b>: string read FResultString;</code></td>
+</tr>
+</table>
+<p>
+result string of last SMTP command (begin with string representation of result code).</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="FullResult"></a><code>property <b>FullResult</b>: TStringList read FFullResult;</code></td>
+</tr>
+</table>
+<p>
+All result strings of last SMTP command (result is maybe multiline!).</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ESMTPcap"></a><code>property <b>ESMTPcap</b>: TStringList read FESMTPcap;</code></td>
+</tr>
+</table>
+<p>
+List of ESMTP capabilites of remote ESMTP server. (If you connect to ESMTP server only!).</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ESMTP"></a><code>property <b>ESMTP</b>: Boolean read FESMTP;</code></td>
+</tr>
+</table>
+<p>
+<code>True</code> if you successfuly logged to ESMTP server.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="AuthDone"></a><code>property <b>AuthDone</b>: Boolean read FAuthDone;</code></td>
+</tr>
+</table>
+<p>
+<code>True</code> if you successfuly pass authorisation to remote server.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ESMTPSize"></a><code>property <b>ESMTPSize</b>: Boolean read FESMTPSize;</code></td>
+</tr>
+</table>
+<p>
+<code>True</code> if remote server can handle SIZE parameter.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="MaxSize"></a><code>property <b>MaxSize</b>: Integer read FMaxSize;</code></td>
+</tr>
+</table>
+<p>
+When <a class="normal" href="smtpsend.TSMTPSend.html#ESMTPSize">ESMTPSize</a> is <code>True</code>, contains max length of message that remote server can handle.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="EnhCode1"></a><code>property <b>EnhCode1</b>: Integer read FEnhCode1;</code></td>
+</tr>
+</table>
+<p>
+First digit of Enhanced result code. If last operation does not have enhanced result code, values is 0.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="EnhCode2"></a><code>property <b>EnhCode2</b>: Integer read FEnhCode2;</code></td>
+</tr>
+</table>
+<p>
+Second digit of Enhanced result code. If last operation does not have enhanced result code, values is 0.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="EnhCode3"></a><code>property <b>EnhCode3</b>: Integer read FEnhCode3;</code></td>
+</tr>
+</table>
+<p>
+Third digit of Enhanced result code. If last operation does not have enhanced result code, values is 0.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="SystemName"></a><code>property <b>SystemName</b>: string read FSystemName Write FSystemName;</code></td>
+</tr>
+</table>
+<p>
+name of our system used in HELO and EHLO command. Implicit value is internet address of your machine.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="AutoTLS"></a><code>property <b>AutoTLS</b>: Boolean read FAutoTLS Write FAutoTLS;</code></td>
+</tr>
+</table>
+<p>
+If is set to true, then upgrade to SSL/TLS mode if remote server support it.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="FullSSL"></a><code>property <b>FullSSL</b>: Boolean read FFullSSL Write FFullSSL;</code></td>
+</tr>
+</table>
+<p>
+SSL/TLS mode is used from first contact to server. Servers with full SSL/TLS mode usualy using non-standard TCP port!</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Sock"></a><code>property <b>Sock</b>: <a   href="blcksock.TTCPBlockSocket.html">TTCPBlockSocket</a> read FSock;</code></td>
+</tr>
+</table>
+<p>
+Socket object used for TCP/IP operation. Good for seting OnStatus hook, etc.</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:51</em>
+</span>
+</body></html>

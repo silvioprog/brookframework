@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>ftpsend: Class TFTPListRec</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TFTPListRec"></a><h1 class="cio">Class TFTPListRec</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#@Methods">Methods</a></td><td><a class="section"  href="#@Properties">Properties</a></td></tr></table>
+<a name="@Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="ftpsend.html">ftpsend</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TFTPListRec = class(TObject)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Object for holding file information</p>
+<p>
+ parsed from directory listing of FTP server.</p>
+<a name="@Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TFTPListRec</li></ul><h2 class="overview">Overview</h2>
+<a name="@Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="ftpsend.TFTPListRec.html#Assign">Assign</a></b>(Value: <a   href="ftpsend.TFTPListRec.html">TFTPListRec</a>); virtual;</code></td>
+</tr>
+</table>
+<a name="@Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#FileName">FileName</a></b>: string read FFileName write FFileName;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#Directory">Directory</a></b>: Boolean read FDirectory write FDirectory;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#Readable">Readable</a></b>: Boolean read FReadable write FReadable;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#FileSize">FileSize</a></b>: int64 read FFileSize write FFileSize;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#FileTime">FileTime</a></b>: TDateTime read FFileTime write FFileTime;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#OriginalLine">OriginalLine</a></b>: string read FOriginalLine write FOriginalLine;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#Mask">Mask</a></b>: string read FMask write FMask;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftpsend.TFTPListRec.html#Permission">Permission</a></b>: string read FPermission write FPermission;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Assign"></a><code>procedure <b>Assign</b>(Value: <a   href="ftpsend.TFTPListRec.html">TFTPListRec</a>); virtual;</code></td>
+</tr>
+</table>
+<p>
+You can assign another TFTPListRec to this object.</p>
+<h3 class="detail">Properties</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FileName"></a><code>property <b>FileName</b>: string read FFileName write FFileName;</code></td>
+</tr>
+</table>
+<p>
+name of file</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Directory"></a><code>property <b>Directory</b>: Boolean read FDirectory write FDirectory;</code></td>
+</tr>
+</table>
+<p>
+if name is subdirectory not file.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Readable"></a><code>property <b>Readable</b>: Boolean read FReadable write FReadable;</code></td>
+</tr>
+</table>
+<p>
+if you have rights to read</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FileSize"></a><code>property <b>FileSize</b>: int64 read FFileSize write FFileSize;</code></td>
+</tr>
+</table>
+<p>
+size of file in bytes</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FileTime"></a><code>property <b>FileTime</b>: TDateTime read FFileTime write FFileTime;</code></td>
+</tr>
+</table>
+<p>
+date and time of file. Local server timezone is used. Any timezone conversions was not done!</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OriginalLine"></a><code>property <b>OriginalLine</b>: string read FOriginalLine write FOriginalLine;</code></td>
+</tr>
+</table>
+<p>
+original unparsed line</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Mask"></a><code>property <b>Mask</b>: string read FMask write FMask;</code></td>
+</tr>
+</table>
+<p>
+mask what was used for parsing</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Permission"></a><code>property <b>Permission</b>: string read FPermission write FPermission;</code></td>
+</tr>
+</table>
+<p>
+permission string (depending on used mask!)</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:50</em>
+</span>
+</body></html>

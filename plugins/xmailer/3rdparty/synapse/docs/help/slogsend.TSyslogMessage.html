@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>slogsend: Class TSyslogMessage</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TSyslogMessage"></a><h1 class="cio">Class TSyslogMessage</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#@Methods">Methods</a></td><td><a class="section"  href="#@Properties">Properties</a></td></tr></table>
+<a name="@Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="slogsend.html">slogsend</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TSyslogMessage = class(TObject)</code></p>
+<h2 class="description">Description</h2>
+<p>
+encoding or decoding of SYSLOG message</p>
+<a name="@Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="thisitem">TSyslogMessage</li></ul><h2 class="overview">Overview</h2>
+<a name="@Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="slogsend.TSyslogMessage.html#Clear">Clear</a></b>;</code></td>
+</tr>
+</table>
+<a name="@Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="slogsend.TSyslogMessage.html#Facility">Facility</a></b>: Byte read FFacility write FFacility;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="slogsend.TSyslogMessage.html#Severity">Severity</a></b>: <a   href="slogsend.html#TSyslogSeverity">TSyslogSeverity</a> read FSeverity write FSeverity;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="slogsend.TSyslogMessage.html#DateTime">DateTime</a></b>: TDateTime read FDateTime write FDateTime;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="slogsend.TSyslogMessage.html#Tag">Tag</a></b>: String read FTag write FTag;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="slogsend.TSyslogMessage.html#LogMessage">LogMessage</a></b>: String read FMessage write FMessage;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="slogsend.TSyslogMessage.html#LocalIP">LocalIP</a></b>: String read FLocalIP write FLocalIP;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="slogsend.TSyslogMessage.html#PacketBuf">PacketBuf</a></b>: String read GetPacketBuf write SetPacketBuf;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Clear"></a><code>procedure <b>Clear</b>;</code></td>
+</tr>
+</table>
+<p>
+Reset values to defaults</p>
+<h3 class="detail">Properties</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Facility"></a><code>property <b>Facility</b>: Byte read FFacility write FFacility;</code></td>
+</tr>
+</table>
+<p>
+Define facilicity of Syslog message. For specify you may use predefined FCL_* constants. Default is &quot;FCL_Local0&quot;.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Severity"></a><code>property <b>Severity</b>: <a   href="slogsend.html#TSyslogSeverity">TSyslogSeverity</a> read FSeverity write FSeverity;</code></td>
+</tr>
+</table>
+<p>
+Define possible priority of Syslog message. Default is &quot;Debug&quot;.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="DateTime"></a><code>property <b>DateTime</b>: TDateTime read FDateTime write FDateTime;</code></td>
+</tr>
+</table>
+<p>
+date and time of Syslog message</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Tag"></a><code>property <b>Tag</b>: String read FTag write FTag;</code></td>
+</tr>
+</table>
+<p>
+This is used for identify process of this message. Default is filename of your executable file.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="LogMessage"></a><code>property <b>LogMessage</b>: String read FMessage write FMessage;</code></td>
+</tr>
+</table>
+<p>
+Text of your message for log.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="LocalIP"></a><code>property <b>LocalIP</b>: String read FLocalIP write FLocalIP;</code></td>
+</tr>
+</table>
+<p>
+IP address of message sender.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="PacketBuf"></a><code>property <b>PacketBuf</b>: String read GetPacketBuf write SetPacketBuf;</code></td>
+</tr>
+</table>
+<p>
+This property holds encoded binary SYSLOG packet</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:51</em>
+</span>
+</body></html>
