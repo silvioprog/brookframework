@@ -1,0 +1,385 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>blcksock: Class TTCPBlockSocket</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TTCPBlockSocket"></a><h1 class="cio">Class TTCPBlockSocket</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#@Methods">Methods</a></td><td><a class="section"  href="#@Properties">Properties</a></td></tr></table>
+<a name="@Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="blcksock.html">blcksock</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TTCPBlockSocket = class(<a class="normal" href="blcksock.TSocksBlockSocket.html">TSocksBlockSocket</a>)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Implementation of TCP socket.</p>
+<p>
+ Supported features: IPv4, IPv6, SSL/TLS or SSH (depending on used plugin), SOCKS5 proxy (outgoing connections and limited incomming), SOCKS4/4a proxy (outgoing connections and limited incomming), TCP through HTTP proxy tunnel.</p>
+<a name="@Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="ancestor"><a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a></li>
+<li class="ancestor"><a class="normal" href="blcksock.TSocksBlockSocket.html">TSocksBlockSocket</a></li>
+<li class="thisitem">TTCPBlockSocket</li></ul><h2 class="overview">Overview</h2>
+<a name="@Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a   href="blcksock.TTCPBlockSocket.html#Create">Create</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a   href="blcksock.TTCPBlockSocket.html#CreateWithSSL">CreateWithSSL</a></b>(SSLPlugin: <a   href="blcksock.html#TSSLClass">TSSLClass</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a   href="blcksock.TTCPBlockSocket.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="blcksock.TTCPBlockSocket.html#CloseSocket">CloseSocket</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#WaitingData">WaitingData</a></b>: Integer; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="blcksock.TTCPBlockSocket.html#Listen">Listen</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#Accept">Accept</a></b>: TSocket; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="blcksock.TTCPBlockSocket.html#Connect">Connect</a></b>(IP, Port: string); override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="blcksock.TTCPBlockSocket.html#SSLDoConnect">SSLDoConnect</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="blcksock.TTCPBlockSocket.html#SSLDoShutdown">SSLDoShutdown</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#SSLAcceptConnection">SSLAcceptConnection</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#GetLocalSinIP">GetLocalSinIP</a></b>: string; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#GetRemoteSinIP">GetRemoteSinIP</a></b>: string; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#GetLocalSinPort">GetLocalSinPort</a></b>: Integer; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#GetRemoteSinPort">GetRemoteSinPort</a></b>: Integer; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#SendBuffer">SendBuffer</a></b>(Buffer: TMemory; Length: Integer): Integer; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#RecvBuffer">RecvBuffer</a></b>(Buffer: TMemory; Len: Integer): Integer; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#GetSocketType">GetSocketType</a></b>: integer; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#GetSocketProtocol">GetSocketProtocol</a></b>: integer; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>function <b><a   href="blcksock.TTCPBlockSocket.html#GetErrorDescEx">GetErrorDescEx</a></b>: string; override;</code></td>
+</tr>
+</table>
+<a name="@Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#SSL">SSL</a></b>: <a   href="blcksock.TCustomSSL.html">TCustomSSL</a> read FSSL;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#HTTPTunnel">HTTPTunnel</a></b>: Boolean read FHTTPTunnel;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#HTTPTunnelIP">HTTPTunnelIP</a></b>: string read FHTTPTunnelIP Write FHTTPTunnelIP;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#HTTPTunnelPort">HTTPTunnelPort</a></b>: string read FHTTPTunnelPort Write FHTTPTunnelPort;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#HTTPTunnelUser">HTTPTunnelUser</a></b>: string read FHTTPTunnelUser Write FHTTPTunnelUser;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#HTTPTunnelPass">HTTPTunnelPass</a></b>: string read FHTTPTunnelPass Write FHTTPTunnelPass;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#HTTPTunnelTimeout">HTTPTunnelTimeout</a></b>: integer read FHTTPTunnelTimeout Write FHTTPTunnelTimeout;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="blcksock.TTCPBlockSocket.html#OnAfterConnect">OnAfterConnect</a></b>: <a   href="blcksock.html#THookAfterConnect">THookAfterConnect</a> read FOnAfterConnect write FOnAfterConnect;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>;</code></td>
+</tr>
+</table>
+<p>
+Create TCP socket class with default plugin for SSL/TSL/SSH implementation (see <a class="normal" href="blcksock.html#SSLImplementation">SSLImplementation</a>)</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="CreateWithSSL"></a><code>constructor <b>CreateWithSSL</b>(SSLPlugin: <a   href="blcksock.html#TSSLClass">TSSLClass</a>);</code></td>
+</tr>
+</table>
+<p>
+Create TCP socket class with desired plugin for SSL/TSL/SSH implementation</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="CloseSocket"></a><code>procedure <b>CloseSocket</b>; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#CloseSocket">CloseSocket</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WaitingData"></a><code>function <b>WaitingData</b>: Integer; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#WaitingData">WaitingData</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Listen"></a><code>procedure <b>Listen</b>; override;</code></td>
+</tr>
+</table>
+<p>
+Sets socket to receive mode for new incoming connections. It is necessary to use <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#Bind">Bind</a> function call before this method to select receiving port!
+
+<p>If you use SOCKS, activate incoming TCP connection by this proxy. (By BIND method of SOCKS.)</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Accept"></a><code>function <b>Accept</b>: TSocket; override;</code></td>
+</tr>
+</table>
+<p>
+Waits until new incoming connection comes. After it comes a new socket is automatically created (socket handler is returned by this function as result).
+
+<p>If you use SOCKS, new socket is not created! In this case is used same socket as socket for listening! So, you can accept only one connection in SOCKS mode.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Connect"></a><code>procedure <b>Connect</b>(IP, Port: string); override;</code></td>
+</tr>
+</table>
+<p>
+Connects socket to remote IP address and PORT. The same rules as with <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#Bind">Bind</a> method are valid. The only exception is that PORT with 0 value will not be connected. After call to this method a communication channel between local and remote socket is created. Local socket is assigned automatically if not controlled by previous call to <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#Bind">Bind</a> method. Structures <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#LocalSin">LocalSin</a> and <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#RemoteSin">RemoteSin</a> will be filled with valid values.
+
+<p>If you use SOCKS, activate outgoing TCP connection by SOCKS proxy specified in <a class="normal" href="blcksock.TSocksBlockSocket.html">TSocksBlockSocket</a>.<a class="normal" href="blcksock.TSocksBlockSocket.html#SocksIP">SocksIP</a>. (By CONNECT method of SOCKS.)
+
+<p>If you use HTTP-tunnel mode, activate outgoing TCP connection by HTTP tunnel specified in <a class="normal" href="blcksock.TTCPBlockSocket.html#HTTPTunnelIP">HTTPTunnelIP</a>. (By CONNECT method of HTTP protocol.)
+
+<p>Note: If you call this on non-created socket, then socket is created automaticly.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SSLDoConnect"></a><code>procedure <b>SSLDoConnect</b>;</code></td>
+</tr>
+</table>
+<p>
+If you need upgrade existing TCP connection to SSL/TLS (or SSH2, if plugin allows it) mode, then call this method. This method switch this class to SSL mode and do SSL/TSL handshake.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SSLDoShutdown"></a><code>procedure <b>SSLDoShutdown</b>;</code></td>
+</tr>
+</table>
+<p>
+By this method you can downgrade existing SSL/TLS connection to normal TCP connection.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SSLAcceptConnection"></a><code>function <b>SSLAcceptConnection</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+If you need use this component as SSL/TLS TCP server, then after accepting of inbound connection you need start SSL/TLS session by this method. Before call this function, you must have assigned all neeeded certificates and keys!</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetLocalSinIP"></a><code>function <b>GetLocalSinIP</b>: string; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#GetLocalSinIP">GetLocalSinIP</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetRemoteSinIP"></a><code>function <b>GetRemoteSinIP</b>: string; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#GetRemoteSinIP">GetRemoteSinIP</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetLocalSinPort"></a><code>function <b>GetLocalSinPort</b>: Integer; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#GetLocalSinPort">GetLocalSinPort</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetRemoteSinPort"></a><code>function <b>GetRemoteSinPort</b>: Integer; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#GetRemoteSinPort">GetRemoteSinPort</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SendBuffer"></a><code>function <b>SendBuffer</b>(Buffer: TMemory; Length: Integer): Integer; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#SendBuffer">SendBuffer</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RecvBuffer"></a><code>function <b>RecvBuffer</b>(Buffer: TMemory; Len: Integer): Integer; override;</code></td>
+</tr>
+</table>
+<p>
+See <a class="normal" href="blcksock.TBlockSocket.html">TBlockSocket</a>.<a class="normal" href="blcksock.TBlockSocket.html#RecvBuffer">RecvBuffer</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetSocketType"></a><code>function <b>GetSocketType</b>: integer; override;</code></td>
+</tr>
+</table>
+<p>
+Return value of socket type. For TCP return SOCK_STREAM.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetSocketProtocol"></a><code>function <b>GetSocketProtocol</b>: integer; override;</code></td>
+</tr>
+</table>
+<p>
+Return value of protocol type for socket creation. For TCP return IPPROTO_TCP.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="GetErrorDescEx"></a><code>function <b>GetErrorDescEx</b>: string; override;</code></td>
+</tr>
+</table>
+<p>
+Return descriptive string for <code>LastError</code>. On case of error in SSL/TLS subsystem, it returns right error description.</p>
+<h3 class="detail">Properties</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SSL"></a><code>property <b>SSL</b>: <a   href="blcksock.TCustomSSL.html">TCustomSSL</a> read FSSL;</code></td>
+</tr>
+</table>
+<p>
+Class implementing SSL/TLS support. It is allways some descendant of <a class="normal" href="blcksock.TCustomSSL.html">TCustomSSL</a> class. When programmer not select some SSL plugin class, then is used <a class="normal" href="blcksock.TSSLNone.html">TSSLNone</a></p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="HTTPTunnel"></a><code>property <b>HTTPTunnel</b>: Boolean read FHTTPTunnel;</code></td>
+</tr>
+</table>
+<p>
+<code>True</code> if is used HTTP tunnel mode.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="HTTPTunnelIP"></a><code>property <b>HTTPTunnelIP</b>: string read FHTTPTunnelIP Write FHTTPTunnelIP;</code></td>
+</tr>
+</table>
+<p>
+Specify IP address of HTTP proxy. Assingning non-empty value to this property enable HTTP-tunnel mode. This mode is for tunnelling any outgoing TCP connection through HTTP proxy server. (If policy on HTTP proxy server allow this!) Warning: You cannot combine this mode with SOCK5 mode!</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="HTTPTunnelPort"></a><code>property <b>HTTPTunnelPort</b>: string read FHTTPTunnelPort Write FHTTPTunnelPort;</code></td>
+</tr>
+</table>
+<p>
+Specify port of HTTP proxy for HTTP-tunneling.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="HTTPTunnelUser"></a><code>property <b>HTTPTunnelUser</b>: string read FHTTPTunnelUser Write FHTTPTunnelUser;</code></td>
+</tr>
+</table>
+<p>
+Specify authorisation username for access to HTTP proxy in HTTP-tunnel mode. If you not need authorisation, then let this property empty.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="HTTPTunnelPass"></a><code>property <b>HTTPTunnelPass</b>: string read FHTTPTunnelPass Write FHTTPTunnelPass;</code></td>
+</tr>
+</table>
+<p>
+Specify authorisation password for access to HTTP proxy in HTTP-tunnel mode.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="HTTPTunnelTimeout"></a><code>property <b>HTTPTunnelTimeout</b>: integer read FHTTPTunnelTimeout Write FHTTPTunnelTimeout;</code></td>
+</tr>
+</table>
+<p>
+Specify timeout for communication with HTTP proxy in HTTPtunnel mode.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="OnAfterConnect"></a><code>property <b>OnAfterConnect</b>: <a   href="blcksock.html#THookAfterConnect">THookAfterConnect</a> read FOnAfterConnect write FOnAfterConnect;</code></td>
+</tr>
+</table>
+<p>
+This event is called after sucessful TCP socket connection.</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:50</em>
+</span>
+</body></html>

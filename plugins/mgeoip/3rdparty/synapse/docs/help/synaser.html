@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>synaser</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit synaser</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Uses">uses</a></td><td><a class="section"  href="#@Classes">Classes, Interfaces, Objects and Records</a></td><td><a class="section"  href="#@FuncsProcs">Functions and Procedures</a></td><td><a class="section"  href="#@Types">Types</a></td><td><a class="section"  href="#@Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="@Description"></a><h2 class="description">Description</h2>
+&nbsp;<a name="@Uses"></a><h2 class="uses">uses</h2>
+<ul class="useslist"><li>Windows</li><li>registry</li><li><a   href="synafpc.html">synafpc</a></li><li>Classes</li><li>SysUtils</li><li><a   href="synautil.html">synautil</a></li></ul><h2 class="overview">Overview</h2>
+<a name="@Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="synaser.ESynaSerError.html"><code>ESynaSerError</code></a></td>
+<td class="itemdesc">Exception type for SynaSer errors</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="synaser.TBlockSerial.html"><code>TBlockSerial</code></a></td>
+<td class="itemdesc">Main class implementing all communication routines</td>
+</tr>
+</table>
+<a name="@FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary">
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="synaser.html#GetSerialPortNames">GetSerialPortNames</a></b>: string;</code></td>
+</tr>
+</table>
+<a name="@Types"></a><h3 class="summary">Types</h3>
+<table class="summary">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#THookSerialReason">THookSerialReason</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#THookSerialStatus">THookSerialStatus</a></b> = procedure(Sender: TObject; Reason: <a   href="synaser.html#THookSerialReason">THookSerialReason</a>; const Value: string) of object;</code></td>
+</tr>
+</table>
+<a name="@Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#CR">CR</a></b> = #$0d;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#LF">LF</a></b> = #$0a;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#CRLF">CRLF</a></b> = <a   href="synaser.html#CR">CR</a> + <a   href="synaser.html#LF">LF</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#cSerialChunk">cSerialChunk</a></b> = 8192;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#LockfileDirectory">LockfileDirectory</a></b> = '/var/lock';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#PortIsClosed">PortIsClosed</a></b> = -1;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrAlreadyOwned">ErrAlreadyOwned</a></b> = 9991;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrAlreadyInUse">ErrAlreadyInUse</a></b> = 9992;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrWrongParameter">ErrWrongParameter</a></b> = 9993;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrPortNotOpen">ErrPortNotOpen</a></b> = 9994;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrNoDeviceAnswer">ErrNoDeviceAnswer</a></b> =  9995;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrMaxBuffer">ErrMaxBuffer</a></b> = 9996;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrTimeout">ErrTimeout</a></b> = 9997;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrNotRead">ErrNotRead</a></b> = 9998;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrFrame">ErrFrame</a></b> = 9999;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrOverrun">ErrOverrun</a></b> = 10000;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrRxOver">ErrRxOver</a></b> = 10001;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrRxParity">ErrRxParity</a></b> = 10002;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#ErrTxFull">ErrTxFull</a></b> = 10003;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_Binary">dcb_Binary</a></b> = $00000001;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_ParityCheck">dcb_ParityCheck</a></b> = $00000002;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_OutxCtsFlow">dcb_OutxCtsFlow</a></b> = $00000004;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_OutxDsrFlow">dcb_OutxDsrFlow</a></b> = $00000008;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_DtrControlMask">dcb_DtrControlMask</a></b> = $00000030;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_DtrControlDisable">dcb_DtrControlDisable</a></b> = $00000000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_DtrControlEnable">dcb_DtrControlEnable</a></b> = $00000010;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_DtrControlHandshake">dcb_DtrControlHandshake</a></b> = $00000020;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_DsrSensivity">dcb_DsrSensivity</a></b> = $00000040;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_TXContinueOnXoff">dcb_TXContinueOnXoff</a></b> = $00000080;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_OutX">dcb_OutX</a></b> = $00000100;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_InX">dcb_InX</a></b> = $00000200;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_ErrorChar">dcb_ErrorChar</a></b> = $00000400;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_NullStrip">dcb_NullStrip</a></b> = $00000800;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_RtsControlMask">dcb_RtsControlMask</a></b> = $00003000;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_RtsControlDisable">dcb_RtsControlDisable</a></b> = $00000000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_RtsControlEnable">dcb_RtsControlEnable</a></b> = $00001000;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_RtsControlHandshake">dcb_RtsControlHandshake</a></b> = $00002000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_RtsControlToggle">dcb_RtsControlToggle</a></b> = $00003000;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_AbortOnError">dcb_AbortOnError</a></b> = $00004000;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#dcb_Reserveds">dcb_Reserveds</a></b> = $FFFF8000;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#SB1">SB1</a></b> = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#SB1andHalf">SB1andHalf</a></b> = 1;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#SB2">SB2</a></b> = 2;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="synaser.html#sOK">sOK</a></b> = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="synaser.html#sErr">sErr</a></b> = integer(-1);</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="GetSerialPortNames"></a><code>function <b>GetSerialPortNames</b>: string;</code></td>
+</tr>
+</table>
+<p>
+Returns list of existing computer serial ports. Working properly only in Windows!</p>
+<h3 class="detail">Types</h3>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="THookSerialReason"></a><code><b>THookSerialReason</b> = (...);</code></td>
+</tr>
+</table>
+<p>
+Possible status event types for <a class="normal" href="synaser.html#THookSerialStatus">THookSerialStatus</a></p>
+<ul>
+<li>
+HR_SerialClose: </li>
+<li>
+HR_Connect: </li>
+<li>
+HR_CanRead: </li>
+<li>
+HR_CanWrite: </li>
+<li>
+HR_ReadCount: </li>
+<li>
+HR_WriteCount: </li>
+<li>
+HR_Wait: </li>
+</ul>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="THookSerialStatus"></a><code><b>THookSerialStatus</b> = procedure(Sender: TObject; Reason: <a   href="synaser.html#THookSerialReason">THookSerialReason</a>; const Value: string) of object;</code></td>
+</tr>
+</table>
+<p>
+procedural prototype for status event hooking</p>
+<h3 class="detail">Constants</h3>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="CR"></a><code><b>CR</b> = #$0d;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="LF"></a><code><b>LF</b> = #$0a;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="CRLF"></a><code><b>CRLF</b> = <a   href="synaser.html#CR">CR</a> + <a   href="synaser.html#LF">LF</a>;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="cSerialChunk"></a><code><b>cSerialChunk</b> = 8192;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="LockfileDirectory"></a><code><b>LockfileDirectory</b> = '/var/lock';</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="PortIsClosed"></a><code><b>PortIsClosed</b> = -1;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrAlreadyOwned"></a><code><b>ErrAlreadyOwned</b> = 9991;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrAlreadyInUse"></a><code><b>ErrAlreadyInUse</b> = 9992;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrWrongParameter"></a><code><b>ErrWrongParameter</b> = 9993;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrPortNotOpen"></a><code><b>ErrPortNotOpen</b> = 9994;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrNoDeviceAnswer"></a><code><b>ErrNoDeviceAnswer</b> =  9995;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrMaxBuffer"></a><code><b>ErrMaxBuffer</b> = 9996;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrTimeout"></a><code><b>ErrTimeout</b> = 9997;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrNotRead"></a><code><b>ErrNotRead</b> = 9998;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrFrame"></a><code><b>ErrFrame</b> = 9999;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrOverrun"></a><code><b>ErrOverrun</b> = 10000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrRxOver"></a><code><b>ErrRxOver</b> = 10001;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrRxParity"></a><code><b>ErrRxParity</b> = 10002;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="ErrTxFull"></a><code><b>ErrTxFull</b> = 10003;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_Binary"></a><code><b>dcb_Binary</b> = $00000001;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_ParityCheck"></a><code><b>dcb_ParityCheck</b> = $00000002;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_OutxCtsFlow"></a><code><b>dcb_OutxCtsFlow</b> = $00000004;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_OutxDsrFlow"></a><code><b>dcb_OutxDsrFlow</b> = $00000008;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_DtrControlMask"></a><code><b>dcb_DtrControlMask</b> = $00000030;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_DtrControlDisable"></a><code><b>dcb_DtrControlDisable</b> = $00000000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_DtrControlEnable"></a><code><b>dcb_DtrControlEnable</b> = $00000010;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_DtrControlHandshake"></a><code><b>dcb_DtrControlHandshake</b> = $00000020;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_DsrSensivity"></a><code><b>dcb_DsrSensivity</b> = $00000040;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_TXContinueOnXoff"></a><code><b>dcb_TXContinueOnXoff</b> = $00000080;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_OutX"></a><code><b>dcb_OutX</b> = $00000100;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_InX"></a><code><b>dcb_InX</b> = $00000200;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_ErrorChar"></a><code><b>dcb_ErrorChar</b> = $00000400;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_NullStrip"></a><code><b>dcb_NullStrip</b> = $00000800;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_RtsControlMask"></a><code><b>dcb_RtsControlMask</b> = $00003000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_RtsControlDisable"></a><code><b>dcb_RtsControlDisable</b> = $00000000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_RtsControlEnable"></a><code><b>dcb_RtsControlEnable</b> = $00001000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_RtsControlHandshake"></a><code><b>dcb_RtsControlHandshake</b> = $00002000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_RtsControlToggle"></a><code><b>dcb_RtsControlToggle</b> = $00003000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_AbortOnError"></a><code><b>dcb_AbortOnError</b> = $00004000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="dcb_Reserveds"></a><code><b>dcb_Reserveds</b> = $FFFF8000;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="SB1"></a><code><b>SB1</b> = 0;</code></td>
+</tr>
+</table>
+<p>
+stopbit value for 1 stopbit</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="SB1andHalf"></a><code><b>SB1andHalf</b> = 1;</code></td>
+</tr>
+</table>
+<p>
+stopbit value for 1.5 stopbit</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="SB2"></a><code><b>SB2</b> = 2;</code></td>
+</tr>
+</table>
+<p>
+stopbit value for 2 stopbits</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="sOK"></a><code><b>sOK</b> = 0;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="sErr"></a><code><b>sErr</b> = integer(-1);</code></td>
+</tr>
+</table>
+&nbsp;<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:52</em>
+</span>
+</body></html>

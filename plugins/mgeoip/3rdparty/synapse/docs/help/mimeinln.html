@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>mimeinln</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit mimeinln</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Uses">uses</a></td><td>Classes, Interfaces, Objects and Records</td><td><a class="section"  href="#@FuncsProcs">Functions and Procedures</a></td><td>Types</td><td>Constants</td><td>Variables</td></tr></table>
+<a name="@Description"></a><h2 class="description">Description</h2>
+<p>
+Utilities for inline MIME</p>
+<p>
+ Support for Inline MIME encoding and decoding.
+
+<p>Used RFC: RFC-2047, RFC-2231</p>
+<a name="@Uses"></a><h2 class="uses">uses</h2>
+<ul class="useslist"><li>SysUtils</li><li>Classes</li><li><a   href="synachar.html">synachar</a></li><li><a   href="synacode.html">synacode</a></li><li><a   href="synautil.html">synautil</a></li></ul><h2 class="overview">Overview</h2>
+<a name="@FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary">
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="mimeinln.html#InlineDecode">InlineDecode</a></b>(const Value: string; CP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="mimeinln.html#InlineEncode">InlineEncode</a></b>(const Value: string; CP, MimeP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="mimeinln.html#NeedInline">NeedInline</a></b>(const Value: AnsiString): boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="mimeinln.html#InlineCodeEx">InlineCodeEx</a></b>(const Value: string; FromCP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="mimeinln.html#InlineCode">InlineCode</a></b>(const Value: string): string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a   href="mimeinln.html#InlineEmailEx">InlineEmailEx</a></b>(const Value: string; FromCP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="mimeinln.html#InlineEmail">InlineEmail</a></b>(const Value: string): string;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="InlineDecode"></a><code>function <b>InlineDecode</b>(const Value: string; CP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+</table>
+<p>
+Decodes mime inline encoding (i.e. in headers) uses target characterset &quot;CP&quot;.</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="InlineEncode"></a><code>function <b>InlineEncode</b>(const Value: string; CP, MimeP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+</table>
+<p>
+Encodes string to MIME inline encoding. The source characterset is &quot;CP&quot;, and the target charset is &quot;MimeP&quot;.</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="NeedInline"></a><code>function <b>NeedInline</b>(const Value: AnsiString): boolean;</code></td>
+</tr>
+</table>
+<p>
+Returns <code>True</code>, if &quot;Value&quot; contains characters needed for inline coding.</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="InlineCodeEx"></a><code>function <b>InlineCodeEx</b>(const Value: string; FromCP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+</table>
+<p>
+Inline mime encoding similar to <a class="normal" href="mimeinln.html#InlineEncode">InlineEncode</a>, but you can specify source charset, and the target characterset is automatically assigned.</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="InlineCode"></a><code>function <b>InlineCode</b>(const Value: string): string;</code></td>
+</tr>
+</table>
+<p>
+Inline MIME encoding similar to <a class="normal" href="mimeinln.html#InlineEncode">InlineEncode</a>, but the source charset is automatically set to the system default charset, and the target charset is automatically assigned from set of allowed encoding for MIME.</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="InlineEmailEx"></a><code>function <b>InlineEmailEx</b>(const Value: string; FromCP: <a   href="synachar.html#TMimeChar">TMimeChar</a>): string;</code></td>
+</tr>
+</table>
+<p>
+Converts e-mail address to canonical mime form. You can specify source charset.</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="InlineEmail"></a><code>function <b>InlineEmail</b>(const Value: string): string;</code></td>
+</tr>
+</table>
+<p>
+Converts e-mail address to canonical mime form. Source charser it system default charset.</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:51</em>
+</span>
+</body></html>

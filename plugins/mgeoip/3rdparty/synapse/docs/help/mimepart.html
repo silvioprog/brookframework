@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>mimepart</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit mimepart</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Uses">uses</a></td><td><a class="section"  href="#@Classes">Classes, Interfaces, Objects and Records</a></td><td><a class="section"  href="#@FuncsProcs">Functions and Procedures</a></td><td><a class="section"  href="#@Types">Types</a></td><td><a class="section"  href="#@Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="@Description"></a><h2 class="description">Description</h2>
+<p>
+MIME part handling</p>
+<p>
+ Handling with MIME parts.
+
+<p>Used RFC: RFC-2045</p>
+<a name="@Uses"></a><h2 class="uses">uses</h2>
+<ul class="useslist"><li>SysUtils</li><li>Classes</li><li><a   href="synafpc.html">synafpc</a></li><li><a   href="synachar.html">synachar</a></li><li><a   href="synacode.html">synacode</a></li><li><a   href="synautil.html">synautil</a></li><li><a   href="mimeinln.html">mimeinln</a></li></ul><h2 class="overview">Overview</h2>
+<a name="@Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="mimepart.TMimePart.html"><code>TMimePart</code></a></td>
+<td class="itemdesc">Object for working with parts of MIME e-mail.</td>
+</tr>
+</table>
+<a name="@FuncsProcs"></a><h3 class="summary">Functions and Procedures</h3>
+<table class="summary">
+<tr class="list">
+<td class="itemcode"><code>function <b><a   href="mimepart.html#GenerateBoundary">GenerateBoundary</a></b>: string;</code></td>
+</tr>
+</table>
+<a name="@Types"></a><h3 class="summary">Types</h3>
+<table class="summary">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="mimepart.html#THookWalkPart">THookWalkPart</a></b> = procedure(const Sender: <a   href="mimepart.TMimePart.html">TMimePart</a>) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="mimepart.html#TMimePrimary">TMimePrimary</a></b> = (...);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="mimepart.html#TMimeEncoding">TMimeEncoding</a></b> = (...);</code></td>
+</tr>
+</table>
+<a name="@Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="mimepart.html#MaxMimeType">MaxMimeType</a></b> = 25;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="mimepart.html#MimeType">MimeType</a></b>: array[0..<a   href="mimepart.html#MaxMimeType">MaxMimeType</a>, 0..2] of string =
+  (
+    ('AU', 'audio', 'basic'),
+    ('AVI', 'video', 'x-msvideo'),
+    ('BMP', 'image', 'BMP'),
+    ('DOC', 'application', 'MSWord'),
+    ('EPS', 'application', 'Postscript'),
+    ('GIF', 'image', 'GIF'),
+    ('JPEG', 'image', 'JPEG'),
+    ('JPG', 'image', 'JPEG'),
+    ('MID', 'audio', 'midi'),
+    ('MOV', 'video', 'quicktime'),
+    ('MPEG', 'video', 'MPEG'),
+    ('MPG', 'video', 'MPEG'),
+    ('MP2', 'audio', 'mpeg'),
+    ('MP3', 'audio', 'mpeg'),
+    ('PDF', 'application', 'PDF'),
+    ('PNG', 'image', 'PNG'),
+    ('PS', 'application', 'Postscript'),
+    ('QT', 'video', 'quicktime'),
+    ('RA', 'audio', 'x-realaudio'),
+    ('RTF', 'application', 'RTF'),
+    ('SND', 'audio', 'basic'),
+    ('TIF', 'image', 'TIFF'),
+    ('TIFF', 'image', 'TIFF'),
+    ('WAV', 'audio', 'x-wav'),
+    ('WPD', 'application', 'Wordperfect5.1'),
+    ('ZIP', 'application', 'ZIP')
+    );</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="GenerateBoundary"></a><code>function <b>GenerateBoundary</b>: string;</code></td>
+</tr>
+</table>
+<p>
+Generates a unique boundary string.</p>
+<h3 class="detail">Types</h3>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="THookWalkPart"></a><code><b>THookWalkPart</b> = procedure(const Sender: <a   href="mimepart.TMimePart.html">TMimePart</a>) of object;</code></td>
+</tr>
+</table>
+<p>
+Procedural type for <a class="normal" href="mimepart.TMimePart.html">TMimePart</a>.<a class="normal" href="mimepart.TMimePart.html#WalkPart">WalkPart</a> hook</p>
+<p>
+. This hook is used for easy walking through MIME subparts.</p>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="TMimePrimary"></a><code><b>TMimePrimary</b> = (...);</code></td>
+</tr>
+</table>
+<p>
+The four types of MIME parts. (textual, multipart, message or any other binary data.)</p>
+<ul>
+<li>
+MP_TEXT: </li>
+<li>
+MP_MULTIPART: </li>
+<li>
+MP_MESSAGE: </li>
+<li>
+MP_BINARY: </li>
+</ul>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="TMimeEncoding"></a><code><b>TMimeEncoding</b> = (...);</code></td>
+</tr>
+</table>
+<p>
+The various types of possible part encodings.</p>
+<ul>
+<li>
+ME_7BIT: </li>
+<li>
+ME_8BIT: </li>
+<li>
+ME_QUOTED_PRINTABLE: </li>
+<li>
+ME_BASE64: </li>
+<li>
+ME_UU: </li>
+<li>
+ME_XX: </li>
+</ul>
+<h3 class="detail">Constants</h3>
+<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="MaxMimeType"></a><code><b>MaxMimeType</b> = 25;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="itemcode"><a name="MimeType"></a><code><b>MimeType</b>: array[0..<a   href="mimepart.html#MaxMimeType">MaxMimeType</a>, 0..2] of string =
+  (
+    ('AU', 'audio', 'basic'),
+    ('AVI', 'video', 'x-msvideo'),
+    ('BMP', 'image', 'BMP'),
+    ('DOC', 'application', 'MSWord'),
+    ('EPS', 'application', 'Postscript'),
+    ('GIF', 'image', 'GIF'),
+    ('JPEG', 'image', 'JPEG'),
+    ('JPG', 'image', 'JPEG'),
+    ('MID', 'audio', 'midi'),
+    ('MOV', 'video', 'quicktime'),
+    ('MPEG', 'video', 'MPEG'),
+    ('MPG', 'video', 'MPEG'),
+    ('MP2', 'audio', 'mpeg'),
+    ('MP3', 'audio', 'mpeg'),
+    ('PDF', 'application', 'PDF'),
+    ('PNG', 'image', 'PNG'),
+    ('PS', 'application', 'Postscript'),
+    ('QT', 'video', 'quicktime'),
+    ('RA', 'audio', 'x-realaudio'),
+    ('RTF', 'application', 'RTF'),
+    ('SND', 'audio', 'basic'),
+    ('TIF', 'image', 'TIFF'),
+    ('TIFF', 'image', 'TIFF'),
+    ('WAV', 'audio', 'x-wav'),
+    ('WPD', 'application', 'Wordperfect5.1'),
+    ('ZIP', 'application', 'ZIP')
+    );</code></td>
+</tr>
+</table>
+&nbsp;<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:51</em>
+</span>
+</body></html>

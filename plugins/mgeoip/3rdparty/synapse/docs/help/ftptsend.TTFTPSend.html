@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.9.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>ftptsend: Class TTFTPSend</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TTFTPSend"></a><h1 class="cio">Class TTFTPSend</h1>
+<table class="sections">
+<tr>
+<td><a class="section"  href="#@Description">Description</a></td><td><a class="section"  href="#@Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#@Methods">Methods</a></td><td><a class="section"  href="#@Properties">Properties</a></td></tr></table>
+<a name="@Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="ftptsend.html">ftptsend</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TTFTPSend = class(<a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a>)</code></p>
+<h2 class="description">Description</h2>
+<p>
+Implementation of TFTP client and server</p>
+<p>
+ Note: Are you missing properties for specify server address and port? Look to parent <a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a> too!</p>
+<a name="@Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TObject</li>
+<li class="ancestor"><a class="normal" href="blcksock.TSynaClient.html">TSynaClient</a></li>
+<li class="thisitem">TTFTPSend</li></ul><h2 class="overview">Overview</h2>
+<a name="@Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a   href="ftptsend.TTFTPSend.html#Create">Create</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a   href="ftptsend.TTFTPSend.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="ftptsend.TTFTPSend.html#SendFile">SendFile</a></b>(const Filename: string): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="ftptsend.TTFTPSend.html#RecvFile">RecvFile</a></b>(const Filename: string): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="ftptsend.TTFTPSend.html#WaitForRequest">WaitForRequest</a></b>(var Req: word; var filename: string): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a   href="ftptsend.TTFTPSend.html#ReplyError">ReplyError</a></b>(Error: word; Description: string);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="ftptsend.TTFTPSend.html#ReplyRecv">ReplyRecv</a></b>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a   href="ftptsend.TTFTPSend.html#ReplySend">ReplySend</a></b>: Boolean;</code></td>
+</tr>
+</table>
+<a name="@Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftptsend.TTFTPSend.html#ErrorCode">ErrorCode</a></b>: integer read FErrorCode;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftptsend.TTFTPSend.html#ErrorString">ErrorString</a></b>: string read FErrorString;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftptsend.TTFTPSend.html#Data">Data</a></b>: TMemoryStream read FData;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftptsend.TTFTPSend.html#RequestIP">RequestIP</a></b>: string read FRequestIP write FRequestIP;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="ftptsend.TTFTPSend.html#RequestPort">RequestPort</a></b>: string read FRequestPort write FRequestPort;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+</table>
+&nbsp;<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SendFile"></a><code>function <b>SendFile</b>(const Filename: string): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Upload <a class="normal" href="ftptsend.TTFTPSend.html#Data">Data</a> as file to TFTP server.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RecvFile"></a><code>function <b>RecvFile</b>(const Filename: string): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Download file from TFTP server to <a class="normal" href="ftptsend.TTFTPSend.html#Data">Data</a>.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="WaitForRequest"></a><code>function <b>WaitForRequest</b>(var Req: word; var filename: string): Boolean;</code></td>
+</tr>
+</table>
+<p>
+Acts as TFTP server and wait for client request. When some request incoming within Timeout, result is <code>True</code> and parametres is filled with information from request. You must handle this request, validate it, and call <a class="normal" href="ftptsend.TTFTPSend.html#ReplyError">ReplyError</a>, <a class="normal" href="ftptsend.TTFTPSend.html#ReplyRecv">ReplyRecv</a> or <a class="normal" href="ftptsend.TTFTPSend.html#ReplySend">ReplySend</a> for send reply to TFTP Client.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReplyError"></a><code>procedure <b>ReplyError</b>(Error: word; Description: string);</code></td>
+</tr>
+</table>
+<p>
+send error to TFTP client, when you acts as TFTP server.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReplyRecv"></a><code>function <b>ReplyRecv</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+Accept uploaded file from TFTP client to <a class="normal" href="ftptsend.TTFTPSend.html#Data">Data</a>, when you acts as TFTP server.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ReplySend"></a><code>function <b>ReplySend</b>: Boolean;</code></td>
+</tr>
+</table>
+<p>
+Accept download request file from TFTP client and send content of <a class="normal" href="ftptsend.TTFTPSend.html#Data">Data</a>, when you acts as TFTP server.</p>
+<h3 class="detail">Properties</h3>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ErrorCode"></a><code>property <b>ErrorCode</b>: integer read FErrorCode;</code></td>
+</tr>
+</table>
+<p>
+Code of TFTP error.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ErrorString"></a><code>property <b>ErrorString</b>: string read FErrorString;</code></td>
+</tr>
+</table>
+<p>
+Human readable decription of TFTP error. (if is sended by remote side)</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Data"></a><code>property <b>Data</b>: TMemoryStream read FData;</code></td>
+</tr>
+</table>
+<p>
+MemoryStream with datas for sending or receiving</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="RequestIP"></a><code>property <b>RequestIP</b>: string read FRequestIP write FRequestIP;</code></td>
+</tr>
+</table>
+<p>
+Address of TFTP remote side.</p>
+<table class="detail">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="RequestPort"></a><code>property <b>RequestPort</b>: string read FRequestPort write FRequestPort;</code></td>
+</tr>
+</table>
+<p>
+Port of TFTP remote side.</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.9.0</a> on 2012-04-23 21:38:50</em>
+</span>
+</body></html>
