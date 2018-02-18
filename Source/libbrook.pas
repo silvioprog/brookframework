@@ -34,12 +34,12 @@ interface
 {$IF DEFINED(FPC) AND DEFINED(UNIX)}
 uses
   BaseUnix;
-{$ELSE}
+{$ELSEIF}
 uses
- {$IFDEF MSWINDOWS}
+ {$IF DEFINED(MSWINDOWS)}
   System.Win.Crtl,
   Winapi.Windows
- {$ELSEIF POSIX}
+ {$ELSEIF DEFINED(POSIX)}
   Posix.SysTypes
  {$ENDIF};
 {$ENDIF}
@@ -75,7 +75,7 @@ function bk_version: cuint; cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_v
 
 function bk_version_str: Pcchar; cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_version_str');
 
-function bk_alloc: Pcvoid; cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_alloc');
+function bk_alloc(size: csize): Pcvoid; cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_alloc');
 
 procedure bk_free(ptr: Pcvoid); cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_free');
 
