@@ -1,6 +1,10 @@
 # Development of the new Brook framework.
 
-The new version will be called Tardigrade and made under [libbrook](https://github.com/risoflora/libbrook/tree/new_api) library.
+* Version number: 4.0
+* Codename: Tardigrade
+* Core (under[libbrook](https://github.com/risoflora/libbrook/tree/new_api)):
+    * static - direct object files linking, no external library required
+    * shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`
 
 # Supported platforms:
 
