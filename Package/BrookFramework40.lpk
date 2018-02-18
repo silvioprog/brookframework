@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="BrookFramework40"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <IncludeFiles Value="../Source"/>
+        <Libraries Value="../Lib/FreePascal/$(TargetCPU)-$(TargetOS)"/>
+        <OtherUnitFiles Value="../Source"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files Count="5">
+      <Item1>
+        <Filename Value="../Source/libbrook.inc"/>
+        <Type Value="Include"/>
+      </Item1>
+      <Item2>
+        <Filename Value="../Source/libbrook.pas"/>
+        <UnitName Value="libbrook"/>
+      </Item2>
+      <Item3>
+        <Filename Value="../Source/Marshalling.pas"/>
+        <UnitName Value="Marshalling"/>
+      </Item3>
+      <Item4>
+        <Filename Value="../Source/Brook.inc"/>
+        <Type Value="Include"/>
+      </Item4>
+      <Item5>
+        <Filename Value="../Source/BrookUtils.pas"/>
+        <UnitName Value="BrookUtils"/>
+      </Item5>
+    </Files>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="FCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <LibraryPath Value="../Lib/FreePascal/$(TargetCPU)-$(TargetOS)"/>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
