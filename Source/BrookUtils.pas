@@ -49,6 +49,20 @@ function BrookVersion: Cardinal;
 }
 function BrookVersionStr: string;
 
+{
+  Allocates a new memory space and zero-initialize it.
+  @param(ASize[in] Memory size to be allocated.)
+  @return(Pointer of the allocated zero-initialized memory; @code(NULL) When
+  size is @code(0) or no memory space.)
+}
+function BrookAlloc(ASize: NativeUInt): Pointer;
+
+{
+  Frees a memory space previous allocated by BrookAlloc().
+  @param APtr[in] Pointer of the memory to be freed.
+}
+procedure BrookFree(APtr: Pointer);
+
 implementation
 
 function BrookVersion: Cardinal;
@@ -61,5 +75,14 @@ begin
   Exit(TMarshal.ToString(bk_version_str));
 end;
 
-end.
+function BrookAlloc(ASize: NativeUInt): Pointer;
+begin
+  Exit(bk_alloc(ASize));
+end;
 
+procedure BrookFree(APtr: Pointer);
+begin
+  bk_free(APtr);
+end;
+
+end.
