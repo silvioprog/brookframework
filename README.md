@@ -1,6 +1,6 @@
 # Development of the new Brook framework.
 
-This new version will be called Tardigrade and made under [libbrook](https://github.com/risoflora/libbrook/tree/new_api) library.
+The new version will be called Tardigrade and made under [libbrook](https://github.com/risoflora/libbrook/tree/new_api) library.
 
 # Supported platforms:
 
@@ -10,11 +10,11 @@ Tested on:
 * Linux 32 and 64 bit (Xubuntu 16.04 64 bit)
 * ARM 32 bit (ARMv5; installed Android 5 / ARMv7; installed Android 6)
 
-(future testings: Orange PI i96 256 MB Cortex-A5 32bit; minimal Core Linux)
+(future testings: Orange PI i96 256 MB Cortex-A5 32bit; minimal Linux core)
 
 # Suported compilers
 
-Successfully tested for Windows 32/64 bit and Linux 64 bit using:
+Successfully compiled for Windows 32/64 bit and Linux 64 bit using:
 * Delphi XE family (Delphi Tokyo)
 * Lazarus / Free Pascal (Lazarus 1.8.0 / FPC 3.0.4)
 
@@ -40,7 +40,7 @@ Planning library distribution:
 
 Planning package distribution/installation:
  
-* Github releases
+* Github releasing
 * GetIt (Delphi)
 * OPM (Lazarus)
 
@@ -48,7 +48,7 @@ Planning package distribution/installation:
 
 Units:
 
-* `BrookUtils` - utility routines and structures.
+* `BrookUtils` - useful routines and structures.
 * `BrookString` - low-level string handling.
 
 Classes:
@@ -65,11 +65,11 @@ Testings:
 * `TestUtils` - utility testings.
 * `TestString` - string handle testings.
 
-* Documentation:
+Documentation:
 
 * `BrookString` - string handling reference [HTML/PDF].
 
-Bugs/problems:
+Bugs & Problems:
 
 * Free Pascal common missing routines/types - all issued at its bugtracker.
 * Delphi unit encoding - unwanted UTF8 BOM when saving unit files.
