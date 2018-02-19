@@ -1,0 +1,8 @@
+object frMain: TfrMain
+  Left = 248
+  Height = 240
+  Top = 150
+  Width = 320
+  Caption = 'frMain'
+  LCLVersion = '1.8.0.6'
+end
