@@ -12,7 +12,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="5">
+    <Files Count="7">
       <Item1>
         <Filename Value="../Source/libbrook.inc"/>
         <Type Value="Include"/>
@@ -33,6 +33,14 @@
         <Filename Value="../Source/BrookUtils.pas"/>
         <UnitName Value="BrookUtils"/>
       </Item5>
+      <Item6>
+        <Filename Value="../Source/BrookHandledClasses.pas"/>
+        <UnitName Value="BrookHandledClasses"/>
+      </Item6>
+      <Item7>
+        <Filename Value="../Source/BrookString.pas"/>
+        <UnitName Value="BrookString"/>
+      </Item7>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
