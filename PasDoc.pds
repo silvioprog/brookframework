@@ -28,7 +28,7 @@ CssFileName=pasdoc.css
 IntroductionFileName=
 ConclusionFileName=
 WriteUsesList=1
-AutoAbstract=0
+AutoAbstract=1
 AutoLink=1
 HandleMacros=1
 UseTipueSearch=1
@@ -57,8 +57,9 @@ Count=1
 Item_0=
 
 [Files]
-Count=1
+Count=2
 Item_0=Source/BrookUtils.pas
+Item_1=Source/BrookHandledClasses.pas
 
 [HyphenatedWords]
 Count=0
