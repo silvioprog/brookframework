@@ -57,6 +57,7 @@ uses
 
 type
   Pcchar = MarshaledAString;
+  cint = Integer;
   cuint = Cardinal;
   csize =
 {$IFDEF FPC}
@@ -73,6 +74,7 @@ type
  {$ENDIF}
 {$ENDIF}.size_t;
   Pcvoid = Pointer;
+  cva_list = Pointer;
 
 const
   BK_PU = {$IFDEF BK_MSVC_BUILT}'_'{$ELSE}''{$ENDIF};
@@ -94,6 +96,8 @@ procedure _exit; cdecl; external msvcrt name 'exit';
 
 {$ENDIF}
 
+{ Utility }
+
 function bk_version: cuint; cdecl;
   external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_version');
 
@@ -105,6 +109,40 @@ function bk_alloc(size: csize): Pcvoid; cdecl;
 
 procedure bk_free(ptr: Pcvoid); cdecl;
   external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_free');
+
+{ String }
+
+type
+  Pbk_str = ^bk_str;
+  bk_str = record
+  end;
+
+function bk_str_new: Pbk_str; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_new');
+
+procedure bk_str_free(str: Pbk_str); cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_free');
+
+function bk_str_write(str: Pbk_str; const val: Pcchar; len: csize_t): cint; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_write');
+
+function bk_str_read(str: Pbk_str; val: Pcchar; len: Pcsize_t): cint; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_read');
+
+function bk_str_printf_va(str: Pbk_str; const fmt: Pcchar; ap: cva_list): cint; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_printf_va');
+
+function bk_str_printf(str: Pbk_str; const fmt: Pcchar): cint; cdecl; varargs;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_printf');
+
+function bk_str_content(str: Pbk_str): Pcchar; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_content');
+
+function bk_str_length(str: Pbk_str; len: Pcsize_t): cint; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_length');
+
+function bk_str_clear(str: Pbk_str): cint; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_clear');
 
 implementation
 
