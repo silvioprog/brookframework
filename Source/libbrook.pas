@@ -29,19 +29,30 @@ unit libbrook;
 
 {$I libbrook.inc}
 
+{$IF DEFINED(FPC) OR DEFINED(POSIX)}
+ {$DEFINE BK_GNUCC_BUILT} // uses Brook library built in any GNU C compiler
+{$ELSEIF DEFINED(MSWINDOWS)}
+ {$DEFINE BK_MSVC_BUILT} // uses Brook library built in any GNU C compiler
+{$ELSE}
+ {$MESSAGE FATAL 'Unknown environment'}
+{$ENDIF}
+
+{.$DEFINE BK_SHARED_LIB} // enable to use Brook as shared library
+
 interface
 
-{$IF DEFINED(FPC) AND DEFINED(UNIX)}
+{$IF DEFINED(BK_GNUCC_BUILT)}
 uses
-  BaseUnix;
-{$ELSEIF}
-uses
- {$IF DEFINED(MSWINDOWS)}
-  System.Win.Crtl,
-  Winapi.Windows
+  SysUtils
+ {$IF DEFINED(UNIX)}
+  , BaseUnix
  {$ELSEIF DEFINED(POSIX)}
-  Posix.SysTypes
+  , Posix.SysTypes
  {$ENDIF};
+{$ELSEIF DEFINED(BK_MSVC_BUILT)}
+uses
+  System.Win.Crtl,
+  Winapi.Windows;
 {$ENDIF}
 
 type
@@ -64,28 +75,48 @@ type
   Pcvoid = Pointer;
 
 const
-  BK_LIB_NAME = {$IFDEF BK_LIB_EXTERNAL}{ TODO: use LIB_NAME }{$ELSE}''{$ENDIF};
-  BK_PU = {$IF (NOT DEFINED(FPC)) AND DEFINED(WIN32)}'_'{$ELSE}''{$ENDIF};
+  BK_PU = {$IFDEF BK_MSVC_BUILT}'_'{$ELSE}''{$ENDIF};
 
-{$IF (NOT DEFINED(FPC)) AND DEFINED(WIN32)}
+{$IFDEF BK_SHARED_LIB}
+
+  BK_VERSION_MAJOR_STR = '0';
+
+  BK_LIB_NAME =
+{$IFDEF BK_GNUCC_BUILT}
+    Concat('libbrook-', BK_VERSION_MAJOR_STR)
+{$ELSE}
+    'brook'
+{$ENDIF};
+
+{$IFDEF BK_MSVC_BUILT}
 procedure _exit; cdecl; external msvcrt name 'exit';
 {$ENDIF}
 
-function bk_version: cuint; cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_version');
+{$ENDIF}
 
-function bk_version_str: Pcchar; cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_version_str');
+function bk_version: cuint; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_version');
 
-function bk_alloc(size: csize): Pcvoid; cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_alloc');
+function bk_version_str: Pcchar; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_version_str');
 
-procedure bk_free(ptr: Pcvoid); cdecl; external BK_LIB_NAME name Concat(BK_PU, 'bk_free');
+function bk_alloc(size: csize): Pcvoid; cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_alloc');
+
+procedure bk_free(ptr: Pcvoid); cdecl;
+  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_free');
 
 implementation
 
-{$IFDEF FPC}
- {$LINKLIB brook}
-{$ELSE}
+{$IF DEFINED(BK_MSVC_BUILT)}
  {$LINK bk_str.obj}
  {$LINK bk_utils.obj}
+{$ELSEIF DEFINED(BK_GNUCC_BUILT)}
+ {$LINKLIB libbrook.a}
+ {$IFDEF WIN32}
+  {$LINKLiB libmingwex.a}
+  {$LINKLIB libcrtdll.a}
+ {$ENDIF}
 {$ENDIF}
 
 end.
