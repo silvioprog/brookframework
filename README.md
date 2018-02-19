@@ -3,8 +3,8 @@
 * Version number: 4.0
 * Codename: Tardigrade
 * Core (under [libbrook](https://github.com/risoflora/libbrook/tree/new_api)):
-    * static - direct object files linking, no external library required
-    * shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`
+    * static objects - direct objects or library linking, no external library required
+    ~~* shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`~~ (no more required! \o/)
 
 # Supported platforms:
 
@@ -26,17 +26,17 @@ Successfully compiled for Windows 32/64 bit and Linux 64 bit using:
 
 # Dependence linking
 
-* Static and shared 32/64 libraries generated in:
+* Static ~~and shared~~ 32/64 objects/libraries generated in:
     * MSVC from Visual Studio 2017 version 15.5
     * MinGW-w64 from MSYS
 
 (future testings: Delphi C++ compiler)
 
-Planning library distribution:
+~~Planning library distribution:~~
 
-* APT (Debian based systems)
-* Pacman (MinGW)
-* Nuget (Visual Studio)
+~~* APT (Debian based systems)~~
+~~* Pacman (MinGW)~~
+~~* Nuget (Visual Studio)~~
 
 # Distribution / installation
 
@@ -52,26 +52,31 @@ Planning package distribution/installation:
 
 Units:
 
-* `BrookUtils` - useful routines and structures.
-* `BrookString` - low-level string handling.
+~~* `BrookUtils` - useful routines and structures.~~ (Done!)
+* `BrookString` - low-level string handling. (In progress...)
 
 Classes:
 
-* `TBrookString` - used to represent a HTML body, POST payload and more.
+* `TBrookString` - used to represent a HTML body, POST payload and more. (In progress...)
 
 Packages:
 
-* `BrookFramework.dpk` - Delphi package.
-* `BrookFramework.lpk` - Lazarus package.
+* `BrookFramework.dpk` - Delphi package. (In progress...)
+* `BrookFramework.lpk` - Lazarus package. (In progress...)
+
+Examples:
+
+* `BrookUtils_Example` - utility functions example. (In progress...)
+* `BrookString_Example` - string handling example. (In progress...)
 
 Testings:
 
-* `TestUtils` - utility testings.
-* `TestString` - string handle testings.
+* `TestUtils` - utility testings. (In progress...)
+* `TestString` - string handle testings. (In progress...)
 
 Documentation:
 
-* `BrookString` - string handling reference [HTML/PDF].
+* `BrookString` - string handling reference [HTML/PDF]. (In progress...)
 
 Bugs & Problems:
 
