@@ -80,13 +80,13 @@ class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
   const S: Pcchar): string;
 {$IFDEF FPC}
 var
-  B: pcchar;
+  B: Pcchar;
 {$ENDIF}
 begin
   if not Assigned(S) then
     Exit('');
 {$IFDEF FPC}
-  B := pcchar(@S[0]);
+  B := Pcchar(@S[0]);
   SetString(Result, B, Length(B));
   SetCodePage(RawByteString(Result), CP_UTF8, False);
 {$ELSE}
