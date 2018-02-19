@@ -4,7 +4,7 @@
 * Codename: Tardigrade
 * Core (under [libbrook](https://github.com/risoflora/libbrook/tree/new_api)):
     * static objects - direct objects or library linking, no external library required
-    ~~* shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`~~ (no more required! \o/)
+    * ~~shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`~~ (no more required! \o/)
 
 # Supported platforms:
 
@@ -34,9 +34,9 @@ Successfully compiled for Windows 32/64 bit and Linux 64 bit using:
 
 ~~Planning library distribution:~~
 
-~~* APT (Debian based systems)~~
-~~* Pacman (MinGW)~~
-~~* Nuget (Visual Studio)~~
+*~~ APT (Debian based systems)~~
+*~~ Pacman (MinGW)~~
+*~~ Nuget (Visual Studio)~~
 
 # Distribution / installation
 
@@ -52,7 +52,7 @@ Planning package distribution/installation:
 
 Units:
 
-~~* `BrookUtils` - useful routines and structures.~~ (Done!)
+* ~~`BrookUtils` - useful routines and structures.~~ (Done!)
 * `BrookString` - low-level string handling. (In progress...)
 
 Classes:
