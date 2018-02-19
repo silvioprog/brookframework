@@ -34,9 +34,9 @@ Successfully compiled for Windows 32/64 bit and Linux 64 bit using:
 
 ~~Planning library distribution:~~
 
-*~~ APT (Debian based systems)~~
-*~~ Pacman (MinGW)~~
-*~~ Nuget (Visual Studio)~~
+* ~~APT (Debian based systems)~~
+* ~~Pacman (MinGW)~~
+* ~~Nuget (Visual Studio)~~
 
 # Distribution / installation
 
