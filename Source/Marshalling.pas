@@ -48,7 +48,7 @@ type
 {$ENDIF}
   public
     class function ToBytes(const S: Pcchar;
-      const Z: csize): TBytes; static; inline;
+      const Z: csize_t): TBytes; static; inline;
     class function ToString(const S: Pcchar): string; static; inline;
   end;
 
@@ -68,7 +68,7 @@ implementation
 { TMarshal* }
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToBytes(
-  const S: Pcchar; const Z: csize): TBytes;
+  const S: Pcchar; const Z: csize_t): TBytes;
 begin
   if (not Assigned(S)) or (Z = 0) then
     Exit(nil);
