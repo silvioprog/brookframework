@@ -61,7 +61,7 @@ type
   Pcchar = MarshaledAString;
   cint = Integer;
   cuint = Cardinal;
-  csize =
+  csize_t =
 {$IFDEF FPC}
  {$IFDEF UNIX}
     BaseUnix
@@ -75,27 +75,37 @@ type
     Winapi.Windows
  {$ENDIF}
 {$ENDIF}.size_t;
+  Pcsize_t =
+{$IFDEF FPC}
+ {$IFDEF UNIX}
+    BaseUnix
+ {$ELSE}
+    System
+ {$ENDIF}
+{$ELSE}
+ {$IFDEF POSIX}
+    Posix.SysTypes
+ {$ELSE}
+    Winapi.Windows
+ {$ENDIF}
+{$ENDIF}.Psize_t;
   Pcvoid = Pointer;
   cva_list = Pointer;
 
 const
   BK_PU = {$IFDEF BK_MSVC_BUILT}'_'{$ELSE}''{$ENDIF};
-
 {$IFDEF BK_SHARED_LIB}
-
   BK_VERSION_MAJOR_STR = '0';
-
   BK_LIB_NAME =
-{$IFDEF BK_GNUCC_BUILT}
+ {$IFDEF BK_GNUCC_BUILT}
     Concat('libbrook-', BK_VERSION_MAJOR_STR)
-{$ELSE}
+ {$ELSE}
     'brook'
-{$ENDIF};
+ {$ENDIF};
+{$ENDIF}
 
 {$IFDEF BK_MSVC_BUILT}
 procedure _exit; cdecl; external msvcrt name 'exit';
-{$ENDIF}
-
 {$ENDIF}
 
 { Utility }
@@ -106,7 +116,7 @@ function bk_version: cuint; cdecl;
 function bk_version_str: Pcchar; cdecl;
   external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_version_str');
 
-function bk_alloc(size: csize): Pcvoid; cdecl;
+function bk_alloc(size: csize_t): Pcvoid; cdecl;
   external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_alloc');
 
 procedure bk_free(ptr: Pcvoid); cdecl;
