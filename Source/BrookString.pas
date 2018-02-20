@@ -39,7 +39,9 @@ uses
   Marshalling,
   BrookHandledClasses;
 
-{ TODO: procedure Assign(ASource: TPersistent); override; }
+{ TODO: TBrookString.Assign() }
+{ TODO: TBrookString.Read() }
+{ TODO: TBrookString.Format() }
 
 type
   { String class and its related methods. }
