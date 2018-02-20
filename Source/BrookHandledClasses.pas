@@ -36,17 +36,29 @@ interface
 uses
   Classes;
 
+resourcestring
+  SBrookInvalidHandle = 'Invalid handle in %s';
+
 type
-  { Main RTTI handled type. }
+  { Raised when a caller tries to access a nil library handle. }
+  EBrookInvalidHandle = class(EInvalidOperation);
+
+  { The base RTTI handled type. }
   TBrookHandledPersistent = class abstract(TPersistent)
   protected
     function GetHandle: Pointer; virtual; abstract;
+    function GetOwnsHandle: Boolean; virtual; abstract;
+    procedure SetOwnsHandle(AValue: Boolean); virtual; abstract;
+  protected
+    procedure CheckHandle; inline;
   public
     { Handle of a loaded library. }
     property Handle: Pointer read GetHandle;
+    { Determines if the handle is freed on the class destruction. }
+    property OwnsHandle: Boolean read GetOwnsHandle write SetOwnsHandle;
   end;
 
-  { Main RTTI handled component. }
+  { The base RTTI handled component. }
   TBrookHandledComponent = class abstract(TComponent)
   protected
     function GetHandle: Pointer; virtual; abstract;
@@ -56,6 +68,12 @@ type
   end;
 
 implementation
+
+procedure TBrookHandledPersistent.CheckHandle;
+begin
+  if not Assigned(GetHandle) then
+    raise EBrookInvalidHandle.CreateResFmt(@SBrookInvalidHandle, [ClassName]);
+end;
 
 end.
 
