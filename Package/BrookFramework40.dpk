@@ -34,6 +34,7 @@ contains
   libbrook in '..\Source\libbrook.pas',
   Marshalling in '..\Source\Marshalling.pas',
   BrookUtils in '..\Source\BrookUtils.pas',
-  BrookHandledClasses in '..\Source\BrookHandledClasses.pas';
+  BrookHandledClasses in '..\Source\BrookHandledClasses.pas',
+  BrookString in '..\Source\BrookString.pas';
 
 end.
