@@ -71,7 +71,7 @@ implementation
 
 procedure TBrookHandledPersistent.CheckHandle;
 begin
-  if not Assigned(GetHandle) then
+  if not Assigned(Handle) then
     raise EBrookInvalidHandle.CreateResFmt(@SBrookInvalidHandle, [ClassName]);
 end;
 
