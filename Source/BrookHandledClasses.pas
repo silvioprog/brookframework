@@ -43,7 +43,7 @@ type
   { Raised when a caller tries to access a nil library handle. }
   EBrookInvalidHandle = class(EInvalidOperation);
 
-  { The base RTTI handled type. }
+  { The base handled persistent. }
   TBrookHandledPersistent = class abstract(TPersistent)
   protected
     function GetHandle: Pointer; virtual; abstract;
@@ -52,18 +52,18 @@ type
   protected
     procedure CheckHandle; inline;
   public
-    { Handle of a loaded library. }
+    { Handle of a feature from the loaded library. }
     property Handle: Pointer read GetHandle;
     { Determines if the handle is freed on the class destruction. }
     property OwnsHandle: Boolean read GetOwnsHandle write SetOwnsHandle;
   end;
 
-  { The base RTTI handled component. }
+  { The base handled component. }
   TBrookHandledComponent = class abstract(TComponent)
   protected
     function GetHandle: Pointer; virtual; abstract;
   public
-    { Handle of a loaded library. }
+    { Handle of a feature from the loaded library. }
     property Handle: Pointer read GetHandle;
   end;
 
@@ -76,4 +76,3 @@ begin
 end;
 
 end.
-
