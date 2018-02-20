@@ -48,7 +48,7 @@ Planning package distribution/installation:
 * GetIt (Delphi)
 * OPM (Lazarus)
 
-# Current available
+# Currently available
 
 Units:
 
