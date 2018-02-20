@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-{ This example show a basic usage of TBrookString }
+{ This example show a basic usage of TBrookString. }
 
 unit BrookString_frMain;
 

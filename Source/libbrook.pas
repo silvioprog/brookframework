@@ -25,6 +25,8 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
+{ Cross-platform low-level Pascal binding for the Brook library. }
+
 unit libbrook;
 
 {$I libbrook.inc}

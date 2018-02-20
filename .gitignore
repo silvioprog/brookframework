@@ -87,6 +87,8 @@ __recovery/
 # These can be changed by user in Lazarus/project options.
 backup/
 *.bak
+lib/
+BrookFramework[0-9]*.*
 
 # Application bundle for Mac OS
 *.app/
