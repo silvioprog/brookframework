@@ -39,8 +39,6 @@ unit libbrook;
  {$MESSAGE FATAL 'Unknown environment'}
 {$ENDIF}
 
-{.$DEFINE BK_SHARED_LIB} // enable to use Brook as shared library
-
 interface
 
 {$IF DEFINED(BK_GNUCC_BUILT)}
@@ -75,34 +73,12 @@ type
     Winapi.Windows
  {$ENDIF}
 {$ENDIF}.size_t;
-  Pcsize_t =
-{$IFDEF FPC}
- {$IFDEF UNIX}
-    BaseUnix
- {$ELSE}
-    System
- {$ENDIF}
-{$ELSE}
- {$IFDEF POSIX}
-    Posix.SysTypes
- {$ELSE}
-    Winapi.Windows
- {$ENDIF}
-{$ENDIF}.Psize_t;
+  Pcsize_t = ^csize_t;
   Pcvoid = Pointer;
   cva_list = Pointer;
 
 const
   BK_PU = {$IFDEF BK_MSVC_BUILT}'_'{$ELSE}''{$ENDIF};
-{$IFDEF BK_SHARED_LIB}
-  BK_VERSION_MAJOR_STR = '0';
-  BK_LIB_NAME =
- {$IFDEF BK_GNUCC_BUILT}
-    Concat('libbrook-', BK_VERSION_MAJOR_STR)
- {$ELSE}
-    'brook'
- {$ENDIF};
-{$ENDIF}
 
 {$IFDEF BK_MSVC_BUILT}
 procedure _exit; cdecl; external msvcrt name 'exit';
@@ -111,16 +87,16 @@ procedure _exit; cdecl; external msvcrt name 'exit';
 { Utility }
 
 function bk_version: cuint; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_version');
+  external name Concat(BK_PU, 'bk_version');
 
 function bk_version_str: Pcchar; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_version_str');
+  external name Concat(BK_PU, 'bk_version_str');
 
 function bk_alloc(size: csize_t): Pcvoid; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_alloc');
+  external name Concat(BK_PU, 'bk_alloc');
 
 procedure bk_free(ptr: Pcvoid); cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_free');
+  external name Concat(BK_PU, 'bk_free');
 
 { String }
 
@@ -130,31 +106,31 @@ type
   end;
 
 function bk_str_new: Pbk_str; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_new');
+  external name Concat(BK_PU, 'bk_str_new');
 
 procedure bk_str_free(str: Pbk_str); cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_free');
+  external name Concat(BK_PU, 'bk_str_free');
 
 function bk_str_write(str: Pbk_str; const val: Pcchar; len: csize_t): cint; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_write');
+  external name Concat(BK_PU, 'bk_str_write');
 
 function bk_str_read(str: Pbk_str; val: Pcchar; len: Pcsize_t): cint; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_read');
+  external name Concat(BK_PU, 'bk_str_read');
 
 function bk_str_printf_va(str: Pbk_str; const fmt: Pcchar; ap: cva_list): cint; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_printf_va');
+  external name Concat(BK_PU, 'bk_str_printf_va');
 
 function bk_str_printf(str: Pbk_str; const fmt: Pcchar): cint; cdecl; varargs;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_printf');
+  external name Concat(BK_PU, 'bk_str_printf');
 
 function bk_str_content(str: Pbk_str): Pcchar; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_content');
+  external name Concat(BK_PU, 'bk_str_content');
 
 function bk_str_length(str: Pbk_str; len: Pcsize_t): cint; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_length');
+  external name Concat(BK_PU, 'bk_str_length');
 
 function bk_str_clear(str: Pbk_str): cint; cdecl;
-  external {$IFDEF BK_SHARED_LIB}BK_LIB_NAME{$ENDIF} name Concat(BK_PU, 'bk_str_clear');
+  external name Concat(BK_PU, 'bk_str_clear');
 
 implementation
 
@@ -163,7 +139,7 @@ implementation
  {$LINK bk_utils.obj}
 {$ELSEIF DEFINED(BK_GNUCC_BUILT)}
  {$LINKLIB libbrook.a}
- {$IFDEF WIN32}
+ {$IFDEF MSWINDOWS}
   {$LINKLiB libmingwex.a}
   {$LINKLIB libcrtdll.a}
  {$ENDIF}
