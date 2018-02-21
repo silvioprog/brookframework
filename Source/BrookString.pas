@@ -60,14 +60,17 @@ type
     constructor Create(AHandle: Pointer); virtual;
     { Frees an instance of TBrookString. }
     destructor Destroy; override;
-    { Writes a zero-terminated value to string handle. All values previously
+    { Writes a string buffer to the string handle. All strings previously
       written are kept. }
-    function Write(const AValue: TBytes; ALength: LongInt): LongInt; virtual;
-    { Cleans all written string present in the string handle. }
+    function Write(const AValue: TBytes;
+      ALength: NativeUInt): NativeUInt; virtual;
+    { Reads a string buffer from the string handle. }
+    function Read(AValue: TBytes; ALength: NativeUInt): NativeUInt; virtual;
+    { Cleans all the content present in the string handle. }
     procedure Clear; virtual;
-    { Gets the zero-terminated string content from the string handle. }
+    { Gets the content buffer from the string handle. }
     property Content: TBytes read GetContent;
-    { Gets the total string length written in the string handle. }
+    { Gets the content length from the string handle. }
     property Length: NativeUInt read GetLength;
   end;
 
@@ -103,12 +106,21 @@ begin
   FOwnsHandle := AValue;
 end;
 
-function TBrookString.Write(const AValue: TBytes; ALength: LongInt): LongInt;
+function TBrookString.Write(const AValue: TBytes;
+  ALength: NativeUInt): NativeUInt;
 begin
   CheckHandle;
   Result := ALength;
-  if bk_str_write(Fstr, @AValue[0], Result) <> 0 then
-    Result := -1;
+  bk_str_write(Fstr, @AValue[0], Result);
+  { TODO: check the function result. }
+end;
+
+function TBrookString.Read(AValue: TBytes; ALength: NativeUInt): NativeUInt;
+begin
+  CheckHandle;
+  Result := ALength;
+  bk_str_read(Fstr, @AValue[0], @ALength);
+  { TODO: check the function result. }
 end;
 
 procedure TBrookString.Clear;
