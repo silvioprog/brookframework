@@ -38,6 +38,7 @@ object frMain: TfrMain
     Top = 40
     Width = 112
     Caption = '&Show content'
+    Enabled = False
     OnClick = btShowContentClick
     TabOrder = 1
   end
@@ -47,6 +48,7 @@ object frMain: TfrMain
     Top = 40
     Width = 112
     Caption = '&Clear'
+    Enabled = False
     OnClick = btClearClick
     TabOrder = 2
   end

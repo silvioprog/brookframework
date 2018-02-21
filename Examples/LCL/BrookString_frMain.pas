@@ -82,18 +82,14 @@ begin
 end;
 
 procedure TfrMain.btAddNowClick(Sender: TObject);
-var
-  VBytes: TBytes;
 begin
-  VBytes := BytesOf(FormatDateTime(Concat('hh:nn:ss.zzz', sLineBreak), Now));
-  FString.Write(VBytes, Length(VBytes));
+  FString.Format('%s%s', [FormatDateTime('hh:nn:ss.zzz', Now), sLineBreak]);
   UpdateButtons;
 end;
 
 procedure TfrMain.btShowContentClick(Sender: TObject);
 begin
-  ShowMessage(Concat('All clicks:', sLineBreak, sLineBreak,
-    StringOf(FString.Content)));
+  ShowMessageFmt('All clicks:%s%s%s', [sLineBreak, sLineBreak, FString.AsText]);
 end;
 
 procedure TfrMain.btClearClick(Sender: TObject);
