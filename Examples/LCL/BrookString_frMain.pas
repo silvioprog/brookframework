@@ -46,7 +46,7 @@ type
     btAddNow: TButton;
     btShowContent: TButton;
     btClear: TButton;
-    Label1: TLabel;
+    lbDesc: TLabel;
     procedure btAddNowClick(Sender: TObject);
     procedure btClearClick(Sender: TObject);
     procedure btShowContentClick(Sender: TObject);

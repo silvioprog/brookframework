@@ -9,7 +9,7 @@ object frMain: TfrMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '1.8.0.6'
-  object Label1: TLabel
+  object lbDesc: TLabel
     Left = 10
     Height = 17
     Top = 10
@@ -19,11 +19,9 @@ object frMain: TfrMain
     AutoSize = False
     BorderSpacing.Around = 10
     Caption = 'This example show a basic usage of TBrookString'
-    Font.Height = 12
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
-    OptimalFill = True
   end
   object btAddNow: TButton
     Left = 16
