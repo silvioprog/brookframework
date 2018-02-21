@@ -145,9 +145,7 @@ begin
   CheckOSError(bk_str_read(Fstr, @AValue[0], @ALength));
 end;
 
-{$IFDEF FPC}
- {$PUSH}
-  {$WARN 4104 OFF}
+{$IFDEF FPC}{$PUSH}{$WARN 4104 OFF}{$ENDIF}
 procedure TBrookString.Format(const AFmt: string; const AArgs: array of const;
   AFormatSettings: TFormatSettings; AEncoding: TEncoding);
 var
@@ -158,8 +156,7 @@ begin
   VBytes := AEncoding.GetBytes(SysUtils.Format(AFmt, AArgs, AFormatSettings));
   Write(VBytes, System.Length(VBytes));
 end;
- {$POP}
-{$ENDIF}
+{$IFDEF FPC}{$POP}{$ENDIF}
 
 procedure TBrookString.Format(const AFmt: string; const AArgs: array of const;
   AFormatSettings: TFormatSettings);
@@ -172,9 +169,7 @@ begin
   Format(AFmt, AArgs, FormatSettings, TEncoding.UTF8);
 end;
 
-{$IFDEF FPC}
- {$PUSH}
-  {$WARN 4105 OFF}
+{$IFDEF FPC}{$PUSH}{$WARN 4105 OFF}{$ENDIF}
 function TBrookString.AsText(AEncoding: TEncoding): string;
 var
   VBytes: TBytes;
@@ -186,8 +181,7 @@ begin
   Read(VBytes, VLength);
   Result := AEncoding.GetString(VBytes, 0, VLength);
 end;
- {$POP}
-{$ENDIF}
+{$IFDEF FPC}{$POP}{$ENDIF}
 
 function TBrookString.AsText: string;
 begin
