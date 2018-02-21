@@ -39,6 +39,7 @@ object frMain: TfrMain
     Top = 40
   end
   object btShowContent: TButton
+    Enabled = False
     Position.X = 152.000000000000000000
     Position.Y = 40.000000000000000000
     Size.Width = 112.000000000000000000
@@ -51,6 +52,7 @@ object frMain: TfrMain
     Top = 40
   end
   object btClear: TButton
+    Enabled = False
     Position.X = 288.000000000000000000
     Position.Y = 40.000000000000000000
     Size.Width = 112.000000000000000000

@@ -26,6 +26,8 @@ type
     procedure btClearClick(Sender: TObject);
   private
     FString: TBrookString;
+  protected
+    procedure UpdateButtons;
   end;
 
 var
@@ -45,12 +47,19 @@ begin
   FString.Free;
 end;
 
+procedure TfrMain.UpdateButtons;
+begin
+  btShowContent.Enabled := FString.Length > 0;
+  btClear.Enabled := btShowContent.Enabled;
+end;
+
 procedure TfrMain.btAddNowClick(Sender: TObject);
 var
   VBytes: TBytes;
 begin
   VBytes := BytesOf(FormatDateTime(Concat('hh:nn:ss.zzz', sLineBreak), Now));
   FString.Write(VBytes, Length(VBytes));
+  UpdateButtons;
 end;
 
 procedure TfrMain.btShowContentClick(Sender: TObject);
@@ -62,6 +71,7 @@ end;
 procedure TfrMain.btClearClick(Sender: TObject);
 begin
   FString.Clear;
+  UpdateButtons;
 end;
 
 end.

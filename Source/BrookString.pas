@@ -40,7 +40,6 @@ uses
   BrookHandledClasses;
 
 { TODO: TBrookString.Assign() }
-{ TODO: TBrookString.Read() }
 { TODO: TBrookString.Format() }
 
 type
@@ -111,28 +110,26 @@ function TBrookString.Write(const AValue: TBytes;
 begin
   CheckHandle;
   Result := ALength;
-  bk_str_write(Fstr, @AValue[0], Result);
-  { TODO: check the function result. }
+  CheckOSError(bk_str_write(Fstr, @AValue[0], Result));
 end;
 
 function TBrookString.Read(AValue: TBytes; ALength: NativeUInt): NativeUInt;
 begin
   CheckHandle;
   Result := ALength;
-  bk_str_read(Fstr, @AValue[0], @ALength);
-  { TODO: check the function result. }
+  CheckOSError(bk_str_read(Fstr, @AValue[0], @ALength));
 end;
 
 procedure TBrookString.Clear;
 begin
   CheckHandle;
-  bk_str_clear(Fstr);
+  CheckOSError(bk_str_clear(Fstr));
 end;
 
 function TBrookString.GetLength: NativeUInt;
 begin
   CheckHandle;
-  bk_str_length(Fstr, @Result);
+  CheckOSError(bk_str_length(Fstr, @Result));
 end;
 
 function TBrookString.GetContent: TBytes;

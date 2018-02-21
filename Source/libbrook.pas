@@ -84,6 +84,10 @@ const
 procedure _exit; cdecl; external msvcrt name 'exit';
 {$ENDIF}
 
+{$IFDEF FPC}
+procedure CheckOSError(LastError: Integer); inline;
+{$ENDIF}
+
 { Utility }
 
 function bk_version: cuint; cdecl;
@@ -133,6 +137,14 @@ function bk_str_clear(str: Pbk_str): cint; cdecl;
   external name Concat(BK_PU, 'bk_str_clear');
 
 implementation
+
+{$IFDEF VER3_0}
+procedure CheckOSError(LastError: Integer);
+begin
+  if LastError <> 0 then
+    RaiseLastOSError(LastError);
+end;
+{$ENDIF}
 
 {$IF DEFINED(BK_MSVC_BUILT)}
  {$LINK bk_str.obj}
