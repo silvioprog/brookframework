@@ -34,13 +34,15 @@ unit BrookString;
 interface
 
 uses
+  RTLConsts,
   SysUtils,
+  Classes,
   libbrook,
   Marshalling,
   BrookHandledClasses;
 
 { TODO: TBrookString.Assign() }
-{ TODO: TBrookString.Format() }
+{ TODO: details about the method parameters. }
 
 type
   { String class and its related methods. }
@@ -54,6 +56,7 @@ type
     function GetHandle: Pointer; override;
     function GetOwnsHandle: Boolean; override;
     procedure SetOwnsHandle(AValue: Boolean); override;
+    class procedure CheckEncoding(AEncoding: TEncoding); static; inline;
   public
     { Creates an instance of TBrookString. }
     constructor Create(AHandle: Pointer); virtual;
@@ -65,6 +68,22 @@ type
       ALength: NativeUInt): NativeUInt; virtual;
     { Reads a string buffer from the string handle. }
     function Read(AValue: TBytes; ALength: NativeUInt): NativeUInt; virtual;
+    { Writes a formatted string to the string handle. All strings previously
+      written are kept. }
+    procedure Format(const AFmt: string; const AArgs: array of const;
+      AFormatSettings: TFormatSettings; AEncoding: TEncoding); overload; virtual;
+    { Writes a formatted string to the string handle. All strings previously
+      written are kept. }
+    procedure Format(const AFmt: string; const AArgs: array of const;
+      AFormatSettings: TFormatSettings); overload; virtual;
+    { Writes a formatted string to the string handle. All strings previously
+      written are kept. }
+    procedure Format(const AFmt: string;
+      const AArgs: array of const); overload; virtual;
+    { Gets the content buffer as text. }
+    function AsText(AEncoding: TEncoding): string; overload; virtual;
+    { Gets the content buffer as text. }
+    function AsText: string; overload; virtual;
     { Cleans all the content present in the string handle. }
     procedure Clear; virtual;
     { Gets the content buffer from the string handle. }
@@ -105,6 +124,12 @@ begin
   FOwnsHandle := AValue;
 end;
 
+class procedure TBrookString.CheckEncoding(AEncoding: TEncoding);
+begin
+  if not Assigned(AEncoding) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AEncoding']);
+end;
+
 function TBrookString.Write(const AValue: TBytes;
   ALength: NativeUInt): NativeUInt;
 begin
@@ -118,6 +143,55 @@ begin
   CheckHandle;
   Result := ALength;
   CheckOSError(bk_str_read(Fstr, @AValue[0], @ALength));
+end;
+
+{$IFDEF FPC}
+ {$PUSH}
+  {$WARN 4104 OFF}
+procedure TBrookString.Format(const AFmt: string; const AArgs: array of const;
+  AFormatSettings: TFormatSettings; AEncoding: TEncoding);
+var
+  VBytes: TBytes;
+begin
+  CheckHandle;
+  CheckEncoding(AEncoding);
+  VBytes := AEncoding.GetBytes(SysUtils.Format(AFmt, AArgs, AFormatSettings));
+  Write(VBytes, System.Length(VBytes));
+end;
+ {$POP}
+{$ENDIF}
+
+procedure TBrookString.Format(const AFmt: string; const AArgs: array of const;
+  AFormatSettings: TFormatSettings);
+begin
+  Format(AFmt, AArgs, AFormatSettings, TEncoding.UTF8);
+end;
+
+procedure TBrookString.Format(const AFmt: string; const AArgs: array of const);
+begin
+  Format(AFmt, AArgs, FormatSettings, TEncoding.UTF8);
+end;
+
+{$IFDEF FPC}
+ {$PUSH}
+  {$WARN 4105 OFF}
+function TBrookString.AsText(AEncoding: TEncoding): string;
+var
+  VBytes: TBytes;
+  VLength: NativeUInt;
+begin
+  CheckEncoding(AEncoding);
+  VLength := GetLength;
+  SetLength(VBytes, VLength);
+  Read(VBytes, VLength);
+  Result := AEncoding.GetString(VBytes, 0, VLength);
+end;
+ {$POP}
+{$ENDIF}
+
+function TBrookString.AsText: string;
+begin
+  Result := AsText(TEncoding.UTF8);
 end;
 
 procedure TBrookString.Clear;
