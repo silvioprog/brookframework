@@ -153,7 +153,7 @@ end;
  {$LINKLIB libbrook.a}
  {$IFDEF MSWINDOWS}
   {$LINKLiB libmingwex.a}
-  {$LINKLIB libcrtdll.a}
+  {$LINKLIB libmsvcrt.a}
  {$ENDIF}
 {$ENDIF}
 
