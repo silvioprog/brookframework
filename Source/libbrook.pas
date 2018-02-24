@@ -84,7 +84,7 @@ const
 procedure _exit; cdecl; external msvcrt name 'exit';
 {$ENDIF}
 
-{$IFDEF FPC}
+{$IFDEF VER3_0}
 procedure CheckOSError(LastError: Integer); inline;
 {$ENDIF}
 
