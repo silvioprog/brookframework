@@ -151,6 +151,9 @@ end;
  {$LINK bk_utils.obj}
 {$ELSEIF DEFINED(BK_GNUCC_BUILT)}
  {$LINKLIB libbrook.a}
+ {$IFDEF UNIX}
+  {$LINKLIB c}
+ {$ENDIF}
  {$IFDEF MSWINDOWS}
   {$LINKLiB libmingwex.a}
   {$LINKLIB libmsvcrt.a}
