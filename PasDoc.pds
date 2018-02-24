@@ -29,7 +29,7 @@ IntroductionFileName=
 ConclusionFileName=
 WriteUsesList=1
 AutoAbstract=1
-AutoLink=1
+AutoLink=0
 HandleMacros=1
 UseTipueSearch=1
 LineBreakQuality=0
@@ -57,9 +57,10 @@ Count=1
 Item_0=
 
 [Files]
-Count=2
+Count=3
 Item_0=Source/BrookUtils.pas
 Item_1=Source/BrookHandledClasses.pas
+Item_2=Source/BrookString.pas
 
 [HyphenatedWords]
 Count=0
