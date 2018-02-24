@@ -39,27 +39,36 @@ uses
 
 {
   Returns the library version number.
-  @return Library version packed into a single integer.
+  @return(Library version packed into a single integer.)
 }
 function BrookVersion: Cardinal;
 
 {
   Returns the library version number as string.
-  @return Library version packed into a static string.
+  @return(Library version packed into a static string.)
 }
 function BrookVersionStr: string;
 
 {
   Allocates a new memory space and zero-initialize it.
+
   @param(ASize[in] Memory size to be allocated.)
-  @return(Pointer of the allocated zero-initialized memory; @code(NULL) When
-  size is @code(0) or no memory space.)
+
+  @return(Pointer of the allocated zero-initialized memory.
+
+    @bold(Returns values:)
+
+    @definitionList(
+      @itemLabel(@code(nil))
+      @item(When size is @code(0) or no memory space.)
+    )
+  )
 }
 function BrookAlloc(ASize: NativeUInt): Pointer;
 
 {
-  Frees a memory space previous allocated by BrookAlloc().
-  @param APtr[in] Pointer of the memory to be freed.
+  Frees a memory space previous allocated by @link(BrookAlloc).
+  @param(APtr[in] Pointer of the memory to be freed.)
 }
 procedure BrookFree(APtr: Pointer);
 

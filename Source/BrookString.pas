@@ -65,40 +65,40 @@ type
     { Writes a string buffer to the string handle. All strings previously
       written are kept.
 
-      @param AValue String buffer to be written.
-      @param ALength Length of the string buffer being written.
+      @param(AValue String buffer to be written.)
+      @param(ALength Length of the string buffer being written.)
 
-      @returns Length of the written string buffer. }
+      @returns(Length of the written string buffer.) }
     function WriteBytes(const AValue: TBytes;
       ALength: NativeUInt): NativeUInt; virtual;
     { Reads a string buffer from the string handle.
 
-      @param AValue Array of byte to store the read string buffer.
-      @param ALength Length of array to store the string buffer being read.
+      @param(AValue Array of byte to store the read string buffer.)
+      @param(ALength Length of array to store the string buffer being read.)
 
-      @returns Length of the read string buffer. }
+      @returns(Length of the read string buffer.) }
     function ReadBytes(AValue: TBytes; ALength: NativeUInt): NativeUInt; virtual;
     { Writes a string to the string handle. All strings previously written are
       kept.
 
-      @param AValue String to be written.
-      @param AEncoding Determines the encoding of the string being read. }
+      @param(AValue String to be written.)
+      @param(AEncoding Determines the encoding of the string being read.) }
     procedure Write(const AValue: string;
       AEncoding: TEncoding); overload; virtual;
     { Writes a string to the string handle. All strings previously written are
       kept.
 
-      @param AValue String to be written.}
+      @param(AValue String to be written.) }
     procedure Write(const AValue: string); overload; virtual;
     { Reads a string from the string handle.
 
-      @param AEncoding Determines the encoding of the string being read.
+      @param(AEncoding Determines the encoding of the string being read.)
 
-      @returns String read from the string handler. }
+      @returns(String read from the string handler.) }
     function Read(AEncoding: TEncoding): string; overload; virtual;
     { Reads a string from the string handle.
 
-      @returns String read from the string handler. }
+      @returns(String read from the string handler.) }
     function Read: string; overload; virtual;
     { Cleans all the content present in the string handle. }
     procedure Clear; virtual;
