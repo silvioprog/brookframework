@@ -55,13 +55,14 @@ end;
 
 procedure TfrMain.btAddNowClick(Sender: TObject);
 begin
-  FString.Format('%s%s', [FormatDateTime('hh:nn:ss.zzz', Now), sLineBreak]);
+  FString.Write(Format('%s%s',
+    [FormatDateTime('hh:nn:ss.zzz', Now), sLineBreak]));
   UpdateButtons;
 end;
 
 procedure TfrMain.btShowContentClick(Sender: TObject);
 begin
-  ShowMessageFmt('All clicks:%s%s%s', [sLineBreak, sLineBreak, FString.AsText]);
+  ShowMessageFmt('All clicks:%s%s%s', [sLineBreak, sLineBreak, FString.Text]);
 end;
 
 procedure TfrMain.btClearClick(Sender: TObject);
