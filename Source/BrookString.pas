@@ -123,7 +123,10 @@ end;
 destructor TBrookString.Destroy;
 begin
   if FOwnsHandle then
+  begin
     bk_str_free(Fstr);
+    Fstr := nil;
+  end;
   inherited Destroy;
 end;
 
@@ -159,8 +162,8 @@ end;
 function TBrookString.ReadBytes(AValue: TBytes; ALength: NativeUInt): NativeUInt;
 begin
   CheckHandle;
-  Result := ALength;
   CheckOSError(bk_str_read(Fstr, @AValue[0], @ALength));
+  Result := ALength;
 end;
 
 {$IFDEF FPC}{$PUSH}{$WARN 4104 OFF}{$ENDIF}
@@ -188,6 +191,8 @@ var
 begin
   CheckEncoding(AEncoding);
   VLength := GetLength;
+  if VLength = 0 then
+    Exit('');
   SetLength(VBytes, VLength);
   ReadBytes(VBytes, VLength);
   Result := AEncoding.GetString(VBytes, 0, VLength);
