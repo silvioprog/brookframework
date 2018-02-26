@@ -4,7 +4,44 @@ program Test_String;
 
 uses
   SysUtils,
+  libbrook,
   BrookString;
+
+type
+  TLocalString = class(TBrookString)
+  public
+    procedure LocalDestroy;
+  end;
+
+procedure TLocalString.LocalDestroy;
+begin
+  inherited Destroy;
+  { checks if the handle was really freed and 'nilified'. }
+  Assert(not Assigned(Handle));
+  Assert(bk_str_clear(Handle) <> 0);
+end;
+
+procedure Test_StringOwnsHandle;
+var
+  Vhandle: Pbk_str;
+  VStr: TBrookString;
+begin
+  Vhandle := bk_str_new;
+  VStr := TBrookString.Create(Vhandle);
+  try
+    Assert(Assigned(VStr.Handle));
+    Assert(VStr.Handle = Vhandle);
+  finally
+    VStr.Destroy;
+    bk_str_free(Vhandle);
+  end;
+  VStr := TLocalString.Create(nil);
+  try
+    Assert(Assigned(VStr.Handle));
+  finally
+    TLocalString(VStr).LocalDestroy;
+  end;
+end;
 
 procedure Test_StringWriteBytes(AStr: TBrookString; const AVal: TBytes;
   ALen: NativeUInt);
@@ -170,6 +207,7 @@ begin
   VStr := TBrookString.Create(nil);
   try
     Assert(Assigned(VStr.Handle));
+    Test_StringOwnsHandle;
     Test_StringWriteBytes(VStr, VValB, LEN);
     Test_StringReadBytes(VStr, VValB, LEN);
     Test_StringWrite(VStr, VAL, LEN);
@@ -179,6 +217,6 @@ begin
     Test_StringClear(VStr, VValB, LEN);
     Test_StringText(VStr, VAL);
   finally
-    VStr.Free;
+    VStr.Destroy;
   end;
 end.

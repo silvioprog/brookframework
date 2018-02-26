@@ -53,10 +53,10 @@ type
     function GetLength: NativeUInt;
     procedure SetText(const AValue: string);
   protected
+    class procedure CheckEncoding(AEncoding: TEncoding); static; inline;
     function GetHandle: Pointer; override;
     function GetOwnsHandle: Boolean; override;
     procedure SetOwnsHandle(AValue: Boolean); override;
-    class procedure CheckEncoding(AEncoding: TEncoding); static; inline;
   public
     { Creates an instance of @link(TBrookString). }
     constructor Create(AHandle: Pointer); virtual;
@@ -117,7 +117,9 @@ begin
   inherited Create;
   FOwnsHandle := not Assigned(AHandle);
   if FOwnsHandle then
-    Fstr := bk_str_new;
+    Fstr := bk_str_new
+  else
+    Fstr := AHandle;
 end;
 
 destructor TBrookString.Destroy;
@@ -128,6 +130,12 @@ begin
     Fstr := nil;
   end;
   inherited Destroy;
+end;
+
+class procedure TBrookString.CheckEncoding(AEncoding: TEncoding);
+begin
+  if not Assigned(AEncoding) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AEncoding']);
 end;
 
 function TBrookString.GetHandle: Pointer;
@@ -143,12 +151,6 @@ end;
 procedure TBrookString.SetOwnsHandle(AValue: Boolean);
 begin
   FOwnsHandle := AValue;
-end;
-
-class procedure TBrookString.CheckEncoding(AEncoding: TEncoding);
-begin
-  if not Assigned(AEncoding) then
-    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AEncoding']);
 end;
 
 function TBrookString.WriteBytes(const AValue: TBytes;
