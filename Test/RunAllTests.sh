@@ -37,4 +37,4 @@ for file in ./*; do
         COUNT=$((COUNT+1))
     fi
 done
-echo "Total of ran tests: $COUNT"
+echo "Total of run tests: $COUNT"

@@ -33,5 +33,5 @@ FOR /R %%T IN (*.exe) DO (
     ECHO OK
     SET /A COUNT += 1
 )
-ECHO Total of ran tests: %COUNT%
+ECHO Total of run tests: %COUNT%
 :ERROR
