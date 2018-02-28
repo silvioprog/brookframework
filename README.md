@@ -3,7 +3,7 @@
 * Version number: 4.0
 * Codename: Tardigrade
 * Core (under [libbrook](https://github.com/risoflora/libbrook/tree/new_api)):
-    * static objects - direct objects or library linking, no external library required
+    * static objects - static objects or library linking, no external library required
     * ~~shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`~~ (no more required! \o/)
 
 # Supported platforms:
@@ -20,7 +20,7 @@ Tested on:
 
 Successfully compiled for Windows 32/64 bit and Linux 64 bit using:
 * Delphi XE family (Delphi Tokyo)
-* Lazarus / Free Pascal (Lazarus 1.8.0 / FPC 3.0.4)
+* Lazarus / Free Pascal (Lazarus 1.8.0+ / FPC 3.0.4+)
 
 (future testings: Delphi and FPC building for ARM)
 
@@ -53,11 +53,13 @@ Planning package distribution/installation:
 Units:
 
 * ~~`BrookUtils` - useful routines and structures.~~ (Done!)
-* `BrookString` - low-level string handling. (In progress...)
+* ~~`BrookString` - low-level string handling.~~ (Done!)
+* `BrookStringMap` - Mapped strings for fast key-value handling.~~ (In progress ...)
 
 Classes:
 
-* `TBrookString` - used to represent a HTML body, POST payload and more. (In progress...)
+* ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
+* `TBrookStringMap` - used to represent HTML fields, query-string parameters and more. (In progress ...)
 
 Packages:
 
@@ -66,19 +68,24 @@ Packages:
 
 Examples:
 
-* `BrookUtils_Example` - utility functions example. (In progress...)
-* `BrookString_Example` - string handling example. (In progress...)
+* ~~`BrookUtils_Example` - utility functions example.~~ (Done!)
+* ~~`BrookString_Example` - string class example.~~ (Done!)
+* `BrookStringMap_Example` - string map example. (In progress ...)
 
 Testings:
 
-* `TestUtils` - utility testings. (In progress...)
-* `TestString` - string handle testings. (In progress...)
+* ~~`TestUtils` - utility testings.~~ (Done!)
+* ~~`TestString` - string class testings.~~ (Done!)
+* `TestStringMap` - string map testings. (In progress...)
 
 Documentation:
 
-* `BrookString` - string handling reference [HTML/PDF]. (In progress...)
+* ~~`BrookUtils` - utility functions reference [HTML/PDF].~~ (Done!)
+* ~~`BrookString` - string class reference [HTML/PDF].~~ (Done!)
+* `BrookStringMap` - string map reference [HTML/PDF]. (In progress ...)
 
 Bugs & Problems:
 
 * Free Pascal common missing routines/types - all issued at its bugtracker.
 * Delphi unit encoding - unwanted UTF8 BOM when saving unit files.
+* `utstring.h` win64 building - cannot be built in MSVC for x64 (https://github.com/troydhanson/uthash/pull/143).
