@@ -30,7 +30,6 @@
 unit BrookString_frMain;
 
 {$MODE DELPHI}
-{$WARN 4105 OFF}
 
 interface
 

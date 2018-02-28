@@ -27,8 +27,10 @@
 
 {$IFDEF FPC}
  {$MODE DELPHI}
+ {$WARN SYMBOL_PLATFORM OFF}
  {$IFDEF VER3_0}
-  {$MACRO ON}
+  {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
+  {$POP}
  {$ENDIF}
 {$ENDIF}

@@ -168,24 +168,26 @@ begin
   Result := ALength;
 end;
 
-{$IFDEF FPC}{$PUSH}{$WARN 4104 OFF}{$ENDIF}
+
 procedure TBrookString.Write(const AValue: string; AEncoding: TEncoding);
 var
   VBytes: TBytes;
 begin
   CheckHandle;
   CheckEncoding(AEncoding);
+{$IFDEF FPC}
+ {$PUSH}{$WARN 4104 OFF}
   VBytes := AEncoding.GetBytes(AValue);
+ {$POP}
+{$ENDIF}
   WriteBytes(VBytes, System.Length(VBytes));
 end;
-{$IFDEF FPC}{$POP}{$ENDIF}
 
 procedure TBrookString.Write(const AValue: string);
 begin
   Write(AValue, TEncoding.UTF8);
 end;
 
-{$IFDEF FPC}{$PUSH}{$WARN 4105 OFF}{$ENDIF}
 function TBrookString.Read(AEncoding: TEncoding): string;
 var
   VBytes: TBytes;
@@ -197,9 +199,12 @@ begin
     Exit('');
   SetLength(VBytes, VLength);
   ReadBytes(VBytes, VLength);
+{$IFDEF FPC}
+ {$PUSH}{$WARN 4105 OFF}
   Result := AEncoding.GetString(VBytes, 0, VLength);
+ {$POP}
+{$ENDIF}
 end;
-{$IFDEF FPC}{$POP}{$ENDIF}
 
 function TBrookString.Read: string;
 begin
