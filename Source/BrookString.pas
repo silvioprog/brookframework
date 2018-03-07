@@ -194,11 +194,11 @@ var
   VLength: NativeUInt;
 begin
   CheckEncoding(AEncoding);
-  VLength := GetLength;
+  VLength := GetLength + SizeOf(Byte);
   if VLength = 0 then
     Exit('');
   SetLength(VBytes, VLength);
-  ReadBytes(VBytes, VLength);
+  VLength := ReadBytes(VBytes, VLength);
 {$IFDEF FPC}
  {$PUSH}{$WARN 4105 OFF}
   Result := AEncoding.GetString(VBytes, 0, VLength);

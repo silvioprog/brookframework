@@ -99,12 +99,10 @@ begin
   Assert(AStr.ReadBytes(VRes, ALen) = 0);
 
   AStr.WriteBytes(AVal, ALen);
-  Assert(AStr.ReadBytes(VRes, SizeOf(Byte)) = SizeOf(Byte));
-  Assert(CompareMem(@AVal[0], @VRes[0], SizeOf(Byte)));
+  Assert(AStr.ReadBytes(VRes, ALen + SizeOf(Byte)) = ALen);
+  Assert(CompareMem(@AVal[0], @VRes[0], ALen));
 
   Assert(AStr.ReadBytes(VRes, ALen * 2) = ALen);
-
-  Assert(AStr.ReadBytes(VRes, ALen) = ALen);
   Assert(CompareMem(@VRes[0], @AVal[0], ALen));
   Assert(vres[ALen] = 0);
 end;
