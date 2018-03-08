@@ -34,18 +34,44 @@ unit libbrook;
 interface
 
 uses
-  SysUtils
+  SysUtils,
 {$IFDEF FPC}
  {$IFDEF UNIX}
-  , BaseUnix
+  BaseUnix,
  {$ENDIF}
+  DynLibs,
 {$ELSE}
  {$IF DEFINED(MSWINDOWS)}
-  , Winapi.Windows
+  Winapi.Windows
  {$ELSEIF DEFINED(POSIX)}
-  , Posix.SysTypes
- {$ENDIF}
-{$ENDIF};
+  Posix.Dlfcn,
+  Posix.SysTypes
+ {$ENDIF},
+{$ENDIF}
+  SyncObjs;
+
+const
+{$IFNDEF FPC}
+  SharedSuffix =
+ {$IF DEFINED(MSWINDOWS)}
+    'dll'
+ {$ELSEIF DEFINED(MACOS)}
+    'dylib'
+ {$ELSE}
+    'so'
+ {$ENDIF};
+  NilHandle = HMODULE(0);
+{$ENDIF}
+
+  BK_LIB_NAME = Concat(
+{$IFDEF MSWINDOWS}
+    'libbrook-0'
+{$ELSE}
+    'libbrook'
+{$ENDIF}, '.', SharedSuffix);
+
+resourcestring
+  SBkLibraryNotLoaded = 'Brook library ''%s'' not loaded';
 
 type
   Pcchar = MarshaledAString;
@@ -69,9 +95,21 @@ type
   Pcvoid = Pointer;
   cva_list = Pointer;
 
-{$IFDEF VER3_0}
-procedure CheckOSError(LastError: Integer); inline;
+{$IFNDEF FPC}
+  TLibHandle = HMODULE;
 {$ENDIF}
+
+  Pbk_str = ^bk_str;
+  bk_str = record
+  end;
+
+  PPbk_strmap = ^Pbk_strmap;
+  Pbk_strmap = ^bk_strmap;
+  bk_strmap = record
+  end;
+
+  bk_strmap_iter_cb = function(cls: Pcvoid; const name: Pcchar;
+    name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
 
 var
   bk_version: function: cuint; cdecl;
@@ -79,12 +117,6 @@ var
   bk_alloc: function(size: csize_t): Pcvoid; cdecl;
   bk_free: procedure(ptr: Pcvoid); cdecl;
 
-type
-  Pbk_str = ^bk_str;
-  bk_str = record
-  end;
-
-var
   bk_str_new: function: Pbk_str; cdecl;
   bk_str_free: procedure(str: Pbk_str); cdecl;
   bk_str_write: function(str: Pbk_str; const val: Pcchar;
@@ -97,16 +129,6 @@ var
   bk_str_length: function(str: Pbk_str; len: Pcsize_t): cint; cdecl;
   bk_str_clear: function(str: Pbk_str): cint; cdecl;
 
-type
-  PPbk_strmap = ^Pbk_strmap;
-  Pbk_strmap = ^bk_strmap;
-  bk_strmap = record
-  end;
-
-  bk_strmap_iter_cb = function(cls: Pcvoid; const name: Pcchar;
-    name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
-
-var
   bk_strmap_add: function(map: PPbk_strmap; const name: Pcchar;
     name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
   bk_strmap_find: function(map: Pbk_strmap; const name: Pcchar;
@@ -114,6 +136,14 @@ var
   bk_strmap_iter: function(map: Pbk_strmap; iter_cb: bk_strmap_iter_cb;
     iter_cls: Pcvoid): cint; cdecl;
   bk_strmap_cleanup: procedure(map: PPbk_strmap); cdecl;
+
+{$IFDEF VER3_0}
+procedure CheckOSError(LastError: Integer); inline;
+{$ENDIF}
+
+function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
+function BkUnloadLibrary: TLibHandle;
+procedure BkCheckLibrary;
 
 implementation
 
@@ -124,5 +154,97 @@ begin
     RaiseLastOSError(LastError);
 end;
 {$ENDIF}
+
+var
+  GBkLock: TCriticalSection = nil;
+  GBkLibHandle: TLibHandle = NilHandle;
+  GBkLastLibName: TFileName = BK_LIB_NAME;
+
+function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
+begin
+  GBkLock.Acquire;
+  try
+    if Trim(AFileName) = '' then
+      Exit(NilHandle);
+    if GBkLibHandle <> NilHandle then
+      Exit(GBkLibHandle);
+    //TODO: check the library version
+    GBkLastLibName := ExtractFileName(AFileName);
+    GBkLibHandle := SafeLoadLibrary(AFileName);
+    if GBkLibHandle = NilHandle then
+      Exit(NilHandle);
+    bk_version := GetProcAddress(GBkLibHandle, 'bk_version');
+    bk_version_str := GetProcAddress(GBkLibHandle, 'bk_version_str');
+    bk_alloc := GetProcAddress(GBkLibHandle, 'bk_alloc');
+    bk_free := GetProcAddress(GBkLibHandle, 'bk_free');
+
+    bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
+    bk_str_free := GetProcAddress(GBkLibHandle, 'bk_str_free');
+    bk_str_write := GetProcAddress(GBkLibHandle, 'bk_str_write');
+    bk_str_read := GetProcAddress(GBkLibHandle, 'bk_str_read');
+    bk_str_printf_va := GetProcAddress(GBkLibHandle, 'bk_str_printf_va');
+    bk_str_printf := GetProcAddress(GBkLibHandle, 'bk_str_printf');
+    bk_str_content := GetProcAddress(GBkLibHandle, 'bk_str_content');
+    bk_str_length := GetProcAddress(GBkLibHandle, 'bk_str_length');
+    bk_str_clear := GetProcAddress(GBkLibHandle, 'bk_str_clear');
+
+    bk_strmap_add := GetProcAddress(GBkLibHandle, 'bk_strmap_add');
+    bk_strmap_find := GetProcAddress(GBkLibHandle, 'bk_strmap_find');
+    bk_strmap_iter := GetProcAddress(GBkLibHandle, 'bk_strmap_iter');
+    bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
+    Result := GBkLibHandle;
+  finally
+    GBkLock.Release;
+  end;
+end;
+
+function BkUnloadLibrary: TLibHandle;
+begin
+  GBkLock.Acquire;
+  try
+    if GBkLibHandle = NilHandle then
+      Exit(NilHandle);
+    if not FreeLibrary(GBkLibHandle) then
+      Exit(GBkLibHandle);
+    GBkLibHandle := NilHandle;
+    bk_version := nil;
+    bk_version_str := nil;
+    bk_alloc := nil;
+    bk_free := nil;
+
+    bk_str_new := nil;
+    bk_str_free := nil;
+    bk_str_write := nil;
+    bk_str_read := nil;
+    bk_str_printf_va := nil;
+    bk_str_printf := nil;
+    bk_str_content := nil;
+    bk_str_length := nil;
+    bk_str_clear := nil;
+
+    bk_strmap_add := nil;
+    bk_strmap_find := nil;
+    bk_strmap_iter := nil;
+    bk_strmap_cleanup := nil;
+    Result := GBkLibHandle;
+  finally
+    GBkLock.Release;
+  end;
+end;
+
+procedure BkCheckLibrary;
+begin
+  if GBkLibHandle = NilHandle then
+    raise EFileNotFoundException.CreateResFmt(
+      @SBkLibraryNotLoaded, [GBkLastLibName]);
+end;
+
+initialization
+  GBkLock := TCriticalSection.Create;
+  BkLoadLibrary(BK_LIB_NAME);
+
+finalization
+  BkUnloadLibrary;
+  FreeAndNil(GBkLock);
 
 end.
