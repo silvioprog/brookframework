@@ -49,7 +49,9 @@ type
   public
     class function ToBytes(const S: Pcchar;
       const Z: csize_t): TBytes; static; inline;
-    class function ToString(const S: Pcchar): string; static; inline;
+    class function ToString(const S: Pcchar;
+      L: NativeInt): string; overload; static; //inline;
+    class function ToString(const S: Pcchar): string; overload; static; inline;
   end;
 
   { TMarshaller* }
@@ -77,21 +79,28 @@ begin
 end;
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
-  const S: Pcchar): string;
+  const S: Pcchar; L: NativeInt): string;
 {$IFDEF FPC}
-var
-  B: Pcchar;
+//var
+//  B: Pcchar;
 {$ENDIF}
 begin
   if not Assigned(S) then
     Exit('');
 {$IFDEF FPC}
-  B := Pcchar(@S[0]);
-  SetString(Result, B, Length(B));
+  //B := Pcchar(@S[0]);
+  //SetString(Result, B, L);
+  SetString(Result, S, L);
   SetCodePage(RawByteString(Result), CP_UTF8, False);
 {$ELSE}
-  Result := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(S));
+  Result := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(S), L);
 {$ENDIF}
+end;
+
+class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
+  const S: Pcchar): string;
+begin
+  Result := ToString(S, Length(S));
 end;
 
 { TMarshaller* }
