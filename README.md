@@ -3,8 +3,8 @@
 * Version number: 4.0
 * Codename: Tardigrade
 * Core (under [libbrook](https://github.com/risoflora/libbrook/tree/new_api)):
-    * static objects - static objects or library linking, no external library required
-    * ~~shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`~~ (no more required! \o/)
+    * static objects - static objects or library linking, no external library required (I'm inclined to leave static libraries support because I can't fix `ut*` bugs related to Visual Studio - I'm focused to finish and release B4!)
+    * ~~shared - dynamic loading, single external library file required, `libbrook.so` or `brook.dll`~~ (I'm inclined to use shared library (as single file `brook.dll` or `libbrook.so`) as explained above)
 
 # Supported platforms:
 
@@ -89,3 +89,4 @@ Bugs & Problems:
 * Free Pascal common missing routines/types - all issued at its bugtracker.
 * Delphi unit encoding - unwanted UTF8 BOM when saving unit files.
 * `utstring.h` win64 building - cannot be built in MSVC for x64 (https://github.com/troydhanson/uthash/pull/143).
+* `uthash.h` msvc building - cannot be built declaring the CL's /Wall /WX flags (https://github.com/troydhanson/uthash/issues/150).
