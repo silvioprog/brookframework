@@ -1,7 +1,7 @@
 object frMain: TfrMain
   Left = 0
   Top = 0
-  Caption = 'BrookString - Example'
+  Caption = 'BrookString example'
   ClientHeight = 340
   ClientWidth = 420
   FormFactor.Width = 320
