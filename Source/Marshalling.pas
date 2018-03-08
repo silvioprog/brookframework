@@ -47,10 +47,9 @@ type
   TMarshalHelper = class helper for TMarshal
 {$ENDIF}
   public
-    class function ToBytes(const S: Pcchar;
-      const Z: csize_t): TBytes; static; inline;
+    class function ToBytes(const S: Pcchar; L: csize_t): TBytes; static; inline;
     class function ToString(const S: Pcchar;
-      L: NativeInt): string; overload; static; inline;
+      L: csize_t): string; overload; static; inline;
     class function ToString(const S: Pcchar): string; overload; static; inline;
   end;
 
@@ -70,18 +69,18 @@ implementation
 { TMarshal* }
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToBytes(
-  const S: Pcchar; const Z: csize_t): TBytes;
+  const S: Pcchar; L: csize_t): TBytes;
 begin
-  if (not Assigned(S)) or (Z = 0) then
+  if (not Assigned(S)) or (L = 0) then
     Exit(nil);
-  SetLength(Result, Z);
-  System.Move(S^, Result[0], Z);
+  SetLength(Result, L);
+  System.Move(S^, Result[0], L);
 end;
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
-  const S: Pcchar; L: NativeInt): string;
+  const S: Pcchar; L: csize_t): string;
 begin
-  if not Assigned(S) then
+  if (not Assigned(S)) or (L = 0) then
     Exit('');
 {$IFDEF FPC}
   SetString(Result, S, L);
