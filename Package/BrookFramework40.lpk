@@ -7,12 +7,11 @@
       <Version Value="11"/>
       <SearchPaths>
         <IncludeFiles Value="../Source"/>
-        <Libraries Value="../Lib/FreePascal/$(TargetCPU)-$(TargetOS)"/>
         <OtherUnitFiles Value="../Source"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="7">
+    <Files Count="9">
       <Item1>
         <Filename Value="../Source/libbrook.inc"/>
         <Type Value="Include"/>
@@ -30,17 +29,26 @@
         <Type Value="Include"/>
       </Item4>
       <Item5>
-        <Filename Value="../Source/BrookUtils.pas"/>
-        <UnitName Value="BrookUtils"/>
+        <Filename Value="../Source/BrookLibraryLoader.pas"/>
+        <UnitName Value="BrookLibraryLoader"/>
       </Item5>
       <Item6>
-        <Filename Value="../Source/BrookHandledClasses.pas"/>
-        <UnitName Value="BrookHandledClasses"/>
+        <Filename Value="../Source/BrookUtils.pas"/>
+        <UnitName Value="BrookUtils"/>
       </Item6>
       <Item7>
+        <Filename Value="../Source/BrookHandledClasses.pas"/>
+        <UnitName Value="BrookHandledClasses"/>
+      </Item7>
+      <Item8>
         <Filename Value="../Source/BrookString.pas"/>
         <UnitName Value="BrookString"/>
-      </Item7>
+      </Item8>
+      <Item9>
+        <Filename Value="../Source/BrookIDEIntegration.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="BrookIDEIntegration"/>
+      </Item9>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
@@ -48,7 +56,6 @@
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
-      <LibraryPath Value="../Lib/FreePascal/$(TargetCPU)-$(TargetOS)"/>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
