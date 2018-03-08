@@ -115,13 +115,15 @@ function bk_str_new: Pbk_str; cdecl;
 procedure bk_str_free(str: Pbk_str); cdecl;
   external name Concat(BK_PU, 'bk_str_free');
 
-function bk_str_write(str: Pbk_str; const val: Pcchar; len: csize_t): cint; cdecl;
+function bk_str_write(str: Pbk_str; const val: Pcchar;
+  len: csize_t): cint; cdecl;
   external name Concat(BK_PU, 'bk_str_write');
 
 function bk_str_read(str: Pbk_str; val: Pcchar; len: Pcsize_t): cint; cdecl;
   external name Concat(BK_PU, 'bk_str_read');
 
-function bk_str_printf_va(str: Pbk_str; const fmt: Pcchar; ap: cva_list): cint; cdecl;
+function bk_str_printf_va(str: Pbk_str; const fmt: Pcchar;
+  ap: cva_list): cint; cdecl;
   external name Concat(BK_PU, 'bk_str_printf_va');
 
 function bk_str_printf(str: Pbk_str; const fmt: Pcchar): cint; cdecl; varargs;
@@ -135,6 +137,30 @@ function bk_str_length(str: Pbk_str; len: Pcsize_t): cint; cdecl;
 
 function bk_str_clear(str: Pbk_str): cint; cdecl;
   external name Concat(BK_PU, 'bk_str_clear');
+
+type
+  PPbk_strmap = ^Pbk_strmap;
+  Pbk_strmap = ^bk_strmap;
+  bk_strmap = record
+  end;
+
+  bk_strmap_iter_cb = function(cls: Pcvoid; const name: Pcchar;
+    name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
+
+function bk_strmap_add(map: PPbk_strmap; const name: Pcchar; name_len: csize_t;
+  const val: Pcchar; val_len: csize_t): cint; cdecl;
+  external name Concat(BK_PU, 'bk_strmap_add');
+
+function bk_strmap_find(map: Pbk_strmap; const name: Pcchar; name_len: csize_t;
+  val: Pcchar; val_len: Pcsize_t): cint; cdecl;
+  external name Concat(BK_PU, 'bk_strmap_find');
+
+function bk_strmap_iter(map: Pbk_strmap; iter_cb: bk_strmap_iter_cb;
+  iter_cls: Pcvoid): cint; cdecl;
+  external name Concat(BK_PU, 'bk_strmap_iter');
+
+procedure bk_strmap_cleanup(map: PPbk_strmap); cdecl;
+  external name Concat(BK_PU, 'bk_strmap_cleanup');
 
 implementation
 
