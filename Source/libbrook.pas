@@ -51,7 +51,11 @@ uses
   SyncObjs;
 
 const
-{$IFNDEF FPC}
+{$IFDEF FPC}
+ {$IFDEF VER3_0}
+  NilHandle = DynLibs.NilHandle;
+ {$ENDIF}
+{$ELSE}
   SharedSuffix =
  {$IF DEFINED(MSWINDOWS)}
     'dll'
@@ -95,7 +99,12 @@ type
   Pcvoid = Pointer;
   cva_list = Pointer;
 
-{$IFNDEF FPC}
+{$IFDEF FPC}
+ {$PACKRECORDS C}
+ {$IFDEF VER3_0}
+  TLibHandle = DynLibs.TLibHandle;
+ {$ENDIF}
+{$ELSE}
   TLibHandle = HMODULE;
 {$ENDIF}
 
