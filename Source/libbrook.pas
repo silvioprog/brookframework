@@ -31,29 +31,21 @@ unit libbrook;
 
 {$I libbrook.inc}
 
-{$IF DEFINED(FPC) OR DEFINED(POSIX)}
- {$DEFINE BK_GNUCC_BUILT} // uses Brook library built in any GNU C compiler
-{$ELSEIF DEFINED(MSWINDOWS)}
- {$DEFINE BK_MSVC_BUILT} // uses Brook library built in any GNU C compiler
-{$ELSE}
- {$MESSAGE FATAL 'Unknown environment'}
-{$ENDIF}
-
 interface
 
-{$IF DEFINED(BK_GNUCC_BUILT)}
 uses
   SysUtils
- {$IF DEFINED(UNIX)}
+{$IFDEF FPC}
+ {$IFDEF UNIX}
   , BaseUnix
+ {$ENDIF}
+{$ELSE}
+ {$IF DEFINED(MSWINDOWS)}
+  , Winapi.Windows
  {$ELSEIF DEFINED(POSIX)}
   , Posix.SysTypes
- {$ENDIF};
-{$ELSEIF DEFINED(BK_MSVC_BUILT)}
-uses
-  System.Win.Crtl,
-  Winapi.Windows;
-{$ENDIF}
+ {$ENDIF}
+{$ENDIF};
 
 type
   Pcchar = MarshaledAString;
@@ -77,66 +69,33 @@ type
   Pcvoid = Pointer;
   cva_list = Pointer;
 
-const
-  BK_PU = {$IFDEF BK_MSVC_BUILT}'_'{$ELSE}''{$ENDIF};
-
-{$IFDEF BK_MSVC_BUILT}
-procedure _exit; cdecl; external msvcrt name 'exit';
-{$ENDIF}
-
 {$IFDEF VER3_0}
 procedure CheckOSError(LastError: Integer); inline;
 {$ENDIF}
 
-{ Utility }
-
-function bk_version: cuint; cdecl;
-  external name Concat(BK_PU, 'bk_version');
-
-function bk_version_str: Pcchar; cdecl;
-  external name Concat(BK_PU, 'bk_version_str');
-
-function bk_alloc(size: csize_t): Pcvoid; cdecl;
-  external name Concat(BK_PU, 'bk_alloc');
-
-procedure bk_free(ptr: Pcvoid); cdecl;
-  external name Concat(BK_PU, 'bk_free');
-
-{ String }
+var
+  bk_version: function: cuint; cdecl;
+  bk_version_str: function: Pcchar; cdecl;
+  bk_alloc: function(size: csize_t): Pcvoid; cdecl;
+  bk_free: procedure(ptr: Pcvoid); cdecl;
 
 type
   Pbk_str = ^bk_str;
   bk_str = record
   end;
 
-function bk_str_new: Pbk_str; cdecl;
-  external name Concat(BK_PU, 'bk_str_new');
-
-procedure bk_str_free(str: Pbk_str); cdecl;
-  external name Concat(BK_PU, 'bk_str_free');
-
-function bk_str_write(str: Pbk_str; const val: Pcchar;
-  len: csize_t): cint; cdecl;
-  external name Concat(BK_PU, 'bk_str_write');
-
-function bk_str_read(str: Pbk_str; val: Pcchar; len: Pcsize_t): cint; cdecl;
-  external name Concat(BK_PU, 'bk_str_read');
-
-function bk_str_printf_va(str: Pbk_str; const fmt: Pcchar;
-  ap: cva_list): cint; cdecl;
-  external name Concat(BK_PU, 'bk_str_printf_va');
-
-function bk_str_printf(str: Pbk_str; const fmt: Pcchar): cint; cdecl; varargs;
-  external name Concat(BK_PU, 'bk_str_printf');
-
-function bk_str_content(str: Pbk_str): Pcchar; cdecl;
-  external name Concat(BK_PU, 'bk_str_content');
-
-function bk_str_length(str: Pbk_str; len: Pcsize_t): cint; cdecl;
-  external name Concat(BK_PU, 'bk_str_length');
-
-function bk_str_clear(str: Pbk_str): cint; cdecl;
-  external name Concat(BK_PU, 'bk_str_clear');
+var
+  bk_str_new: function: Pbk_str; cdecl;
+  bk_str_free: procedure(str: Pbk_str); cdecl;
+  bk_str_write: function(str: Pbk_str; const val: Pcchar;
+    len: csize_t): cint; cdecl;
+  bk_str_read: function(str: Pbk_str; val: Pcchar; len: Pcsize_t): cint; cdecl;
+  bk_str_printf_va: function(str: Pbk_str; const fmt: Pcchar;
+    ap: cva_list): cint; cdecl;
+  bk_str_printf: function(str: Pbk_str; const fmt: Pcchar): cint; cdecl varargs;
+  bk_str_content: function(str: Pbk_str): Pcchar; cdecl;
+  bk_str_length: function(str: Pbk_str; len: Pcsize_t): cint; cdecl;
+  bk_str_clear: function(str: Pbk_str): cint; cdecl;
 
 type
   PPbk_strmap = ^Pbk_strmap;
@@ -147,20 +106,14 @@ type
   bk_strmap_iter_cb = function(cls: Pcvoid; const name: Pcchar;
     name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
 
-function bk_strmap_add(map: PPbk_strmap; const name: Pcchar; name_len: csize_t;
-  const val: Pcchar; val_len: csize_t): cint; cdecl;
-  external name Concat(BK_PU, 'bk_strmap_add');
-
-function bk_strmap_find(map: Pbk_strmap; const name: Pcchar; name_len: csize_t;
-  val: Pcchar; val_len: Pcsize_t): cint; cdecl;
-  external name Concat(BK_PU, 'bk_strmap_find');
-
-function bk_strmap_iter(map: Pbk_strmap; iter_cb: bk_strmap_iter_cb;
-  iter_cls: Pcvoid): cint; cdecl;
-  external name Concat(BK_PU, 'bk_strmap_iter');
-
-procedure bk_strmap_cleanup(map: PPbk_strmap); cdecl;
-  external name Concat(BK_PU, 'bk_strmap_cleanup');
+var
+  bk_strmap_add: function(map: PPbk_strmap; const name: Pcchar;
+    name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
+  bk_strmap_find: function(map: Pbk_strmap; const name: Pcchar;
+    name_len: csize_t; val: Pcchar; val_len: Pcsize_t): cint; cdecl;
+  bk_strmap_iter: function(map: Pbk_strmap; iter_cb: bk_strmap_iter_cb;
+    iter_cls: Pcvoid): cint; cdecl;
+  bk_strmap_cleanup: procedure(map: PPbk_strmap); cdecl;
 
 implementation
 
@@ -170,20 +123,6 @@ begin
   if LastError <> 0 then
     RaiseLastOSError(LastError);
 end;
-{$ENDIF}
-
-{$IF DEFINED(BK_MSVC_BUILT)}
- {$LINK bk_str.obj}
- {$LINK bk_utils.obj}
-{$ELSEIF DEFINED(BK_GNUCC_BUILT)}
- {$LINKLIB libbrook.a}
- {$IFDEF UNIX}
-  {$LINKLIB c}
- {$ENDIF}
- {$IFDEF MSWINDOWS}
-  {$LINKLiB libmingwex.a}
-  {$LINKLIB libmsvcrt.a}
- {$ENDIF}
 {$ENDIF}
 
 end.
