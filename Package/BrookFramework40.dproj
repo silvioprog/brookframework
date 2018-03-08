@@ -105,10 +105,6 @@
         <DCCReference Include="..\Source\BrookHandledClasses.pas"/>
         <DCCReference Include="..\Source\BrookString.pas"/>
         <DCCReference Include="BrookIDEIntegration.pas"/>
-        <RcItem Include="..\Contrib\TBrookLibraryLoader.bmp">
-            <ResourceType>BITMAP</ResourceType>
-            <ResourceId>TBrookLibraryLoader</ResourceId>
-        </RcItem>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -152,12 +148,6 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
-                        <Overwrite>true</Overwrite>
-                    </Platform>
-                </DeployFile>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\BrookFramework40.bpl" Configuration="Debug" Class="ProjectOutput">
-                    <Platform Name="Win32">
-                        <RemoteName>BrookFramework40.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
