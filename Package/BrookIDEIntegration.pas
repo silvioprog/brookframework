@@ -36,6 +36,8 @@ interface
 uses
   Classes;
 
+{$R BrookFramework40Icons.res}
+
 procedure Register;
 
 implementation

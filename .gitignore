@@ -70,6 +70,7 @@ __recovery/
 *.dylib
 *.lrs
 *.res
+!BrookFramework[0-9]*Icons.res
 *.compiled
 *.dbg
 *.ppu
