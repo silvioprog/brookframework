@@ -11,7 +11,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="10">
+    <Files Count="9">
       <Item1>
         <Filename Value="../Source/libbrook.inc"/>
         <Type Value="Include"/>
@@ -49,10 +49,6 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookIDEIntegration"/>
       </Item9>
-      <Item10>
-        <Filename Value="BrookFramework40Resource.rc"/>
-        <Type Value="Text"/>
-      </Item10>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

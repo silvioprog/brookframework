@@ -50,7 +50,6 @@
 *.cfg
 *.hpp
 *Resource.rc
-!BrookFramework40Resource.rc
 
 # Delphi local files (user-specific info)
 *.local
