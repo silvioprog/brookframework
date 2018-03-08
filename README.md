@@ -48,14 +48,14 @@ Planning package distribution/installation:
 
 Units:
 
-* BrookLibraryLoader - allows to customize the path for library loading. (In progress ...)
+* `BrookLibraryLoader` - allows to customize the path for library loading. (In progress ...)
 * ~~`BrookUtils` - useful routines and structures.~~ (Done!)
 * ~~`BrookString` - low-level string handling.~~ (Done!)
 * `BrookStringMap` - Mapped strings for fast name-value handling. (In progress ...)
 
 Classes:
 
-* TBrookLibraryLoader - used to customize the path for library loading. (In progress ...)
+* `TBrookLibraryLoader` - used to customize the path for library loading. (In progress ...)
 * ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
 * `TBrookStringMap` - used to represent HTML fields, query-string parameters and more. (In progress ...)
 
