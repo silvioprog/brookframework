@@ -50,7 +50,7 @@ type
     class function ToBytes(const S: Pcchar;
       const Z: csize_t): TBytes; static; inline;
     class function ToString(const S: Pcchar;
-      L: NativeInt): string; overload; static; //inline;
+      L: NativeInt): string; overload; static; inline;
     class function ToString(const S: Pcchar): string; overload; static; inline;
   end;
 
@@ -80,16 +80,10 @@ end;
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
   const S: Pcchar; L: NativeInt): string;
-{$IFDEF FPC}
-//var
-//  B: Pcchar;
-{$ENDIF}
 begin
   if not Assigned(S) then
     Exit('');
 {$IFDEF FPC}
-  //B := Pcchar(@S[0]);
-  //SetString(Result, B, L);
   SetString(Result, S, L);
   SetCodePage(RawByteString(Result), CP_UTF8, False);
 {$ELSE}
