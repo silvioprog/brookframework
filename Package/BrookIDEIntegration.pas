@@ -40,6 +40,10 @@ procedure Register;
 
 implementation
 
+{$IFDEF FPC}
+ {$R BrookFramework40Resource.rc}
+{$ENDIF}
+
 uses
   BrookLibraryLoader;
 

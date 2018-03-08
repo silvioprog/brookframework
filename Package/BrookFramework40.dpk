@@ -1,6 +1,7 @@
 package BrookFramework40;
 
 {$R *.res}
+{$R *.dres}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -33,8 +34,10 @@ requires
 contains
   libbrook in '..\Source\libbrook.pas',
   Marshalling in '..\Source\Marshalling.pas',
+  BrookLibraryLoader in '..\Source\BrookLibraryLoader.pas',
   BrookUtils in '..\Source\BrookUtils.pas',
   BrookHandledClasses in '..\Source\BrookHandledClasses.pas',
-  BrookString in '..\Source\BrookString.pas';
+  BrookString in '..\Source\BrookString.pas',
+  BrookIDEIntegration in 'BrookIDEIntegration.pas';
 
 end.

@@ -50,6 +50,7 @@
 *.cfg
 *.hpp
 *Resource.rc
+!BrookFramework40Resource.rc
 
 # Delphi local files (user-specific info)
 *.local
@@ -88,7 +89,7 @@ __recovery/
 backup/
 *.bak
 lib/
-BrookFramework[0-9]*.*
+BrookFramework[0-9]*.pas
 
 # Application bundle for Mac OS
 *.app/
