@@ -30,7 +30,8 @@ begin
     BkCheckLibrary;
   except
     on E: Exception do
-      OK := E.ClassType = EBkLibraryNotLoaded;
+      OK := (E.ClassType = EBkLibraryNotLoaded) and (E.Message =
+        Format(SBkLibraryNotLoaded, [BK_LIB_NAME]));
   end;
   Assert(OK);
 end;

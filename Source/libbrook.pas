@@ -35,6 +35,7 @@ interface
 
 uses
   SysUtils,
+  StrUtils,
 {$IFDEF FPC}
  {$IFDEF UNIX}
   BaseUnix,
@@ -250,7 +251,7 @@ procedure BkCheckLibrary;
 begin
   if GBkLibHandle = NilHandle then
     raise EBkLibraryNotLoaded.CreateResFmt(@SBkLibraryNotLoaded,
-      [GBkLastLibName]);
+      [IfThen(GBkLastLibName = '', BK_LIB_NAME, GBkLastLibName)]);
 end;
 
 initialization
