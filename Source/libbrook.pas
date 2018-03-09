@@ -147,7 +147,7 @@ var
   bk_strmap_cleanup: procedure(map: PPbk_strmap); cdecl;
 
 {$IFDEF VER3_0}
-procedure CheckOSError(LastError: Integer); inline;
+procedure CheckOSError(LastError: Integer); platform; inline;
 {$ENDIF}
 
 function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
@@ -173,15 +173,14 @@ function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
 begin
   GBkLock.Acquire;
   try
-    if Trim(AFileName) = '' then
-      Exit(NilHandle);
-    if GBkLibHandle <> NilHandle then
+    if (GBkLibHandle <> NilHandle) or (AFileName = '') then
       Exit(GBkLibHandle);
-    //TODO: check the library version
-    GBkLastLibName := ExtractFileName(AFileName);
     GBkLibHandle := SafeLoadLibrary(AFileName);
     if GBkLibHandle = NilHandle then
       Exit(NilHandle);
+    { TODO: check the library version }
+    GBkLastLibName := AFileName;
+
     bk_version := GetProcAddress(GBkLibHandle, 'bk_version');
     bk_version_str := GetProcAddress(GBkLibHandle, 'bk_version_str');
     bk_alloc := GetProcAddress(GBkLibHandle, 'bk_alloc');
@@ -201,6 +200,7 @@ begin
     bk_strmap_find := GetProcAddress(GBkLibHandle, 'bk_strmap_find');
     bk_strmap_iter := GetProcAddress(GBkLibHandle, 'bk_strmap_iter');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
+
     Result := GBkLibHandle;
   finally
     GBkLock.Release;
@@ -216,6 +216,8 @@ begin
     if not FreeLibrary(GBkLibHandle) then
       Exit(GBkLibHandle);
     GBkLibHandle := NilHandle;
+    GBkLastLibName := '';
+
     bk_version := nil;
     bk_version_str := nil;
     bk_alloc := nil;
@@ -235,6 +237,7 @@ begin
     bk_strmap_find := nil;
     bk_strmap_iter := nil;
     bk_strmap_cleanup := nil;
+
     Result := GBkLibHandle;
   finally
     GBkLock.Release;
@@ -244,8 +247,8 @@ end;
 procedure BkCheckLibrary;
 begin
   if GBkLibHandle = NilHandle then
-    raise EFileNotFoundException.CreateResFmt(
-      @SBkLibraryNotLoaded, [GBkLastLibName]);
+    raise EFileNotFoundException.CreateResFmt(@SBkLibraryNotLoaded,
+      [GBkLastLibName]);
 end;
 
 initialization
