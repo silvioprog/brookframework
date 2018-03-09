@@ -58,9 +58,10 @@ Item_0=
 
 [Files]
 Count=3
-Item_0=Source/BrookUtils.pas
-Item_1=Source/BrookHandledClasses.pas
-Item_2=Source/BrookString.pas
+Item_0=Source/BrookLibraryLoader.pas
+Item_1=Source/BrookUtils.pas
+Item_2=Source/BrookHandledClasses.pas
+Item_3=Source/BrookString.pas
 
 [HyphenatedWords]
 Count=0
