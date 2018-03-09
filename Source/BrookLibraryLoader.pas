@@ -49,6 +49,7 @@ type
     FVersion: string;
     procedure SetFileName(const AValue: TFileName);
   protected
+    procedure Loaded; override;
     function GetHandle: Pointer; override;
     procedure DoLoad; virtual;
   public
@@ -71,6 +72,13 @@ begin
   SetFileName(BK_LIB_NAME);
 end;
 
+procedure TBrookLibraryLoader.Loaded;
+begin
+  inherited Loaded;
+  if not (csDesigning in ComponentState) then
+    DoLoad;
+end;
+
 function TBrookLibraryLoader.GetHandle: Pointer;
 begin
   Result := @FHandle;
@@ -81,8 +89,15 @@ begin
   if AValue = FFileName then
     Exit;
   FFileName := AValue;
-  FHandle := BkUnloadLibrary;
-  DoLoad;
+  if AValue = '' then
+  begin
+    FHandle := BkUnloadLibrary;
+    if FHandle = NilHandle then
+      FVersion := '';
+    Exit;
+  end;
+  if csDesigning in ComponentState then
+    DoLoad;
 end;
 
 function TBrookLibraryLoader.IsLoaded: Boolean;
@@ -92,6 +107,9 @@ end;
 
 procedure TBrookLibraryLoader.DoLoad;
 begin
+  if FHandle <> NilHandle then
+    Exit;
+  FHandle := BkUnloadLibrary;
   if FHandle <> NilHandle then
     Exit;
   FHandle := BkLoadLibrary(FFileName);
