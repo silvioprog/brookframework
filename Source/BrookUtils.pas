@@ -76,21 +76,25 @@ implementation
 
 function BrookVersion: Cardinal;
 begin
+  BkCheckLibrary;
   Exit(bk_version);
 end;
 
 function BrookVersionStr: string;
 begin
+  BkCheckLibrary;
   Exit(TMarshal.ToString(bk_version_str));
 end;
 
 function BrookAlloc(ASize: NativeUInt): Pointer;
 begin
+  BkCheckLibrary;
   Exit(bk_alloc(ASize));
 end;
 
 procedure BrookFree(APtr: Pointer);
 begin
+  BkCheckLibrary;
   bk_free(APtr);
 end;
 
