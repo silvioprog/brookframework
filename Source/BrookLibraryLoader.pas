@@ -86,8 +86,11 @@ end;
 
 procedure TBrookLibraryLoader.SetFileName(const AValue: TFileName);
 begin
-  if FFileName = AValue then
+  if AValue = FFileName then
+  begin
+    BkUnloadLibrary;
     Exit;
+  end;
   FLibLoaded := False;
   FFileName := AValue;
   DoLoad;
