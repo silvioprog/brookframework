@@ -56,7 +56,6 @@ type
   public
     { Creates an instance of @link(TBrookLibraryLoader). }
     constructor Create(AOwner: TComponent); override;
-    { Frees an instance of @link(TBrookLibraryLoader). }
     procedure DefineProperties(AFiler: TFiler); override;
   published
     { Specifies the file name of the library to be loaded dynamically. }

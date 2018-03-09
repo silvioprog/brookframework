@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-{ All base types supporting a library handle. }
+{ Base types supporting a library handle. }
 
 unit BrookHandledClasses;
 

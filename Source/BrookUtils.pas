@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-{ All utility functions of the library. }
+{ Utility functions of the library. }
 
 unit BrookUtils;
 
