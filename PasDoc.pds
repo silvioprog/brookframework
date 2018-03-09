@@ -57,7 +57,7 @@ Count=1
 Item_0=
 
 [Files]
-Count=3
+Count=4
 Item_0=Source/BrookLibraryLoader.pas
 Item_1=Source/BrookUtils.pas
 Item_2=Source/BrookHandledClasses.pas
