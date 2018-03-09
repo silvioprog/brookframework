@@ -37,6 +37,7 @@ uses
   Classes;
 
 resourcestring
+  { @exclude }
   SBrookInvalidHandle = 'Invalid handle in %s';
 
 type
