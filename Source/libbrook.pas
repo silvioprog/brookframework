@@ -37,8 +37,10 @@ uses
   SysUtils,
   StrUtils,
 {$IFDEF FPC}
- {$IFDEF UNIX}
+ {$IF DEFINED(UNIX)}
   BaseUnix,
+ {$ELSEIF DEFINED(MSWINDOWS)}
+  Windows,
  {$ENDIF}
   DynLibs,
 {$ELSE}
@@ -76,7 +78,10 @@ const
 {$ENDIF}, '.', SharedSuffix);
 
 resourcestring
-  SBkLibraryNotLoaded = 'Brook library ''%s'' not loaded';
+  SBkLibraryNotLoaded = 'Library ''%s'' not loaded';
+{$IFDEF MSWINDOWS}
+  SBkInvalidLibrary = 'Invalid library ''%s''';
+{$ENDIF}
 
 type
   Pcchar = MarshaledAString;
@@ -180,7 +185,15 @@ begin
       Exit(GBkLibHandle);
     GBkLibHandle := SafeLoadLibrary(AFileName);
     if GBkLibHandle = NilHandle then
+{$IFDEF MSWINDOWS}
+    begin
+      if GetLastError = ERROR_BAD_EXE_FORMAT then
+        raise EBkLibraryNotLoaded.CreateResFmt(@SBkInvalidLibrary, [AFileName]);
+{$ENDIF}
       Exit(NilHandle);
+{$IFDEF MSWINDOWS}
+    end;
+{$ENDIF}
     { TODO: check the library version }
     GBkLastLibName := AFileName;
 
