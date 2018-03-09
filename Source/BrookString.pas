@@ -177,7 +177,9 @@ begin
   CheckEncoding(AEncoding);
 {$IFDEF FPC}
  {$PUSH}{$WARN 4104 OFF}
+{$ENDIF}
   VBytes := AEncoding.GetBytes(AValue);
+{$IFDEF FPC}
  {$POP}
 {$ENDIF}
   WriteBytes(VBytes, System.Length(VBytes));
@@ -201,7 +203,9 @@ begin
   VLength := ReadBytes(VBytes, VLength);
 {$IFDEF FPC}
  {$PUSH}{$WARN 4105 OFF}
+{$ENDIF}
   Result := AEncoding.GetString(VBytes, 0, VLength);
+{$IFDEF FPC}
  {$POP}
 {$ENDIF}
 end;
