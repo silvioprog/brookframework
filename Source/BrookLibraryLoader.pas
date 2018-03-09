@@ -44,11 +44,9 @@ type
   { Class for dynamic library loading. }
   TBrookLibraryLoader = class(TBrookHandledComponent)
   private
-    FLibLoaded: Boolean;
     FFileName: TFileName;
     FHandle: TLibHandle;
     FVersion: string;
-    function IsFileNameStored: Boolean;
     procedure SetFileName(const AValue: TFileName);
   protected
     function GetHandle: Pointer; override;
@@ -56,11 +54,11 @@ type
   public
     { Creates an instance of @link(TBrookLibraryLoader). }
     constructor Create(AOwner: TComponent); override;
-    procedure DefineProperties(AFiler: TFiler); override;
+    { Returns @true when the library was successfully loaded. }
+    function IsLoaded: Boolean;
   published
     { Specifies the file name of the library to be loaded dynamically. }
-    property FileName: TFileName read FFileName write SetFileName
-      stored IsFileNameStored;
+    property FileName: TFileName read FFileName write SetFileName;
     { Version of the loaded library. }
     property Version: string read FVersion stored False;
   end;
@@ -70,30 +68,7 @@ implementation
 constructor TBrookLibraryLoader.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FFileName := BK_LIB_NAME;
-end;
-
-procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
-begin
-  inherited DefineProperties(AFiler);
-  DoLoad;
-end;
-
-function TBrookLibraryLoader.IsFileNameStored: Boolean;
-begin
-  Result := FFileName <> BK_LIB_NAME;
-end;
-
-procedure TBrookLibraryLoader.SetFileName(const AValue: TFileName);
-begin
-  if AValue = FFileName then
-  begin
-    BkUnloadLibrary;
-    Exit;
-  end;
-  FLibLoaded := False;
-  FFileName := AValue;
-  DoLoad;
+  SetFileName(BK_LIB_NAME);
 end;
 
 function TBrookLibraryLoader.GetHandle: Pointer;
@@ -101,18 +76,26 @@ begin
   Result := @FHandle;
 end;
 
+procedure TBrookLibraryLoader.SetFileName(const AValue: TFileName);
+begin
+  if AValue = FFileName then
+    Exit;
+  FFileName := AValue;
+  FHandle := BkUnloadLibrary;
+  DoLoad;
+end;
+
+function TBrookLibraryLoader.IsLoaded: Boolean;
+begin
+  Result := FHandle <> NilHandle;
+end;
+
 procedure TBrookLibraryLoader.DoLoad;
 begin
-  if FLibLoaded then
-    Exit;
-  BkUnloadLibrary;
-  FHandle := NilHandle;
-  FLibLoaded := False;
-  if (FFileName = '') or (not FileExists(FFileName)) then
+  if FHandle <> NilHandle then
     Exit;
   FHandle := BkLoadLibrary(FFileName);
-  FLibLoaded := FHandle <> NilHandle;
-  if FLibLoaded then
+  if FHandle <> NilHandle then
     FVersion := BrookVersionStr
   else
     FVersion := '';
