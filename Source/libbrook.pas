@@ -108,6 +108,8 @@ type
   TLibHandle = HMODULE;
 {$ENDIF}
 
+  EBkLibraryNotLoaded = class(EFileNotFoundException);
+
   Pbk_str = ^bk_str;
   bk_str = record
   end;
@@ -247,7 +249,7 @@ end;
 procedure BkCheckLibrary;
 begin
   if GBkLibHandle = NilHandle then
-    raise EFileNotFoundException.CreateResFmt(@SBkLibraryNotLoaded,
+    raise EBkLibraryNotLoaded.CreateResFmt(@SBkLibraryNotLoaded,
       [GBkLastLibName]);
 end;
 
