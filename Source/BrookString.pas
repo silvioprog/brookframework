@@ -117,19 +117,26 @@ begin
   inherited Create;
   FOwnsHandle := not Assigned(AHandle);
   if FOwnsHandle then
-    Fstr := bk_str_new
+  begin
+    BkCheckLibrary;
+    Fstr := bk_str_new;
+  end
   else
     Fstr := AHandle;
 end;
 
 destructor TBrookString.Destroy;
 begin
-  if FOwnsHandle then
-  begin
-    bk_str_free(Fstr);
-    Fstr := nil;
+  try
+    if FOwnsHandle then
+    begin
+      BkCheckLibrary;
+      bk_str_free(Fstr);
+      Fstr := nil;
+    end;
+  finally
+    inherited Destroy;
   end;
-  inherited Destroy;
 end;
 
 class procedure TBrookString.CheckEncoding(AEncoding: TEncoding);
@@ -158,12 +165,14 @@ function TBrookString.WriteBytes(const AValue: TBytes;
 begin
   CheckHandle;
   Result := ALength;
+  BkCheckLibrary;
   CheckOSError(bk_str_write(Fstr, @AValue[0], Result));
 end;
 
 function TBrookString.ReadBytes(AValue: TBytes; ALength: NativeUInt): NativeUInt;
 begin
   CheckHandle;
+  BkCheckLibrary;
   CheckOSError(bk_str_read(Fstr, @AValue[0], @ALength));
   Result := ALength;
 end;
@@ -218,12 +227,14 @@ end;
 procedure TBrookString.Clear;
 begin
   CheckHandle;
+  BkCheckLibrary;
   CheckOSError(bk_str_clear(Fstr));
 end;
 
 function TBrookString.GetLength: NativeUInt;
 begin
   CheckHandle;
+  BkCheckLibrary;
   CheckOSError(bk_str_length(Fstr, @Result));
 end;
 
@@ -235,6 +246,7 @@ end;
 
 function TBrookString.GetContent: TBytes;
 begin
+  BkCheckLibrary;
   Result := TMarshal.ToBytes(bk_str_content(Fstr), GetLength);
 end;
 
