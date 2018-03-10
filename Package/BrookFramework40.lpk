@@ -52,7 +52,7 @@
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item1>
     </RequiredPkgs>
     <UsageOptions>
