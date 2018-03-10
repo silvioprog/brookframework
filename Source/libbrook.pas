@@ -59,6 +59,10 @@ const
   NilHandle = DynLibs.NilHandle;
  {$ENDIF}
 {$ELSE}
+  NilHandle = HMODULE(0);
+{$ENDIF}
+
+{$IF (NOT DEFINED(FPC)) OR DEFINED(VER3_0)}
   SharedSuffix =
  {$IF DEFINED(MSWINDOWS)}
     'dll'
@@ -67,7 +71,6 @@ const
  {$ELSE}
     'so'
  {$ENDIF};
-  NilHandle = HMODULE(0);
 {$ENDIF}
 
   BK_LIB_NAME = Concat(
