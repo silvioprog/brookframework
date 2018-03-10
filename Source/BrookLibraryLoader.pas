@@ -40,43 +40,49 @@ uses
   BrookHandledClasses,
   BrookUtils;
 
+resourcestring
+  { Indicates not allowed operation when the library is loaded. }
+  SBrookOpNotAllowedLoadedLib =
+    'Operation is not allowed while the library is loaded';
+
 type
+  { Raised when an operation is not allowed while the library is loaded. }
+  EBrookOpNotAllowedLoadedLib = class(Exception);
+
   { Class for dynamic library loading. }
   TBrookLibraryLoader = class(TBrookHandledComponent)
   private
-    FFileName: TFileName;
-    FHandle: TLibHandle;
+    FEnabled: Boolean;
     FVersion: string;
-    procedure SetFileName(const AValue: TFileName);
+    FHandle: TLibHandle;
+    FLibraryName: TFileName;
+    procedure CheckDisabled; inline;
+    procedure SetEnabled(AValue: Boolean);
+    procedure SetLibraryName(const AValue: TFileName);
   protected
     procedure Loaded; override;
     function GetHandle: Pointer; override;
-    procedure DoLoad; virtual;
   public
-    { Creates an instance of @link(TBrookLibraryLoader). }
-    constructor Create(AOwner: TComponent); override;
-    { Returns @true when the library was successfully loaded. }
-    function IsLoaded: Boolean;
+    { Loads the library dynamically. }
+    procedure Load; virtual;
+    { Unloads the library dynamically. }
+    procedure Unload; virtual;
   published
-    { Specifies the file name of the library to be loaded dynamically. }
-    property FileName: TFileName read FFileName write SetFileName;
+    { Loads/Unloads the library dynamically. }
+    property Enabled: Boolean read FEnabled write SetEnabled;
+    { Specifies the library to be loaded dynamically. }
+    property LibraryName: TFileName read FLibraryName write SetLibraryName;
     { Version of the loaded library. }
     property Version: string read FVersion stored False;
   end;
 
 implementation
 
-constructor TBrookLibraryLoader.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  SetFileName(BK_LIB_NAME);
-end;
-
 procedure TBrookLibraryLoader.Loaded;
 begin
   inherited Loaded;
-  if not (csDesigning in ComponentState) then
-    DoLoad;
+  if FEnabled and (FLibraryName <> '') then
+    Load;
 end;
 
 function TBrookLibraryLoader.GetHandle: Pointer;
@@ -84,38 +90,48 @@ begin
   Result := @FHandle;
 end;
 
-procedure TBrookLibraryLoader.SetFileName(const AValue: TFileName);
+procedure TBrookLibraryLoader.CheckDisabled;
 begin
-  if AValue = FFileName then
-    Exit;
-  FFileName := AValue;
-  if AValue = '' then
-  begin
-    FHandle := BkUnloadLibrary;
-    if FHandle = NilHandle then
-      FVersion := '';
-    Exit;
-  end;
-  if csDesigning in ComponentState then
-    DoLoad;
+  if not (csLoading in ComponentState) and Enabled then
+    raise EBrookOpNotAllowedLoadedLib.CreateRes(@SBrookOpNotAllowedLoadedLib);
 end;
 
-function TBrookLibraryLoader.IsLoaded: Boolean;
+procedure TBrookLibraryLoader.SetEnabled(AValue: Boolean);
 begin
-  Result := FHandle <> NilHandle;
+  if AValue = FEnabled then
+    Exit;
+  if csLoading in ComponentState then
+    FEnabled := AValue
+  else
+    if AValue then
+      Load
+    else
+      Unload;
 end;
 
-procedure TBrookLibraryLoader.DoLoad;
+procedure TBrookLibraryLoader.SetLibraryName(const AValue: TFileName);
 begin
-  if FHandle <> NilHandle then
+  if AValue = FLibraryName then
     Exit;
-  FHandle := BkUnloadLibrary;
-  if FHandle <> NilHandle then
-    Exit;
-  FHandle := BkLoadLibrary(FFileName);
-  if FHandle <> NilHandle then
+  CheckDisabled;
+  FLibraryName := AValue;
+end;
+
+procedure TBrookLibraryLoader.Load;
+begin
+  FHandle := BkLoadLibrary(FLibraryName);
+  FEnabled := FHandle <> NilHandle;
+  if FEnabled then
     FVersion := BrookVersionStr
   else
+    FVersion := '';
+end;
+
+procedure TBrookLibraryLoader.Unload;
+begin
+  FHandle := BkUnloadLibrary;
+  FEnabled := FHandle <> NilHandle;
+  if not FEnabled then
     FVersion := '';
 end;
 
