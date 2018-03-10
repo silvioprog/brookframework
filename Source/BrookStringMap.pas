@@ -5,8 +5,12 @@ unit BrookStringMap;
 interface
 
 uses
-{$IFDEF FPC}
+{$IF DEFINED(MSWINDOWS)}
+  Windows,
+{$ELSEIF DEFINED(FPC) AND DEFINED(UNIX)}
   BaseUnix,
+{$ELSEIF DEFINED(POSIX)}
+  Posix.Errno,
 {$ENDIF}
   SysUtils,
   libbrook,
@@ -80,12 +84,21 @@ begin
 end;
 
 function TBrookStringMap.Find(const AName: string; out AValue: string): Boolean;
+{$IFNDEF POSIX}
+const
+  ENOENT =
+ {$IF DEFINED(MSWINDOWS)}
+    ERROR_FILE_NOT_FOUND
+ {$ELSEIF DEFINED(FPC) AND DEFINED(UNIX)}
+    ESysENOENT
+ {$ENDIF};
+{$ENDIF}
 var
   R: cint;
   N: Pcchar;
   VL: csize_t;
   M: TMarshaller;
-  V: array[0..BROOK_STRMAP_MAX_VAL - SizeOf(Byte)] of Byte;
+  V: array[0..BROOK_STRMAP_MAX_VAL] of Byte;
 begin
   VL := BROOK_STRMAP_MAX_VAL;
   N := M.ToCString(AName);
@@ -95,7 +108,7 @@ begin
   if Result then
     AValue := TMarshal.ToString(@V[0], VL)
   else
-    if R <> -ESysENOENT then
+    if R <> -ENOENT then
       CheckOSError(R);
 end;
 
