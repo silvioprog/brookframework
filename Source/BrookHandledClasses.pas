@@ -37,8 +37,8 @@ uses
   Classes;
 
 resourcestring
-  { @exclude }
-  SBrookInvalidHandle = 'Invalid handle in %s';
+  { Indicates the class that is trying to access an invalid handler. }
+  SBrookInvalidHandle = 'Invalid handle in ''%s''';
 
 type
   { Raised when a caller tries to access a nil library handle. }
