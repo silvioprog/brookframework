@@ -28,7 +28,8 @@ package BrookFramework40;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl;
+  rtl,
+  designide;
 
 contains
   libbrook in '..\Source\libbrook.pas',

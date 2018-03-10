@@ -54,7 +54,7 @@
         <DCC_K>false</DCC_K>
         <GenDll>true</GenDll>
         <GenPackage>true</GenPackage>
-        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>System;Data;Vcl;$(DCC_Namespace)</DCC_Namespace>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
         <SanitizedProjectName>BrookFramework40</SanitizedProjectName>
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -98,6 +98,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
+        <DCCReference Include="designide.dcp"/>
         <DCCReference Include="..\Source\libbrook.pas"/>
         <DCCReference Include="..\Source\Marshalling.pas"/>
         <DCCReference Include="..\Source\BrookLibraryLoader.pas"/>
