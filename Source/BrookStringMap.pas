@@ -35,22 +35,45 @@ type
   private
     Fmap: Pbk_strmap;
     FOwnsHandle: Boolean;
+    function GetCount: Integer;
+    function GetValue(const AName: string): string;
+    procedure SetValue(const AName, AValue: string);
   protected
     function GetHandle: Pointer; override;
     procedure SetHandle(AHandle: Pointer); override;
     function GetOwnsHandle: Boolean; override;
     procedure SetOwnsHandle(AValue: Boolean); override;
+    function IsEOF: Boolean; virtual;
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
     procedure Add(const AName, AValue: string); virtual;
+    procedure AddOrSet(const AName, AValue: string); virtual;
+    procedure Remove(const AName: string); virtual;
+    procedure Clear; virtual;
     function Find(const AName: string;
       out APair: TBrookStringPair): Boolean; virtual;
     function TryValue(const AName: string;
       out AValue: string): Boolean; virtual;
+    function First(out APair: TBrookStringPair): Boolean; virtual;
+    function Next(out APair: TBrookStringPair): Boolean; virtual;
+    property Count: Integer read GetCount;
+    property Values[const AName: string]: string read GetValue
+      write SetValue; default;
+    property EOF: Boolean read IsEOF;
   end;
 
 implementation
+
+{$IFNDEF POSIX}
+const
+  ENOENT =
+ {$IF DEFINED(MSWINDOWS)}
+    ERROR_FILE_NOT_FOUND
+ {$ELSEIF DEFINED(FPC) AND DEFINED(UNIX)}
+    ESysENOENT
+ {$ENDIF};
+{$ENDIF}
 
 { TBrookStringPair }
 
@@ -81,6 +104,25 @@ begin
   inherited Destroy;
 end;
 
+function TBrookStringMap.GetCount: Integer;
+begin
+  BkCheckLibrary;
+  if not Assigned(Fmap) then
+    Exit(0);
+  CheckOSError(bk_strmap_count(Fmap, @Result));
+end;
+
+function TBrookStringMap.GetValue(const AName: string): string;
+begin
+  if not TryValue(AName, Result) then
+    Result := '';
+end;
+
+procedure TBrookStringMap.SetValue(const AName, AValue: string);
+begin
+  AddOrSet(AName, AValue);
+end;
+
 function TBrookStringMap.GetHandle: Pointer;
 begin
   Result := Fmap;
@@ -101,6 +143,11 @@ begin
   FOwnsHandle := AValue;
 end;
 
+function TBrookStringMap.IsEOF: Boolean;
+begin
+  Result := Assigned(Fmap);
+end;
+
 procedure TBrookStringMap.Add(const AName, AValue: string);
 var
   N, V: Pcchar;
@@ -112,17 +159,42 @@ begin
   CheckOSError(bk_strmap_add(@Fmap, N, Length(N), V, Length(V)));
 end;
 
+procedure TBrookStringMap.AddOrSet(const AName, AValue: string);
+var
+  N, V: Pcchar;
+  M: TMarshaller;
+begin
+  BkCheckLibrary;
+  N := M.ToCString(AName);
+  V := M.ToCString(AValue);
+  CheckOSError(bk_strmap_set(@Fmap, N, Length(N), V, Length(V)));
+end;
+
+procedure TBrookStringMap.Remove(const AName: string);
+var
+  R: cint;
+  N: Pcchar;
+  M: TMarshaller;
+begin
+  BkCheckLibrary;
+  if not Assigned(Fmap) then
+    Exit;
+  N := M.ToCString(AName);
+  R := bk_strmap_rm(@Fmap, N, Length(N));
+  if (R <> 0) and (R <> -ENOENT) then
+    CheckOSError(R);
+end;
+
+procedure TBrookStringMap.Clear;
+begin
+  BkCheckLibrary;
+  if not Assigned(Fmap) then
+    Exit;
+  bk_strmap_cleanup(@Fmap);
+end;
+
 function TBrookStringMap.Find(const AName: string;
   out APair: TBrookStringPair): Boolean;
-{$IFNDEF POSIX}
-const
-  ENOENT =
- {$IF DEFINED(MSWINDOWS)}
-    ERROR_FILE_NOT_FOUND
- {$ELSEIF DEFINED(FPC) AND DEFINED(UNIX)}
-    ESysENOENT
- {$ENDIF};
-{$ENDIF}
 var
   R: cint;
   N: Pcchar;
@@ -132,7 +204,7 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  if not Assigned(Fmap) then // avoids -EINVAL
+  if not Assigned(Fmap) then
     Exit(False);
   N := M.ToCString(AName);
   R := bk_strmap_find(Fmap, N, Length(N), @P);
@@ -156,6 +228,18 @@ begin
   Result := Find(AName, P);
   if Result then
     AValue := P.Value;
+end;
+
+function TBrookStringMap.First(out APair: TBrookStringPair): Boolean;
+begin
+  BkCheckLibrary;
+  { TODO: implement }
+end;
+
+function TBrookStringMap.Next(out APair: TBrookStringPair): Boolean;
+begin
+  BkCheckLibrary;
+  { TODO: implement }
 end;
 
 end.
