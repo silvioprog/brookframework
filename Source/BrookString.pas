@@ -163,15 +163,13 @@ end;
 function TBrookString.WriteBytes(const AValue: TBytes;
   ALength: NativeUInt): NativeUInt;
 begin
-  CheckHandle;
-  Result := ALength;
   BkCheckLibrary;
+  Result := ALength;
   CheckOSError(bk_str_write(Fstr, @AValue[0], Result));
 end;
 
 function TBrookString.ReadBytes(AValue: TBytes; ALength: NativeUInt): NativeUInt;
 begin
-  CheckHandle;
   BkCheckLibrary;
   CheckOSError(bk_str_read(Fstr, @AValue[0], @ALength));
   Result := ALength;
@@ -182,7 +180,6 @@ procedure TBrookString.Write(const AValue: string; AEncoding: TEncoding);
 var
   VBytes: TBytes;
 begin
-  CheckHandle;
   CheckEncoding(AEncoding);
 {$IFDEF FPC}
  {$PUSH}{$WARN 4104 OFF}
@@ -226,14 +223,12 @@ end;
 
 procedure TBrookString.Clear;
 begin
-  CheckHandle;
   BkCheckLibrary;
   CheckOSError(bk_str_clear(Fstr));
 end;
 
 function TBrookString.GetLength: NativeUInt;
 begin
-  CheckHandle;
   BkCheckLibrary;
   CheckOSError(bk_str_length(Fstr, @Result));
 end;
