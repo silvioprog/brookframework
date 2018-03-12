@@ -31,6 +31,9 @@ type
     property Value: string read FValue;
   end;
 
+  TBrookStringMapIterator = function(AData: Pointer;
+    APair: TBrookStringPair): Integer;
+
   TBrookStringMap = class(TBrookHandledPersistent)
   private
     Fpair: Pbk_strmap;
@@ -40,6 +43,8 @@ type
     function GetValue(const AName: string): string;
     procedure SetValue(const AName, AValue: string);
   protected
+    class function DoIterate(Acls: Pcvoid;
+      Apair: Pbk_strmap): cint; cdecl; static;
     class function CreatePair(
       Apair: Pbk_strmap): TBrookStringPair; static; inline;
     function GetHandle: Pointer; override;
@@ -60,6 +65,8 @@ type
       out AValue: string): Boolean; virtual;
     function First(out APair: TBrookStringPair): Boolean; virtual;
     function Next(out APair: TBrookStringPair): Boolean; virtual;
+    function Iterate(AIterator: TBrookStringMapIterator;
+      AData: Pointer): Boolean; virtual;
     property Count: Integer read GetCount;
     property Values[const AName: string]: string read GetValue
       write SetValue; default;
@@ -105,6 +112,15 @@ begin
     Fmap := nil;
   end;
   inherited Destroy;
+end;
+
+class function TBrookStringMap.DoIterate(Acls: Pcvoid; Apair: Pbk_strmap): cint;
+var
+  M: PMethod absolute Acls;
+begin
+  if not Assigned(M.Code) then
+    Exit(-1);
+  Result := TBrookStringMapIterator(M.Code)(M.Data, CreatePair(Apair));
 end;
 
 class function TBrookStringMap.CreatePair(Apair: Pbk_strmap): TBrookStringPair;
@@ -267,6 +283,23 @@ begin
   Result := R = 0;
   if Result and Assigned(Fpair) then
     APair := CreatePair(Fpair);
+end;
+
+function TBrookStringMap.Iterate(AIterator: TBrookStringMapIterator;
+  AData: Pointer): Boolean;
+var
+  R: cint;
+  M: TMethod;
+begin
+  BkCheckLibrary;
+  if not Assigned(Fmap) then
+    Exit;
+  M.Code := @AIterator;
+  M.Data := AData;
+  R := bk_strmap_iter(Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
+  if R <> -1 then
+    CheckOSError(R);
+  Result := R = 0;
 end;
 
 end.
