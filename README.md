@@ -48,14 +48,14 @@ Planning package distribution/installation:
 
 Units:
 
-* `BrookLibraryLoader` - allows to customize the path for library loading. (In progress ...)
+* ~~`BrookLibraryLoader` - allows to customize the path for library loading.~~ (Done!)
 * ~~`BrookUtils` - useful routines and structures.~~ (Done!)
 * ~~`BrookString` - low-level string handling.~~ (Done!)
 * `BrookStringMap` - Mapped strings for fast name-value handling. (In progress ...)
 
 Classes:
 
-* `TBrookLibraryLoader` - used to customize the path for library loading. (In progress ...)
+* ~~`TBrookLibraryLoader` - used to customize the path for library loading.~~ (Done!)
 * ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
 * `TBrookStringMap` - used to represent HTML fields, query-string parameters and more. (In progress ...)
 
@@ -72,14 +72,14 @@ Examples:
 
 Testings:
 
-* `TestLibraryLoader` - library loader testings. (In progress...)
+* ~~`TestLibraryLoader` - library loader testings.~~ (Done!)
 * ~~`TestUtils` - utility testings.~~ (Done!)
 * ~~`TestString` - string class testings.~~ (Done!)
 * `TestStringMap` - string map testings. (In progress...)
 
 Documentation:
 
-* `BrookLibraryLoader` - library loader reference [HTML/PDF]. (In progress ...)
+* ~~`BrookLibraryLoader` - library loader reference [HTML/PDF].~~ (Done!)
 * ~~`BrookUtils` - utility functions reference [HTML/PDF].~~ (Done!)
 * ~~`BrookString` - string class reference [HTML/PDF].~~ (Done!)
 * `BrookStringMap` - string map reference [HTML/PDF]. (In progress ...)
