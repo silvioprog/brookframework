@@ -34,6 +34,9 @@ type
   TBrookStringMapIterator = function(AData: Pointer;
     APair: TBrookStringPair): Integer;
 
+  TBrookStringMapComparator = function(AData: Pointer;
+    APairA, APairB: TBrookStringPair): Integer;
+
   TBrookStringMap = class(TBrookHandledPersistent)
   private
     Fpair: Pbk_strmap;
@@ -45,6 +48,8 @@ type
   protected
     class function DoIterate(Acls: Pcvoid;
       Apair: Pbk_strmap): cint; cdecl; static;
+    class function DoSort(Acls: Pcvoid; Apair_a: Pbk_strmap;
+      Apair_b: Pbk_strmap): cint; cdecl; static;
     class function CreatePair(
       Apair: Pbk_strmap): TBrookStringPair; static; inline;
     function GetHandle: Pointer; override;
@@ -67,6 +72,8 @@ type
     function Next(out APair: TBrookStringPair): Boolean; virtual;
     function Iterate(AIterator: TBrookStringMapIterator;
       AData: Pointer): Boolean; virtual;
+    procedure Sort(AComparator: TBrookStringMapComparator;
+      AData: Pointer); virtual;
     property Count: Integer read GetCount;
     property Values[const AName: string]: string read GetValue
       write SetValue; default;
@@ -123,14 +130,27 @@ begin
   Result := TBrookStringMapIterator(M.Code)(M.Data, CreatePair(Apair));
 end;
 
+class function TBrookStringMap.DoSort(Acls: Pcvoid; Apair_a: Pbk_strmap;
+  Apair_b: Pbk_strmap): cint;
+var
+  M: PMethod absolute Acls;
+begin
+  if not Assigned(M.Code) then
+    Exit(0);
+  Result := TBrookStringMapComparator(M.Code)(M.Data, CreatePair(Apair_a),
+    CreatePair(Apair_b));
+end;
+
 class function TBrookStringMap.CreatePair(Apair: Pbk_strmap): TBrookStringPair;
 var
   N, V: TBytes;
   NL, VL: csize_t;
 begin
   SetLength(N, BROOK_STRMAP_MAX_VAL);
+  NL := BROOK_STRMAP_MAX_VAL;
   CheckOSError(bk_strmap_readname(Apair, @N[0], @NL));
   SetLength(V, BROOK_STRMAP_MAX_VAL);
+  VL := BROOK_STRMAP_MAX_VAL;
   CheckOSError(bk_strmap_readval(Apair, @V[0], @VL));
   Result := TBrookStringPair.Create(TMarshal.ToString(@N[0], NL),
     TMarshal.ToString(@V[0], VL));
@@ -244,6 +264,7 @@ begin
   if Result then
   begin
     SetLength(V, BROOK_STRMAP_MAX_VAL);
+    L := BROOK_STRMAP_MAX_VAL;
     CheckOSError(bk_strmap_readval(P, @V[0], @L));
     APair := TBrookStringPair.Create(AName, TMarshal.ToString(@V[0], L));
   end
@@ -300,6 +321,19 @@ begin
   if R <> -1 then
     CheckOSError(R);
   Result := R = 0;
+end;
+
+procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
+  AData: Pointer);
+var
+  M: TMethod;
+begin
+  BkCheckLibrary;
+  if not Assigned(Fmap) then
+    Exit;
+  M.Code := @AComparator;
+  M.Data := AData;
+  CheckOSError(bk_strmap_sort(@Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
 end;
 
 end.
