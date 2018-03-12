@@ -163,10 +163,14 @@ var
     name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
   bk_strmap_find: function(map: Pbk_strmap; const name: Pcchar; len: csize_t;
     pair: PPbk_strmap): cint; cdecl;
+  bk_strmap_rm: function(map: PPbk_strmap; const name: Pcchar;
+    len: csize_t): cint; cdecl;
   bk_strmap_iter: function(map: Pbk_strmap; iter_cb: bk_strmap_iter_cb;
     iter_cls: Pcvoid): cint; cdecl;
   bk_strmap_sort: function(map: PPbk_strmap; cmp_cb: bk_strmap_sort_cb;
     cmp_cls: Pcvoid): cint; cdecl;
+  bk_strmap_count: function(map: Pbk_strmap; count: Pcuint): cint; cdecl;
+  bk_strmap_next: function(map: PPbk_strmap): cint; cdecl;
   bk_strmap_cleanup: procedure(map: PPbk_strmap); cdecl;
 
 {$IFDEF VER3_0}
@@ -234,8 +238,11 @@ begin
     bk_strmap_add := GetProcAddress(GBkLibHandle, 'bk_strmap_add');
     bk_strmap_set := GetProcAddress(GBkLibHandle, 'bk_strmap_set');
     bk_strmap_find := GetProcAddress(GBkLibHandle, 'bk_strmap_find');
+    bk_strmap_rm := GetProcAddress(GBkLibHandle, 'bk_strmap_rm');
     bk_strmap_iter := GetProcAddress(GBkLibHandle, 'bk_strmap_iter');
     bk_strmap_sort := GetProcAddress(GBkLibHandle, 'bk_strmap_sort');
+    bk_strmap_count := GetProcAddress(GBkLibHandle, 'bk_strmap_count');
+    bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
     Result := GBkLibHandle;
@@ -277,8 +284,11 @@ begin
     bk_strmap_add := nil;
     bk_strmap_set := nil;
     bk_strmap_find := nil;
+    bk_strmap_rm := nil;
     bk_strmap_iter := nil;
     bk_strmap_sort := nil;
+    bk_strmap_count := nil;
+    bk_strmap_next := nil;
     bk_strmap_cleanup := nil;
 
     Result := GBkLibHandle;
