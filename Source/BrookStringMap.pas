@@ -21,6 +21,8 @@ const
   BROOK_STRMAP_MAX_VAL: NativeUInt = 4096; // 4 kB
 
 type
+  TBrookStringMap = class;
+
   TBrookStringPair = record
   private
     FName: string;
@@ -29,6 +31,18 @@ type
     constructor Create(const AName, AValue: string);
     property Name: string read FName;
     property Value: string read FValue;
+  end;
+
+  TBrookStringMapEnumerator = class
+  private
+    FMap: TBrookStringMap;
+    FCurr: TBrookStringPair;
+    FBOF: Boolean;
+  public
+    constructor Create(AMap: TBrookStringMap);
+    function GetCurrent: TBrookStringPair;
+    function MoveNext: Boolean;
+    property Current: TBrookStringPair read GetCurrent;
   end;
 
   TBrookStringMapIterator = function(AData: Pointer;
@@ -60,6 +74,7 @@ type
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
+    function GetEnumerator: TBrookStringMapEnumerator;
     procedure Add(const AName, AValue: string); virtual;
     procedure AddOrSet(const AName, AValue: string); virtual;
     procedure Remove(const AName: string); virtual;
@@ -100,6 +115,30 @@ begin
   FValue := AValue;
 end;
 
+{ TBrookStringMapEnumerator }
+
+constructor TBrookStringMapEnumerator.Create(AMap: TBrookStringMap);
+begin
+  inherited Create;
+  FMap := AMap;
+  FMap.First(FCurr);
+  FBOF := True;
+end;
+
+function TBrookStringMapEnumerator.GetCurrent: TBrookStringPair;
+begin
+  Result := FCurr;
+end;
+
+function TBrookStringMapEnumerator.MoveNext: Boolean;
+begin
+  if FBOF then
+    FBOF := False
+  else
+    FMap.Next(FCurr);
+  Result := not FMap.EOF;
+end;
+
 { TBrookStringMap }
 
 constructor TBrookStringMap.Create(AHandle: Pointer);
@@ -112,13 +151,17 @@ end;
 
 destructor TBrookStringMap.Destroy;
 begin
-  if FOwnsHandle then
-  begin
-    BkCheckLibrary;
-    bk_strmap_cleanup(@Fmap);
-    Fmap := nil;
+  try
+    if FOwnsHandle then
+      Clear;
+  finally
+    inherited Destroy;
   end;
-  inherited Destroy;
+end;
+
+function TBrookStringMap.GetEnumerator: TBrookStringMapEnumerator;
+begin
+  Result := TBrookStringMapEnumerator.Create(Self);
 end;
 
 class function TBrookStringMap.DoIterate(Acls: Pcvoid; Apair: Pbk_strmap): cint;
@@ -158,9 +201,9 @@ end;
 
 function TBrookStringMap.GetCount: Integer;
 begin
-  BkCheckLibrary;
   if not Assigned(Fmap) then
     Exit(0);
+  BkCheckLibrary;
   CheckOSError(bk_strmap_count(Fmap, @Result));
 end;
 
@@ -228,9 +271,9 @@ var
   N: Pcchar;
   M: TMarshaller;
 begin
-  BkCheckLibrary;
   if not Assigned(Fmap) then
     Exit;
+  BkCheckLibrary;
   N := M.ToCString(AName);
   R := bk_strmap_rm(@Fmap, N, Length(N));
   if (R <> 0) and (R <> -ENOENT) then
@@ -239,10 +282,11 @@ end;
 
 procedure TBrookStringMap.Clear;
 begin
-  BkCheckLibrary;
   if not Assigned(Fmap) then
     Exit;
+  BkCheckLibrary;
   bk_strmap_cleanup(@Fmap);
+  Fmap := nil;
 end;
 
 function TBrookStringMap.Find(const AName: string;
@@ -255,9 +299,9 @@ var
   P: Pbk_strmap;
   M: TMarshaller;
 begin
-  BkCheckLibrary;
   if not Assigned(Fmap) then
     Exit(False);
+  BkCheckLibrary;
   N := M.ToCString(AName);
   R := bk_strmap_find(Fmap, N, Length(N), @P);
   Result := R = 0;
@@ -285,20 +329,22 @@ end;
 
 function TBrookStringMap.First(out APair: TBrookStringPair): Boolean;
 begin
-  BkCheckLibrary;
   Fpair := Fmap;
   Result := Assigned(Fpair);
   if Result then
+  begin
+    BkCheckLibrary;
     APair := CreatePair(Fpair);
+  end;
 end;
 
 function TBrookStringMap.Next(out APair: TBrookStringPair): Boolean;
 var
   R: cint;
 begin
-  BkCheckLibrary;
   if not Assigned(Fpair) then
     Exit(False);
+  BkCheckLibrary;
   R := bk_strmap_next(@Fpair);
   CheckOSError(R);
   Result := R = 0;
@@ -312,9 +358,9 @@ var
   R: cint;
   M: TMethod;
 begin
-  BkCheckLibrary;
   if not Assigned(Fmap) then
     Exit;
+  BkCheckLibrary;
   M.Code := @AIterator;
   M.Data := AData;
   R := bk_strmap_iter(Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
@@ -328,9 +374,9 @@ procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
 var
   M: TMethod;
 begin
-  BkCheckLibrary;
   if not Assigned(Fmap) then
     Exit;
+  BkCheckLibrary;
   M.Code := @AComparator;
   M.Data := AData;
   CheckOSError(bk_strmap_sort(@Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
