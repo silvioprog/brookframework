@@ -18,7 +18,7 @@ uses
   BrookHandledClasses;
 
 const
-  BROOK_STRMAP_MAX_VAL = 4096; // 4 kB
+  BROOK_STRMAP_MAX_VAL: NativeUInt = 4096; // 4 kB
 
 type
   TBrookStringPair = record
