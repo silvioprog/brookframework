@@ -33,12 +33,15 @@ type
 
   TBrookStringMap = class(TBrookHandledPersistent)
   private
+    Fpair: Pbk_strmap;
     Fmap: Pbk_strmap;
     FOwnsHandle: Boolean;
     function GetCount: Integer;
     function GetValue(const AName: string): string;
     procedure SetValue(const AName, AValue: string);
   protected
+    class function CreatePair(
+      Apair: Pbk_strmap): TBrookStringPair; static; inline;
     function GetHandle: Pointer; override;
     procedure SetHandle(AHandle: Pointer); override;
     function GetOwnsHandle: Boolean; override;
@@ -104,6 +107,19 @@ begin
   inherited Destroy;
 end;
 
+class function TBrookStringMap.CreatePair(Apair: Pbk_strmap): TBrookStringPair;
+var
+  N, V: TBytes;
+  NL, VL: csize_t;
+begin
+  SetLength(N, BROOK_STRMAP_MAX_VAL);
+  CheckOSError(bk_strmap_readname(Apair, @N[0], @NL));
+  SetLength(V, BROOK_STRMAP_MAX_VAL);
+  CheckOSError(bk_strmap_readval(Apair, @V[0], @VL));
+  Result := TBrookStringPair.Create(TMarshal.ToString(@N[0], NL),
+    TMarshal.ToString(@V[0], VL));
+end;
+
 function TBrookStringMap.GetCount: Integer;
 begin
   BkCheckLibrary;
@@ -145,7 +161,7 @@ end;
 
 function TBrookStringMap.IsEOF: Boolean;
 begin
-  Result := Assigned(Fmap);
+  Result := not Assigned(Fpair);
 end;
 
 procedure TBrookStringMap.Add(const AName, AValue: string);
@@ -233,13 +249,24 @@ end;
 function TBrookStringMap.First(out APair: TBrookStringPair): Boolean;
 begin
   BkCheckLibrary;
-  { TODO: implement }
+  Fpair := Fmap;
+  Result := Assigned(Fpair);
+  if Result then
+    APair := CreatePair(Fpair);
 end;
 
 function TBrookStringMap.Next(out APair: TBrookStringPair): Boolean;
+var
+  R: cint;
 begin
   BkCheckLibrary;
-  { TODO: implement }
+  if not Assigned(Fpair) then
+    Exit(False);
+  R := bk_strmap_next(@Fpair);
+  CheckOSError(R);
+  Result := R = 0;
+  if Result and Assigned(Fpair) then
+    APair := CreatePair(Fpair);
 end;
 
 end.
