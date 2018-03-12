@@ -21,6 +21,15 @@ const
   BROOK_STRMAP_MAX_VAL = 4096; // 4 kB
 
 type
+  TBrookStringPair = record
+  private
+    FName: string;
+    FValue: string;
+  public
+    property Name: string read FName;
+    property Value: string read FValue;
+  end;
+
   TBrookStringMap = class(TBrookHandledPersistent)
   private
     Fmap: Pbk_strmap;
@@ -33,7 +42,10 @@ type
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
     procedure Add(const AName, AValue: string); virtual;
-    function Find(const AName: string; out AValue: string): Boolean; virtual;
+    function Find(const AName: string;
+      out APair: TBrookStringPair): Boolean; virtual;
+    function TryValue(const AName: string;
+      out AValue: string): Boolean; virtual;
   end;
 
 implementation
@@ -77,13 +89,14 @@ var
   N, V: Pcchar;
   M: TMarshaller;
 begin
+  BkCheckLibrary;
   N := M.ToCString(AName);
   V := M.ToCString(AValue);
-  BkCheckLibrary;
   CheckOSError(bk_strmap_add(@Fmap, N, Length(N), V, Length(V)));
 end;
 
-function TBrookStringMap.Find(const AName: string; out AValue: string): Boolean;
+function TBrookStringMap.Find(const AName: string;
+  out APair: TBrookStringPair): Boolean;
 {$IFNDEF POSIX}
 const
   ENOENT =
@@ -96,20 +109,37 @@ const
 var
   R: cint;
   N: Pcchar;
-  VL: csize_t;
+  V: TBytes;
+  L: csize_t;
+  P: Pbk_strmap;
   M: TMarshaller;
-  V: array[0..BROOK_STRMAP_MAX_VAL] of Byte;
 begin
-  VL := BROOK_STRMAP_MAX_VAL;
-  N := M.ToCString(AName);
   BkCheckLibrary;
-  R := bk_strmap_find(Fmap, N, Length(N), @V[0], @VL);
+  if not Assigned(Fmap) then // avoids -EINVAL
+    Exit(False);
+  N := M.ToCString(AName);
+  R := bk_strmap_find(Fmap, N, Length(N), @P);
   Result := R = 0;
   if Result then
-    AValue := TMarshal.ToString(@V[0], VL)
+  begin
+    APair.FName := AName;
+    SetLength(V, BROOK_STRMAP_MAX_VAL);
+    CheckOSError(bk_strmap_readval(P, @V[0], @L));
+    APair.FValue := TMarshal.ToString(@V[0], L);
+  end
   else
     if R <> -ENOENT then
       CheckOSError(R);
+end;
+
+function TBrookStringMap.TryValue(const AName: string;
+  out AValue: string): Boolean;
+var
+  P: TBrookStringPair;
+begin
+  Result := Find(AName, P);
+  if Result then
+    AValue := P.Value;
 end;
 
 end.
