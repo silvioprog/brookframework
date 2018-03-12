@@ -36,22 +36,13 @@ interface
 uses
   Classes;
 
-resourcestring
-  { Indicates the class that is trying to access an invalid handler. }
-  SBrookInvalidHandle = 'Invalid handle in ''%s''';
-
 type
-  { Raised when a caller tries to access a nil library handle. }
-  EBrookInvalidHandle = class(EInvalidOperation);
-
   { The base handled persistent. }
   TBrookHandledPersistent = class abstract(TPersistent)
   protected
     function GetHandle: Pointer; virtual; abstract;
     function GetOwnsHandle: Boolean; virtual; abstract;
     procedure SetOwnsHandle(AValue: Boolean); virtual; abstract;
-  protected
-    procedure CheckHandle; inline;
   public
     { Handle of a feature from the loaded library. }
     property Handle: Pointer read GetHandle;
@@ -69,11 +60,5 @@ type
   end;
 
 implementation
-
-procedure TBrookHandledPersistent.CheckHandle;
-begin
-  if not Assigned(Handle) then
-    raise EBrookInvalidHandle.CreateResFmt(@SBrookInvalidHandle, [ClassName]);
-end;
 
 end.
