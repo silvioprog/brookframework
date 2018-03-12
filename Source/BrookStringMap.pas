@@ -26,6 +26,7 @@ type
     FName: string;
     FValue: string;
   public
+    constructor Create(const AName, AValue: string);
     property Name: string read FName;
     property Value: string read FValue;
   end;
@@ -49,6 +50,16 @@ type
   end;
 
 implementation
+
+{ TBrookStringPair }
+
+constructor TBrookStringPair.Create(const AName, AValue: string);
+begin
+  FName := AName;
+  FValue := AValue;
+end;
+
+{ TBrookStringMap }
 
 constructor TBrookStringMap.Create(AHandle: Pointer);
 begin
@@ -122,10 +133,9 @@ begin
   Result := R = 0;
   if Result then
   begin
-    APair.FName := AName;
     SetLength(V, BROOK_STRMAP_MAX_VAL);
     CheckOSError(bk_strmap_readval(P, @V[0], @L));
-    APair.FValue := TMarshal.ToString(@V[0], L);
+    APair := TBrookStringPair.Create(AName, TMarshal.ToString(@V[0], L));
   end
   else
     if R <> -ENOENT then
