@@ -90,6 +90,9 @@ type
   Pcchar = MarshaledAString;
   cint = Integer;
   cuint = Cardinal;
+{$IF (NOT DEFINED(FPC)) OR (NOT DEFINED(UNIX))}
+  Pcuint = ^cuint;
+{$ENDIF}
   csize_t =
 {$IFDEF FPC}
  {$IFDEF UNIX}
