@@ -41,11 +41,12 @@ type
   TBrookHandledPersistent = class abstract(TPersistent)
   protected
     function GetHandle: Pointer; virtual; abstract;
+    procedure SetHandle(AHandle: Pointer); virtual; abstract;
     function GetOwnsHandle: Boolean; virtual; abstract;
     procedure SetOwnsHandle(AValue: Boolean); virtual; abstract;
   public
     { Handle of a feature from the loaded library. }
-    property Handle: Pointer read GetHandle;
+    property Handle: Pointer read GetHandle write SetHandle;
     { Determines if the handle is freed on the class destruction. }
     property OwnsHandle: Boolean read GetOwnsHandle write SetOwnsHandle;
   end;
@@ -54,9 +55,10 @@ type
   TBrookHandledComponent = class abstract(TComponent)
   protected
     function GetHandle: Pointer; virtual; abstract;
+    procedure SetHandle(AHandle: Pointer); virtual; abstract;
   public
     { Handle of a feature from the loaded library. }
-    property Handle: Pointer read GetHandle;
+    property Handle: Pointer read GetHandle write SetHandle;
   end;
 
 implementation

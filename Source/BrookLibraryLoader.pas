@@ -62,6 +62,7 @@ type
   protected
     procedure Loaded; override;
     function GetHandle: Pointer; override;
+    procedure SetHandle(AHandle: Pointer); override;
   public
     { Loads the library dynamically. }
     procedure Load; virtual;
@@ -88,6 +89,11 @@ end;
 function TBrookLibraryLoader.GetHandle: Pointer;
 begin
   Result := @FHandle;
+end;
+
+procedure TBrookLibraryLoader.SetHandle(AHandle: Pointer);
+begin
+  raise ENotImplemented.Create('TBrookLibraryLoader.SetHandle');
 end;
 
 procedure TBrookLibraryLoader.CheckDisabled;

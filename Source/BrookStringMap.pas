@@ -37,6 +37,7 @@ type
     FOwnsHandle: Boolean;
   protected
     function GetHandle: Pointer; override;
+    procedure SetHandle(AHandle: Pointer); override;
     function GetOwnsHandle: Boolean; override;
     procedure SetOwnsHandle(AValue: Boolean); override;
   public
@@ -83,6 +84,11 @@ end;
 function TBrookStringMap.GetHandle: Pointer;
 begin
   Result := Fmap;
+end;
+
+procedure TBrookStringMap.SetHandle(AHandle: Pointer);
+begin
+  Fmap := AHandle;
 end;
 
 function TBrookStringMap.GetOwnsHandle: Boolean;
