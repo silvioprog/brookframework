@@ -18,7 +18,7 @@ uses
   BrookHandledClasses;
 
 const
-  BROOK_STRMAP_MAX_VAL: NativeUInt = 4096; // 4 kB
+  BROOK_STRMAP_MAX_BUF: NativeUInt = 4096; // 4 kB
 
 type
   TBrookStringMap = class;
@@ -189,11 +189,11 @@ var
   N, V: TBytes;
   NL, VL: csize_t;
 begin
-  SetLength(N, BROOK_STRMAP_MAX_VAL);
-  NL := BROOK_STRMAP_MAX_VAL;
+  SetLength(N, BROOK_STRMAP_MAX_BUF);
+  NL := BROOK_STRMAP_MAX_BUF;
   CheckOSError(bk_strmap_readname(Apair, @N[0], @NL));
-  SetLength(V, BROOK_STRMAP_MAX_VAL);
-  VL := BROOK_STRMAP_MAX_VAL;
+  SetLength(V, BROOK_STRMAP_MAX_BUF);
+  VL := BROOK_STRMAP_MAX_BUF;
   CheckOSError(bk_strmap_readval(Apair, @V[0], @VL));
   Result := TBrookStringPair.Create(TMarshal.ToString(@N[0], NL),
     TMarshal.ToString(@V[0], VL));
@@ -307,8 +307,8 @@ begin
   Result := R = 0;
   if Result then
   begin
-    SetLength(V, BROOK_STRMAP_MAX_VAL);
-    L := BROOK_STRMAP_MAX_VAL;
+    SetLength(V, BROOK_STRMAP_MAX_BUF);
+    L := BROOK_STRMAP_MAX_BUF;
     CheckOSError(bk_strmap_readval(P, @V[0], @L));
     APair := TBrookStringPair.Create(AName, TMarshal.ToString(@V[0], L));
   end
