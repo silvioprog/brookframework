@@ -132,7 +132,7 @@ end;
 
 procedure TBrookString.SetHandle(AHandle: Pointer);
 begin
-  if Fstr = AHandle then
+  if AHandle = Fstr then
     Exit;
   Clear;
   Fstr := AHandle;
