@@ -134,6 +134,22 @@ begin
   Assert(AStr.Text = AVal);
 end;
 
+procedure Test_StringExtra(AStr: TBrookString);
+var
+  VStr: TBrookString;
+begin
+  AStr.Clear;
+  AStr.Copy('abc');
+  Assert(AStr.Text = 'abc');
+  VStr := TBrookString.Create(AStr.Handle);
+  try
+    VStr.Copy('123');
+  finally
+    VStr.Free;;
+  end;
+  Assert(AStr.Text = 'abc123');
+end;
+
 const
   VAL = 'abc123def456';
   LEN: NativeUInt = Length(VAL);
@@ -152,6 +168,7 @@ begin
     Test_StringLength(VStr, VValB, LEN);
     Test_StringClear(VStr, VValB, LEN);
     Test_StringText(VStr, VAL);
+    Test_StringExtra(VStr);
   finally
     VStr.Destroy;
   end;
