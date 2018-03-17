@@ -132,8 +132,9 @@ end;
 
 procedure TBrookString.SetHandle(AHandle: Pointer);
 begin
-  BkCheckLibrary;
-  bk_str_free(Fstr);
+  if Fstr = AHandle then
+    Exit;
+  Clear;
   Fstr := AHandle;
 end;
 
