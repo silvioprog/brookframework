@@ -43,14 +43,14 @@ begin
   end;
 end;
 
-procedure Test_StringWriteBytes(AStr: TBrookString; const AVal: TBytes;
+procedure Test_StringCopyBytes(AStr: TBrookString; const AVal: TBytes;
   ALen: NativeUInt);
 var
   OK: Boolean;
 begin
   OK := False;
   try
-    Assert(AStr.WriteBytes(nil, ALen) = 0);
+    Assert(AStr.CopyBytes(nil, ALen) = 0);
   except
     on E: Exception do
       OK := E.ClassType = EOSError;
@@ -58,7 +58,7 @@ begin
   Assert(OK);
   OK := False;
   try
-    Assert(AStr.WriteBytes(AVal, 0) = 0);
+    Assert(AStr.CopyBytes(AVal, 0) = 0);
   except
     on E: Exception do
       OK := E.ClassType = EOSError;
@@ -66,55 +66,17 @@ begin
   Assert(OK);
 
   AStr.Clear;
-  Assert(AStr.WriteBytes(AVal, ALen) = ALen);
+  Assert(AStr.CopyBytes(AVal, ALen) = ALen);
   Assert(AStr.Length = ALen);
 end;
 
-procedure Test_StringReadBytes(AStr: TBrookString; const AVal: TBytes;
-  ALen: NativeUInt);
-var
-  OK: Boolean;
-  VRes: TBytes;
-begin
-  OK := False;
-  try
-    Assert(AStr.ReadBytes(nil, ALen) = 0);
-  except
-    on E: Exception do
-      OK := E.ClassType = EOSError;
-  end;
-  Assert(OK);
-  OK := False;
-  try
-    Assert(AStr.ReadBytes(AVal, 0) = 0);
-  except
-    on E: Exception do
-      OK := E.ClassType = EOSError;
-  end;
-  Assert(OK);
-
-  SetLength(VRes, 15 * SizeOf(Byte));
-
-  AStr.Clear;
-  Assert(AStr.ReadBytes(VRes, ALen) = 0);
-
-  AStr.WriteBytes(AVal, ALen);
-  Assert(AStr.ReadBytes(VRes, ALen + SizeOf(Byte)) = ALen);
-  Assert(CompareMem(@AVal[0], @VRes[0], ALen));
-
-  Assert(AStr.ReadBytes(VRes, ALen * 2) = ALen);
-  Assert(CompareMem(@VRes[0], @AVal[0], ALen));
-  Assert(vres[ALen] = 0);
-end;
-
-procedure Test_StringWrite(AStr: TBrookString; const AVal: string;
-  ALen: NativeUInt);
+procedure Test_StringCopy(AStr: TBrookString; const AVal: string; ALen: Integer);
 var
   OK: Boolean;
 begin
   OK := False;
   try
-    AStr.Write('', TEncoding.UTF8);
+    AStr.Copy('', TEncoding.UTF8);
   except
     on E: Exception do
       OK := E.ClassType = EOSError;
@@ -122,7 +84,7 @@ begin
   Assert(OK);
   OK := False;
   try
-    AStr.Write(AVal, nil);
+    AStr.Copy(AVal, nil);
   except
     on E: Exception do
       OK := E.ClassType = EArgumentNilException;
@@ -130,30 +92,8 @@ begin
   Assert(OK);
 
   AStr.Clear;
-  AStr.Write(AVal, TEncoding.UTF8);
+  AStr.Copy(AVal, TEncoding.UTF8);
   Assert(AStr.Length = ALen);
-end;
-
-procedure Test_StringRead(AStr: TBrookString; const AVal: string);
-var
-  OK: Boolean;
-begin
-  OK := False;
-  try
-    AStr.Read(nil);
-  except
-    on E: Exception do
-      OK := E.ClassType = EArgumentNilException;
-  end;
-  Assert(OK);
-
-  AStr.Clear;
-  Assert(AStr.Read.IsEmpty);
-  Assert(AStr.Read(TEncoding.UTF8).IsEmpty);
-
-  AStr.Write(AVal);
-  Assert(AStr.Read.Equals(AVal));
-  Assert(AStr.Read(TEncoding.UTF8).Equals(AVal));
 end;
 
 procedure Test_StrincContent(AStr: TBrookString; const AVal: TBytes;
@@ -161,7 +101,7 @@ procedure Test_StrincContent(AStr: TBrookString; const AVal: TBytes;
 begin
   AStr.Clear;
   Assert(Length(AStr.Content) = 0);
-  AStr.WriteBytes(AVal, ALen);
+  AStr.CopyBytes(AVal, ALen);
   Assert(CompareMem(@AStr.Content[0], @AVal[0], ALen));
 end;
 
@@ -171,7 +111,7 @@ begin
   AStr.Clear;
   Assert(AStr.Length = 0);
 
-  AStr.WriteBytes(AVal, ALen);
+  AStr.CopyBytes(AVal, ALen);
   Assert(AStr.Length = ALen);
 end;
 
@@ -180,7 +120,7 @@ procedure Test_StringClear(AStr: TBrookString; const AVal: TBytes;
 begin
   AStr.Clear;
   Assert(AStr.Length = 0);
-  AStr.WriteBytes(AVal, ALen);
+  AStr.CopyBytes(AVal, ALen);
   Assert(AStr.Length > 0);
   Assert(AStr.Length = ALen);
 end;
@@ -206,10 +146,8 @@ begin
   try
     Assert(Assigned(VStr.Handle));
     Test_StringOwnsHandle;
-    Test_StringWriteBytes(VStr, VValB, LEN);
-    Test_StringReadBytes(VStr, VValB, LEN);
-    Test_StringWrite(VStr, VAL, LEN);
-    Test_StringRead(VStr, VAL);
+    Test_StringCopyBytes(VStr, VValB, LEN);
+    Test_StringCopy(VStr, VAL, LEN);
     Test_StrincContent(VStr, VValB, LEN);
     Test_StringLength(VStr, VValB, LEN);
     Test_StringClear(VStr, VValB, LEN);

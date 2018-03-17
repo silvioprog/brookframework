@@ -122,10 +122,30 @@ type
 
   EBkLibraryNotLoaded = class(EFileNotFoundException);
 
+var
+  bk_version: function: cuint; cdecl;
+  bk_version_str: function: Pcchar; cdecl;
+  bk_alloc: function(size: csize_t): Pcvoid; cdecl;
+  bk_free: procedure(ptr: Pcvoid); cdecl;
+
+type
   Pbk_str = ^bk_str;
   bk_str = record
   end;
 
+var
+  bk_str_new: function: Pbk_str; cdecl;
+  bk_str_free: procedure(str: Pbk_str); cdecl;
+  bk_str_strcpy: function(str: Pbk_str; const val: Pcchar;
+    len: csize_t): cint; cdecl;
+  bk_str_printf_va: function(str: Pbk_str; const fmt: Pcchar;
+    ap: cva_list): cint; cdecl;
+  bk_str_printf: function(str: Pbk_str; const fmt: Pcchar): cint; cdecl varargs;
+  bk_str_content: function(str: Pbk_str): Pcchar; cdecl;
+  bk_str_length: function(str: Pbk_str): csize_t; cdecl;
+  bk_str_clear: function(str: Pbk_str): cint; cdecl;
+
+type
   PPbk_strmap = ^Pbk_strmap;
   Pbk_strmap = ^bk_strmap;
   bk_strmap = record
@@ -137,43 +157,21 @@ type
     pair_b: Pbk_strmap): cint; cdecl;
 
 var
-  bk_version: function: cuint; cdecl;
-  bk_version_str: function: Pcchar; cdecl;
-  bk_alloc: function(size: csize_t): Pcvoid; cdecl;
-  bk_free: procedure(ptr: Pcvoid); cdecl;
-
-  bk_str_new: function: Pbk_str; cdecl;
-  bk_str_free: procedure(str: Pbk_str); cdecl;
-  bk_str_write: function(str: Pbk_str; const val: Pcchar;
-    len: csize_t): cint; cdecl;
-  bk_str_read: function(str: Pbk_str; val: Pcchar; len: Pcsize_t): cint; cdecl;
-  bk_str_printf_va: function(str: Pbk_str; const fmt: Pcchar;
-    ap: cva_list): cint; cdecl;
-  bk_str_printf: function(str: Pbk_str; const fmt: Pcchar): cint; cdecl varargs;
-  bk_str_content: function(str: Pbk_str): Pcchar; cdecl;
-  bk_str_length: function(str: Pbk_str; len: Pcsize_t): cint; cdecl;
-  bk_str_clear: function(str: Pbk_str): cint; cdecl;
-
   bk_strmap_name: function(pair: Pbk_strmap): Pcchar; cdecl;
   bk_strmap_val: function(pair: Pbk_strmap): Pcchar; cdecl;
-  bk_strmap_readname: function(pair: Pbk_strmap; name: Pcchar;
-    len: Pcsize_t): cint; cdecl;
-  bk_strmap_readval: function(pair: Pbk_strmap; val: Pcchar;
-    len: Pcsize_t): cint; cdecl;
   bk_strmap_add: function(map: PPbk_strmap; const name: Pcchar;
-    name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
+    const val: Pcchar): cint; cdecl;
   bk_strmap_set: function(map: PPbk_strmap; const name: Pcchar;
-    name_len: csize_t; const val: Pcchar; val_len: csize_t): cint; cdecl;
-  bk_strmap_find: function(map: Pbk_strmap; const name: Pcchar; len: csize_t;
+    const val: Pcchar): cint; cdecl;
+  bk_strmap_find: function(map: Pbk_strmap; const name: Pcchar;
     pair: PPbk_strmap): cint; cdecl;
-  bk_strmap_rm: function(map: PPbk_strmap; const name: Pcchar;
-    len: csize_t): cint; cdecl;
-  bk_strmap_iter: function(map: Pbk_strmap; iter_cb: bk_strmap_iter_cb;
-    iter_cls: Pcvoid): cint; cdecl;
-  bk_strmap_sort: function(map: PPbk_strmap; cmp_cb: bk_strmap_sort_cb;
-    cmp_cls: Pcvoid): cint; cdecl;
-  bk_strmap_count: function(map: Pbk_strmap; count: Pcuint): cint; cdecl;
-  bk_strmap_next: function(map: PPbk_strmap): cint; cdecl;
+  bk_strmap_rm: function(map: PPbk_strmap; const name: Pcchar): cint; cdecl;
+  bk_strmap_iter: function(map: Pbk_strmap; cb: bk_strmap_iter_cb;
+    cls: Pcvoid): cint; cdecl;
+  bk_strmap_sort: function(map: PPbk_strmap; cb: bk_strmap_sort_cb;
+    cls: Pcvoid): cint; cdecl;
+  bk_strmap_count: function(map: Pbk_strmap): cuint; cdecl;
+  bk_strmap_next: function(next: PPbk_strmap): cint; cdecl;
   bk_strmap_cleanup: procedure(map: PPbk_strmap); cdecl;
 
 {$IFDEF VER3_0}
@@ -226,8 +224,7 @@ begin
 
     bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
     bk_str_free := GetProcAddress(GBkLibHandle, 'bk_str_free');
-    bk_str_write := GetProcAddress(GBkLibHandle, 'bk_str_write');
-    bk_str_read := GetProcAddress(GBkLibHandle, 'bk_str_read');
+    bk_str_strcpy := GetProcAddress(GBkLibHandle, 'bk_str_strcpy');
     bk_str_printf_va := GetProcAddress(GBkLibHandle, 'bk_str_printf_va');
     bk_str_printf := GetProcAddress(GBkLibHandle, 'bk_str_printf');
     bk_str_content := GetProcAddress(GBkLibHandle, 'bk_str_content');
@@ -236,8 +233,6 @@ begin
 
     bk_strmap_name := GetProcAddress(GBkLibHandle, 'bk_strmap_name');
     bk_strmap_val := GetProcAddress(GBkLibHandle, 'bk_strmap_val');
-    bk_strmap_readname := GetProcAddress(GBkLibHandle, 'bk_strmap_readname');
-    bk_strmap_readval := GetProcAddress(GBkLibHandle, 'bk_strmap_readval');
     bk_strmap_add := GetProcAddress(GBkLibHandle, 'bk_strmap_add');
     bk_strmap_set := GetProcAddress(GBkLibHandle, 'bk_strmap_set');
     bk_strmap_find := GetProcAddress(GBkLibHandle, 'bk_strmap_find');
@@ -272,8 +267,7 @@ begin
 
     bk_str_new := nil;
     bk_str_free := nil;
-    bk_str_write := nil;
-    bk_str_read := nil;
+    bk_str_strcpy := nil;
     bk_str_printf_va := nil;
     bk_str_printf := nil;
     bk_str_content := nil;
@@ -282,8 +276,6 @@ begin
 
     bk_strmap_name := nil;
     bk_strmap_val := nil;
-    bk_strmap_readname := nil;
-    bk_strmap_readval := nil;
     bk_strmap_add := nil;
     bk_strmap_set := nil;
     bk_strmap_find := nil;

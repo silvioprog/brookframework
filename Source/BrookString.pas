@@ -50,10 +50,12 @@ type
     Fstr: Pbk_str;
     FOwnsHandle: Boolean;
     function GetContent: TBytes;
-    function GetLength: NativeUInt;
+    function GetLength: NativeInt;
     procedure SetText(const AValue: string);
+    function GetText: string;
   protected
     class procedure CheckEncoding(AEncoding: TEncoding); static; inline;
+    procedure SetHandle(AHandle: Pointer); override;
     function GetHandle: Pointer; override;
     function GetOwnsHandle: Boolean; override;
     procedure SetOwnsHandle(AValue: Boolean); override;
@@ -62,52 +64,35 @@ type
     constructor Create(AHandle: Pointer); virtual;
     { Frees an instance of @link(TBrookString). }
     destructor Destroy; override;
-    { Writes a string buffer to the string handle. All strings previously
-      written are kept.
+    { Copies a string buffer to the string handle. All strings previously
+      copied are kept.
 
-      @param(AValue String buffer to be written.)
-      @param(ALength Length of the string buffer being written.)
+      @param(ASource String buffer source to be copied.)
+      @param(ALength Length of the string buffer being copied.)
 
       @returns(Length of the written string buffer.) }
-    function WriteBytes(const AValue: TBytes;
+    function CopyBytes(const ASource: TBytes;
       ALength: NativeUInt): NativeUInt; virtual;
-    { Reads a string buffer from the string handle.
-
-      @param(AValue Array of byte to store the read string buffer.)
-      @param(ALength Length of array to store the string buffer being read.)
-
-      @returns(Length of the read string buffer.) }
-    function ReadBytes(AValue: TBytes; ALength: NativeUInt): NativeUInt; virtual;
-    { Writes a string to the string handle. All strings previously written are
+    { Copies a string to the string handle. All strings previously copied are
       kept.
 
-      @param(AValue String to be written.)
-      @param(AEncoding Determines the encoding of the string being read.) }
-    procedure Write(const AValue: string;
+      @param(ASource String to be copied.)
+      @param(AEncoding Determines the encoding of the string being copied.) }
+    procedure Copy(const ASource: string;
       AEncoding: TEncoding); overload; virtual;
-    { Writes a string to the string handle. All strings previously written are
+    { Copies a string to the string handle. All strings previously copied are
       kept.
 
-      @param(AValue String to be written.) }
-    procedure Write(const AValue: string); overload; virtual;
-    { Reads a string from the string handle.
-
-      @param(AEncoding Determines the encoding of the string being read.)
-
-      @returns(String read from the string handler.) }
-    function Read(AEncoding: TEncoding): string; overload; virtual;
-    { Reads a string from the string handle.
-
-      @returns(String read from the string handler.) }
-    function Read: string; overload; virtual;
+      @param(ASource String to be copied.) }
+    procedure Copy(const ASource: string); overload; virtual;
     { Cleans all the content present in the string handle. }
     procedure Clear; virtual;
     { Gets the content buffer from the string handle. }
     property Content: TBytes read GetContent;
     { Gets the content length from the string handle. }
-    property Length: NativeUInt read GetLength;
+    property Length: NativeInt read GetLength;
     { Gets or sets a string to the string handle. }
-    property Text: string read Read write SetText;
+    property Text: string read GetText write SetText;
   end;
 
 implementation
@@ -145,6 +130,13 @@ begin
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AEncoding']);
 end;
 
+procedure TBrookString.SetHandle(AHandle: Pointer);
+begin
+  BkCheckLibrary;
+  bk_str_free(Fstr);
+  Fstr := AHandle;
+end;
+
 function TBrookString.GetHandle: Pointer;
 begin
   Result := Fstr;
@@ -160,65 +152,27 @@ begin
   FOwnsHandle := AValue;
 end;
 
-function TBrookString.WriteBytes(const AValue: TBytes;
+function TBrookString.CopyBytes(const ASource: TBytes;
   ALength: NativeUInt): NativeUInt;
 begin
   BkCheckLibrary;
   Result := ALength;
-  CheckOSError(bk_str_write(Fstr, @AValue[0], Result));
+  CheckOSError(bk_str_strcpy(Fstr, @ASource[0], Result));
 end;
 
-function TBrookString.ReadBytes(AValue: TBytes; ALength: NativeUInt): NativeUInt;
-begin
-  BkCheckLibrary;
-  CheckOSError(bk_str_read(Fstr, @AValue[0], @ALength));
-  Result := ALength;
-end;
-
-
-procedure TBrookString.Write(const AValue: string; AEncoding: TEncoding);
+procedure TBrookString.Copy(const ASource: string; AEncoding: TEncoding);
 var
   VBytes: TBytes;
 begin
   CheckEncoding(AEncoding);
-{$IFDEF FPC}
- {$PUSH}{$WARN 4104 OFF}
-{$ENDIF}
-  VBytes := AEncoding.GetBytes(AValue);
-{$IFDEF FPC}
- {$POP}
-{$ENDIF}
-  WriteBytes(VBytes, System.Length(VBytes));
+  VBytes := AEncoding.GetBytes(
+{$IFDEF FPC}UnicodeString({$ENDIF}ASource{$IFDEF FPC}){$ENDIF});
+  CopyBytes(VBytes, System.Length(VBytes));
 end;
 
-procedure TBrookString.Write(const AValue: string);
+procedure TBrookString.Copy(const ASource: string);
 begin
-  Write(AValue, TEncoding.UTF8);
-end;
-
-function TBrookString.Read(AEncoding: TEncoding): string;
-var
-  VBytes: TBytes;
-  VLength: NativeUInt;
-begin
-  CheckEncoding(AEncoding);
-  VLength := GetLength + SizeOf(Byte);
-  if VLength = 0 then
-    Exit('');
-  SetLength(VBytes, VLength);
-  VLength := ReadBytes(VBytes, VLength);
-{$IFDEF FPC}
- {$PUSH}{$WARN 4105 OFF}
-{$ENDIF}
-  Result := AEncoding.GetString(VBytes, 0, VLength);
-{$IFDEF FPC}
- {$POP}
-{$ENDIF}
-end;
-
-function TBrookString.Read: string;
-begin
-  Result := Read(TEncoding.UTF8);
+  Copy(ASource, TEncoding.UTF8);
 end;
 
 procedure TBrookString.Clear;
@@ -227,16 +181,24 @@ begin
   CheckOSError(bk_str_clear(Fstr));
 end;
 
-function TBrookString.GetLength: NativeUInt;
+function TBrookString.GetLength: NativeInt;
 begin
   BkCheckLibrary;
-  CheckOSError(bk_str_length(Fstr, @Result));
+  Result := bk_str_length(Fstr);
+  if Result < 0 then
+    CheckOSError(Result);
 end;
 
 procedure TBrookString.SetText(const AValue: string);
 begin
   Clear;
-  Write(AValue);
+  Self.Copy(AValue);
+end;
+
+function TBrookString.GetText: string;
+begin
+  Result :=
+{$IFDEF FPC}string({$ENDIF}TEncoding.UTF8.GetString(GetContent){$IFDEF FPC}){$ENDIF};
 end;
 
 function TBrookString.GetContent: TBytes;

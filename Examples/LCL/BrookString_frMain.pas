@@ -82,8 +82,7 @@ end;
 
 procedure TfrMain.btAddNowClick(Sender: TObject);
 begin
-  FString.Write(Format('%s%s',
-    [FormatDateTime('hh:nn:ss.zzz', Now), sLineBreak]));
+  FString.Copy(Format('%s%s', [FormatDateTime('hh:nn:ss.zzz', Now), sLineBreak]));
   UpdateButtons;
 end;
 

@@ -17,9 +17,6 @@ uses
   Marshalling,
   BrookHandledClasses;
 
-const
-  BROOK_STRMAP_MAX_BUF: NativeUInt = 4096; // 4 kB
-
 type
   TBrookStringMap = class;
 
@@ -53,7 +50,7 @@ type
 
   TBrookStringMap = class(TBrookHandledPersistent)
   private
-    Fpair: Pbk_strmap;
+    Fnext: Pbk_strmap;
     Fmap: Pbk_strmap;
     FOwnsHandle: Boolean;
     function GetCount: Integer;
@@ -185,18 +182,10 @@ begin
 end;
 
 class function TBrookStringMap.CreatePair(Apair: Pbk_strmap): TBrookStringPair;
-var
-  N, V: TBytes;
-  NL, VL: csize_t;
 begin
-  SetLength(N, BROOK_STRMAP_MAX_BUF);
-  NL := BROOK_STRMAP_MAX_BUF;
-  CheckOSError(bk_strmap_readname(Apair, @N[0], @NL));
-  SetLength(V, BROOK_STRMAP_MAX_BUF);
-  VL := BROOK_STRMAP_MAX_BUF;
-  CheckOSError(bk_strmap_readval(Apair, @V[0], @VL));
-  Result := TBrookStringPair.Create(TMarshal.ToString(@N[0], NL),
-    TMarshal.ToString(@V[0], VL));
+  BkCheckLibrary;
+  Result := TBrookStringPair.Create(TMarshal.ToString(bk_strmap_name(Apair)),
+    TMarshal.ToString(bk_strmap_val(Apair)));
 end;
 
 function TBrookStringMap.GetCount: Integer;
@@ -204,7 +193,9 @@ begin
   if not Assigned(Fmap) then
     Exit(0);
   BkCheckLibrary;
-  CheckOSError(bk_strmap_count(Fmap, @Result));
+  Result := bk_strmap_count(Fmap);
+  if Result < 0 then
+    CheckOSError(Result);
 end;
 
 function TBrookStringMap.GetValue(const AName: string): string;
@@ -225,6 +216,7 @@ end;
 
 procedure TBrookStringMap.SetHandle(AHandle: Pointer);
 begin
+  Clear;
   Fmap := AHandle;
 end;
 
@@ -240,42 +232,34 @@ end;
 
 function TBrookStringMap.IsEOF: Boolean;
 begin
-  Result := not Assigned(Fpair);
+  Result := not Assigned(Fnext);
 end;
 
 procedure TBrookStringMap.Add(const AName, AValue: string);
 var
-  N, V: Pcchar;
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  N := M.ToCString(AName);
-  V := M.ToCString(AValue);
-  CheckOSError(bk_strmap_add(@Fmap, N, Length(N), V, Length(V)));
+  CheckOSError(bk_strmap_add(@Fmap, M.ToCString(AName), M.ToCString(AValue)));
 end;
 
 procedure TBrookStringMap.AddOrSet(const AName, AValue: string);
 var
-  N, V: Pcchar;
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  N := M.ToCString(AName);
-  V := M.ToCString(AValue);
-  CheckOSError(bk_strmap_set(@Fmap, N, Length(N), V, Length(V)));
+  CheckOSError(bk_strmap_set(@Fmap, M.ToCString(AName), M.ToCString(AValue)));
 end;
 
 procedure TBrookStringMap.Remove(const AName: string);
 var
   R: cint;
-  N: Pcchar;
   M: TMarshaller;
 begin
   if not Assigned(Fmap) then
     Exit;
   BkCheckLibrary;
-  N := M.ToCString(AName);
-  R := bk_strmap_rm(@Fmap, N, Length(N));
+  R := bk_strmap_rm(@Fmap, M.ToCString(AName));
   if (R <> 0) and (R <> -ENOENT) then
     CheckOSError(R);
 end;
@@ -293,25 +277,16 @@ function TBrookStringMap.Find(const AName: string;
   out APair: TBrookStringPair): Boolean;
 var
   R: cint;
-  N: Pcchar;
-  V: TBytes;
-  L: csize_t;
   P: Pbk_strmap;
   M: TMarshaller;
 begin
   if not Assigned(Fmap) then
     Exit(False);
   BkCheckLibrary;
-  N := M.ToCString(AName);
-  R := bk_strmap_find(Fmap, N, Length(N), @P);
+  R := bk_strmap_find(Fmap, M.ToCString(AName), @P);
   Result := R = 0;
   if Result then
-  begin
-    SetLength(V, BROOK_STRMAP_MAX_BUF);
-    L := BROOK_STRMAP_MAX_BUF;
-    CheckOSError(bk_strmap_readval(P, @V[0], @L));
-    APair := TBrookStringPair.Create(AName, TMarshal.ToString(@V[0], L));
-  end
+    APair := TBrookStringPair.Create(AName, TMarshal.ToString(bk_strmap_val(P)))
   else
     if R <> -ENOENT then
       CheckOSError(R);
@@ -329,12 +304,12 @@ end;
 
 function TBrookStringMap.First(out APair: TBrookStringPair): Boolean;
 begin
-  Fpair := Fmap;
-  Result := Assigned(Fpair);
+  Fnext := Fmap;
+  Result := Assigned(Fnext);
   if Result then
   begin
     BkCheckLibrary;
-    APair := CreatePair(Fpair);
+    APair := CreatePair(Fnext);
   end;
 end;
 
@@ -342,14 +317,14 @@ function TBrookStringMap.Next(out APair: TBrookStringPair): Boolean;
 var
   R: cint;
 begin
-  if not Assigned(Fpair) then
+  if not Assigned(Fnext) then
     Exit(False);
   BkCheckLibrary;
-  R := bk_strmap_next(@Fpair);
+  R := bk_strmap_next(@Fnext);
   CheckOSError(R);
   Result := R = 0;
-  if Result and Assigned(Fpair) then
-    APair := CreatePair(Fpair);
+  if Result and Assigned(Fnext) then
+    APair := CreatePair(Fnext);
 end;
 
 function TBrookStringMap.Iterate(AIterator: TBrookStringMapIterator;
