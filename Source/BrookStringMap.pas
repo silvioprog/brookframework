@@ -142,8 +142,7 @@ constructor TBrookStringMap.Create(AHandle: Pointer);
 begin
   inherited Create;
   FOwnsHandle := not Assigned(AHandle);
-  if not FOwnsHandle then
-    Fmap := AHandle;
+  Fmap := AHandle;
 end;
 
 destructor TBrookStringMap.Destroy;
@@ -216,6 +215,8 @@ end;
 
 procedure TBrookStringMap.SetHandle(AHandle: Pointer);
 begin
+  if AHandle = Fmap then
+    Exit;
   Clear;
   Fmap := AHandle;
 end;
@@ -270,7 +271,6 @@ begin
     Exit;
   BkCheckLibrary;
   bk_strmap_cleanup(@Fmap);
-  Fmap := nil;
 end;
 
 function TBrookStringMap.Find(const AName: string;
