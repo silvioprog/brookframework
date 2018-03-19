@@ -21,12 +21,33 @@ begin
   Assert(bk_str_clear(Handle) <> 0);
 end;
 
+procedure Test_StringHandle(AStr: TBrookString);
+var
+  VStr: TBrookString;
+begin
+  Assert(Assigned(AStr.Handle));
+  VStr := TBrookString.Create(AStr.Handle);
+  try
+    Assert(VStr.Handle = AStr.Handle);
+  finally
+    VStr.Free;
+  end;
+  VStr := TBrookString.Create(nil);
+  try
+    Assert(Assigned(VStr.Handle));
+    Assert(VStr.Handle <> AStr.Handle);
+  finally
+    VStr.Free;
+  end;
+end;
+
 procedure Test_StringOwnsHandle;
 var
   Vhandle: Pbk_str;
   VStr: TBrookString;
 begin
   Vhandle := bk_str_new;
+  Assert(Assigned(Vhandle));
   VStr := TBrookString.Create(Vhandle);
   try
     Assert(Assigned(VStr.Handle));
@@ -160,7 +181,7 @@ begin
   VValB := TEncoding.UTF8.GetBytes(VAL);
   VStr := TBrookString.Create(nil);
   try
-    Assert(Assigned(VStr.Handle));
+    Test_StringHandle(VStr);
     Test_StringOwnsHandle;
     Test_StringCopyBytes(VStr, VValB, LEN);
     Test_StringCopy(VStr, VAL, LEN);
