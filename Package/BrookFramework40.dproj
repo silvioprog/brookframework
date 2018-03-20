@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{FFDE5DEF-EDF4-44C7-8D99-3AE18BD227A5}</ProjectGuid>
         <MainSource>BrookFramework40.dpk</MainSource>
-        <ProjectVersion>18.3</ProjectVersion>
+        <ProjectVersion>18.4</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
