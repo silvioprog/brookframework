@@ -28,6 +28,7 @@
 {$IFDEF FPC}
  {$MODE DELPHI}
  {$WARN SYMBOL_PLATFORM OFF}
+ {$WARN 6058 OFF}
  {$IFDEF VER3_0}
   {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
