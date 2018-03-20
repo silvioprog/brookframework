@@ -91,10 +91,16 @@ begin
   Result := @FHandle;
 end;
 
+{$IFDEF FPC}
+ {$PUSH}{$WARN 5024 OFF}
+{$ENDIF}
 procedure TBrookLibraryLoader.SetHandle(AHandle: Pointer);
 begin
   raise ENotImplemented.Create('TBrookLibraryLoader.SetHandle');
 end;
+{$IFDEF FPC}
+ {$POP}
+{$ENDIF}
 
 procedure TBrookLibraryLoader.CheckDisabled;
 begin
