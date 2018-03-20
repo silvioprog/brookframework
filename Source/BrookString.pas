@@ -50,7 +50,7 @@ type
     Fstr: Pbk_str;
     FOwnsHandle: Boolean;
     function GetContent: TBytes;
-    function GetLength: NativeInt;
+    function GetLength: NativeUInt;
     procedure SetText(const AValue: string);
     function GetText: string;
   protected
@@ -92,7 +92,7 @@ type
     { Gets the content buffer from the string handle. }
     property Content: TBytes read GetContent;
     { Gets the content length from the string handle. }
-    property Length: NativeInt read GetLength;
+    property Length: NativeUInt read GetLength;
     { Gets or sets a string to the string handle. }
     property Text: string read GetText write SetText;
   end;
@@ -184,11 +184,11 @@ begin
   CheckOSError(bk_str_clear(Fstr));
 end;
 
-function TBrookString.GetLength: NativeInt;
+function TBrookString.GetLength: NativeUInt;
 begin
   BkCheckLibrary;
   Result := bk_str_length(Fstr);
-  if Result < 0 then
+  if NativeInt(Result) < 0 then
     CheckOSError(Result);
 end;
 

@@ -91,7 +91,8 @@ begin
   Assert(AStr.Length = ALen);
 end;
 
-procedure Test_StringCopy(AStr: TBrookString; const AVal: string; ALen: Integer);
+procedure Test_StringCopy(AStr: TBrookString; const AVal: string;
+  ALen: NativeUInt);
 var
   OK: Boolean;
 begin
