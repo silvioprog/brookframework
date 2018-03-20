@@ -232,8 +232,8 @@ begin
   try
     AMap.Iterate(StringMapIterate123, nil);
   except
-    on E: Exception do
-      OK := E.Message = Format(SOSError, [123, SysErrorMessage(123)]);
+    on E: EOSError do
+      OK := EOSError(E).ErrorCode = 123;
   end;
   Assert(OK);
 
