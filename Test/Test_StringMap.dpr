@@ -22,6 +22,7 @@ type
 procedure TLocalStringMap.LocalDestroy;
 begin
   inherited Destroy;
+  BkCheckLibrary;
   { checks if the handle was really freed and 'nilified'. }
   Assert(not Assigned(Handle));
   bk_strmap_cleanup(Handle);
@@ -45,6 +46,7 @@ var
   Vhandle: Pbk_strmap;
   VMap: TBrookStringMap;
 begin
+  BkCheckLibrary;
   Vhandle := nil;
   bk_strmap_add(@Vhandle, M.ToCString('abc'), M.ToCString('123'));
   VMap := TBrookStringMap.Create(Vhandle);

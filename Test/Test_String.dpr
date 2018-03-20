@@ -16,6 +16,7 @@ type
 procedure TLocalString.LocalDestroy;
 begin
   inherited Destroy;
+  BkCheckLibrary;
   { checks if the handle was really freed and 'nilified'. }
   Assert(not Assigned(Handle));
   Assert(bk_str_clear(Handle) <> 0);
@@ -46,6 +47,7 @@ var
   Vhandle: Pbk_str;
   VStr: TBrookString;
 begin
+  BkCheckLibrary;
   Vhandle := bk_str_new;
   Assert(Assigned(Vhandle));
   VStr := TBrookString.Create(Vhandle);
