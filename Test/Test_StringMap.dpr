@@ -2,7 +2,9 @@ program Test_StringMap;
 
 {$I Tests.inc}
 
-{$WARN 5024 OFF}
+{$IFDEF FPC}
+ {$WARN 5024 OFF}
+{$ENDIF}
 
 uses
   SysConst,
