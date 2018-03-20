@@ -49,6 +49,21 @@ uses
 type
   TBrookStringMap = class;
 
+  { Identifies the kind of operation in the map.
+
+    @value(bkmoNone None operation or map cleaned.)
+    @value(bkmoAdd Pair added to the map.)
+    @value(bkmoAddOrSet Pair added or set to the map.)
+    @value(bkmoRemove Pair removed from the map.) }
+  TBrookStringMapOperation = (bkmoNone, bkmoAdd, bkmoAddOrSet, bkmoRemove);
+
+  { Event to notify a change in the map.
+
+    @param(ASender Event caller.)
+    @param(AOperation Operation kind.) }
+  TBrookStringMapChangeEvent = procedure(ASender: TObject;
+    AOperation: TBrookStringMapOperation) of object;
+
   { Pair item of @link(TBrookStringMap). }
   TBrookStringPair = record
   private
@@ -109,6 +124,7 @@ type
   private
     Fnext: Pbk_strmap;
     Fmap: Pbk_strmap;
+    FOnChange: TBrookStringMapChangeEvent;
     FOwnsHandle: Boolean;
     function GetCount: Integer;
     function GetValue(const AName: string): string;
@@ -125,6 +141,7 @@ type
     function GetOwnsHandle: Boolean; override;
     procedure SetOwnsHandle(AValue: Boolean); override;
     function IsEOF: Boolean; virtual;
+    procedure DoChange(AOperation: TBrookStringMapOperation); virtual;
   public
     { Creates an instance of @link(TBrookStringMap).
 
@@ -189,6 +206,9 @@ type
       write SetValue; default;
     { Indicates the end of map. }
     property EOF: Boolean read IsEOF;
+  published
+    { Notifies a change in the map. }
+    property OnChange: TBrookStringMapChangeEvent read FOnChange write FOnChange;
   end;
 
 implementation
@@ -335,12 +355,19 @@ begin
   Result := not Assigned(Fnext);
 end;
 
+procedure TBrookStringMap.DoChange(AOperation: TBrookStringMapOperation);
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self, AOperation);
+end;
+
 procedure TBrookStringMap.Add(const AName, AValue: string);
 var
   M: TMarshaller;
 begin
   BkCheckLibrary;
   CheckOSError(bk_strmap_add(@Fmap, M.ToCString(AName), M.ToCString(AValue)));
+  DoChange(bkmoAdd);
 end;
 
 procedure TBrookStringMap.AddOrSet(const AName, AValue: string);
@@ -349,6 +376,7 @@ var
 begin
   BkCheckLibrary;
   CheckOSError(bk_strmap_set(@Fmap, M.ToCString(AName), M.ToCString(AValue)));
+  DoChange(bkmoAddOrSet);
 end;
 
 procedure TBrookStringMap.Remove(const AName: string);
@@ -362,6 +390,7 @@ begin
   R := bk_strmap_rm(@Fmap, M.ToCString(AName));
   if (R <> 0) and (R <> -ENOENT) then
     CheckOSError(R);
+  DoChange(bkmoRemove);
 end;
 
 procedure TBrookStringMap.Clear;
@@ -370,6 +399,7 @@ begin
     Exit;
   BkCheckLibrary;
   bk_strmap_cleanup(@Fmap);
+  DoChange(bkmoNone);
 end;
 
 function TBrookStringMap.Find(const AName: string;

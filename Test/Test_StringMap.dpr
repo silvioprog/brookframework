@@ -15,9 +15,20 @@ uses
 
 type
   TLocalStringMap = class(TBrookStringMap)
+  private
+    FOperation: TBrookStringMapOperation;
+  protected
+    procedure DoChange(AOperation: TBrookStringMapOperation); override;
   public
     procedure LocalDestroy;
+    property Operation: TBrookStringMapOperation read FOperation;
   end;
+
+procedure TLocalStringMap.DoChange(AOperation: TBrookStringMapOperation);
+begin
+  FOperation := AOperation;
+  inherited DoChange(AOperation);
+end;
 
 procedure TLocalStringMap.LocalDestroy;
 begin
@@ -64,6 +75,26 @@ begin
     Assert(Assigned(VMap.Handle));
   finally
     TLocalStringMap(VMap).LocalDestroy;
+  end;
+end;
+
+procedure Test_StringMapOnChange;
+var
+  VMap: TLocalStringMap;
+begin
+  VMap := TLocalStringMap.Create(nil);
+  try
+    Assert(VMap.Operation = bkmoNone);
+    VMap.Add('abc', '123');
+    Assert(VMap.Operation = bkmoAdd);
+    VMap.AddOrSet('def', '456');
+    Assert(VMap.Operation = bkmoAddOrSet);
+    VMap.Remove('abc');
+    Assert(VMap.Operation = bkmoRemove);
+    VMap.Clear;
+    Assert(VMap.Operation = bkmoNone);
+  finally
+    VMap.Free;
   end;
 end;
 
@@ -480,6 +511,7 @@ var
 begin
   Test_StringMapNameValue;
   Test_StringMapOwnsHandle;
+  Test_StringMapOnChange;
   VMap := TBrookStringMap.Create(nil);
   try
     Test_StringMapHandle(VMap);
@@ -491,12 +523,12 @@ begin
     Test_StringMapSort(VMap);
     Test_StringMapCount(VMap, NAME, VAL);
     Test_StringMapTryValue(VMap, NAME, VAL);
-    Test_StringMapNext(VMap);
-    Test_StringMapClear(VMap);
     Test_StringMapFirst(VMap);
     Test_StringMapValues(VMap);
     Test_StringMapEOF(VMap);
+    Test_StringMapNext(VMap);
     Test_StringMapEnumerator(VMap);
+    Test_StringMapClear(VMap);
   finally
     VMap.Free;
   end;
