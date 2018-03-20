@@ -60,15 +60,17 @@ type
     function GetOwnsHandle: Boolean; override;
     procedure SetOwnsHandle(AValue: Boolean); override;
   public
-    { Creates an instance of @link(TBrookString). }
+    { Creates an instance of @link(TBrookString).
+
+      @param(AHandle[in] String handle.) }
     constructor Create(AHandle: Pointer); virtual;
     { Frees an instance of @link(TBrookString). }
     destructor Destroy; override;
     { Copies a string buffer to the string handle. All strings previously
       copied are kept.
 
-      @param(ASource String buffer source to be copied.)
-      @param(ALength Length of the string buffer being copied.)
+      @param(ASource[in] String buffer source to be copied.)
+      @param(ALength[in] Length of the string buffer being copied.)
 
       @returns(Length of the written string buffer.) }
     function CopyBytes(const ASource: TBytes;
@@ -76,14 +78,14 @@ type
     { Copies a string to the string handle. All strings previously copied are
       kept.
 
-      @param(ASource String to be copied.)
-      @param(AEncoding Determines the encoding of the string being copied.) }
+      @param(ASource[in] String to be copied.)
+      @param(AEncoding[in] Determines the encoding of the string being copied.) }
     procedure Copy(const ASource: string;
       AEncoding: TEncoding); overload; virtual;
     { Copies a string to the string handle. All strings previously copied are
       kept.
 
-      @param(ASource String to be copied.) }
+      @param(ASource[in] String to be copied.) }
     procedure Copy(const ASource: string); overload; virtual;
     { Cleans all the content present in the string handle. }
     procedure Clear; virtual;
