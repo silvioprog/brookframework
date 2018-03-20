@@ -1,3 +1,32 @@
+(*    _____   _____    _____   _____   _   __
+ *   |  _  \ |  _  \  /  _  \ /  _  \ | | / /
+ *   | |_) | | |_) |  | | | | | | | | | |/ /
+ *   |  _ <  |  _ <   | | | | | | | | |   (
+ *   | |_) | | | \ \  | |_| | | |_| | | |\ \
+ *   |_____/ |_|  \_\ \_____/ \_____/ |_| \_\
+ *
+ *   –– a small library which helps you write quickly REST APIs.
+ *
+ * Copyright (c) 2012-2018 Silvio Clecio <silvioprog@gmail.com>
+ *
+ * This file is part of Brook library.
+ *
+ * Brook library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Brook library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
+ *)
+
+{ String map used to represent HTML fields, query-string parameters and more. }
+
 unit BrookStringMap;
 
 {$I Brook.inc}
@@ -20,34 +49,62 @@ uses
 type
   TBrookStringMap = class;
 
+  { Pair item of @link(TBrookStringMap). }
   TBrookStringPair = record
   private
     FName: string;
     FValue: string;
   public
+    { Initializes a variable of @link(TBrookStringPair).
+
+      @param(AName[in] Name of the pair.)
+      @param(AValue[in] Value of the pair.)}
     constructor Create(const AName, AValue: string);
+    { Name of the pair. }
     property Name: string read FName;
+    { Value of the pair. }
     property Value: string read FValue;
   end;
 
+  { Enumerator used to iterate the map @link(TBrookStringMap). }
   TBrookStringMapEnumerator = class
   private
     FMap: TBrookStringMap;
     FCurr: TBrookStringPair;
     FBOF: Boolean;
   public
+    { Creates an instance of @link(TBrookStringMapEnumerator).
+
+      @param(AMap[in] Pairs map.) }
     constructor Create(AMap: TBrookStringMap);
+    { Gets the current pair.
+
+      @return(Current pair.)  }
     function GetCurrent: TBrookStringPair;
+    { Moves to the next pair.
+
+      @return(@True when move next reachs the EOF.) }
     function MoveNext: Boolean;
+    { Same to @link(GetCurrent). }
     property Current: TBrookStringPair read GetCurrent;
   end;
 
+  { Function signature used by @link(TBrookStringMap.Iterate).
+
+    @param(AData[in,out] User-defined data.)
+    @param(APair[out] Current iterated pair.)}
   TBrookStringMapIterator = function(AData: Pointer;
     APair: TBrookStringPair): Integer;
 
+  { Function signature used by @link(TBrookStringMap.Sort).
+
+    @param(AData[in,out] User-defined data.)
+    @param(APairA[out] Current left pair (A).)
+    @param(APairB[out] Current right pair (B).)}
   TBrookStringMapComparator = function(AData: Pointer;
     APairA, APairB: TBrookStringPair): Integer;
 
+  { String map class and its related methods. }
   TBrookStringMap = class(TBrookHandledPersistent)
   private
     Fnext: Pbk_strmap;
@@ -69,26 +126,68 @@ type
     procedure SetOwnsHandle(AValue: Boolean); override;
     function IsEOF: Boolean; virtual;
   public
+    { Creates an instance of @link(TBrookStringMap).
+
+      @param(AHandle[in] String map handle.)}
     constructor Create(AHandle: Pointer); virtual;
+    { Frees an instance of @link(TBrookStringMap). }
     destructor Destroy; override;
+    { Gets an instance of @link(TBrookStringMapEnumerator). }
     function GetEnumerator: TBrookStringMapEnumerator;
+    { Adds a pair of strings to the map.
+
+      @param(AName[in] Name of the pair.)
+      @param(AValue[in] Value of the pair.) }
     procedure Add(const AName, AValue: string); virtual;
+    { Adds or sets a pair of strings to the map.
+
+      @param(AName[in] Name of the pair.)
+      @param(AValue[in] Value of the pair.) }
     procedure AddOrSet(const AName, AValue: string); virtual;
+    { Removes a pair by its name.
+
+      @param(AName[in] Name of the pair.) }
     procedure Remove(const AName: string); virtual;
+    { Cleans the entire map. }
     procedure Clear; virtual;
+    { Finds a pair by its name.
+
+      @param(AName[in] Name of the pair.)
+      @param(APair[out] Reference to store found pair.) }
     function Find(const AName: string;
       out APair: TBrookStringPair): Boolean; virtual;
+    { Tries to find a mapped value by its name.
+
+      @param(AName[in] Name of the pair.)
+      @param(AValue[out] Reference to store found value.) }
     function TryValue(const AName: string;
       out AValue: string): Boolean; virtual;
+    { Retrieves the first pair in the map.
+
+      @param(APair[out] First pair returned.) }
     function First(out APair: TBrookStringPair): Boolean; virtual;
+    { Retrieves the next pair in the map.
+
+      @param(APair[out] Next pair returned.) }
     function Next(out APair: TBrookStringPair): Boolean; virtual;
-    function Iterate(AIterator: TBrookStringMapIterator;
-      AData: Pointer): Boolean; virtual;
+    { Iterates over pairs map.
+
+      @param(AIterator[in] Function to iterate the pairs.)
+      @param(AData[in,out] User-specified value.) }
+    procedure Iterate(AIterator: TBrookStringMapIterator;
+      AData: Pointer); virtual;
+    { Sorts the pairs map.
+
+      @param(AComparator[in] Function to sort the pairs.)
+      @param(AData[in,out] User-specified value.) }
     procedure Sort(AComparator: TBrookStringMapComparator;
       AData: Pointer); virtual;
+    { Counts the total pairs present in the map. }
     property Count: Integer read GetCount;
+    { Adds or gets the pair value. }
     property Values[const AName: string]: string read GetValue
       write SetValue; default;
+    { Indicates the end of map. }
     property EOF: Boolean read IsEOF;
   end;
 
@@ -317,7 +416,7 @@ function TBrookStringMap.Next(out APair: TBrookStringPair): Boolean;
 var
   R: cint;
 begin
-  if not Assigned(Fnext) then
+  if not Assigned(@Fnext) then
     Exit(False);
   BkCheckLibrary;
   R := bk_strmap_next(@Fnext);
@@ -327,8 +426,8 @@ begin
     APair := CreatePair(Fnext);
 end;
 
-function TBrookStringMap.Iterate(AIterator: TBrookStringMapIterator;
-  AData: Pointer): Boolean;
+procedure TBrookStringMap.Iterate(AIterator: TBrookStringMapIterator;
+  AData: Pointer);
 var
   R: cint;
   M: TMethod;
@@ -341,7 +440,6 @@ begin
   R := bk_strmap_iter(Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
   if R <> -1 then
     CheckOSError(R);
-  Result := R = 0;
 end;
 
 procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
