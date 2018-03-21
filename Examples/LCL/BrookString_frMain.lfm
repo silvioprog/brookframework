@@ -8,6 +8,7 @@ object frMain: TfrMain
   ClientWidth = 390
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  Position = poDesktopCenter
   LCLVersion = '1.8.0.6'
   object lbDesc: TLabel
     Left = 10

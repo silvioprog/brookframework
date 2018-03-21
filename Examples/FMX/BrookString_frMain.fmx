@@ -4,6 +4,7 @@ object frMain: TfrMain
   Caption = 'BrookString example'
   ClientHeight = 340
   ClientWidth = 420
+  Position = DesktopCenter
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
