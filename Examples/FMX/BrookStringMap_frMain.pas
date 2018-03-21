@@ -113,6 +113,8 @@ begin
   FList.Clear;
   for P in FMap do
     FList.AddPair(P.Name, P.Value);
+  btRemove.Enabled := FMap.Count > 0;
+  btClear.Enabled := btRemove.Enabled;
 end;
 
 procedure TfrMain.grMapGetValue(Sender: TObject; const ACol, ARow: Integer;

@@ -38,6 +38,7 @@ object frMain: TfrMain
       Align = alLeft
       BorderSpacing.Around = 6
       Caption = 'Remove'
+      Enabled = False
       OnClick = btRemoveClick
       TabOrder = 1
     end
@@ -49,6 +50,7 @@ object frMain: TfrMain
       Align = alLeft
       BorderSpacing.Around = 6
       Caption = 'Clear'
+      Enabled = False
       OnClick = btClearClick
       TabOrder = 2
     end

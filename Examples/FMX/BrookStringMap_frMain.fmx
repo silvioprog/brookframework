@@ -34,6 +34,7 @@ object frMain: TfrMain
     end
     object btRemove: TButton
       Align = Left
+      Enabled = False
       Margins.Top = 6.000000000000000000
       Margins.Right = 6.000000000000000000
       Margins.Bottom = 6.000000000000000000
@@ -48,6 +49,7 @@ object frMain: TfrMain
     end
     object btClear: TButton
       Align = Left
+      Enabled = False
       Margins.Top = 6.000000000000000000
       Margins.Right = 6.000000000000000000
       Margins.Bottom = 6.000000000000000000

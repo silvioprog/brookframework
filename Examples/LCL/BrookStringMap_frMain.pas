@@ -107,6 +107,8 @@ begin
 {$ELSE}
       AddPair(P.Name, P.Value)
 {$ENDIF};
+  btRemove.Enabled := FMap.Count > 0;
+  btClear.Enabled := btRemove.Enabled;
 end;
 
 end.
