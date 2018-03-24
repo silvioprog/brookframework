@@ -48,4 +48,3 @@ begin
   Application.CreateForm(TfrMain, frMain);
   Application.Run;
 end.
-
