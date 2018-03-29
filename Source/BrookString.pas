@@ -52,7 +52,7 @@ type
     function GetContent: TBytes;
     function GetLength: NativeUInt;
     procedure SetText(const AValue: string);
-    function GetText: string;
+    function GetText: string; inline;
   protected
     class procedure CheckEncoding(AEncoding: TEncoding); static; inline;
     procedure SetHandle(AHandle: Pointer); override;
