@@ -87,13 +87,15 @@ type
 
       @param(ASource[in] String to be copied.) }
     procedure Copy(const ASource: string); overload; virtual;
+    { Gets the string from the string handle. }
+    function ToString: string; override;
     { Cleans all the content present in the string handle. }
     procedure Clear; virtual;
     { Gets the content buffer from the string handle. }
     property Content: TBytes read GetContent;
     { Gets the content length from the string handle. }
     property Length: NativeUInt read GetLength;
-    { Gets or sets a string to the string handle. }
+    { Gets or sets a string from or to the string handle. }
     property Text: string read GetText write SetText;
   end;
 
@@ -176,6 +178,11 @@ end;
 procedure TBrookString.Copy(const ASource: string);
 begin
   Copy(ASource, TEncoding.UTF8);
+end;
+
+function TBrookString.ToString: string;
+begin
+  Result := GetText;
 end;
 
 procedure TBrookString.Clear;

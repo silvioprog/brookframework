@@ -185,6 +185,15 @@ begin
   Assert(AStr.Text = AVal);
 end;
 
+procedure Test_StringToString(AStr: TBrookString; const AVal: string);
+begin
+  AStr.Clear;
+  Assert(AStr.Text.IsEmpty);
+
+  AStr.Text := AVal;
+  Assert(AStr.ToString = AVal);
+end;
+
 procedure Test_StringExtra(AStr: TBrookString);
 var
   VStr: TBrookString;
@@ -219,6 +228,7 @@ begin
     Test_StringLength(VStr, VValB, LEN);
     Test_StringClear(VStr, VValB, LEN);
     Test_StringText(VStr, VAL);
+    Test_StringToString(VStr, VAL);
     Test_StringExtra(VStr);
   finally
     VStr.Destroy;

@@ -516,6 +516,19 @@ begin
   Assert(I = 3);
 end;
 
+procedure Test_StringMapToString(AMap: TBrookStringMap; const AName,
+  AValue: string);
+begin
+  AMap.Clear;
+  Assert(AMap.ToString.IsEmpty);
+  AMap.Add(AName, AValue);
+  Assert(AMap.ToString = Concat(AName, '=', AName, sLineBreak));
+  AMap.Add('xxx', 'yyy');
+  AMap.Add('yyy', 'xxx');
+  Assert(AMap.ToString = Concat(AName, '=', AName, sLineBreak,
+    'xxx=yyy', sLineBreak, 'yyy=xxx', sLineBreak));
+end;
+
 procedure Test_StringMapClear(AMap: TBrookStringMap);
 begin
   AMap.Clear;
@@ -555,6 +568,7 @@ begin
     Test_StringMapEOF(VMap);
     Test_StringMapNext(VMap);
     Test_StringMapEnumerator(VMap);
+    Test_StringMapToString(VMap, NAME, VAL);
     Test_StringMapClear(VMap);
   finally
     VMap.Free;

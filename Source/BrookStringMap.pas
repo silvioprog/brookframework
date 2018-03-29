@@ -199,6 +199,9 @@ type
       @param(AData[in,out] User-specified value.) }
     procedure Sort(AComparator: TBrookStringMapComparator;
       AData: Pointer); virtual;
+    { Gets the map as big string using equal sign to separate each pair and
+      ending lines using line break. }
+    function ToString: string; override;
     { Counts the total pairs present in the map. }
     property Count: Integer read GetCount;
     { Adds or gets the pair value. }
@@ -483,6 +486,15 @@ begin
   M.Code := @AComparator;
   M.Data := AData;
   CheckOSError(bk_strmap_sort(@Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
+end;
+
+function TBrookStringMap.ToString: string;
+var
+  P: TBrookStringPair;
+begin
+  Result := '';
+  for P in Self do
+    Result := Concat(Result, P.Name, '=', P.Value, sLineBreak);
 end;
 
 end.
