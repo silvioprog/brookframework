@@ -34,8 +34,7 @@ unit Marshalling;
 interface
 
 uses
-  SysUtils,
-  libbrook;
+  SysUtils;
 
 type
 
@@ -47,10 +46,12 @@ type
   TMarshalHelper = class helper for TMarshal
 {$ENDIF}
   public
-    class function ToBytes(const S: Pcchar; L: csize_t): TBytes; static; inline;
-    class function ToString(const S: Pcchar;
-      L: csize_t): string; overload; static; inline;
-    class function ToString(const S: Pcchar): string; overload; static; inline;
+    class function ToBytes(const S: MarshaledAString;
+      L: NativeUInt): TBytes; static; inline;
+    class function ToString(const S: MarshaledAString;
+      L: NativeUInt): string; overload; static; inline;
+    class function ToString(
+      const S: MarshaledAString): string; overload; static; inline;
   end;
 
   { TMarshaller* }
@@ -61,7 +62,7 @@ type
   TMarshallerHelper = record helper for TMarshaller
 {$ENDIF}
   public
-    function ToCString(const S: string): Pcchar; inline;
+    function ToCString(const S: string): MarshaledAString; inline;
   end;
 
 implementation
@@ -69,7 +70,7 @@ implementation
 { TMarshal* }
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToBytes(
-  const S: Pcchar; L: csize_t): TBytes;
+  const S: MarshaledAString; L: NativeUInt): TBytes;
 begin
   if (not Assigned(S)) or (L = 0) then
     Exit(nil);
@@ -78,7 +79,7 @@ begin
 end;
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
-  const S: Pcchar; L: csize_t): string;
+  const S: MarshaledAString; L: NativeUInt): string;
 begin
   if (not Assigned(S)) or (L = 0) then
     Exit('');
@@ -91,7 +92,7 @@ begin
 end;
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
-  const S: Pcchar): string;
+  const S: MarshaledAString): string;
 begin
   Result := ToString(S, Length(S));
 end;
@@ -99,11 +100,11 @@ end;
 { TMarshaller* }
 
 function {$IFDEF FPC}TMarshaller{$ELSE}TMarshallerHelper{$ENDIF}.ToCString(
-  const S: string): Pcchar;
+  const S: string): MarshaledAString;
 begin
   Result :=
 {$IFDEF FPC}
-    Pcchar(S)
+    MarshaledAString(S)
 {$ELSE}
     AsAnsi(S, CP_UTF8).ToPointer
 {$ENDIF};
