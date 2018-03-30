@@ -93,12 +93,14 @@ procedure Register;
 implementation
 
 uses
-  BrookLibraryLoader;
+  BrookLibraryLoader,
+  BrookHTTPServer;
 
 procedure Register;
 begin
   RegisterComponents('Brook', [
-    TBrookLibraryLoader
+    TBrookLibraryLoader,
+    TBrookHTTPServer
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryLibraryNamePropertyEditor);

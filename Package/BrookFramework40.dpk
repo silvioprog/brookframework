@@ -38,6 +38,7 @@ contains
   BrookUtils in '..\Source\BrookUtils.pas',
   BrookHandledClasses in '..\Source\BrookHandledClasses.pas',
   BrookString in '..\Source\BrookString.pas',
+  BrookHTTPServer in '..\Source\BrookHTTPServer.pas',
   BrookIDEIntegration in 'BrookIDEIntegration.pas';
 
 end.

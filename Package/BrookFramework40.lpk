@@ -11,7 +11,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="10">
+    <Files Count="11">
       <Item1>
         <Filename Value="../Source/libbrook.inc"/>
         <Type Value="Include"/>
@@ -49,10 +49,14 @@
         <UnitName Value="BrookStringMap"/>
       </Item9>
       <Item10>
+        <Filename Value="../Source/BrookHTTPServer.pas"/>
+        <UnitName Value="BrookHTTPServer"/>
+      </Item10>
+      <Item11>
         <Filename Value="BrookIDEIntegration.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookIDEIntegration"/>
-      </Item10>
+      </Item11>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>
