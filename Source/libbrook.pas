@@ -91,23 +91,22 @@ type
   cint = Integer;
   cuint = Cardinal;
 {$IF (NOT DEFINED(FPC)) OR (NOT DEFINED(UNIX))}
+  cushort = Word;
   Pcuint = ^cuint;
 {$ENDIF}
-  csize_t =
 {$IFDEF FPC}
- {$IFDEF UNIX}
-    BaseUnix
- {$ELSE}
-    System
+ {$IFDEF MSWINDOWS}
+  csize_t = System.size_t;
  {$ENDIF}
 {$ELSE}
+  csize_t =
  {$IFDEF POSIX}
     Posix.SysTypes
  {$ELSE}
     Winapi.Windows
- {$ENDIF}
-{$ENDIF}.size_t;
+ {$ENDIF}.size_t;
   Pcsize_t = ^csize_t;
+{$ENDIF}
   Pcvoid = Pointer;
   cva_list = Pointer;
 
@@ -173,6 +172,46 @@ var
   bk_strmap_count: function(map: Pbk_strmap): cuint; cdecl;
   bk_strmap_next: function(next: PPbk_strmap): cint; cdecl;
   bk_strmap_cleanup: procedure(map: PPbk_strmap); cdecl;
+
+type
+  Pbk_httpreq = ^bk_httpreq;
+  bk_httpreq = record
+  end;
+
+  Pbk_httpres = ^bk_httpres;
+  bk_httpres = record
+  end;
+
+  Pbk_httpsrv = ^bk_httpsrv;
+  bk_httpsrv = record
+  end;
+
+  bk_httperr_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
+
+  bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
+    res: Pbk_httpres); cdecl;
+
+var
+  bk_httpsrv_new2: function(req_cb: bk_httpreq_cb; req_cls: Pcvoid;
+    err_cb: bk_httperr_cb; err_cls: Pcvoid): Pbk_httpsrv; cdecl;
+
+  bk_httpsrv_new: function(cb: bk_httpreq_cb; cls: Pcvoid): Pbk_httpsrv; cdecl;
+
+  bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
+
+  bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cushort;
+    threaded: cbool): cint; cdecl;
+
+  bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
+
+  bk_httpres_type: function(res: Pbk_httpres; const &type: Pcchar): cint; cdecl;
+
+  bk_httpres_status: function(res: Pbk_httpres; status: cuint): cint; cdecl;
+
+  bk_httpres_body: function(res: Pbk_httpres): Pbk_str; cdecl;
+
+  bk_httpres_download: function(res: Pbk_httpres; const filename: Pcchar;
+    rendered: cbool): cint; cdecl;
 
 {$IFDEF VER3_0}
 procedure CheckOSError(LastError: Integer); platform; inline;
@@ -243,6 +282,16 @@ begin
     bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
+    bk_httpsrv_new2 := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new2');
+    bk_httpsrv_new := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new');
+    bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
+    bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
+    bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
+    bk_httpres_type := GetProcAddress(GBkLibHandle, 'bk_httpres_type');
+    bk_httpres_status := GetProcAddress(GBkLibHandle, 'bk_httpres_status');
+    bk_httpres_body := GetProcAddress(GBkLibHandle, 'bk_httpres_body');
+    bk_httpres_download := GetProcAddress(GBkLibHandle, 'bk_httpres_download');
+
     Result := GBkLibHandle;
   finally
     GBkLock.Release;
@@ -285,6 +334,16 @@ begin
     bk_strmap_count := nil;
     bk_strmap_next := nil;
     bk_strmap_cleanup := nil;
+
+    bk_httpsrv_new2 := nil;
+    bk_httpsrv_new := nil;
+    bk_httpsrv_free := nil;
+    bk_httpsrv_start := nil;
+    bk_httpsrv_stop := nil;
+    bk_httpres_type := nil;
+    bk_httpres_status := nil;
+    bk_httpres_body := nil;
+    bk_httpres_download := nil;
 
     Result := GBkLibHandle;
   finally
