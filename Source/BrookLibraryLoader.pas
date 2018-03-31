@@ -56,11 +56,11 @@ type
     FVersion: string;
     FHandle: TLibHandle;
     FLibraryName: TFileName;
-    procedure CheckDisabled; inline;
     procedure SetEnabled(AValue: Boolean);
     procedure SetLibraryName(const AValue: TFileName);
   protected
     procedure Loaded; override;
+    procedure CheckDisabled; inline;
     function GetHandle: Pointer; override;
     procedure SetHandle(AHandle: Pointer); override;
   public
