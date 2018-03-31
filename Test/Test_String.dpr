@@ -93,14 +93,14 @@ begin
   end;
 end;
 
-procedure Test_StringCopyBytes(AStr: TBrookString; const AVal: TBytes;
+procedure Test_StringWriteBytes(AStr: TBrookString; const AVal: TBytes;
   ALen: NativeUInt);
 var
   OK: Boolean;
 begin
   OK := False;
   try
-    Assert(AStr.CopyBytes(nil, ALen) = 0);
+    Assert(AStr.WriteBytes(nil, ALen) = 0);
   except
     on E: Exception do
       OK := E.ClassType = EOSError;
@@ -108,7 +108,7 @@ begin
   Assert(OK);
   OK := False;
   try
-    Assert(AStr.CopyBytes(AVal, 0) = 0);
+    Assert(AStr.WriteBytes(AVal, 0) = 0);
   except
     on E: Exception do
       OK := E.ClassType = EOSError;
@@ -116,18 +116,18 @@ begin
   Assert(OK);
 
   AStr.Clear;
-  Assert(AStr.CopyBytes(AVal, ALen) = ALen);
+  Assert(AStr.WriteBytes(AVal, ALen) = ALen);
   Assert(AStr.Length = ALen);
 end;
 
-procedure Test_StringCopy(AStr: TBrookString; const AVal: string;
+procedure Test_StringWrite(AStr: TBrookString; const AVal: string;
   ALen: NativeUInt);
 var
   OK: Boolean;
 begin
   OK := False;
   try
-    AStr.Copy('', TEncoding.UTF8);
+    AStr.Write('', TEncoding.UTF8);
   except
     on E: Exception do
       OK := E.ClassType = EOSError;
@@ -135,7 +135,7 @@ begin
   Assert(OK);
   OK := False;
   try
-    AStr.Copy(AVal, nil);
+    AStr.Write(AVal, nil);
   except
     on E: Exception do
       OK := E.ClassType = EArgumentNilException;
@@ -143,7 +143,7 @@ begin
   Assert(OK);
 
   AStr.Clear;
-  AStr.Copy(AVal, TEncoding.UTF8);
+  AStr.Write(AVal, TEncoding.UTF8);
   Assert(AStr.Length = ALen);
 end;
 
@@ -152,7 +152,7 @@ procedure Test_StrincContent(AStr: TBrookString; const AVal: TBytes;
 begin
   AStr.Clear;
   Assert(Length(AStr.Content) = 0);
-  AStr.CopyBytes(AVal, ALen);
+  AStr.WriteBytes(AVal, ALen);
   Assert(CompareMem(@AStr.Content[0], @AVal[0], ALen));
 end;
 
@@ -162,7 +162,7 @@ begin
   AStr.Clear;
   Assert(AStr.Length = 0);
 
-  AStr.CopyBytes(AVal, ALen);
+  AStr.WriteBytes(AVal, ALen);
   Assert(AStr.Length = ALen);
 end;
 
@@ -171,7 +171,7 @@ procedure Test_StringClear(AStr: TBrookString; const AVal: TBytes;
 begin
   AStr.Clear;
   Assert(AStr.Length = 0);
-  AStr.CopyBytes(AVal, ALen);
+  AStr.WriteBytes(AVal, ALen);
   Assert(AStr.Length > 0);
   Assert(AStr.Length = ALen);
 end;
@@ -199,11 +199,11 @@ var
   VStr: TBrookString;
 begin
   AStr.Clear;
-  AStr.Copy('abc');
+  AStr.Write('abc');
   Assert(AStr.Text = 'abc');
   VStr := TBrookString.Create(AStr.Handle);
   try
-    VStr.Copy('123');
+    VStr.Write('123');
   finally
     VStr.Free;;
   end;
@@ -222,8 +222,8 @@ begin
   try
     Test_StringHandle(VStr);
     Test_StringOwnsHandle;
-    Test_StringCopyBytes(VStr, VValB, LEN);
-    Test_StringCopy(VStr, VAL, LEN);
+    Test_StringWriteBytes(VStr, VValB, LEN);
+    Test_StringWrite(VStr, VAL, LEN);
     Test_StrincContent(VStr, VValB, LEN);
     Test_StringLength(VStr, VValB, LEN);
     Test_StringClear(VStr, VValB, LEN);

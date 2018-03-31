@@ -55,10 +55,7 @@ type
     function GetText: string; inline;
   protected
     class procedure CheckEncoding(AEncoding: TEncoding); static; inline;
-    procedure SetHandle(AHandle: Pointer); override;
     function GetHandle: Pointer; override;
-    function GetOwnsHandle: Boolean; override;
-    procedure SetOwnsHandle(AValue: Boolean); override;
   public
     { Creates an instance of @link(TBrookString).
 
@@ -66,27 +63,29 @@ type
     constructor Create(AHandle: Pointer); virtual;
     { Frees an instance of @link(TBrookString). }
     destructor Destroy; override;
-    { Copies a string buffer to the string handle. All strings previously
-      copied are kept.
+    { Determines if the handle is freed on the class destruction. }
+    property OwnsHandle: Boolean read FOwnsHandle write FOwnsHandle;
+    { Write a string buffer to the string handle. All strings previously
+      written are kept.
 
-      @param(ASource[in] String buffer source to be copied.)
-      @param(ALength[in] Length of the string buffer being copied.)
+      @param(ASource[in] String buffer source to be written.)
+      @param(ALength[in] Length of the string buffer being written.)
 
       @returns(Length of the written string buffer.) }
-    function CopyBytes(const ASource: TBytes;
+    function WriteBytes(const ASource: TBytes;
       ALength: NativeUInt): NativeUInt; virtual;
-    { Copies a string to the string handle. All strings previously copied are
+    { Writes a string to the string handle. All strings previously written are
       kept.
 
-      @param(ASource[in] String to be copied.)
-      @param(AEncoding[in] Determines the encoding of the string being copied.) }
-    procedure Copy(const ASource: string;
+      @param(ASource[in] String to be written.)
+      @param(AEncoding[in] Determines the encoding of the string being written.) }
+    procedure Write(const ASource: string;
       AEncoding: TEncoding); overload; virtual;
-    { Copies a string to the string handle. All strings previously copied are
+    { Writes a string to the string handle. All strings previously written are
       kept.
 
-      @param(ASource[in] String to be copied.) }
-    procedure Copy(const ASource: string); overload; virtual;
+      @param(ASource[in] String to be written.) }
+    procedure Write(const ASource: string); overload; virtual;
     { Gets the string from the string handle. }
     function ToString: string; override;
     { Cleans all the content present in the string handle. }
@@ -134,30 +133,12 @@ begin
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AEncoding']);
 end;
 
-procedure TBrookString.SetHandle(AHandle: Pointer);
-begin
-  if AHandle = Fstr then
-    Exit;
-  Clear;
-  Fstr := AHandle;
-end;
-
 function TBrookString.GetHandle: Pointer;
 begin
   Result := Fstr;
 end;
 
-function TBrookString.GetOwnsHandle: Boolean;
-begin
-  Result := FOwnsHandle;
-end;
-
-procedure TBrookString.SetOwnsHandle(AValue: Boolean);
-begin
-  FOwnsHandle := AValue;
-end;
-
-function TBrookString.CopyBytes(const ASource: TBytes;
+function TBrookString.WriteBytes(const ASource: TBytes;
   ALength: NativeUInt): NativeUInt;
 begin
   BkCheckLibrary;
@@ -165,19 +146,19 @@ begin
   CheckOSError(bk_str_strcpy(Fstr, @ASource[0], Result));
 end;
 
-procedure TBrookString.Copy(const ASource: string; AEncoding: TEncoding);
+procedure TBrookString.Write(const ASource: string; AEncoding: TEncoding);
 var
   VBytes: TBytes;
 begin
   CheckEncoding(AEncoding);
   VBytes := AEncoding.GetBytes(
 {$IFDEF FPC}UnicodeString({$ENDIF}ASource{$IFDEF FPC}){$ENDIF});
-  CopyBytes(VBytes, System.Length(VBytes));
+  WriteBytes(VBytes, System.Length(VBytes));
 end;
 
-procedure TBrookString.Copy(const ASource: string);
+procedure TBrookString.Write(const ASource: string);
 begin
-  Copy(ASource, TEncoding.UTF8);
+  Write(ASource, TEncoding.UTF8);
 end;
 
 function TBrookString.ToString: string;
@@ -202,7 +183,7 @@ end;
 procedure TBrookString.SetText(const AValue: string);
 begin
   Clear;
-  Self.Copy(AValue);
+  Write(AValue);
 end;
 
 function TBrookString.GetText: string;

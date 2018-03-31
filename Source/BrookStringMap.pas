@@ -137,9 +137,6 @@ type
     class function CreatePair(
       Apair: Pbk_strmap): TBrookStringPair; static; inline;
     function GetHandle: Pointer; override;
-    procedure SetHandle(AHandle: Pointer); override;
-    function GetOwnsHandle: Boolean; override;
-    procedure SetOwnsHandle(AValue: Boolean); override;
     function IsEOF: Boolean; virtual;
     procedure DoChange(AOperation: TBrookStringMapOperation); virtual;
   public
@@ -151,6 +148,8 @@ type
     destructor Destroy; override;
     { Gets an instance of @link(TBrookStringMapEnumerator). }
     function GetEnumerator: TBrookStringMapEnumerator;
+    { Determines if the handle is freed on the class destruction. }
+    property OwnsHandle: Boolean read FOwnsHandle write FOwnsHandle;
     { Adds a pair of strings to the map.
 
       @param(AName[in] Name of the pair.)
@@ -333,24 +332,6 @@ end;
 function TBrookStringMap.GetHandle: Pointer;
 begin
   Result := Fmap;
-end;
-
-procedure TBrookStringMap.SetHandle(AHandle: Pointer);
-begin
-  if AHandle = Fmap then
-    Exit;
-  Clear;
-  Fmap := AHandle;
-end;
-
-function TBrookStringMap.GetOwnsHandle: Boolean;
-begin
-  Result := FOwnsHandle;
-end;
-
-procedure TBrookStringMap.SetOwnsHandle(AValue: Boolean);
-begin
-  FOwnsHandle := AValue;
 end;
 
 function TBrookStringMap.IsEOF: Boolean;
