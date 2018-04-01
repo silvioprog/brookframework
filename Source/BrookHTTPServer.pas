@@ -159,8 +159,10 @@ end;
 constructor TBrookHTTPResponse.Create(AHandle: Pointer);
 begin
   inherited Create;
-  FBody := TBrookString.Create(bk_httpres_body(AHandle));
   Fres := AHandle;
+  FBody := TBrookString.Create(bk_httpres_body(Fres));
+  FStatus := 200;
+  FContentType := 'text/html';
 end;
 
 destructor TBrookHTTPResponse.Destroy;
@@ -171,8 +173,6 @@ end;
 
 procedure TBrookHTTPResponse.SetStatus(AValue: Word);
 begin
-  if AValue = FStatus then
-    Exit;
   BkCheckLibrary;
   FStatus := AValue;
   CheckOSError(bk_httpres_status(Fres, AValue));
@@ -182,8 +182,6 @@ procedure TBrookHTTPResponse.SetContentType(const AValue: string);
 var
   M: TMarshaller;
 begin
-  if AValue = FContentType then
-    Exit;
   BkCheckLibrary;
   FContentType := AValue;
   CheckOSError(bk_httpres_type(Fres, M.ToCString(AValue)));
@@ -243,9 +241,7 @@ end;
 procedure TBrookHTTPServer.DoError(ASender: TObject; const AError: string);
 begin
   if Assigned(FOnError) then
-    FOnError(ASender, AError)
-  else
-    raise EBrookHTTPServerError.Create(AError);
+    FOnError(ASender, AError);
 end;
 
 procedure TBrookHTTPServer.DoRequest(ASender: TObject;
