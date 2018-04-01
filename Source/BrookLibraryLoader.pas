@@ -67,6 +67,8 @@ type
     procedure Load; virtual;
     { Unloads the library dynamically. }
     procedure Unload; virtual;
+    { @exclude }
+    procedure DefineProperties(AFiler: TFiler); override;
   published
     { Loads/Unloads the library dynamically. }
     property Enabled: Boolean read FEnabled write SetEnabled;
@@ -82,6 +84,13 @@ procedure TBrookLibraryLoader.Loaded;
 begin
   inherited Loaded;
   if FEnabled and (FLibraryName <> '') then
+    Load;
+end;
+
+procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
+begin
+  inherited DefineProperties(AFiler);
+  if FEnabled and (FLibraryName <> '') and (FHandle = NilHandle) then
     Load;
 end;
 
