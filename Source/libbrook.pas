@@ -88,10 +88,11 @@ resourcestring
 
 type
   Pcchar = MarshaledAString;
+{$IF (NOT DEFINED(FPC)) OR (NOT DEFINED(UNIX))}
+  cbool = Boolean;
+  cushort = Word;
   cint = Integer;
   cuint = Cardinal;
-{$IF (NOT DEFINED(FPC)) OR (NOT DEFINED(UNIX))}
-  cushort = Word;
   Pcuint = ^cuint;
 {$ENDIF}
 {$IFDEF FPC}
