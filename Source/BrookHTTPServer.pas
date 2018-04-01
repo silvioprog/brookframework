@@ -273,12 +273,16 @@ end;
 
 procedure TBrookHTTPServer.SetPort(AValue: Word);
 begin
+  if FStreamedActive then
+    Exit;
   CheckInactive;
   FPort := AValue;
 end;
 
 procedure TBrookHTTPServer.SetThreaded(AValue: Boolean);
 begin
+  if FStreamedActive then
+    Exit;
   CheckInactive;
   FThreaded := AValue;
 end;
@@ -288,21 +292,20 @@ begin
   if AValue = FActive then
     Exit;
   if csDesigning in ComponentState then
-    BkCheckLibrary
+  begin
+    BkCheckLibrary;
+    FActive := AValue;
+  end
   else
     if AValue then
     begin
       if csReading in ComponentState then
-      begin
-        FStreamedActive := True;
-        Exit;
-      end
+        FStreamedActive := True
       else
         InternalStart;
     end
     else
       InternalStop;
-  FActive := AValue;
 end;
 
 procedure TBrookHTTPServer.InternalStart;
@@ -315,8 +318,17 @@ begin
   if not Assigned(Fsrv) then
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandler);
   if FPort <= 0 then
-    raise EInvalidOperation.CreateResFmt(@SBrookInvalidHTTPServerPort, [FPort]);
-  CheckOSError(bk_httpsrv_start(Fsrv, FPort, FThreaded));
+  begin
+    bk_httpsrv_free(Fsrv);
+    Fsrv := nil;
+    raise EInvalidOperation.CreateResFmt(
+      @SBrookInvalidHTTPServerPort, [FPort]);
+  end;
+  FActive := bk_httpsrv_start(Fsrv, FPort, FThreaded) = 0;
+  if FActive then
+    Exit;
+  bk_httpsrv_free(Fsrv);
+  Fsrv := nil;
 end;
 
 procedure TBrookHTTPServer.InternalStop;
@@ -326,6 +338,7 @@ begin
   BkCheckLibrary;
   bk_httpsrv_free(Fsrv);
   Fsrv := nil;
+  FActive := False;
 end;
 
 procedure TBrookHTTPServer.Start;
