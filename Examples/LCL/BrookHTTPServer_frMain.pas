@@ -28,6 +28,7 @@
 unit BrookHTTPServer_frMain;
 
 {$MODE DELPHI}
+{$WARN 4055 OFF}
 {$WARN 5024 OFF}
 
 interface
@@ -83,8 +84,14 @@ implementation
 {$R *.lfm}
 
 procedure TfrMain.DoError(AData: PtrInt);
+var
+  S: PString absolute AData;
 begin
-  MessageDlg(string(AData), mtError, [mbOK], 0);
+  try
+    MessageDlg(S^, mtError, [mbOK], 0);
+  finally
+    DisposeStr(S);
+  end;
 end;
 
 procedure TfrMain.acStartExecute(Sender: TObject);
@@ -144,7 +151,7 @@ end;
 
 procedure TfrMain.BrookHTTPServer1Error(ASender: TObject; const AError: string);
 begin
-  Application.QueueAsyncCall(DoError, PtrInt(AError));
+  Application.QueueAsyncCall(DoError, PtrInt(NewStr(AError)));
 end;
 
 end.
