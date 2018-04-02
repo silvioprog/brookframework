@@ -84,18 +84,17 @@ implementation
 procedure TBrookLibraryLoader.Loaded;
 begin
   inherited Loaded;
-  if FEnabled and (FLibraryName <> '') then
+  if FEnabled then
     Load;
 end;
 
 procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
 begin
   inherited DefineProperties(AFiler);
-  if (not FStreamedLoad) and FEnabled and (FHandle = NilHandle) and
-    (FLibraryName <> '') and FileExists(FLibraryName) then
+  if FEnabled and not FStreamedLoad then
   begin
-    Load;
     FStreamedLoad := True;
+    Load;
   end;
 end;
 
