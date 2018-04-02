@@ -56,6 +56,7 @@ type
     FVersion: string;
     FHandle: TLibHandle;
     FLibraryName: TFileName;
+    FLibraryLoaded: Boolean;
     procedure SetEnabled(AValue: Boolean);
     procedure SetLibraryName(const AValue: TFileName);
   protected
@@ -90,8 +91,12 @@ end;
 procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
 begin
   inherited DefineProperties(AFiler);
-  if FEnabled and (FLibraryName <> '') and (FHandle = NilHandle) then
+  if (not FLibraryLoaded) and FEnabled and (FHandle = NilHandle) and
+    (FLibraryName <> '') and FileExists(FLibraryName) then
+  begin
     Load;
+    FLibraryLoaded := True;
+  end;
 end;
 
 function TBrookLibraryLoader.GetHandle: Pointer;
