@@ -292,10 +292,7 @@ begin
   if AValue = FActive then
     Exit;
   if csDesigning in ComponentState then
-  begin
-    BkCheckLibrary;
-    FActive := AValue;
-  end
+    FActive := AValue
   else
     if AValue then
     begin
