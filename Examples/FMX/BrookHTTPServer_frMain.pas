@@ -129,17 +129,18 @@ end;
 procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
-  AResponse.Body.Text :=
-    '<html><head><title>Hello world</title></head><body>Hello world</body></html>';
+  AResponse.Send(
+    '<html><head><title>Hello world</title></head><body>Hello world</body></html>',
+    'text/html; charset=utf-8', 200);
 end;
 
 procedure TfrMain.BrookHTTPServer1RequestError(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
   AException: Exception);
 begin
-  AResponse.Body.Text := Concat(
-    '<html><head><title>Error</title></head><body><font color="red">',
-    AException.Message, '</font></body></html>');
+  AResponse.Send(
+    '<html><head><title>Error</title></head><body><font color="red">%s</font></body></html>',
+    [AException.Message], 'text/html; charset=utf-8', 500);
 end;
 
 procedure TfrMain.BrookHTTPServer1Error(ASender: TObject; const AError: string);

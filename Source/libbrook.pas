@@ -205,13 +205,17 @@ var
 
   bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
 
-  bk_httpres_type: function(res: Pbk_httpres; const &type: Pcchar): cint; cdecl;
+  bk_httpres_send: function(res: Pbk_httpres; const val: Pcchar;
+    const content_type: Pcchar; status: cuint): cint; cdecl;
 
-  bk_httpres_status: function(res: Pbk_httpres; status: cuint): cint; cdecl;
+  bk_httpres_sendbinary: function(res: Pbk_httpres; buffer:
+    Pcvoid; size: size_t; const content_type: Pcchar;
+    status: cuint): cint; cdecl;
 
-  bk_httpres_body: function(res: Pbk_httpres): Pbk_str; cdecl;
+  bk_httpres_sendstr: function(res: Pbk_httpres; str: Pbk_str;
+    const content_type: Pcchar; status: cuint): cint; cdecl;
 
-  bk_httpres_download: function(res: Pbk_httpres; const filename: Pcchar;
+  bk_httpres_sendfile: function(res: Pbk_httpres; const filename: Pcchar;
     rendered: cbool): cint; cdecl;
 
 {$IFDEF VER3_0}
@@ -288,10 +292,10 @@ begin
     bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
     bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
     bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
-    bk_httpres_type := GetProcAddress(GBkLibHandle, 'bk_httpres_type');
-    bk_httpres_status := GetProcAddress(GBkLibHandle, 'bk_httpres_status');
-    bk_httpres_body := GetProcAddress(GBkLibHandle, 'bk_httpres_body');
-    bk_httpres_download := GetProcAddress(GBkLibHandle, 'bk_httpres_download');
+    bk_httpres_send := GetProcAddress(GBkLibHandle, 'bk_httpres_send');
+    bk_httpres_sendbinary := GetProcAddress(GBkLibHandle, 'bk_httpres_sendbinary');
+    bk_httpres_sendstr := GetProcAddress(GBkLibHandle, 'bk_httpres_sendstr');
+    bk_httpres_sendfile := GetProcAddress(GBkLibHandle, 'bk_httpres_sendfile');
 
     Result := GBkLibHandle;
   finally
@@ -341,10 +345,10 @@ begin
     bk_httpsrv_free := nil;
     bk_httpsrv_start := nil;
     bk_httpsrv_stop := nil;
-    bk_httpres_type := nil;
-    bk_httpres_status := nil;
-    bk_httpres_body := nil;
-    bk_httpres_download := nil;
+    bk_httpres_send := nil;
+    bk_httpres_sendbinary := nil;
+    bk_httpres_sendstr := nil;
+    bk_httpres_sendfile := nil;
 
     Result := GBkLibHandle;
   finally

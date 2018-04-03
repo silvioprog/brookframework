@@ -12,6 +12,9 @@ uses
   BrookHandledClasses,
   BrookString;
 
+const
+  BROOK_CONTENT_TYPE = 'text/plain; charset=utf-8';
+
 resourcestring
   SBrookOpNotAllowedActiveServer =
     'Operation is not allowed while the server is active';
@@ -50,20 +53,22 @@ type
 
   TBrookHTTPResponse = class(TBrookHandledPersistent)
   private
-    FBody: TBrookString;
-    FContentType: string;
     Fres: Pbk_httpres;
-    FStatus: Word;
-    procedure SetContentType(const AValue: string);
-    procedure SetStatus(AValue: Word);
   protected
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
-    destructor Destroy; override;
-    property Status: Word read FStatus write SetStatus;
-    property ContentType: string read FContentType write SetContentType;
-    property Body: TBrookString read FBody;
+    procedure Send(const AValue, AContentType: string;
+      AStatus: Word); overload; virtual;
+    procedure Send(const AFmt: string; const AArgs: array of const;
+      const AContentType: string; AStatus: Word); overload; virtual;
+    procedure Send(ABuffer: Pointer; ASize: NativeUInt;
+      const AContentType: string; AStatus: Word); overload; virtual;
+    procedure Send(const ABytes: TBytes; ASize: NativeUInt;
+      const AContentType: string; AStatus: Word); overload; virtual;
+    procedure Send(AString: TBrookString; const AContentType: string;
+      AStatus: Word); overload; virtual;
+    procedure SendFile(const AFileName: TFileName; ARendered: Boolean); virtual;
   end;
 
   TBrookHTTPServer = class(TBrookHandledComponent)
@@ -72,11 +77,11 @@ type
     FOnError: TBrookHTTPErrorEvent;
     FActive: Boolean;
     FOnRequestError: TBrookHTTPRequestErrorEvent;
-    FPort: Word;
+    FPort: UInt16;
     FThreaded: Boolean;
     FStreamedActive: Boolean;
     Fsrv: Pbk_httpsrv;
-    procedure SetPort(AValue: Word);
+    procedure SetPort(AValue: UInt16);
     procedure SetThreaded(AValue: Boolean);
   protected
     function CreateRequest(AHandle: Pointer): TBrookHTTPRequest; virtual;
@@ -99,7 +104,7 @@ type
     procedure Stop;
   published
     property Active: Boolean read FActive write SetActive default False;
-    property Port: Word read FPort write SetPort default 8080;
+    property Port: UInt16 read FPort write SetPort default 8080;
     property Threaded: Boolean read FThreaded write SetThreaded;
     property OnRequest: TBrookHTTPRequestEvent read FOnRequest write FOnRequest;
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
@@ -160,31 +165,57 @@ constructor TBrookHTTPResponse.Create(AHandle: Pointer);
 begin
   inherited Create;
   Fres := AHandle;
-  FBody := TBrookString.Create(bk_httpres_body(Fres));
-  FStatus := 200;
-  FContentType := 'text/html';
 end;
 
-destructor TBrookHTTPResponse.Destroy;
-begin
-  FBody.Free;
-  inherited Destroy;
-end;
-
-procedure TBrookHTTPResponse.SetStatus(AValue: Word);
-begin
-  BkCheckLibrary;
-  FStatus := AValue;
-  CheckOSError(bk_httpres_status(Fres, AValue));
-end;
-
-procedure TBrookHTTPResponse.SetContentType(const AValue: string);
+procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
+  AStatus: Word);
 var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  FContentType := AValue;
-  CheckOSError(bk_httpres_type(Fres, M.ToCString(AValue)));
+  CheckOSError(bk_httpres_send(Fres, M.ToCString(AValue),
+    M.ToCString(AContentType), AStatus));
+end;
+
+procedure TBrookHTTPResponse.Send(const AFmt: string;
+  const AArgs: array of const; const AContentType: string; AStatus: Word);
+begin
+  Send(Format(AFmt, AArgs), AContentType, AStatus);
+end;
+
+procedure TBrookHTTPResponse.Send(ABuffer: Pointer; ASize: NativeUInt;
+  const AContentType: string; AStatus: Word);
+var
+  M: TMarshaller;
+begin
+  BkCheckLibrary;
+  CheckOSError(bk_httpres_sendbinary(Fres, ABuffer, ASize,
+    M.ToCString(AContentType), AStatus));
+end;
+
+procedure TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
+  const AContentType: string; AStatus: Word);
+begin
+  Send(@ABytes[0], ASize, AContentType, AStatus);
+end;
+
+procedure TBrookHTTPResponse.Send(AString: TBrookString;
+  const AContentType: string; AStatus: Word);
+var
+  M: TMarshaller;
+begin
+  BkCheckLibrary;
+  CheckOSError(bk_httpres_sendstr(Fres, AString.Handle,
+    M.ToCString(AContentType), AStatus));
+end;
+
+procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName;
+  ARendered: Boolean);
+var
+  M: TMarshaller;
+begin
+  BkCheckLibrary;
+  CheckOSError(bk_httpres_sendfile(Fres, M.ToCString(AFileName), ARendered));
 end;
 
 function TBrookHTTPResponse.GetHandle: Pointer;
@@ -248,7 +279,9 @@ procedure TBrookHTTPServer.DoRequest(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
   if Assigned(FOnRequest) then
-    FOnRequest(ASender, ARequest, AResponse);
+    FOnRequest(ASender, ARequest, AResponse)
+  else
+    AResponse.Send('Empty response', BROOK_CONTENT_TYPE, 200);
 end;
 
 procedure TBrookHTTPServer.DoRequestError(ASender: TObject;
@@ -258,10 +291,7 @@ begin
   if Assigned(FOnRequestError) then
     FOnRequestError(ASender, ARequest, AResponse, AException)
   else
-  begin
-    AResponse.Body.Text := AException.Message;
-    AResponse.Status := 500;
-  end;
+    AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
 end;
 
 procedure TBrookHTTPServer.CheckInactive;
@@ -271,7 +301,7 @@ begin
       @SBrookOpNotAllowedActiveServer);
 end;
 
-procedure TBrookHTTPServer.SetPort(AValue: Word);
+procedure TBrookHTTPServer.SetPort(AValue: UInt16);
 begin
   if FStreamedActive then
     Exit;
