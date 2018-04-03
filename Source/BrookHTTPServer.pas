@@ -340,6 +340,8 @@ begin
 end;
 
 procedure TBrookHTTPServer.InternalStart;
+var
+  R: cint;
 begin
   if Assigned(Fsrv) then
     Exit;
@@ -355,7 +357,10 @@ begin
     raise EInvalidOperation.CreateResFmt(
       @SBrookInvalidHTTPServerPort, [FPort]);
   end;
-  FActive := bk_httpsrv_start(Fsrv, FPort, FThreaded) = 0;
+  R := bk_httpsrv_start(Fsrv, FPort, FThreaded);
+  if R < 0 then
+    CheckOSError(-R);
+  FActive := R = 0;
   if FActive then
     Exit;
   bk_httpsrv_free(Fsrv);
