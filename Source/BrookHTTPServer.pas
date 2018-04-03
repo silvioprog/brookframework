@@ -321,9 +321,10 @@ procedure TBrookHTTPServer.SetActive(AValue: Boolean);
 begin
   if AValue = FActive then
     Exit;
-  if csDesignInstance in ComponentState then
+  if csDesigning in ComponentState then
   begin
-    BkCheckLibrary;
+    if not (csLoading in ComponentState) then
+      BkCheckLibrary;
     FActive := AValue;
   end
   else
