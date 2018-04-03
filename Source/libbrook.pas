@@ -88,7 +88,13 @@ resourcestring
 
 type
   Pcchar = MarshaledAString;
-{$IF (NOT DEFINED(FPC)) OR (NOT DEFINED(UNIX))}
+{$IF DEFINED(FPC) AND DEFINED(UNIX)}
+  cbool = BaseUnix.cbool;
+  cushort = BaseUnix.cushort;
+  cint = BaseUnix.cint;
+  cuint = BaseUnix.cuint;
+  Pcuint = BaseUnix.pcuint;
+{$ELSE}
   cbool = Boolean;
   cushort = Word;
   cint = Integer;
