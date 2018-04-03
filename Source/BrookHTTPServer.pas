@@ -173,7 +173,7 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(bk_httpres_send(Fres, M.ToCString(AValue),
+  CheckOSError(-bk_httpres_send(Fres, M.ToCString(AValue),
     M.ToCString(AContentType), AStatus));
 end;
 
@@ -189,7 +189,7 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(bk_httpres_sendbinary(Fres, ABuffer, ASize,
+  CheckOSError(-bk_httpres_sendbinary(Fres, ABuffer, ASize,
     M.ToCString(AContentType), AStatus));
 end;
 
@@ -205,7 +205,7 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(bk_httpres_sendstr(Fres, AString.Handle,
+  CheckOSError(-bk_httpres_sendstr(Fres, AString.Handle,
     M.ToCString(AContentType), AStatus));
 end;
 
@@ -215,7 +215,7 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(bk_httpres_sendfile(Fres, M.ToCString(AFileName), ARendered));
+  CheckOSError(-bk_httpres_sendfile(Fres, M.ToCString(AFileName), ARendered));
 end;
 
 function TBrookHTTPResponse.GetHandle: Pointer;
