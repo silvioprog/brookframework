@@ -208,9 +208,8 @@ var
   bk_httpres_send: function(res: Pbk_httpres; const val: Pcchar;
     const content_type: Pcchar; status: cuint): cint; cdecl;
 
-  bk_httpres_sendbinary: function(res: Pbk_httpres; buffer:
-    Pcvoid; size: size_t; const content_type: Pcchar;
-    status: cuint): cint; cdecl;
+  bk_httpres_sendbinary: function(res: Pbk_httpres; buf: Pcvoid; size: size_t;
+    const content_type: Pcchar; status: cuint): cint; cdecl;
 
   bk_httpres_sendstr: function(res: Pbk_httpres; str: Pbk_str;
     const content_type: Pcchar; status: cuint): cint; cdecl;
