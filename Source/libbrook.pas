@@ -90,16 +90,18 @@ type
   Pcchar = MarshaledAString;
 {$IF DEFINED(FPC) AND DEFINED(UNIX)}
   cbool = BaseUnix.cbool;
-  cushort = BaseUnix.cushort;
+  cuint16_t = BaseUnix.cuint16;
   cint = BaseUnix.cint;
   cuint = BaseUnix.cuint;
   Pcuint = BaseUnix.pcuint;
+  cuint64_t = BaseUnix.cuint64;
 {$ELSE}
   cbool = Boolean;
-  cushort = Word;
+  cuint16_t = UInt16;
   cint = Integer;
   cuint = Cardinal;
   Pcuint = ^cuint;
+  cuint64_t = UInt64;
 {$ENDIF}
 {$IFDEF FPC}
  {$IFDEF MSWINDOWS}
@@ -198,6 +200,11 @@ type
   bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
     res: Pbk_httpres); cdecl;
 
+  bk_httpread_cb = function(cls: Pcvoid; offset: cuint64_t; buf: Pcchar;
+    size: csize_t): ssize_t; cdecl;
+
+  bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
+
 var
   bk_httpsrv_new2: function(req_cb: bk_httpreq_cb; req_cls: Pcvoid;
     err_cb: bk_httperr_cb; err_cls: Pcvoid): Pbk_httpsrv; cdecl;
@@ -206,10 +213,12 @@ var
 
   bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
 
-  bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cushort;
+  bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cuint16_t;
     threaded: cbool): cint; cdecl;
 
   bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
+
+  bk_httpres_headers: function(res: Pbk_httpres): PPbk_strmap; cdecl;
 
   bk_httpres_send: function(res: Pbk_httpres; const val: Pcchar;
     const content_type: Pcchar; status: cuint): cint; cdecl;
@@ -222,6 +231,13 @@ var
 
   bk_httpres_sendfile: function(res: Pbk_httpres; const filename: Pcchar;
     rendered: cbool): cint; cdecl;
+
+  bk_httpres_sendstream: function(res: Pbk_httpres; size: cuint64_t;
+    block_size: csize_t; read_cb: bk_httpread_cb; cls: Pcvoid;
+    flush_cb: bk_httpfree_cb): cint; cdecl;
+
+  bk_httpres_senddata: function(res: Pbk_httpres; block_size: csize_t;
+    read_cb: bk_httpread_cb; cls: Pcvoid; free_cb: bk_httpfree_cb): cint; cdecl;
 
 {$IFDEF VER3_0}
 procedure CheckOSError(LastError: Integer); platform; inline;
@@ -297,10 +313,13 @@ begin
     bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
     bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
     bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
+    bk_httpres_headers := GetProcAddress(GBkLibHandle, 'bk_httpres_headers');
     bk_httpres_send := GetProcAddress(GBkLibHandle, 'bk_httpres_send');
     bk_httpres_sendbinary := GetProcAddress(GBkLibHandle, 'bk_httpres_sendbinary');
     bk_httpres_sendstr := GetProcAddress(GBkLibHandle, 'bk_httpres_sendstr');
     bk_httpres_sendfile := GetProcAddress(GBkLibHandle, 'bk_httpres_sendfile');
+    bk_httpres_sendstream := GetProcAddress(GBkLibHandle, 'bk_httpres_sendstream');
+    bk_httpres_senddata := GetProcAddress(GBkLibHandle, 'bk_httpres_senddata');
 
     Result := GBkLibHandle;
   finally
@@ -350,10 +369,13 @@ begin
     bk_httpsrv_free := nil;
     bk_httpsrv_start := nil;
     bk_httpsrv_stop := nil;
+    bk_httpres_headers := nil;
     bk_httpres_send := nil;
     bk_httpres_sendbinary := nil;
     bk_httpres_sendstr := nil;
     bk_httpres_sendfile := nil;
+    bk_httpres_sendstream := nil;
+    bk_httpres_senddata := nil;
 
     Result := GBkLibHandle;
   finally
