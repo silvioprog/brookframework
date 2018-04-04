@@ -38,7 +38,7 @@ uses
   StrUtils,
 {$IFDEF FPC}
  {$IF DEFINED(UNIX)}
-  BaseUnix,
+  UnixType,
  {$ELSEIF DEFINED(MSWINDOWS)}
   Windows,
  {$ENDIF}
@@ -88,33 +88,46 @@ resourcestring
 
 type
   Pcchar = MarshaledAString;
-{$IF DEFINED(FPC) AND DEFINED(UNIX)}
-  cbool = BaseUnix.cbool;
-  cuint16_t = BaseUnix.cuint16;
-  cint = BaseUnix.cint;
-  cuint = BaseUnix.cuint;
-  Pcuint = BaseUnix.pcuint;
-  cuint64_t = BaseUnix.cuint64;
-{$ELSE}
-  cbool = Boolean;
+{$IF DEFINED(MSWINDOWS)}
+  cbool = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.BOOL;
+  cuint16_t = UInt16;
+  cint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.LONG;
+  cuint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.UINT;
+  Pcuint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.PUINT;
+  cuint64_t = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.ULONG64;
+  csize_t = {$IFDEF FPC}System{$ELSE}Winapi.Windows{$ENDIF}.SIZE_T;
+  Pcsize_t = {$IFDEF FPC}^csize_t{$ELSE}Winapi.Windows.PSIZE_T{$ENDIF};
+  cssize_t = {$IFDEF FPC}NativeInt{$ELSE}Winapi.Windows.SSIZE_T{$ENDIF};
+{$ELSEIF DEFINED(POSIX)}
+  cbool = LongBool;
   cuint16_t = UInt16;
   cint = Integer;
   cuint = Cardinal;
-  Pcuint = ^cuint;
+  Pcuint = PCardinal;
   cuint64_t = UInt64;
-{$ENDIF}
-{$IFDEF FPC}
- {$IFDEF MSWINDOWS}
-  csize_t = System.size_t;
- {$ENDIF}
+  csize_t = Posix.SysTypes.size_t;
+  Pcsize_t = Posix.SysTypes.Psize_t;
+  cssize_t = Posix.SysTypes.ssize_t;
+{$ELSEIF DEFINED(UNIX)}
+  cbool = UnixType.cbool;
+  cuint16_t = UnixType.cuint16;
+  cint = UnixType.cint;
+  cuint = UnixType.cuint;
+  Pcuint = UnixType.pcuint;
+  cuint64_t = UnixType.cuint64;
+  csize_t = UnixType.size_t;
+  Pcsize_t = UnixType.psize_t;
+  cssize_t = UnixType.ssize_t;
 {$ELSE}
-  csize_t =
- {$IFDEF POSIX}
-    Posix.SysTypes
- {$ELSE}
-    Winapi.Windows
- {$ENDIF}.size_t;
+  cbool = LongBool;
+  cuint16_t = UInt16;
+  cint = Integer;
+  cuint = Cardinal;
+  Pcuint = PCardinal;
+  cuint64_t = UInt64;
+  csize_t = {$IFDEF CPU64BITS}UInt64{$ELSE}UInt32{$ENDIF};
   Pcsize_t = ^csize_t;
+  cssize_t = {$IFDEF CPU64BITS}Int64{$ELSE}Integer{$ENDIF};
 {$ENDIF}
   Pcvoid = Pointer;
   cva_list = Pointer;
@@ -201,7 +214,7 @@ type
     res: Pbk_httpres); cdecl;
 
   bk_httpread_cb = function(cls: Pcvoid; offset: cuint64_t; buf: Pcchar;
-    size: csize_t): ssize_t; cdecl;
+    size: csize_t): cssize_t; cdecl;
 
   bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
 
