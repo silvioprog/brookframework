@@ -73,9 +73,9 @@ type
     procedure Send(AString: TBrookString; const AContentType: string;
       AStatus: Word); overload; virtual;
     procedure SendFile(const AFileName: TFileName;
-      ARendered: Boolean); overload; virtual;
+      ARendered: Boolean; AStatus: Word); overload; virtual;
     procedure SendFile(const AFileName: TFileName); overload; virtual;
-    procedure SendStream(AStream: TStream); virtual;
+    procedure SendStream(AStream: TStream; AStatus: Word); virtual;
   end;
 
   TBrookHTTPServer = class(TBrookHandledComponent)
@@ -206,27 +206,28 @@ begin
 end;
 
 procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName;
-  ARendered: Boolean);
+  ARendered: Boolean; AStatus: Word);
 var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpres_sendfile(Fres, M.ToCString(AFileName), ARendered));
+  CheckOSError(-bk_httpres_sendfile(Fres, M.ToCString(AFileName),
+    ARendered, AStatus));
 end;
 
 procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName);
 begin
-  SendFile(AFileName, False);
+  SendFile(AFileName, False, 200);
 end;
 
-procedure TBrookHTTPResponse.SendStream(AStream: TStream);
+procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word);
 begin
   if not Assigned(AStream) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
   BkCheckLibrary;
   CheckOSError(-bk_httpres_sendstream(Fres, AStream.Size, 32768,
     {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
-    {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree));
+    {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus));
 end;
 
 function TBrookHTTPResponse.GetHandle: Pointer;

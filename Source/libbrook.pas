@@ -243,14 +243,15 @@ var
     const content_type: Pcchar; status: cuint): cint; cdecl;
 
   bk_httpres_sendfile: function(res: Pbk_httpres; const filename: Pcchar;
-    rendered: cbool): cint; cdecl;
+    rendered: cbool; status: cuint): cint; cdecl;
 
   bk_httpres_sendstream: function(res: Pbk_httpres; size: cuint64_t;
     block_size: csize_t; read_cb: bk_httpread_cb; cls: Pcvoid;
-    flush_cb: bk_httpfree_cb): cint; cdecl;
+    flush_cb: bk_httpfree_cb; status: cuint): cint; cdecl;
 
   bk_httpres_senddata: function(res: Pbk_httpres; block_size: csize_t;
-    read_cb: bk_httpread_cb; cls: Pcvoid; free_cb: bk_httpfree_cb): cint; cdecl;
+    read_cb: bk_httpread_cb; cls: Pcvoid; free_cb: bk_httpfree_cb;
+    status: cuint): cint; cdecl;
 
 {$IFDEF VER3_0}
 procedure CheckOSError(LastError: Integer); platform; inline;
