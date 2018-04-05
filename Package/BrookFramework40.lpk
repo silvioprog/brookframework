@@ -11,7 +11,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="11">
+    <Files Count="12">
       <Item1>
         <Filename Value="../Source/libbrook.inc"/>
         <Type Value="Include"/>
@@ -21,42 +21,46 @@
         <UnitName Value="libbrook"/>
       </Item2>
       <Item3>
-        <Filename Value="../Source/Marshalling.pas"/>
-        <UnitName Value="Marshalling"/>
+        <Filename Value="../Source/Platform.pas"/>
+        <UnitName Value="Platform"/>
       </Item3>
       <Item4>
-        <Filename Value="../Source/Brook.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="../Source/Marshalling.pas"/>
+        <UnitName Value="Marshalling"/>
       </Item4>
       <Item5>
-        <Filename Value="../Source/BrookLibraryLoader.pas"/>
-        <UnitName Value="BrookLibraryLoader"/>
+        <Filename Value="../Source/Brook.inc"/>
+        <Type Value="Include"/>
       </Item5>
       <Item6>
-        <Filename Value="../Source/BrookUtils.pas"/>
-        <UnitName Value="BrookUtils"/>
+        <Filename Value="../Source/BrookLibraryLoader.pas"/>
+        <UnitName Value="BrookLibraryLoader"/>
       </Item6>
       <Item7>
-        <Filename Value="../Source/BrookHandledClasses.pas"/>
-        <UnitName Value="BrookHandledClasses"/>
+        <Filename Value="../Source/BrookUtils.pas"/>
+        <UnitName Value="BrookUtils"/>
       </Item7>
       <Item8>
-        <Filename Value="../Source/BrookString.pas"/>
-        <UnitName Value="BrookString"/>
+        <Filename Value="../Source/BrookHandledClasses.pas"/>
+        <UnitName Value="BrookHandledClasses"/>
       </Item8>
       <Item9>
-        <Filename Value="../Source/BrookStringMap.pas"/>
-        <UnitName Value="BrookStringMap"/>
+        <Filename Value="../Source/BrookString.pas"/>
+        <UnitName Value="BrookString"/>
       </Item9>
       <Item10>
-        <Filename Value="../Source/BrookHTTPServer.pas"/>
-        <UnitName Value="BrookHTTPServer"/>
+        <Filename Value="../Source/BrookStringMap.pas"/>
+        <UnitName Value="BrookStringMap"/>
       </Item10>
       <Item11>
+        <Filename Value="../Source/BrookHTTPServer.pas"/>
+        <UnitName Value="BrookHTTPServer"/>
+      </Item11>
+      <Item12>
         <Filename Value="BrookIDEIntegration.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookIDEIntegration"/>
-      </Item11>
+      </Item12>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

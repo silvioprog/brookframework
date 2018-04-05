@@ -34,16 +34,10 @@ unit BrookStringMap;
 interface
 
 uses
-{$IF DEFINED(MSWINDOWS)}
-  Windows,
-{$ELSEIF DEFINED(FPC) AND DEFINED(UNIX)}
-  BaseUnix,
-{$ELSEIF DEFINED(POSIX)}
-  Posix.Errno,
-{$ENDIF}
   SysUtils,
-  libbrook,
+  Platform,
   Marshalling,
+  libbrook,
   BrookHandledClasses;
 
 type
@@ -214,16 +208,6 @@ type
   end;
 
 implementation
-
-{$IFNDEF POSIX}
-const
-  ENOENT =
- {$IF DEFINED(MSWINDOWS)}
-    ERROR_FILE_NOT_FOUND
- {$ELSEIF DEFINED(FPC) AND DEFINED(UNIX)}
-    ESysENOENT
- {$ENDIF};
-{$ENDIF}
 
 { TBrookStringPair }
 
@@ -451,7 +435,8 @@ begin
   BkCheckLibrary;
   M.Code := @AIterator;
   M.Data := AData;
-  R := bk_strmap_iter(Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
+  R := bk_strmap_iter(Fmap,
+{$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
   if R <> -1 then
     CheckOSError(-R);
 end;
@@ -466,7 +451,8 @@ begin
   BkCheckLibrary;
   M.Code := @AComparator;
   M.Data := AData;
-  CheckOSError(-bk_strmap_sort(@Fmap, {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
+  CheckOSError(-bk_strmap_sort(@Fmap,
+{$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
 end;
 
 function TBrookStringMap.ToString: string;

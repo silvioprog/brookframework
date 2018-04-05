@@ -8,6 +8,7 @@ uses
   RtlConsts,
   SysUtils,
   Classes,
+  Platform,
   Marshalling,
   libbrook,
   BrookHandledClasses,
@@ -62,20 +63,23 @@ type
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
-    procedure Send(const AValue, AContentType: string;
-      AStatus: Word); overload; virtual;
-    procedure Send(const AFmt: string; const AArgs: array of const;
-      const AContentType: string; AStatus: Word); overload; virtual;
-    procedure Send(ABuffer: Pointer; ASize: NativeUInt;
-      const AContentType: string; AStatus: Word); overload; virtual;
-    procedure Send(const ABytes: TBytes; ASize: NativeUInt;
-      const AContentType: string; AStatus: Word); overload; virtual;
-    procedure Send(AString: TBrookString; const AContentType: string;
-      AStatus: Word); overload; virtual;
-    procedure SendFile(const AFileName: TFileName;
-      ARendered: Boolean; AStatus: Word); overload; virtual;
-    procedure SendFile(const AFileName: TFileName); overload; virtual;
-    procedure SendStream(AStream: TStream; AStatus: Word); virtual;
+    function Send(const AValue, AContentType: string;
+      AStatus: Word): Boolean; overload; virtual;
+    function Send(const AFmt: string; const AArgs: array of const;
+      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
+    function Send(ABuffer: Pointer; ASize: NativeUInt;
+      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
+    function Send(const ABytes: TBytes; ASize: NativeUInt;
+      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
+    function Send(AString: TBrookString; const AContentType: string;
+      AStatus: Word): Boolean; overload; virtual;
+    function TrySendFile(const AFileName: TFileName; ARendered: Boolean;
+      AStatus: Word; out ANotFound: Boolean): Boolean; overload; virtual;
+    function SendFile(const AFileName: TFileName;
+      ARendered: Boolean; AStatus: Word): Boolean; overload; virtual;
+    function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
+    function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
+    //procedure SendData(); virtual;
   end;
 
   TBrookHTTPServer = class(TBrookHandledComponent)
@@ -111,12 +115,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Start;
-    procedure Stop;
+    procedure Start; inline;
+    procedure Stop; inline;
   published
     property Active: Boolean read FActive write SetActive default False;
     property Port: UInt16 read FPort write SetPort default 8080;
     property Threaded: Boolean read FThreaded write SetThreaded;
+
     property OnRequest: TBrookHTTPRequestEvent read FOnRequest write FOnRequest;
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
       write FOnRequestError;
@@ -146,6 +151,11 @@ begin
   Fres := AHandle;
 end;
 
+function TBrookHTTPResponse.GetHandle: Pointer;
+begin
+  Result := Fres;
+end;
+
 {$IFDEF FPC}
  {$PUSH}{$WARN 5024 OFF}
 {$ENDIF}
@@ -163,76 +173,105 @@ begin
   TStream(Acls).Free;
 end;
 
-procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
-  AStatus: Word);
+function TBrookHTTPResponse.Send(const AValue, AContentType: string;
+  AStatus: Word): Boolean;
 var
   M: TMarshaller;
+  R: cint;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpres_send(Fres, M.ToCString(AValue),
-    M.ToCString(AContentType), AStatus));
+  R := -bk_httpres_send(Fres, M.ToCString(AValue),
+    M.ToCString(AContentType), AStatus);
+  Result := R = 0;
+  if (not Result) and (R <> EALREADY) then
+    CheckOSError(R);
 end;
 
-procedure TBrookHTTPResponse.Send(const AFmt: string;
-  const AArgs: array of const; const AContentType: string; AStatus: Word);
+function TBrookHTTPResponse.Send(const AFmt: string;
+  const AArgs: array of const; const AContentType: string;
+  AStatus: Word): Boolean;
 begin
-  Send(Format(AFmt, AArgs), AContentType, AStatus);
+  Result := Send(Format(AFmt, AArgs), AContentType, AStatus);
 end;
 
-procedure TBrookHTTPResponse.Send(ABuffer: Pointer; ASize: NativeUInt;
-  const AContentType: string; AStatus: Word);
+function TBrookHTTPResponse.Send(ABuffer: Pointer; ASize: NativeUInt;
+  const AContentType: string; AStatus: Word): Boolean;
 var
   M: TMarshaller;
+  R: cint;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpres_sendbinary(Fres, ABuffer, ASize,
-    M.ToCString(AContentType), AStatus));
+  R := -bk_httpres_sendbinary(Fres, ABuffer, ASize,
+    M.ToCString(AContentType), AStatus);
+  Result := R = 0;
+  if (not Result) and (R <> EALREADY) then
+    CheckOSError(R);
 end;
 
-procedure TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
-  const AContentType: string; AStatus: Word);
+function TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
+  const AContentType: string; AStatus: Word): Boolean;
 begin
-  Send(@ABytes[0], ASize, AContentType, AStatus);
+  Result := Send(@ABytes[0], ASize, AContentType, AStatus);
 end;
 
-procedure TBrookHTTPResponse.Send(AString: TBrookString;
-  const AContentType: string; AStatus: Word);
+function TBrookHTTPResponse.Send(AString: TBrookString;
+  const AContentType: string; AStatus: Word): Boolean;
 var
   M: TMarshaller;
+  R: cint;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpres_sendstr(Fres, AString.Handle,
-    M.ToCString(AContentType), AStatus));
+  R := -bk_httpres_sendstr(Fres, AString.Handle,
+    M.ToCString(AContentType), AStatus);
+  Result := R = 0;
+  if (not Result) and (R <> EALREADY) then
+    CheckOSError(R);
 end;
 
-procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName;
-  ARendered: Boolean; AStatus: Word);
+function TBrookHTTPResponse.TrySendFile(const AFileName: TFileName;
+  ARendered: Boolean; AStatus: Word; out ANotFound: Boolean): Boolean;
 var
   M: TMarshaller;
+  R: cint;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpres_sendfile(Fres, M.ToCString(AFileName),
-    ARendered, AStatus));
+  R := -bk_httpres_sendfile(Fres, M.ToCString(AFileName),
+    ARendered, AStatus);
+  Result := R = 0;
+  if not Result then
+  begin
+    ANotFound := R = ENOENT;
+    if (not ANotFound) and (R <> EALREADY) then
+      CheckOSError(R);
+  end;
 end;
 
-procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName);
+function TBrookHTTPResponse.SendFile(const AFileName: TFileName;
+  ARendered: Boolean; AStatus: Word): Boolean;
 begin
-  SendFile(AFileName, False, 200);
+  if not TrySendFile(AFileName, ARendered, AStatus, Result) then
+    raise EFileNotFoundException.CreateResFmt(@SFileNotFound, [AFileName]);
 end;
 
-procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word);
+function TBrookHTTPResponse.SendFile(const AFileName: TFileName): Boolean;
+begin
+  Result := SendFile(AFileName, False, 200);
+end;
+
+function TBrookHTTPResponse.SendStream(AStream: TStream;
+  AStatus: Word): Boolean;
+var
+  R: cint;
 begin
   if not Assigned(AStream) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
   BkCheckLibrary;
-  CheckOSError(-bk_httpres_sendstream(Fres, AStream.Size, 32768,
-    {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
-    {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus));
-end;
-
-function TBrookHTTPResponse.GetHandle: Pointer;
-begin
-  Result := Fres;
+  R := -bk_httpres_sendstream(Fres, AStream.Size, 32768,
+{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
+{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
+  Result := R = 0;
+  if (not Result) and (R <> EALREADY) then
+    CheckOSError(R);
 end;
 
 { TBrookHTTPServer }
@@ -273,8 +312,8 @@ begin
       try
         VSrv.DoRequest(VSrv, VReq, VRes);
       except
-        on E: EOSError do
-          VSrv.DoError(VSrv, E);
+        {on E: EOSError do
+          VSrv.DoError(VSrv, E);}
         on E: Exception do
           VSrv.DoRequestError(VSrv, VReq, VRes, E);
       end;
@@ -397,8 +436,9 @@ begin
   if Assigned(Fsrv) then
     Exit;
   BkCheckLibrary;
-  Fsrv := bk_httpsrv_new2({$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
-    {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
+  Fsrv := bk_httpsrv_new2(
+{$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
+{$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(Fsrv) then
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandler);
   if FPort <= 0 then
