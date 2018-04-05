@@ -59,7 +59,7 @@ Classes:
 * ~~`TBrookLibraryLoader` - used to customize the path for library loading.~~ (Done!)
 * ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
 * ~~`TBrookStringMap` - used to represent HTML fields, query-string parameters and more.~~ (Done!)
-* `TBrookHTTPServer` - event-driven HTTP server that supports handle many requests and upload/download large files. (In progress...)
+* `TBrookHTTPServer` - event-driven HTTP server that supports to handle many requests and upload/download large files. (In progress...)
 
 Packages:
 
