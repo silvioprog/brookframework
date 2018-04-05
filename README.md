@@ -51,13 +51,15 @@ Units:
 * ~~`BrookLibraryLoader` - allows to customize the path for library loading.~~ (Done!)
 * ~~`BrookUtils` - useful routines and structures.~~ (Done!)
 * ~~`BrookString` - low-level string handling.~~ (Done!)
-* ~~`BrookStringMap` - Mapped strings for fast name-value handling.~~ (Done!)
+* ~~`BrookStringMap` - mapped strings for fast name-value handling.~~ (Done!)
+* `BrookHTTPServer` - fast event-driven HTTP server. (In progress...)
 
 Classes:
 
 * ~~`TBrookLibraryLoader` - used to customize the path for library loading.~~ (Done!)
 * ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
 * ~~`TBrookStringMap` - used to represent HTML fields, query-string parameters and more.~~ (Done!)
+* `TBrookHTTPServer` - event-driven HTTP server that supports handle many requests and upload/download large files. (In progress...)
 
 Packages:
 
@@ -69,13 +71,15 @@ Examples:
 * ~~`BrookUtils_Example` - utility functions example.~~ (Done!)
 * ~~`BrookString_Example` - string class example.~~ (Done!)
 * ~~`BrookStringMap_Example` - string map example.~~ (Done!)
+* `BrookHTTPServer_Example` - HTTP server example. (In progress...)
 
 Testings:
 
-* ~~`TestLibraryLoader` - library loader testings.~~ (Done!)
-* ~~`TestUtils` - utility testings.~~ (Done!)
-* ~~`TestString` - string class testings.~~ (Done!)
-* ~~`TestStringMap` - string map testings.~~ (Done!)
+* ~~`TestLibraryLoader` - library loader tests.~~ (Done!)
+* ~~`TestUtils` - utility tests.~~ (Done!)
+* ~~`TestString` - string class tests.~~ (Done!)
+* ~~`TestStringMap` - string map tests.~~ (Done!)
+* `TestHTTPServer` - HTTP server tests. (In progress...)
 
 Documentation:
 
@@ -83,6 +87,7 @@ Documentation:
 * ~~`BrookUtils` - utility functions reference [HTML/PDF].~~ (Done!)
 * ~~`BrookString` - string class reference [HTML/PDF].~~ (Done!)
 * ~~`BrookStringMap` - string map reference [HTML/PDF].~~ (Done!)
+* `BrookHTTPServer` - HTTP server reference [HTML/PDF]. (In progress...)
 
 Bugs:
 
