@@ -62,7 +62,7 @@ type
     procedure acStartExecute(Sender: TObject);
     procedure acStopExecute(Sender: TObject);
     procedure alMainUpdate(AAction: TBasicAction; var Handled: Boolean);
-    procedure BrookHTTPServer1Error(ASender: TObject; const AError: string);
+    procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
     procedure BrookHTTPServer1Request(ASender: TObject;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
     procedure BrookHTTPServer1RequestError(ASender: TObject;
@@ -150,9 +150,10 @@ begin
     [AException.Message], 'text/html; charset=utf-8', 500);
 end;
 
-procedure TfrMain.BrookHTTPServer1Error(ASender: TObject; const AError: string);
+procedure TfrMain.BrookHTTPServer1Error(ASender: TObject;
+  AException: Exception);
 begin
-  Application.QueueAsyncCall(DoError, PtrInt(NewStr(AError)));
+  Application.QueueAsyncCall(DoError, PtrInt(NewStr(AException.Message)));
 end;
 
 end.

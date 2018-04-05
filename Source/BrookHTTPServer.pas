@@ -5,6 +5,7 @@ unit BrookHTTPServer;
 interface
 
 uses
+  RtlConsts,
   SysUtils,
   Classes,
   Marshalling,
@@ -29,7 +30,7 @@ type
   TBrookHTTPResponse = class;
 
   TBrookHTTPErrorEvent = procedure(ASender: TObject;
-    const AError: string) of object;
+    AException: Exception) of object;
 
   TBrookHTTPRequestEvent = procedure(ASender: TObject;
     ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
@@ -55,6 +56,9 @@ type
   private
     Fres: Pbk_httpres;
   protected
+    class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
+      Asize: csize_t): cssize_t; cdecl; static;
+    class procedure DoStreamFree(Acls: Pcvoid); cdecl; static;
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
@@ -68,7 +72,10 @@ type
       const AContentType: string; AStatus: Word); overload; virtual;
     procedure Send(AString: TBrookString; const AContentType: string;
       AStatus: Word); overload; virtual;
-    procedure SendFile(const AFileName: TFileName; ARendered: Boolean); virtual;
+    procedure SendFile(const AFileName: TFileName;
+      ARendered: Boolean); overload; virtual;
+    procedure SendFile(const AFileName: TFileName); overload; virtual;
+    procedure SendStream(AStream: TStream); virtual;
   end;
 
   TBrookHTTPServer = class(TBrookHandledComponent)
@@ -84,11 +91,15 @@ type
     procedure SetPort(AValue: UInt16);
     procedure SetThreaded(AValue: Boolean);
   protected
+    class procedure DoRequestCallback(Acls: Pcvoid; Areq: Pbk_httpreq;
+      Ares: Pbk_httpres); cdecl; static;
+    class procedure DoErrorCallback(Acls: Pcvoid;
+      const Aerr: Pcchar); cdecl; static;
     function CreateRequest(AHandle: Pointer): TBrookHTTPRequest; virtual;
     function CreateResponse(AHandle: Pointer): TBrookHTTPResponse; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
-    procedure DoError(ASender: TObject; const AError: string); virtual;
+    procedure DoError(ASender: TObject; AException: Exception); virtual;
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); virtual;
     procedure DoRequestError(ASender: TObject; ARequest: TBrookHTTPRequest;
@@ -114,38 +125,6 @@ type
 
 implementation
 
-procedure BrookHTTPServerRequestCallback(Acls: Pcvoid; Areq: Pbk_httpreq;
-  Ares: Pbk_httpres); cdecl;
-var
-  VSrv: TBrookHTTPServer absolute Acls;
-  VReq: TBrookHTTPRequest;
-  VRes: TBrookHTTPResponse;
-begin
-  VReq := VSrv.CreateRequest(Areq);
-  try
-    VRes := VSrv.CreateResponse(Ares);
-    try
-      try
-        VSrv.DoRequest(VSrv, VReq, VRes);
-      except
-        on E: Exception do
-          VSrv.DoRequestError(VSrv, VReq, VRes, E);
-      end;
-    finally
-      VRes.Free;
-    end;
-  finally
-    VReq.Free;
-  end;
-end;
-
-procedure BrookHTTPServerErrorCallback(Acls: Pcvoid; const Aerr: Pcchar); cdecl;
-var
-  VServer: TBrookHTTPServer absolute Acls;
-begin
-  VServer.DoError(VServer, TMarshal.ToString(Aerr));
-end;
-
 { TBrookHTTPRequest }
 
 constructor TBrookHTTPRequest.Create(AHandle: Pointer);
@@ -165,6 +144,23 @@ constructor TBrookHTTPResponse.Create(AHandle: Pointer);
 begin
   inherited Create;
   Fres := AHandle;
+end;
+
+{$IFDEF FPC}
+ {$PUSH}{$WARN 5024 OFF}
+{$ENDIF}
+class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t;
+  Abuf: Pcchar; Asize: csize_t): cssize_t;
+begin
+  Result := TStream(Acls).Read(Abuf^, Asize);
+end;
+{$IFDEF FPC}
+ {$POP}
+{$ENDIF}
+
+class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid);
+begin
+  TStream(Acls).Free;
 end;
 
 procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
@@ -218,6 +214,21 @@ begin
   CheckOSError(-bk_httpres_sendfile(Fres, M.ToCString(AFileName), ARendered));
 end;
 
+procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName);
+begin
+  SendFile(AFileName, False);
+end;
+
+procedure TBrookHTTPResponse.SendStream(AStream: TStream);
+begin
+  if not Assigned(AStream) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
+  BkCheckLibrary;
+  CheckOSError(-bk_httpres_sendstream(Fres, AStream.Size, 32768,
+    {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
+    {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree));
+end;
+
 function TBrookHTTPResponse.GetHandle: Pointer;
 begin
   Result := Fres;
@@ -247,6 +258,47 @@ begin
   Result := TBrookHTTPResponse.Create(AHandle);
 end;
 
+class procedure TBrookHTTPServer.DoRequestCallback(Acls: Pcvoid;
+  Areq: Pbk_httpreq; Ares: Pbk_httpres);
+var
+  VSrv: TBrookHTTPServer absolute Acls;
+  VReq: TBrookHTTPRequest;
+  VRes: TBrookHTTPResponse;
+begin
+  VReq := VSrv.CreateRequest(Areq);
+  try
+    VRes := VSrv.CreateResponse(Ares);
+    try
+      try
+        VSrv.DoRequest(VSrv, VReq, VRes);
+      except
+        on E: EOSError do
+          VSrv.DoError(VSrv, E);
+        on E: Exception do
+          VSrv.DoRequestError(VSrv, VReq, VRes, E);
+      end;
+    finally
+      VRes.Free;
+    end;
+  finally
+    VReq.Free;
+  end;
+end;
+
+class procedure TBrookHTTPServer.DoErrorCallback(Acls: Pcvoid;
+  const Aerr: Pcchar);
+var
+  VServer: TBrookHTTPServer absolute Acls;
+  VException: EBrookHTTPServerError;
+begin
+  VException := EBrookHTTPServerError.Create(TMarshal.ToString(Aerr));
+  try
+    VServer.DoError(VServer, VException);
+  finally
+    VException.Free;
+  end;
+end;
+
 procedure TBrookHTTPServer.Loaded;
 begin
   inherited Loaded;
@@ -269,10 +321,10 @@ begin
   Result := Fsrv;
 end;
 
-procedure TBrookHTTPServer.DoError(ASender: TObject; const AError: string);
+procedure TBrookHTTPServer.DoError(ASender: TObject; AException: Exception);
 begin
   if Assigned(FOnError) then
-    FOnError(ASender, AError);
+    FOnError(ASender, AException);
 end;
 
 procedure TBrookHTTPServer.DoRequest(ASender: TObject;
@@ -340,14 +392,12 @@ begin
 end;
 
 procedure TBrookHTTPServer.InternalStart;
-var
-  R: cint;
 begin
   if Assigned(Fsrv) then
     Exit;
   BkCheckLibrary;
-  Fsrv := bk_httpsrv_new2(BrookHTTPServerRequestCallback, Self,
-    BrookHTTPServerErrorCallback, Self);
+  Fsrv := bk_httpsrv_new2({$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
+    {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(Fsrv) then
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandler);
   if FPort <= 0 then
@@ -357,10 +407,7 @@ begin
     raise EInvalidOperation.CreateResFmt(
       @SBrookInvalidHTTPServerPort, [FPort]);
   end;
-  R := bk_httpsrv_start(Fsrv, FPort, FThreaded);
-  if R < 0 then
-    CheckOSError(-R);
-  FActive := R = 0;
+  FActive := bk_httpsrv_start(Fsrv, FPort, FThreaded) = 0;
   if FActive then
     Exit;
   bk_httpsrv_free(Fsrv);

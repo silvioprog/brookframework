@@ -74,7 +74,7 @@ type
     procedure BrookHTTPServer1RequestError(ASender: TObject;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
       AException: Exception);
-    procedure BrookHTTPServer1Error(ASender: TObject; const AError: string);
+    procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
   end;
 
@@ -143,10 +143,11 @@ begin
     [AException.Message], 'text/html; charset=utf-8', 500);
 end;
 
-procedure TfrMain.BrookHTTPServer1Error(ASender: TObject; const AError: string);
+procedure TfrMain.BrookHTTPServer1Error(ASender: TObject;
+  AException: Exception);
 begin
-  TDialogService.MessageDialog(AError, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK],
-    TMsgDlgBtn.mbOK, 0, nil);
+  TDialogService.MessageDialog(AException.Message, TMsgDlgType.mtError,
+    [TMsgDlgBtn.mbOK], TMsgDlgBtn.mbOK, 0, nil);
 end;
 
 end.
