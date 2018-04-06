@@ -74,7 +74,7 @@ type
     function Send(AString: TBrookString; const AContentType: string;
       AStatus: Word): Boolean; overload; virtual;
     function TrySendFile(const AFileName: TFileName; ARendered: Boolean;
-      AStatus: Word; out ANotFound: Boolean): Boolean; overload; virtual;
+      AStatus: Word; out AFailed: Boolean): Boolean; overload; virtual;
     function SendFile(const AFileName: TFileName;
       ARendered: Boolean; AStatus: Word): Boolean; overload; virtual;
     function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
@@ -84,6 +84,7 @@ type
 
   TBrookHTTPServer = class(TBrookHandledComponent)
   private
+    FCatchOSErrors: Boolean;
     FOnRequest: TBrookHTTPRequestEvent;
     FOnError: TBrookHTTPErrorEvent;
     FActive: Boolean;
@@ -92,6 +93,11 @@ type
     FThreaded: Boolean;
     FStreamedActive: Boolean;
     Fsrv: Pbk_httpsrv;
+    function IsActive: Boolean;
+    function IsCatchOSErrors: Boolean;
+    function IsPort: Boolean;
+    function IsThreaded: Boolean;
+    procedure SetCatchOSErrors(AValue: Boolean);
     procedure SetPort(AValue: UInt16);
     procedure SetThreaded(AValue: Boolean);
   protected
@@ -118,10 +124,13 @@ type
     procedure Start; inline;
     procedure Stop; inline;
   published
-    property Active: Boolean read FActive write SetActive default False;
-    property Port: UInt16 read FPort write SetPort default 8080;
-    property Threaded: Boolean read FThreaded write SetThreaded;
-
+    property Active: Boolean read FActive write SetActive stored IsActive
+      default False;
+    property Port: UInt16 read FPort write SetPort stored IsPort default 8080;
+    property Threaded: Boolean read FThreaded write SetThreaded
+      stored IsThreaded default False;
+    property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
+      stored IsCatchOSErrors default False;
     property OnRequest: TBrookHTTPRequestEvent read FOnRequest write FOnRequest;
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
       write FOnRequestError;
@@ -229,7 +238,7 @@ begin
 end;
 
 function TBrookHTTPResponse.TrySendFile(const AFileName: TFileName;
-  ARendered: Boolean; AStatus: Word; out ANotFound: Boolean): Boolean;
+  ARendered: Boolean; AStatus: Word; out AFailed: Boolean): Boolean;
 var
   M: TMarshaller;
   R: cint;
@@ -240,8 +249,8 @@ begin
   Result := R = 0;
   if not Result then
   begin
-    ANotFound := R = ENOENT;
-    if (not ANotFound) and (R <> EALREADY) then
+    AFailed := R = ENOENT;
+    if (not AFailed) and (R <> EALREADY) then
       CheckOSError(R);
   end;
 end;
@@ -250,7 +259,7 @@ function TBrookHTTPResponse.SendFile(const AFileName: TFileName;
   ARendered: Boolean; AStatus: Word): Boolean;
 begin
   if not TrySendFile(AFileName, ARendered, AStatus, Result) then
-    raise EFileNotFoundException.CreateResFmt(@SFileNotFound, [AFileName]);
+    raise EFileNotFoundException.CreateResFmt(@SFOpenError, [AFileName]);
 end;
 
 function TBrookHTTPResponse.SendFile(const AFileName: TFileName): Boolean;
@@ -312,8 +321,11 @@ begin
       try
         VSrv.DoRequest(VSrv, VReq, VRes);
       except
-        {on E: EOSError do
-          VSrv.DoError(VSrv, E);}
+        on E: EOSError do
+          if VSrv.CatchOSErrors then
+            VSrv.DoRequestError(VSrv, VReq, VRes, E)
+          else
+            VSrv.DoError(VSrv, E);
         on E: Exception do
           VSrv.DoRequestError(VSrv, VReq, VRes, E);
       end;
@@ -401,12 +413,40 @@ begin
   FPort := AValue;
 end;
 
+procedure TBrookHTTPServer.SetCatchOSErrors(AValue: Boolean);
+begin
+  if FStreamedActive then
+    Exit;
+  CheckInactive;
+  FCatchOSErrors := AValue;
+end;
+
 procedure TBrookHTTPServer.SetThreaded(AValue: Boolean);
 begin
   if FStreamedActive then
     Exit;
   CheckInactive;
   FThreaded := AValue;
+end;
+
+function TBrookHTTPServer.IsCatchOSErrors: Boolean;
+begin
+  Result := FCatchOSErrors;
+end;
+
+function TBrookHTTPServer.IsActive: Boolean;
+begin
+  Result := FActive;
+end;
+
+function TBrookHTTPServer.IsPort: Boolean;
+begin
+  Result := FPort <> 8080;
+end;
+
+function TBrookHTTPServer.IsThreaded: Boolean;
+begin
+  Result := FThreaded;
 end;
 
 procedure TBrookHTTPServer.SetActive(AValue: Boolean);

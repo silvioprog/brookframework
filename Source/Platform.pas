@@ -54,9 +54,6 @@ const
   ENOENT = ERROR_FILE_NOT_FOUND;
 {$ENDIF}
 
-resourcestring
-  SFileNotFound = 'File not found: %s';
-
 implementation
 
 end.

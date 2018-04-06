@@ -57,6 +57,7 @@ type
     FHandle: TLibHandle;
     FLibraryName: TFileName;
     FStreamedLoad: Boolean;
+    function IsEnabled: Boolean;
     procedure SetEnabled(AValue: Boolean);
     procedure SetLibraryName(const AValue: TFileName);
   protected
@@ -72,7 +73,7 @@ type
     procedure DefineProperties(AFiler: TFiler); override;
   published
     { Loads/Unloads the library dynamically. }
-    property Enabled: Boolean read FEnabled write SetEnabled;
+    property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabled;
     { Specifies the library to be loaded dynamically. }
     property LibraryName: TFileName read FLibraryName write SetLibraryName;
     { Version of the loaded library. }
@@ -120,6 +121,11 @@ begin
       Load
     else
       Unload;
+end;
+
+function TBrookLibraryLoader.IsEnabled: Boolean;
+begin
+  Result := FEnabled;
 end;
 
 procedure TBrookLibraryLoader.SetLibraryName(const AValue: TFileName);
