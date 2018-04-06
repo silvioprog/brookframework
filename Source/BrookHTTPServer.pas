@@ -293,8 +293,11 @@ end;
 
 destructor TBrookHTTPServer.Destroy;
 begin
-  SetActive(False);
-  inherited Destroy;
+  try
+    SetActive(False);
+  finally
+    inherited Destroy;
+  end;
 end;
 
 function TBrookHTTPServer.CreateRequest(AHandle: Pointer): TBrookHTTPRequest;
