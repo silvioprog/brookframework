@@ -362,12 +362,14 @@ begin
       SetActive(True);
   except
     if csDesigning in ComponentState then
+    begin
       if Assigned(ApplicationHandleException) then
         ApplicationHandleException(ExceptObject)
       else
-        ShowException(ExceptObject, ExceptAddr)
+        ShowException(ExceptObject, ExceptAddr);
     else
       raise;
+    end;
   end;
 end;
 
