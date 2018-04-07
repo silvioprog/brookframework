@@ -367,9 +367,9 @@ begin
         ApplicationHandleException(ExceptObject)
       else
         ShowException(ExceptObject, ExceptAddr);
+    end
     else
       raise;
-    end;
   end;
 end;
 
