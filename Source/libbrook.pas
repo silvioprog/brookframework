@@ -257,7 +257,7 @@ var
 procedure CheckOSError(LastError: Integer); platform; inline;
 {$ENDIF}
 
-{ TODO: procedure BkAddUnloadLibraryNotifier; }
+{ TODO: procedure BkAddUnloadLibraryProc }
 function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
 function BkUnloadLibrary: TLibHandle;
 procedure BkCheckLibrary;
