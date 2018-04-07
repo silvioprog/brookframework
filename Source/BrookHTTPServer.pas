@@ -130,7 +130,7 @@ type
     property Threaded: Boolean read FThreaded write SetThreaded
       stored IsThreaded default False;
     property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
-      stored IsCatchOSErrors default False;
+      stored IsCatchOSErrors default True;
     property OnRequest: TBrookHTTPRequestEvent read FOnRequest write FOnRequest;
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
       write FOnRequestError;
@@ -289,6 +289,7 @@ constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPort := 8080;
+  FCatchOSErrors := True;
 end;
 
 destructor TBrookHTTPServer.Destroy;
@@ -436,7 +437,7 @@ end;
 
 function TBrookHTTPServer.IsCatchOSErrors: Boolean;
 begin
-  Result := FCatchOSErrors;
+  Result := not FCatchOSErrors;
 end;
 
 function TBrookHTTPServer.IsActive: Boolean;
