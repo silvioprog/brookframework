@@ -73,9 +73,10 @@ type
       const AContentType: string; AStatus: Word): Boolean; overload; virtual;
     function Send(AString: TBrookString; const AContentType: string;
       AStatus: Word): Boolean; overload; virtual;
-    function TrySendFile(const AFileName: TFileName; ARendered: Boolean;
-      AStatus: Word; out AFailed: Boolean): Boolean; overload; virtual;
-    function SendFile(const AFileName: TFileName;
+    function TrySendFile(ABlockSite: NativeUInt; const AFileName: TFileName;
+      ARendered: Boolean; AStatus: Word;
+      out AFailed: Boolean): Boolean; overload; virtual;
+    function SendFile(ABlockSite: NativeUInt; const AFileName: TFileName;
       ARendered: Boolean; AStatus: Word): Boolean; overload; virtual;
     function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
     function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
@@ -121,8 +122,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Start; inline;
-    procedure Stop; inline;
+    procedure Start;
+    procedure Stop;
   published
     property Active: Boolean read FActive write SetActive stored IsActive
       default False;
@@ -237,14 +238,15 @@ begin
     CheckOSError(R);
 end;
 
-function TBrookHTTPResponse.TrySendFile(const AFileName: TFileName;
-  ARendered: Boolean; AStatus: Word; out AFailed: Boolean): Boolean;
+function TBrookHTTPResponse.TrySendFile(ABlockSite: NativeUInt;
+  const AFileName: TFileName; ARendered: Boolean; AStatus: Word;
+  out AFailed: Boolean): Boolean;
 var
   M: TMarshaller;
   R: cint;
 begin
   BkCheckLibrary;
-  R := -bk_httpres_sendfile(Fres, M.ToCString(AFileName),
+  R := -bk_httpres_sendfile(Fres, ABlockSite, M.ToCString(AFileName),
     ARendered, AStatus);
   Result := R = 0;
   if not Result then
@@ -255,16 +257,16 @@ begin
   end;
 end;
 
-function TBrookHTTPResponse.SendFile(const AFileName: TFileName;
-  ARendered: Boolean; AStatus: Word): Boolean;
+function TBrookHTTPResponse.SendFile(ABlockSite: NativeUInt;
+  const AFileName: TFileName; ARendered: Boolean; AStatus: Word): Boolean;
 begin
-  if not TrySendFile(AFileName, ARendered, AStatus, Result) then
+  if not TrySendFile(ABlockSite, AFileName, ARendered, AStatus, Result) then
     raise EFileNotFoundException.CreateResFmt(@SFOpenError, [AFileName]);
 end;
 
 function TBrookHTTPResponse.SendFile(const AFileName: TFileName): Boolean;
 begin
-  Result := SendFile(AFileName, False, 200);
+  Result := SendFile(4096, AFileName, False, 200);
 end;
 
 function TBrookHTTPResponse.SendStream(AStream: TStream;
