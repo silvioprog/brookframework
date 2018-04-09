@@ -145,7 +145,7 @@ begin
     AAuthentication.Password.Equals('123');
   if not Result then
     AResponse.Send(
-      '<html><head><title>Denied</title></head><body>Go away</body></html>',
+      '<html><head><title>Denied</title></head><body><font color="red">Go away</font></body></html>',
       'text/html; charset=utf-8', 200);
 end;
 
@@ -162,7 +162,7 @@ procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
   AResponse.Send(
-    '<html><head><title>Hello world</title></head><body>Hello world</body></html>',
+    '<html><head><title>Secret</title></head><body>Secret page</body></html>',
     'text/html; charset=utf-8', 200);
 end;
 
