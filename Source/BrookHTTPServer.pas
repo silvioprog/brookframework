@@ -12,9 +12,11 @@ uses
   Marshalling,
   libbrook,
   BrookHandledClasses,
-  BrookString;
+  BrookString,
+  BrookStringMap;
 
 const
+  BROOK_BLOCK_SIZE = 4096;
   BROOK_CONTENT_TYPE = 'text/plain; charset=utf-8';
 
 resourcestring
@@ -86,6 +88,7 @@ type
 
   TBrookHTTPResponse = class(TBrookHandledPersistent)
   private
+    FHeaders: TBrookStringMap;
     Fres: Pbk_httpres;
   protected
     class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
@@ -93,8 +96,10 @@ type
     class procedure DoStreamFree(Acls: Pcvoid); cdecl; static;
     function GetHandle: Pointer; override;
     class procedure CheckStatus(AStatus: Word); static; inline;
+    class procedure CheckStream(AStream: TStream); static; inline;
   public
     constructor Create(AHandle: Pointer); virtual;
+    destructor Destroy; override;
     function Send(const AValue, AContentType: string;
       AStatus: Word): Boolean; overload; virtual;
     function Send(const AFmt: string; const AArgs: array of const;
@@ -112,7 +117,8 @@ type
       ARendered: Boolean; AStatus: Word): Boolean; overload; virtual;
     function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
     function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
-    //procedure SendData(); virtual;
+    function SendData(AStream: TStream; AStatus: Word): Boolean; virtual;
+    property Headers: TBrookStringMap read FHeaders write FHeaders;
   end;
 
   TBrookHTTPServer = class(TBrookHandledComponent)
@@ -212,9 +218,9 @@ procedure TBrookHTTPAuthentication.SetRealm(const AValue: string);
 var
   M: TMarshaller;
 begin
-  BkCheckLibrary;
   if AValue = FRealm then
     Exit;
+  BkCheckLibrary;
   FRealm := AValue;
   CheckOSError(-bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
 end;
@@ -256,6 +262,14 @@ constructor TBrookHTTPResponse.Create(AHandle: Pointer);
 begin
   inherited Create;
   Fres := AHandle;
+  FHeaders := TBrookStringMap.Create(bk_httpres_headers(Fres));
+  FHeaders.ClearOnDestroy := False;
+end;
+
+destructor TBrookHTTPResponse.Destroy;
+begin
+  FHeaders.Free;
+  inherited Destroy;
 end;
 
 function TBrookHTTPResponse.GetHandle: Pointer;
@@ -267,6 +281,12 @@ class procedure TBrookHTTPResponse.CheckStatus(AStatus: Word);
 begin
   if (AStatus < 100) or (AStatus > 599) then
     raise EArgumentException.CreateResFmt(@SBrookInvalidHTTPStatus, [AStatus]);
+end;
+
+class procedure TBrookHTTPResponse.CheckStream(AStream: TStream);
+begin
+  if not Assigned(AStream) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
 end;
 
 {$IFDEF FPC}
@@ -292,8 +312,8 @@ var
   M: TMarshaller;
   R: cint;
 begin
-  BkCheckLibrary;
   CheckStatus(AStatus);
+  BkCheckLibrary;
   R := -bk_httpres_send(Fres, M.ToCString(AValue),
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
@@ -314,8 +334,8 @@ var
   M: TMarshaller;
   R: cint;
 begin
-  BkCheckLibrary;
   CheckStatus(AStatus);
+  BkCheckLibrary;
   R := -bk_httpres_sendbinary(Fres, ABuffer, ASize,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
@@ -335,8 +355,8 @@ var
   M: TMarshaller;
   R: cint;
 begin
-  BkCheckLibrary;
   CheckStatus(AStatus);
+  BkCheckLibrary;
   R := -bk_httpres_sendstr(Fres, AString.Handle,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
@@ -351,8 +371,8 @@ var
   M: TMarshaller;
   R: cint;
 begin
-  BkCheckLibrary;
   CheckStatus(AStatus);
+  BkCheckLibrary;
   R := -bk_httpres_sendfile(Fres, ABlockSite, M.ToCString(AFileName),
     ARendered, AStatus);
   Result := R = 0;
@@ -381,11 +401,25 @@ function TBrookHTTPResponse.SendStream(AStream: TStream;
 var
   R: cint;
 begin
-  BkCheckLibrary;
-  if not Assigned(AStream) then
-    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
+  CheckStream(AStream);
   CheckStatus(AStatus);
-  R := -bk_httpres_sendstream(Fres, AStream.Size, 32768,
+  BkCheckLibrary;
+  R := -bk_httpres_sendstream(Fres, AStream.Size, BROOK_BLOCK_SIZE,
+{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
+{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
+  Result := R = 0;
+  if (not Result) and (R <> EALREADY) then
+    CheckOSError(R);
+end;
+
+function TBrookHTTPResponse.SendData(AStream: TStream; AStatus: Word): Boolean;
+var
+  R: cint;
+begin
+  CheckStream(AStream);
+  CheckStatus(AStatus);
+  BkCheckLibrary;
+  R := -bk_httpres_senddata(Fres, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
   Result := R = 0;
