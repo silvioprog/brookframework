@@ -61,6 +61,7 @@ type
       var AValue: TValue);
   private
     FMap: TBrookStringMap;
+    FMapHandle: Pointer;
     FList: TStrings;
     procedure DoMapChange(ASender: TObject;
       AOperation: TBrookStringMapOperation);
@@ -75,7 +76,7 @@ implementation
 
 procedure TfrMain.FormCreate(Sender: TObject);
 begin
-  FMap := TBrookStringMap.Create(nil);
+  FMap := TBrookStringMap.Create(@FMapHandle);
   FList := TStringList.Create;
   FMap.OnChange := DoMapChange;
 end;

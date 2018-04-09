@@ -34,6 +34,7 @@ unit BrookStringMap;
 interface
 
 uses
+  RTLConsts,
   SysUtils,
   Platform,
   Marshalling,
@@ -116,10 +117,10 @@ type
   { String map class and its related methods. }
   TBrookStringMap = class(TBrookHandledPersistent)
   private
+    FClearOnDestroy: Boolean;
     Fnext: Pbk_strmap;
-    Fmap: Pbk_strmap;
+    Fmap: PPbk_strmap;
     FOnChange: TBrookStringMapChangeEvent;
-    FOwnsHandle: Boolean;
     function GetCount: Integer;
     function GetValue(const AName: string): string;
     procedure SetValue(const AName, AValue: string);
@@ -136,14 +137,12 @@ type
   public
     { Creates an instance of @link(TBrookStringMap).
 
-      @param(AHandle[in] String map handle.)}
+      @param(AHandle[in] Pointer to store the string map handle.)}
     constructor Create(AHandle: Pointer); virtual;
     { Frees an instance of @link(TBrookStringMap). }
     destructor Destroy; override;
     { Gets an instance of @link(TBrookStringMapEnumerator). }
     function GetEnumerator: TBrookStringMapEnumerator;
-    { Determines if the handle is freed on the class destruction. }
-    property OwnsHandle: Boolean read FOwnsHandle write FOwnsHandle;
     { Adds a pair of strings to the map.
 
       @param(AName[in] Name of the pair.)
@@ -203,6 +202,8 @@ type
     { Indicates the end of map. }
     property EOF: Boolean read IsEOF;
   published
+    { Clears the list on destroy. }
+    property ClearOnDestroy: Boolean read FClearOnDestroy write FClearOnDestroy;
     { Notifies a change in the map. }
     property OnChange: TBrookStringMapChangeEvent read FOnChange write FOnChange;
   end;
@@ -246,14 +247,16 @@ end;
 constructor TBrookStringMap.Create(AHandle: Pointer);
 begin
   inherited Create;
-  FOwnsHandle := not Assigned(AHandle);
+  if not Assigned(AHandle) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AHandle']);
   Fmap := AHandle;
+  FClearOnDestroy := True;
 end;
 
 destructor TBrookStringMap.Destroy;
 begin
   try
-    if FOwnsHandle then
+    if FClearOnDestroy then
       Clear;
   finally
     inherited Destroy;
@@ -294,10 +297,8 @@ end;
 
 function TBrookStringMap.GetCount: Integer;
 begin
-  if not Assigned(Fmap) then
-    Exit(0);
   BkCheckLibrary;
-  Result := bk_strmap_count(Fmap);
+  Result := bk_strmap_count(Fmap^);
   if Result < 0 then
     CheckOSError(-Result);
 end;
@@ -334,7 +335,7 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_strmap_add(@Fmap, M.ToCString(AName), M.ToCString(AValue)));
+  CheckOSError(-bk_strmap_add(Fmap, M.ToCString(AName), M.ToCString(AValue)));
   DoChange(bkmoAdd);
 end;
 
@@ -343,7 +344,7 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_strmap_set(@Fmap, M.ToCString(AName), M.ToCString(AValue)));
+  CheckOSError(-bk_strmap_set(Fmap, M.ToCString(AName), M.ToCString(AValue)));
   DoChange(bkmoAddOrSet);
 end;
 
@@ -352,10 +353,8 @@ var
   R: cint;
   M: TMarshaller;
 begin
-  if not Assigned(Fmap) then
-    Exit;
   BkCheckLibrary;
-  R := bk_strmap_rm(@Fmap, M.ToCString(AName));
+  R := bk_strmap_rm(Fmap, M.ToCString(AName));
   if (R <> 0) and (R <> -ENOENT) then
     CheckOSError(-R);
   DoChange(bkmoRemove);
@@ -363,10 +362,8 @@ end;
 
 procedure TBrookStringMap.Clear;
 begin
-  if not Assigned(Fmap) then
-    Exit;
   BkCheckLibrary;
-  bk_strmap_cleanup(@Fmap);
+  bk_strmap_cleanup(Fmap);
   DoChange(bkmoNone);
 end;
 
@@ -377,10 +374,8 @@ var
   P: Pbk_strmap;
   M: TMarshaller;
 begin
-  if not Assigned(Fmap) then
-    Exit(False);
   BkCheckLibrary;
-  R := bk_strmap_find(Fmap, M.ToCString(AName), @P);
+  R := bk_strmap_find(Fmap^, M.ToCString(AName), @P);
   Result := R = 0;
   if Result then
     APair := TBrookStringPair.Create(AName, TMarshal.ToString(bk_strmap_val(P)))
@@ -401,7 +396,7 @@ end;
 
 function TBrookStringMap.First(out APair: TBrookStringPair): Boolean;
 begin
-  Fnext := Fmap;
+  Fnext := Fmap^;
   Result := Assigned(Fnext);
   if Result then
   begin
@@ -430,12 +425,10 @@ var
   R: cint;
   M: TMethod;
 begin
-  if not Assigned(Fmap) then
-    Exit;
   BkCheckLibrary;
   M.Code := @AIterator;
   M.Data := AData;
-  R := bk_strmap_iter(Fmap,
+  R := bk_strmap_iter(Fmap^,
 {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
   if R <> -1 then
     CheckOSError(-R);
@@ -446,12 +439,10 @@ procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
 var
   M: TMethod;
 begin
-  if not Assigned(Fmap) then
-    Exit;
   BkCheckLibrary;
   M.Code := @AComparator;
   M.Data := AData;
-  CheckOSError(-bk_strmap_sort(@Fmap,
+  CheckOSError(-bk_strmap_sort(Fmap,
 {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
 end;
 

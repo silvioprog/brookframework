@@ -31,6 +31,7 @@ program Test_StringMap;
 
 {$IFDEF FPC}
  {$WARN 5024 OFF}
+ {$WARN 6058 OFF}
 {$ENDIF}
 
 uses
@@ -78,38 +79,45 @@ begin
   Assert(VPair.Value = '123');
 end;
 
-procedure Test_StringMapOwnsHandle;
+procedure Test_StringMapClearOnDestroy;
 var
-  M: TMarshaller;
-  Vhandle: Pbk_strmap;
+  VMapHandle: Pointer;
   VMap: TBrookStringMap;
 begin
-  BkCheckLibrary;
-  Vhandle := nil;
-  bk_strmap_add(@Vhandle, M.ToCString('abc'), M.ToCString('123'));
-  VMap := TBrookStringMap.Create(Vhandle);
+  VMapHandle := nil;
+  VMap := TBrookStringMap.Create(@VMapHandle);
   try
-    Assert(Assigned(VMap.Handle));
-    Assert(VMap.Handle = Vhandle);
+    Assert(VMap.ClearOnDestroy);
+    VMap.ClearOnDestroy := False;
+    VMap.Add('abc', '123');
+    VMap.Add('def', '456');
+    BkCheckLibrary;
+    Assert(bk_strmap_count(VMapHandle) = 2);
   finally
-    VMap.Destroy;
-    bk_strmap_cleanup(@Vhandle);
-    Assert(not Assigned(Vhandle));
+    VMap.Free;
   end;
-  VMap := TLocalStringMap.Create(nil);
+  Assert(bk_strmap_count(VMapHandle) = 2);
+  bk_strmap_cleanup(@VMapHandle);
+  VMapHandle := nil;
+  VMap := TLocalStringMap.Create(@VMapHandle);
   try
     VMap.Add('abc', '123');
-    Assert(Assigned(VMap.Handle));
+    VMap.Add('def', '456');
+    BkCheckLibrary;
+    Assert(bk_strmap_count(VMapHandle) = 2);
   finally
-    TLocalStringMap(VMap).LocalDestroy;
+    VMap.Free;
   end;
+  Assert(bk_strmap_count(VMapHandle) = 0);
 end;
 
 procedure Test_StringMapOnChange;
 var
+  VMapHandle: Pointer;
   VMap: TLocalStringMap;
 begin
-  VMap := TLocalStringMap.Create(nil);
+  VMapHandle := nil;
+  VMap := TLocalStringMap.Create(@VMapHandle);
   try
     Assert(VMap.Operation = bkmoNone);
     VMap.Add('abc', '123');
@@ -127,6 +135,7 @@ end;
 
 procedure Test_StringMapHandle(AMap: TBrookStringMap);
 var
+  VMapHandle: Pointer;
   VMap: TBrookStringMap;
 begin
   AMap.Clear;
@@ -138,7 +147,8 @@ begin
   finally
     VMap.Free;
   end;
-  VMap := TBrookStringMap.Create(nil);
+  VMapHandle := nil;
+  VMap := TBrookStringMap.Create(@VMapHandle);
   try
     VMap.Add('abc', '123');
     Assert(Assigned(VMap.Handle));
@@ -547,12 +557,14 @@ const
   NAME = 'abç';
   VAL = 'déf';
 var
+  VMapHandle: Pointer;
   VMap: TBrookStringMap;
 begin
   Test_StringMapNameValue;
-  Test_StringMapOwnsHandle;
+  Test_StringMapClearOnDestroy;
   Test_StringMapOnChange;
-  VMap := TBrookStringMap.Create(nil);
+  VMapHandle := nil;
+  VMap := TBrookStringMap.Create(@VMapHandle);
   try
     Test_StringMapHandle(VMap);
     Test_StringMapAdd(VMap, NAME, VAL);
