@@ -1,0 +1,88 @@
+object frMain: TfrMain
+  Left = 259
+  Height = 160
+  Top = 149
+  Width = 320
+  Caption = 'BrookHTTPAuth example'
+  ClientHeight = 160
+  ClientWidth = 320
+  Position = poDesktopCenter
+  LCLVersion = '1.8.0.6'
+  object lbPort: TLabel
+    Left = 20
+    Height = 15
+    Top = 22
+    Width = 22
+    Caption = 'Port'
+    ParentColor = False
+  end
+  object edPort: TSpinEdit
+    Left = 49
+    Height = 23
+    Top = 17
+    Width = 66
+    MaxValue = 65535
+    MinValue = 1
+    OnChange = edPortChange
+    TabOrder = 2
+    Value = 8080
+  end
+  object btStart: TButton
+    Left = 128
+    Height = 25
+    Top = 18
+    Width = 75
+    Action = acStart
+    TabOrder = 0
+  end
+  object btStop: TButton
+    Left = 216
+    Height = 25
+    Top = 18
+    Width = 75
+    Action = acStop
+    TabOrder = 1
+  end
+  object lbLink: TLabel
+    Cursor = crHandPoint
+    Left = 20
+    Height = 15
+    Top = 64
+    Width = 110
+    Caption = 'http://localhost:8080'
+    Enabled = False
+    Font.Color = clBlue
+    Font.Style = [fsUnderline]
+    ParentColor = False
+    ParentFont = False
+    OnClick = lbLinkClick
+    OnMouseEnter = lbLinkMouseEnter
+    OnMouseLeave = lbLinkMouseLeave
+  end
+  object alMain: TActionList
+    OnUpdate = alMainUpdate
+    left = 48
+    top = 60
+    object acStart: TAction
+      Category = 'HTTP auth'
+      Caption = '&Start'
+      OnExecute = acStartExecute
+      ShortCut = 120
+    end
+    object acStop: TAction
+      Category = 'HTTP auth'
+      Caption = 'S&top'
+      Enabled = False
+      OnExecute = acStopExecute
+      ShortCut = 121
+    end
+  end
+  object BrookHTTPServer1: TBrookHTTPServer
+    Threaded = False
+    OnRequest = BrookHTTPServer1Request
+    OnRequestError = BrookHTTPServer1RequestError
+    OnError = BrookHTTPServer1Error
+    left = 152
+    top = 60
+  end
+end
