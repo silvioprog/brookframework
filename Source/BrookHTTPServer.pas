@@ -22,7 +22,7 @@ resourcestring
     'Operation is not allowed while the server is active';
   SBrookCannotCreateHTTPServerHandler = 'Cannot create HTTP server handler';
   SBrookInvalidHTTPServerPort = 'Invalid HTTP server port: %d';
-  SBrookInvalidStatusCode = 'Invalid status code: %d';
+  SBrookInvalidHTTPStatus = 'Invalid status code: %d';
 
 type
   TBrookHTTPAuthentication = class;
@@ -59,12 +59,15 @@ type
   private
     Fauth: Pbk_httpauth;
     FPassword: string;
+    FRealm: string;
     FUserName: string;
+    procedure SetRealm(const AValue: string);
   protected
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
     procedure Cancel; virtual;
+    property Realm: string read FRealm write SetRealm;
     property UserName: string read FUserName;
     property Password: string read FPassword;
   end;
@@ -122,6 +125,7 @@ type
     FPort: UInt16;
     FThreaded: Boolean;
     FStreamedActive: Boolean;
+    FStreamedAuthenticated: Boolean;
     Fsrv: Pbk_httpsrv;
     function IsActive: Boolean;
     function IsAuthenticated: Boolean;
@@ -166,10 +170,9 @@ type
     procedure Start;
     procedure Stop;
   published
-    property Active: Boolean read FActive write SetActive stored IsActive
-      default False;
+    property Active: Boolean read FActive write SetActive stored IsActive;
     property Authenticated: Boolean read FAuthenticated write SetAuthenticated
-      stored IsAuthenticated default False;
+      stored IsAuthenticated;
     property Port: UInt16 read FPort write SetPort stored IsPort default 8080;
     property Threaded: Boolean read FThreaded write SetThreaded
       stored IsThreaded default False;
@@ -197,6 +200,16 @@ begin
   FPassword := TMarshal.ToString(bk_httpauth_pwd(Fauth));
 end;
 
+procedure TBrookHTTPAuthentication.SetRealm(const AValue: string);
+var
+  M: TMarshaller;
+begin
+  if AValue = FRealm then
+    Exit;
+  FRealm := AValue;
+  CheckOSError(bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
+end;
+
 function TBrookHTTPAuthentication.GetHandle: Pointer;
 begin
   Result := Fauth;
@@ -204,7 +217,7 @@ end;
 
 procedure TBrookHTTPAuthentication.Cancel;
 begin
-
+  CheckOSError(bk_httpauth_cancel(Fauth));
 end;
 
 { TBrookHTTPRequest }
@@ -236,7 +249,7 @@ end;
 class procedure TBrookHTTPResponse.CheckStatus(AStatus: Word);
 begin
   if (AStatus < 100) or (AStatus > 599) then
-    raise EArgumentException.CreateResFmt(@SBrookInvalidStatusCode, [AStatus]);
+    raise EArgumentException.CreateResFmt(@SBrookInvalidHTTPStatus, [AStatus]);
 end;
 
 {$IFDEF FPC}
@@ -481,6 +494,8 @@ procedure TBrookHTTPServer.Loaded;
 begin
   inherited Loaded;
   try
+    if FStreamedAuthenticated then
+      SetAuthenticated(True);
     if FStreamedActive then
       SetActive(True);
   except
@@ -603,9 +618,12 @@ end;
 
 procedure TBrookHTTPServer.SetAuthenticated(AValue: Boolean);
 begin
-  if FStreamedActive then
+  if not FStreamedActive then
+    CheckInactive;
+  if AValue = FAuthenticated then
     Exit;
-  CheckInactive;
+  if AValue and (csReading in ComponentState) then
+    FStreamedAuthenticated := True;
   FAuthenticated := AValue;
 end;
 
@@ -638,10 +656,10 @@ begin
   if Assigned(Fsrv) then
     Exit;
   BkCheckLibrary;
-  //if Authenticated then
-    VAuthCb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback;
-  //else
-    //VAuthCb := nil;
+  if FAuthenticated then
+    VAuthCb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
+  else
+    VAuthCb := nil;
   Fsrv := bk_httpsrv_new2(VAuthCb, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
