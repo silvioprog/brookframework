@@ -207,7 +207,7 @@ begin
   if AValue = FRealm then
     Exit;
   FRealm := AValue;
-  CheckOSError(bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
+  CheckOSError(-bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
 end;
 
 function TBrookHTTPAuthentication.GetHandle: Pointer;
@@ -217,7 +217,7 @@ end;
 
 procedure TBrookHTTPAuthentication.Cancel;
 begin
-  CheckOSError(bk_httpauth_cancel(Fauth));
+  CheckOSError(-bk_httpauth_cancel(Fauth));
 end;
 
 { TBrookHTTPRequest }
@@ -428,12 +428,18 @@ begin
           Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
         except
           on E: EOSError do
+          begin
+            Result := False;
             if VSrv.CatchOSErrors then
               VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E)
             else
               VSrv.DoError(VSrv, E);
+          end;
           on E: Exception do
+          begin
+            Result := False;
             VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E);
+          end;
         end;
       finally
         VRes.Free;
@@ -569,25 +575,22 @@ end;
 
 procedure TBrookHTTPServer.SetPort(AValue: UInt16);
 begin
-  if FStreamedActive then
-    Exit;
-  CheckInactive;
+  if not FStreamedActive then
+    CheckInactive;
   FPort := AValue;
 end;
 
 procedure TBrookHTTPServer.SetCatchOSErrors(AValue: Boolean);
 begin
-  if FStreamedActive then
-    Exit;
-  CheckInactive;
+  if not FStreamedActive then
+    CheckInactive;
   FCatchOSErrors := AValue;
 end;
 
 procedure TBrookHTTPServer.SetThreaded(AValue: Boolean);
 begin
-  if FStreamedActive then
-    Exit;
-  CheckInactive;
+  if not FStreamedActive then
+    CheckInactive;
   FThreaded := AValue;
 end;
 
