@@ -24,6 +24,8 @@ resourcestring
   SBrookInvalidHTTPServerPort = 'Invalid HTTP server port: %d';
 
 type
+  TBrookHTTPAuthentication = class;
+
   TBrookHTTPServer = class;
 
   TBrookHTTPRequest = class;
@@ -32,6 +34,14 @@ type
 
   TBrookHTTPErrorEvent = procedure(ASender: TObject;
     AException: Exception) of object;
+
+  TBrookHTTPAuthenticationEvent = function(ASender: TObject;
+    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+    AResponse: TBrookHTTPResponse): Boolean of object;
+
+  TBrookHTTPAuthenticationErrorEvent = procedure(ASender: TObject;
+    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+    AResponse: TBrookHTTPResponse; AException: Exception) of object;
 
   TBrookHTTPRequestEvent = procedure(ASender: TObject;
     ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
@@ -43,6 +53,15 @@ type
   EBrookHTTPServerError = class(Exception);
 
   EBrookOpNotAllowedActiveServer = class(Exception);
+
+  TBrookHTTPAuthentication = class(TBrookHandledPersistent)
+  private
+    Fauth: Pbk_httpauth;
+  protected
+    function GetHandle: Pointer; override;
+  public
+    constructor Create(AHandle: Pointer); virtual;
+  end;
 
   TBrookHTTPRequest = class(TBrookHandledPersistent)
   private
@@ -85,7 +104,10 @@ type
 
   TBrookHTTPServer = class(TBrookHandledComponent)
   private
+    FAuthenticated: Boolean;
     FCatchOSErrors: Boolean;
+    FOnAuthenticate: TBrookHTTPAuthenticationEvent;
+    FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
     FOnRequest: TBrookHTTPRequestEvent;
     FOnError: TBrookHTTPErrorEvent;
     FActive: Boolean;
@@ -95,9 +117,11 @@ type
     FStreamedActive: Boolean;
     Fsrv: Pbk_httpsrv;
     function IsActive: Boolean;
+    function IsAuthenticated: Boolean;
     function IsCatchOSErrors: Boolean;
     function IsPort: Boolean;
     function IsThreaded: Boolean;
+    procedure SetAuthenticated(AValue: Boolean);
     procedure SetCatchOSErrors(AValue: Boolean);
     procedure SetPort(AValue: UInt16);
     procedure SetThreaded(AValue: Boolean);
@@ -108,11 +132,19 @@ type
       Ares: Pbk_httpres); cdecl; static;
     class procedure DoErrorCallback(Acls: Pcvoid;
       const Aerr: Pcchar); cdecl; static;
+    function CreateAuthentication(
+      AHandle: Pointer): TBrookHTTPAuthentication; virtual;
     function CreateRequest(AHandle: Pointer): TBrookHTTPRequest; virtual;
     function CreateResponse(AHandle: Pointer): TBrookHTTPResponse; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
     procedure DoError(ASender: TObject; AException: Exception); virtual;
+    function DoAuthenticate(ASender: TObject;
+      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse): Boolean; virtual;
+    procedure DoAuthenticateError(ASender: TObject;
+      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse; AException: Exception); virtual;
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); virtual;
     procedure DoRequestError(ASender: TObject; ARequest: TBrookHTTPRequest;
@@ -129,11 +161,17 @@ type
   published
     property Active: Boolean read FActive write SetActive stored IsActive
       default False;
+    property Authenticated: Boolean read FAuthenticated write SetAuthenticated
+      stored IsAuthenticated default False;
     property Port: UInt16 read FPort write SetPort stored IsPort default 8080;
     property Threaded: Boolean read FThreaded write SetThreaded
       stored IsThreaded default False;
     property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
       stored IsCatchOSErrors default True;
+    property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
+      write FOnAuthenticate;
+    property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
+      read FOnAuthenticateError write FOnAuthenticateError;
     property OnRequest: TBrookHTTPRequestEvent read FOnRequest write FOnRequest;
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
       write FOnRequestError;
@@ -141,6 +179,19 @@ type
   end;
 
 implementation
+
+{ TBrookHTTPAuthentication }
+
+constructor TBrookHTTPAuthentication.Create(AHandle: Pointer);
+begin
+  inherited Create;
+  Fauth := AHandle;
+end;
+
+function TBrookHTTPAuthentication.GetHandle: Pointer;
+begin
+  Result := Fauth;
+end;
 
 { TBrookHTTPRequest }
 
@@ -305,6 +356,12 @@ begin
   end;
 end;
 
+function TBrookHTTPServer.CreateAuthentication(
+  AHandle: Pointer): TBrookHTTPAuthentication;
+begin
+  Result := TBrookHTTPAuthentication.Create(AHandle);
+end;
+
 function TBrookHTTPServer.CreateRequest(AHandle: Pointer): TBrookHTTPRequest;
 begin
   Result := TBrookHTTPRequest.Create(AHandle);
@@ -317,9 +374,38 @@ end;
 
 class function TBrookHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;
   Aauth: Pbk_httpauth; Areq: Pbk_httpreq; Ares: Pbk_httpreq): cbool;
+var
+  VSrv: TBrookHTTPServer absolute Acls;
+  VAuth: TBrookHTTPAuthentication;
+  VReq: TBrookHTTPRequest;
+  VRes: TBrookHTTPResponse;
 begin
-  { TODO: implement authentication. }
-  Result := True;
+  VAuth := TBrookHTTPAuthentication.Create(Aauth);
+  try
+    VReq := VSrv.CreateRequest(Areq);
+    try
+      VRes := VSrv.CreateResponse(Ares);
+      try
+        try
+          Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
+        except
+          on E: EOSError do
+            if VSrv.CatchOSErrors then
+              VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E)
+            else
+              VSrv.DoError(VSrv, E);
+          on E: Exception do
+            VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E);
+        end;
+      finally
+        VRes.Free;
+      end;
+    finally
+      VReq.Free;
+    end;
+  finally
+    VAuth.Free;
+  end;
 end;
 
 class procedure TBrookHTTPServer.DoRequestCallback(Acls: Pcvoid;
@@ -396,6 +482,25 @@ begin
     FOnError(ASender, AException);
 end;
 
+function TBrookHTTPServer.DoAuthenticate(ASender: TObject;
+  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse): Boolean;
+begin
+  Result := Assigned(FOnAuthenticate) and
+    FOnAuthenticate(ASender, AAuthentication, ARequest, AResponse);
+end;
+
+procedure TBrookHTTPServer.DoAuthenticateError(ASender: TObject;
+  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse; AException: Exception);
+begin
+  if Assigned(FOnAuthenticateError) then
+    FOnAuthenticateError(ASender, AAuthentication, ARequest, AResponse,
+      AException)
+  else
+    AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
+end;
+
 procedure TBrookHTTPServer.DoRequest(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
@@ -456,6 +561,11 @@ begin
   Result := FActive;
 end;
 
+function TBrookHTTPServer.IsAuthenticated: Boolean;
+begin
+  Result := FAuthenticated;
+end;
+
 function TBrookHTTPServer.IsPort: Boolean;
 begin
   Result := FPort <> 8080;
@@ -464,6 +574,14 @@ end;
 function TBrookHTTPServer.IsThreaded: Boolean;
 begin
   Result := FThreaded;
+end;
+
+procedure TBrookHTTPServer.SetAuthenticated(AValue: Boolean);
+begin
+  if FStreamedActive then
+    Exit;
+  CheckInactive;
+  FAuthenticated := AValue;
 end;
 
 procedure TBrookHTTPServer.SetActive(AValue: Boolean);
@@ -489,12 +607,17 @@ begin
 end;
 
 procedure TBrookHTTPServer.InternalStart;
+var
+  VAuthCb: bk_httpauth_cb;
 begin
   if Assigned(Fsrv) then
     Exit;
   BkCheckLibrary;
-  Fsrv := bk_httpsrv_new2(
-{$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback, Self,
+  if FAuthenticated then
+    VAuthCb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
+  else
+    VAuthCb := nil;
+  Fsrv := bk_httpsrv_new2(VAuthCb, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(Fsrv) then
