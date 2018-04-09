@@ -22,6 +22,7 @@ resourcestring
     'Operation is not allowed while the server is active';
   SBrookCannotCreateHTTPServerHandler = 'Cannot create HTTP server handler';
   SBrookInvalidHTTPServerPort = 'Invalid HTTP server port: %d';
+  SBrookInvalidStatusCode = 'Invalid status code: %d';
 
 type
   TBrookHTTPAuthentication = class;
@@ -57,10 +58,15 @@ type
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
     Fauth: Pbk_httpauth;
+    FPassword: string;
+    FUserName: string;
   protected
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
+    procedure Cancel; virtual;
+    property UserName: string read FUserName;
+    property Password: string read FPassword;
   end;
 
   TBrookHTTPRequest = class(TBrookHandledPersistent)
@@ -80,6 +86,7 @@ type
       Asize: csize_t): cssize_t; cdecl; static;
     class procedure DoStreamFree(Acls: Pcvoid); cdecl; static;
     function GetHandle: Pointer; override;
+    class procedure CheckStatus(AStatus: Word); static; inline;
   public
     constructor Create(AHandle: Pointer); virtual;
     function Send(const AValue, AContentType: string;
@@ -186,11 +193,18 @@ constructor TBrookHTTPAuthentication.Create(AHandle: Pointer);
 begin
   inherited Create;
   Fauth := AHandle;
+  FUserName := TMarshal.ToString(bk_httpauth_usr(Fauth));
+  FPassword := TMarshal.ToString(bk_httpauth_pwd(Fauth));
 end;
 
 function TBrookHTTPAuthentication.GetHandle: Pointer;
 begin
   Result := Fauth;
+end;
+
+procedure TBrookHTTPAuthentication.Cancel;
+begin
+
 end;
 
 { TBrookHTTPRequest }
@@ -219,11 +233,17 @@ begin
   Result := Fres;
 end;
 
+class procedure TBrookHTTPResponse.CheckStatus(AStatus: Word);
+begin
+  if (AStatus < 100) or (AStatus > 599) then
+    raise EArgumentException.CreateResFmt(@SBrookInvalidStatusCode, [AStatus]);
+end;
+
 {$IFDEF FPC}
  {$PUSH}{$WARN 5024 OFF}
 {$ENDIF}
-class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t;
-  Abuf: Pcchar; Asize: csize_t): cssize_t;
+class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid;
+  Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t;
 begin
   Result := TStream(Acls).Read(Abuf^, Asize);
 end;
@@ -243,6 +263,7 @@ var
   R: cint;
 begin
   BkCheckLibrary;
+  CheckStatus(AStatus);
   R := -bk_httpres_send(Fres, M.ToCString(AValue),
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
@@ -264,6 +285,7 @@ var
   R: cint;
 begin
   BkCheckLibrary;
+  CheckStatus(AStatus);
   R := -bk_httpres_sendbinary(Fres, ABuffer, ASize,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
@@ -284,6 +306,7 @@ var
   R: cint;
 begin
   BkCheckLibrary;
+  CheckStatus(AStatus);
   R := -bk_httpres_sendstr(Fres, AString.Handle,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
@@ -299,6 +322,7 @@ var
   R: cint;
 begin
   BkCheckLibrary;
+  CheckStatus(AStatus);
   R := -bk_httpres_sendfile(Fres, ABlockSite, M.ToCString(AFileName),
     ARendered, AStatus);
   Result := R = 0;
@@ -327,9 +351,10 @@ function TBrookHTTPResponse.SendStream(AStream: TStream;
 var
   R: cint;
 begin
+  BkCheckLibrary;
   if not Assigned(AStream) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
-  BkCheckLibrary;
+  CheckStatus(AStatus);
   R := -bk_httpres_sendstream(Fres, AStream.Size, 32768,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
@@ -613,10 +638,10 @@ begin
   if Assigned(Fsrv) then
     Exit;
   BkCheckLibrary;
-  if FAuthenticated then
-    VAuthCb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
-  else
-    VAuthCb := nil;
+  //if Authenticated then
+    VAuthCb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback;
+  //else
+    //VAuthCb := nil;
   Fsrv := bk_httpsrv_new2(VAuthCb, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
