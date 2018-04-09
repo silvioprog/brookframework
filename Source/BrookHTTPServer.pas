@@ -75,10 +75,13 @@ type
   TBrookHTTPRequest = class(TBrookHandledPersistent)
   private
     Freq: Pbk_httpreq;
+    function GetUserData: Pointer;
+    procedure SetUserData(AValue: Pointer);
   protected
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
+    property UserData: Pointer read GetUserData write SetUserData;
   end;
 
   TBrookHTTPResponse = class(TBrookHandledPersistent)
@@ -200,23 +203,25 @@ begin
   FPassword := TMarshal.ToString(bk_httpauth_pwd(Fauth));
 end;
 
+function TBrookHTTPAuthentication.GetHandle: Pointer;
+begin
+  Result := Fauth;
+end;
+
 procedure TBrookHTTPAuthentication.SetRealm(const AValue: string);
 var
   M: TMarshaller;
 begin
+  BkCheckLibrary;
   if AValue = FRealm then
     Exit;
   FRealm := AValue;
   CheckOSError(-bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
 end;
 
-function TBrookHTTPAuthentication.GetHandle: Pointer;
-begin
-  Result := Fauth;
-end;
-
 procedure TBrookHTTPAuthentication.Cancel;
 begin
+  BkCheckLibrary;
   CheckOSError(-bk_httpauth_cancel(Fauth));
 end;
 
@@ -231,6 +236,18 @@ end;
 function TBrookHTTPRequest.GetHandle: Pointer;
 begin
   Result := Freq;
+end;
+
+function TBrookHTTPRequest.GetUserData: Pointer;
+begin
+  BkCheckLibrary;
+  Result := bk_httpreq_userdata(Freq);
+end;
+
+procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
+begin
+  BkCheckLibrary;
+  CheckOSError(-bk_httpreq_setuserdata(Freq, AValue));
 end;
 
 { TBrookHTTPResponse }

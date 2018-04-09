@@ -226,49 +226,39 @@ type
   bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
 
 var
+  bk_httpauth_setrealm: function(auth: Pbk_httpauth;
+    const realm: Pcchar): cint; cdecl;
+  bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
+  bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
+  bk_httpauth_cancel: function(auth: Pbk_httpauth): cint; cdecl;
+
   bk_httpsrv_new2: function(auth_cb: bk_httpauth_cb; auth_cls: Pcvoid;
     req_cb: bk_httpreq_cb; req_cls: Pcvoid;
     err_cb: bk_httperr_cb; err_cls: Pcvoid): Pbk_httpsrv; cdecl;
-
   bk_httpsrv_new: function(cb: bk_httpreq_cb; cls: Pcvoid): Pbk_httpsrv; cdecl;
-
   bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
-
   bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cuint16_t;
     threaded: cbool): cint; cdecl;
-
   bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
 
-  bk_httpres_headers: function(res: Pbk_httpres): PPbk_strmap; cdecl;
+  bk_httpreq_setuserdata: function(req: Pbk_httpreq; data: Pcvoid): cint; cdecl;
+  bk_httpreq_userdata: function(req: Pbk_httpreq): Pcvoid; cdecl;
 
+  bk_httpres_headers: function(res: Pbk_httpres): PPbk_strmap; cdecl;
   bk_httpres_send: function(res: Pbk_httpres; const val: Pcchar;
     const content_type: Pcchar; status: cuint): cint; cdecl;
-
   bk_httpres_sendbinary: function(res: Pbk_httpres; buf: Pcvoid; size: size_t;
     const content_type: Pcchar; status: cuint): cint; cdecl;
-
   bk_httpres_sendstr: function(res: Pbk_httpres; str: Pbk_str;
     const content_type: Pcchar; status: cuint): cint; cdecl;
-
   bk_httpres_sendfile: function(res: Pbk_httpres; block_site: csize_t;
     const filename: Pcchar; rendered: cbool; status: cuint): cint; cdecl;
-
   bk_httpres_sendstream: function(res: Pbk_httpres; size: cuint64_t;
     block_size: csize_t; read_cb: bk_httpread_cb; cls: Pcvoid;
     flush_cb: bk_httpfree_cb; status: cuint): cint; cdecl;
-
   bk_httpres_senddata: function(res: Pbk_httpres; block_size: csize_t;
     read_cb: bk_httpread_cb; cls: Pcvoid; free_cb: bk_httpfree_cb;
     status: cuint): cint; cdecl;
-
-  bk_httpauth_setrealm: function(auth: Pbk_httpauth;
-    const realm: Pcchar): cint; cdecl;
-
-  bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
-
-  bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
-
-  bk_httpauth_cancel: function(auth: Pbk_httpauth): cint; cdecl;
 
 {$IFDEF VER3_0}
 procedure CheckOSError(LastError: Integer); platform; inline;
@@ -351,6 +341,10 @@ begin
     bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
     bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
     bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
+
+    bk_httpreq_setuserdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_setuserdata');
+    bk_httpreq_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_userdata');
+
     bk_httpres_headers := GetProcAddress(GBkLibHandle, 'bk_httpres_headers');
     bk_httpres_send := GetProcAddress(GBkLibHandle, 'bk_httpres_send');
     bk_httpres_sendbinary := GetProcAddress(GBkLibHandle, 'bk_httpres_sendbinary');
@@ -412,6 +406,10 @@ begin
     bk_httpsrv_free := nil;
     bk_httpsrv_start := nil;
     bk_httpsrv_stop := nil;
+
+    bk_httpreq_setuserdata := nil;
+    bk_httpreq_userdata := nil;
+
     bk_httpres_headers := nil;
     bk_httpres_send := nil;
     bk_httpres_sendbinary := nil;
