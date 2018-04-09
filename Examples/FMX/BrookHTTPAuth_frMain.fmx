@@ -88,7 +88,9 @@ object frMain: TfrMain
     end
   end
   object BrookHTTPServer1: TBrookHTTPServer
-    Threaded = False
+    Authenticated = True
+    OnAuthenticate = BrookHTTPServer1Authenticate
+    OnAuthenticateError = BrookHTTPServer1AuthenticateError
     OnRequest = BrookHTTPServer1Request
     OnRequestError = BrookHTTPServer1RequestError
     OnError = BrookHTTPServer1Error

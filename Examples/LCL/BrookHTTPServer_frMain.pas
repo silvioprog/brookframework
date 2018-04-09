@@ -46,9 +46,6 @@ uses
   BrookHTTPServer;
 
 type
-
-  { TfrMain }
-
   TfrMain = class(TForm)
     acStart: TAction;
     acStop: TAction;

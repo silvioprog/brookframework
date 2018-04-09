@@ -7,7 +7,7 @@ object frMain: TfrMain
   ClientHeight = 160
   ClientWidth = 320
   Position = poDesktopCenter
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '1.8.2.0'
   object lbPort: TLabel
     Left = 20
     Height = 15
@@ -78,7 +78,9 @@ object frMain: TfrMain
     end
   end
   object BrookHTTPServer1: TBrookHTTPServer
-    Threaded = False
+    Authenticated = True
+    OnAuthenticate = BrookHTTPServer1Authenticate
+    OnAuthenticateError = BrookHTTPServer1AuthenticateError
     OnRequest = BrookHTTPServer1Request
     OnRequestError = BrookHTTPServer1RequestError
     OnError = BrookHTTPServer1Error

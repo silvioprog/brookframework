@@ -38,7 +38,7 @@
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
-        <Filename Value="BrookHTTPServer_frMain.pas"/>
+        <Filename Value="BrookHTTPAuth_frMain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frMain"/>
         <HasResources Value="True"/>
