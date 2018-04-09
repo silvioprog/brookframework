@@ -9,7 +9,7 @@ object frMain: TfrMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '1.8.2.0'
   object pnTop: TPanel
     Left = 0
     Height = 40

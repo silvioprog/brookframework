@@ -7,7 +7,7 @@ object frMain: TfrMain
   ClientHeight = 160
   ClientWidth = 320
   Position = poDesktopCenter
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '1.8.2.0'
   object lbPort: TLabel
     Left = 20
     Height = 15
