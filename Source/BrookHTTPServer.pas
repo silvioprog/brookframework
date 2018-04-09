@@ -102,6 +102,8 @@ type
     procedure SetPort(AValue: UInt16);
     procedure SetThreaded(AValue: Boolean);
   protected
+    class function DoAuthenticationCallback(Acls: Pcvoid; Aauth: Pbk_httpauth;
+      Areq: Pbk_httpreq; Ares: Pbk_httpreq): cbool; cdecl; static;
     class procedure DoRequestCallback(Acls: Pcvoid; Areq: Pbk_httpreq;
       Ares: Pbk_httpres); cdecl; static;
     class procedure DoErrorCallback(Acls: Pcvoid;
@@ -313,6 +315,13 @@ begin
   Result := TBrookHTTPResponse.Create(AHandle);
 end;
 
+class function TBrookHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;
+  Aauth: Pbk_httpauth; Areq: Pbk_httpreq; Ares: Pbk_httpreq): cbool;
+begin
+  { TODO: implement authentication. }
+  Result := True;
+end;
+
 class procedure TBrookHTTPServer.DoRequestCallback(Acls: Pcvoid;
   Areq: Pbk_httpreq; Ares: Pbk_httpres);
 var
@@ -485,6 +494,7 @@ begin
     Exit;
   BkCheckLibrary;
   Fsrv := bk_httpsrv_new2(
+{$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(Fsrv) then
