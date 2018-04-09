@@ -303,13 +303,14 @@ begin
     GBkLibHandle := SafeLoadLibrary(AFileName);
     if GBkLibHandle = NilHandle then
 {$IFDEF MSWINDOWS}
-    begin
       if GetLastError = ERROR_BAD_EXE_FORMAT then
-        raise EBkLibraryNotLoaded.CreateResFmt(@SBkInvalidLibrary, [AFileName]);
-{$ENDIF}
+      begin
+        MessageBox(0, PChar(Format(SBkInvalidLibrary, [AFileName])), nil,
+          MB_OK or MB_ICONERROR);
+        Halt;
+      end;
+{$ELSE}
       Exit(NilHandle);
-{$IFDEF MSWINDOWS}
-    end;
 {$ENDIF}
     { TODO: check the library version }
     GBkLastLibName := AFileName;
