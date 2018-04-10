@@ -72,11 +72,11 @@ var
   VPair: TBrookStringPair;
 begin
   VPair := TBrookStringPair.Create('', '');
-  Assert(VPair.Name = '');
-  Assert(VPair.Value = '');
+  Assert(VPair.Name.IsEmpty);
+  Assert(VPair.Value.IsEmpty);
   VPair := TBrookStringPair.Create('abc', '123');
-  Assert(VPair.Name = 'abc');
-  Assert(VPair.Value = '123');
+  Assert(VPair.Name.Equals('abc'));
+  Assert(VPair.Value.Equals('123'));
 end;
 
 procedure Test_StringMapClearOnDestroy;
@@ -201,14 +201,14 @@ begin
   AMap.Add(AName, AValue);
   Assert(AMap.Count = 1);
   Assert(not AMap.Find('', VPair));
-  Assert(VPair.Name = '');
-  Assert(VPair.Value = '');
+  Assert(VPair.Name.IsEmpty);
+  Assert(VPair.Value.IsEmpty);
   Assert(not AMap.Find('xxx', VPair));
-  Assert(VPair.Name = '');
-  Assert(VPair.Value = '');
+  Assert(VPair.Name.IsEmpty);
+  Assert(VPair.Value.IsEmpty);
   Assert(not AMap.Find('yyy', VPair));
-  Assert(VPair.Name = '');
-  Assert(VPair.Value = '');
+  Assert(VPair.Name.IsEmpty);
+  Assert(VPair.Value.IsEmpty);
 
   AMap.Add('', '');
   AMap.Add('xxx', 'yyy');
@@ -217,11 +217,33 @@ begin
   Assert(AMap.Find(AName, VPair));
   Assert((VPair.Name = AName) and (VPair.Value = AValue));
   Assert(AMap.Find('', VPair));
-  Assert((VPair.Name = '') and (VPair.Value = ''));
+  Assert((VPair.Name.IsEmpty) and (VPair.Value.IsEmpty));
   Assert(AMap.Find('xxx', VPair));
-  Assert((VPair.Name = 'xxx') and (VPair.Value = 'yyy'));
+  Assert(VPair.Name.Equals('xxx') and VPair.Value.Equals('yyy'));
   Assert(AMap.Find('yyy', VPair));
-  Assert((VPair.Name = 'yyy') and (VPair.Value = 'xxx'));
+  Assert(VPair.Name.Equals('yyy') and VPair.Value.Equals('xxx'));
+end;
+
+procedure Test_StringMapGet(AMap: TBrookStringMap; const AName,
+  AValue: string);
+begin
+  AMap.Clear;
+  Assert(AMap.Count = 0);
+  AMap.Add(AName, AValue);
+  Assert(AMap.Count = 1);
+  Assert(AMap.Get('').IsEmpty);
+  Assert(AMap.Get('xxx').IsEmpty);
+  Assert(AMap.Get('yyy').IsEmpty);
+
+  AMap.Add('', '');
+  AMap.Add('xxx', 'yyy');
+  AMap.Add('yyy', 'xxx');
+  Assert(AMap.Count = 4);
+  Assert(AMap.Get(AName).Equals(AValue));
+
+  Assert(AMap.Get('').IsEmpty);
+  Assert(AMap.Get('xxx').Equals('yyy'));
+  Assert(AMap.Get('yyy').Equals('xxx'));
 end;
 
 procedure Test_StringMapRemove(AMap: TBrookStringMap; const AName,
@@ -307,7 +329,7 @@ begin
 
   S := '';
   AMap.Iterate(StringMapIterateConcat, @S);
-  Assert(S = 'abc123def456');
+  Assert(S.Equals('abc123def456'));
 end;
 
 function StringMapSortEmpty(AData: Pointer; APairA,
@@ -353,30 +375,30 @@ begin
 
   S := 'abc';
   AMap.Sort(StringMapSortEmpty, @S);
-  Assert(S = 'abcabc');
+  Assert(S.Equals('abcabc'));
 
   S := '';
   AMap.Iterate(StringMapIterateConcat, @S);
-  Assert(S = 'abc123def456');
+  Assert(S.Equals('abc123def456'));
   AMap.Sort(StringMapSortNameDesc, nil);
   S := '';
   AMap.Iterate(StringMapIterateConcat, @S);
-  Assert(S = 'def456abc123');
+  Assert(S.Equals('def456abc123'));
 
   AMap.Sort(StringMapSortNameAsc, nil);
   S := '';
   AMap.Iterate(StringMapIterateConcat, @S);
-  Assert(S = 'abc123def456');
+  Assert(S.Equals('abc123def456'));
 
   AMap.Sort(StringMapSortValueDesc, nil);
   S := '';
   AMap.Iterate(StringMapIterateConcat, @S);
-  Assert(S = 'def456abc123');
+  Assert(S.Equals('def456abc123'));
 
   AMap.Sort(StringMapSortValueAsc, nil);
   S := '';
   AMap.Iterate(StringMapIterateConcat, @S);
-  Assert(S = 'abc123def456');
+  Assert(S.Equals('abc123def456'));
 end;
 
 procedure Test_StringMapCount(AMap: TBrookStringMap; const AName,
@@ -408,12 +430,12 @@ begin
   AMap.Add(AName, AValue);
   Assert(AMap.Count = 1);
   Assert(not AMap.TryValue('', S));
-  Assert(S = '');
+  Assert(S.IsEmpty);
 
   Assert(not AMap.TryValue('xxx', S));
-  Assert(S = '');
+  Assert(S.IsEmpty);
   Assert(not AMap.TryValue('yyy', S));
-  Assert(S = '');
+  Assert(S.IsEmpty);
 
   AMap.Add('', '');
   AMap.Add('xxx', 'yyy');
@@ -422,11 +444,11 @@ begin
   Assert(AMap.TryValue(AName, S));
   Assert(S = AValue);
   Assert(AMap.TryValue('', S));
-  Assert(S = '');
+  Assert(S.IsEmpty);
   Assert(AMap.TryValue('xxx', S));
-  Assert(S = 'yyy');
+  Assert(S.Equals('yyy'));
   Assert(AMap.TryValue('yyy', S));
-  Assert(S = 'xxx');
+  Assert(S.Equals('xxx'));
 end;
 
 procedure Test_StringMapFirst(AMap: TBrookStringMap);
@@ -438,26 +460,26 @@ begin
   AMap.Add('def', '456');
   AMap.Add('xxx', 'yyy');
   AMap.First(VPair);
-  Assert((VPair.Name = 'abc') and (VPair.Value = '123'));
+  Assert(VPair.Name.Equals('abc') and VPair.Value.Equals('123'));
   AMap.Next(VPair);
   AMap.Next(VPair);
-  Assert((VPair.Name = 'xxx') and (VPair.Value = 'yyy'));
+  Assert(VPair.Name.Equals('xxx') and VPair.Value.Equals('yyy'));
   AMap.First(VPair);
-  Assert((VPair.Name = 'abc') and (VPair.Value = '123'));
+  Assert(VPair.Name.Equals('abc') and VPair.Value.Equals('123'));
 end;
 
 procedure Test_StringMapValues(AMap: TBrookStringMap);
 begin
   AMap.Clear;
-  Assert(AMap.Values['abc'] = '');
+  Assert(AMap.Values['abc'].IsEmpty);
   AMap.Values['abc'] := '123';
-  Assert(AMap.Values['abc'] = '123');
-  Assert(AMap.Values['def'] = '');
+  Assert(AMap.Values['abc'].Equals('123'));
+  Assert(AMap.Values['def'].IsEmpty);
   AMap.Values['def'] := '456';
-  Assert(AMap.Values['def'] = '456');
-  Assert(AMap.Values['xxx'] = '');
+  Assert(AMap.Values['def'].Equals('456'));
+  Assert(AMap.Values['xxx'].IsEmpty);
   AMap.Values['xxx'] := 'yyy';
-  Assert(AMap.Values['xxx'] = 'yyy');
+  Assert(AMap.Values['xxx'].Equals('yyy'));
   Assert(AMap.Count = 3);
   AMap.Values['xxx'] := 'yyy';
   Assert(AMap.Count = 3);
@@ -501,7 +523,7 @@ begin
     S := Concat(S, VPair.Name, VPair.Value);
     AMap.Next(VPair);
   end;
-  Assert(S = 'abc123def456xxxyyy');
+  Assert(S.Equals('abc123def456xxxyyy'));
 end;
 
 procedure Test_StringMapEnumerator(AMap: TBrookStringMap);
@@ -520,7 +542,8 @@ begin
   for P in AMap do
   begin
     S := Succ(I).ToString;
-    Assert((P.Name = Concat('name', S)) and (P.Value = Concat('value', S)));
+    Assert(P.Name.Equals(Concat('name', S)) and
+      P.Value.Equals(Concat('value', S)));
     Inc(I);
   end;
   Assert(I = 3);
@@ -535,8 +558,8 @@ begin
   Assert(AMap.ToString = Concat(AName, '=', AName, sLineBreak));
   AMap.Add('xxx', 'yyy');
   AMap.Add('yyy', 'xxx');
-  Assert(AMap.ToString = Concat(AName, '=', AName, sLineBreak,
-    'xxx=yyy', sLineBreak, 'yyy=xxx', sLineBreak));
+  Assert(AMap.ToString.Equals(Concat(AName, '=', AName, sLineBreak,
+    'xxx=yyy', sLineBreak, 'yyy=xxx', sLineBreak)));
 end;
 
 procedure Test_StringMapClear(AMap: TBrookStringMap);
@@ -570,6 +593,7 @@ begin
     Test_StringMapAdd(VMap, NAME, VAL);
     Test_StringMapAddOrSet(VMap, NAME, VAL);
     Test_StringMapFind(VMap, NAME, VAL);
+    Test_StringMapGet(VMap, NAME, VAL);
     Test_StringMapRemove(VMap, NAME, VAL);
     Test_StringMapIterate(VMap);
     Test_StringMapSort(VMap);

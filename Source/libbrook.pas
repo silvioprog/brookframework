@@ -186,6 +186,7 @@ var
     const val: Pcchar): cint; cdecl;
   bk_strmap_find: function(map: Pbk_strmap; const name: Pcchar;
     pair: PPbk_strmap): cint; cdecl;
+  bk_strmap_get: function(map: Pbk_strmap; const name: Pcchar): Pcchar; cdecl;
   bk_strmap_rm: function(map: PPbk_strmap; const name: Pcchar): cint; cdecl;
   bk_strmap_iter: function(map: Pbk_strmap; cb: bk_strmap_iter_cb;
     cls: Pcvoid): cint; cdecl;
@@ -329,6 +330,7 @@ begin
     bk_strmap_add := GetProcAddress(GBkLibHandle, 'bk_strmap_add');
     bk_strmap_set := GetProcAddress(GBkLibHandle, 'bk_strmap_set');
     bk_strmap_find := GetProcAddress(GBkLibHandle, 'bk_strmap_find');
+    bk_strmap_get := GetProcAddress(GBkLibHandle, 'bk_strmap_get');
     bk_strmap_rm := GetProcAddress(GBkLibHandle, 'bk_strmap_rm');
     bk_strmap_iter := GetProcAddress(GBkLibHandle, 'bk_strmap_iter');
     bk_strmap_sort := GetProcAddress(GBkLibHandle, 'bk_strmap_sort');
@@ -399,6 +401,7 @@ begin
     bk_strmap_add := nil;
     bk_strmap_set := nil;
     bk_strmap_find := nil;
+    bk_strmap_get := nil;
     bk_strmap_rm := nil;
     bk_strmap_iter := nil;
     bk_strmap_sort := nil;

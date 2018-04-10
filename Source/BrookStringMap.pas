@@ -162,18 +162,31 @@ type
     { Finds a pair by its name.
 
       @param(AName[in] Name of the pair.)
-      @param(APair[out] Reference to store found pair.) }
+      @param(APair[out] Reference to store found pair.)
+
+      @returns(@True when pair is found, @False otherwise.) }
     function Find(const AName: string;
       out APair: TBrookStringPair): Boolean; virtual;
-    { Tries to find a mapped value by its name.
+    { Gets a pair by name and return its value.
 
       @param(AName[in] Name of the pair.)
-      @param(AValue[out] Reference to store found value.) }
+
+      @returns(Pair value.)}
+    function Get(const AName: string): string; virtual;
+
+    { Tries to find a pair value by its name.
+
+      @param(AName[in] Name of the pair.)
+      @param(AValue[out] Reference to store found value.)
+
+      @returns(@True when pair is found, @False otherwise.) }
     function TryValue(const AName: string;
       out AValue: string): Boolean; virtual;
     { Retrieves the first pair in the map.
 
-      @param(APair[out] First pair returned.) }
+      @param(APair[out] First pair returned.)
+
+      @returns(@True when pair is found, @False otherwise.) }
     function First(out APair: TBrookStringPair): Boolean; virtual;
     { Retrieves the next pair in the map.
 
@@ -384,14 +397,25 @@ begin
       CheckOSError(-R);
 end;
 
+function TBrookStringMap.Get(const AName: string): string;
+var
+  M: TMarshaller;
+begin
+  BkCheckLibrary;
+  Result := TMarshal.ToString(bk_strmap_get(Fmap^, M.ToCString(AName)));
+end;
+
 function TBrookStringMap.TryValue(const AName: string;
   out AValue: string): Boolean;
 var
-  P: TBrookStringPair;
+  P: Pcchar;
+  M: TMarshaller;
 begin
-  Result := Find(AName, P);
+  BkCheckLibrary;
+  P := bk_strmap_get(Fmap^, M.ToCString(AName));
+  Result := Assigned(P);
   if Result then
-    AValue := P.Value;
+    AValue := TMarshal.ToString(P);
 end;
 
 function TBrookStringMap.First(out APair: TBrookStringPair): Boolean;
