@@ -243,6 +243,9 @@ var
     threaded: cbool): cint; cdecl;
   bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
 
+  bk_httpreq_version: function(req: Pbk_httpreq): Pcchar; cdecl;
+  bk_httpreq_method: function(req: Pbk_httpreq): Pcchar; cdecl;
+  bk_httpreq_path: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_setuserdata: function(req: Pbk_httpreq; data: Pcvoid): cint; cdecl;
   bk_httpreq_userdata: function(req: Pbk_httpreq): Pcvoid; cdecl;
 
@@ -346,6 +349,9 @@ begin
     bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
     bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
 
+    bk_httpreq_version := GetProcAddress(GBkLibHandle, 'bk_httpreq_version');
+    bk_httpreq_method := GetProcAddress(GBkLibHandle, 'bk_httpreq_method');
+    bk_httpreq_path := GetProcAddress(GBkLibHandle, 'bk_httpreq_path');
     bk_httpreq_setuserdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_setuserdata');
     bk_httpreq_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_userdata');
 
@@ -413,6 +419,9 @@ begin
     bk_httpsrv_start := nil;
     bk_httpsrv_stop := nil;
 
+    bk_httpreq_version := nil;
+    bk_httpreq_method := nil;
+    bk_httpreq_path := nil;
     bk_httpreq_setuserdata := nil;
     bk_httpreq_userdata := nil;
 

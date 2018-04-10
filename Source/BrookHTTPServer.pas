@@ -77,12 +77,18 @@ type
   TBrookHTTPRequest = class(TBrookHandledPersistent)
   private
     Freq: Pbk_httpreq;
+    function GetMethod: string;
+    function GetPath: string;
     function GetUserData: Pointer;
+    function GetVersion: string;
     procedure SetUserData(AValue: Pointer);
   protected
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
+    property Version: string read GetVersion;
+    property Method: string read GetMethod;
+    property Path: string read GetPath;
     property UserData: Pointer read GetUserData write SetUserData;
   end;
 
@@ -243,6 +249,24 @@ end;
 function TBrookHTTPRequest.GetHandle: Pointer;
 begin
   Result := Freq;
+end;
+
+function TBrookHTTPRequest.GetVersion: string;
+begin
+  BkCheckLibrary;
+  Result := TMarshal.ToString(bk_httpreq_version(Freq));
+end;
+
+function TBrookHTTPRequest.GetMethod: string;
+begin
+  BkCheckLibrary;
+  Result := TMarshal.ToString(bk_httpreq_method(Freq));
+end;
+
+function TBrookHTTPRequest.GetPath: string;
+begin
+  BkCheckLibrary;
+  Result := TMarshal.ToString(bk_httpreq_path(Freq));
 end;
 
 function TBrookHTTPRequest.GetUserData: Pointer;
