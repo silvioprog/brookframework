@@ -226,6 +226,8 @@ type
   bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
 
 var
+  bk_httpread_end: function(err: cbool): ssize_t; cdecl;
+
   bk_httpauth_setrealm: function(auth: Pbk_httpauth;
     const realm: Pcchar): cint; cdecl;
   bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
@@ -331,6 +333,8 @@ begin
     bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
+    bk_httpread_end := GetProcAddress(GBkLibHandle, 'bk_httpread_end');
+
     bk_httpauth_setrealm := GetProcAddress(GBkLibHandle, 'bk_httpauth_setrealm');
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
@@ -395,6 +399,8 @@ begin
     bk_strmap_count := nil;
     bk_strmap_next := nil;
     bk_strmap_cleanup := nil;
+
+    bk_httpread_end := nil;
 
     bk_httpauth_setrealm := nil;
     bk_httpauth_usr := nil;

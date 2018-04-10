@@ -296,6 +296,10 @@ class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid;
   Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t;
 begin
   Result := TStream(Acls).Read(Abuf^, Asize);
+  if Result = 0 then
+    Exit(bk_httpread_end(False));
+  if Result = -1 then
+    Result := bk_httpread_end(True);
 end;
 {$IFDEF FPC}
  {$POP}
