@@ -76,6 +76,9 @@ type
 
   TBrookHTTPRequest = class(TBrookHandledPersistent)
   private
+    FCookies: TBrookStringMap;
+    FHeaders: TBrookStringMap;
+    FParams: TBrookStringMap;
     Freq: Pbk_httpreq;
     function GetMethod: string;
     function GetPath: string;
@@ -83,9 +86,17 @@ type
     function GetVersion: string;
     procedure SetUserData(AValue: Pointer);
   protected
+    function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
+    function CreateCookies(AHandle: Pointer): TBrookStringMap; virtual;
+    function CreateParams(AHandle: Pointer): TBrookStringMap; virtual;
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
+    destructor Destroy; override;
+    property Headers: TBrookStringMap read FHeaders;
+    property Cookies: TBrookStringMap read FCookies;
+    property Params: TBrookStringMap read FParams;
+    { TODO: Fields }
     property Version: string read GetVersion;
     property Method: string read GetMethod;
     property Path: string read GetPath;
@@ -244,6 +255,35 @@ constructor TBrookHTTPRequest.Create(AHandle: Pointer);
 begin
   inherited Create;
   Freq := AHandle;
+  FHeaders := CreateHeaders(bk_httpreq_headers(Freq));
+  FCookies := CreateCookies(bk_httpreq_cookies(Freq));
+  FParams := CreateParams(bk_httpreq_params(Freq));
+end;
+
+destructor TBrookHTTPRequest.Destroy;
+begin
+  FParams.Free;
+  FCookies.Free;
+  FHeaders.Free;
+  inherited Destroy;
+end;
+
+function TBrookHTTPRequest.CreateHeaders(AHandle: Pointer): TBrookStringMap;
+begin
+  Result := TBrookStringMap.Create(AHandle);
+  Result.ClearOnDestroy := False;
+end;
+
+function TBrookHTTPRequest.CreateCookies(AHandle: Pointer): TBrookStringMap;
+begin
+  Result := TBrookStringMap.Create(AHandle);
+  Result.ClearOnDestroy := False;
+end;
+
+function TBrookHTTPRequest.CreateParams(AHandle: Pointer): TBrookStringMap;
+begin
+  Result := TBrookStringMap.Create(AHandle);
+  Result.ClearOnDestroy := False;
 end;
 
 function TBrookHTTPRequest.GetHandle: Pointer;
