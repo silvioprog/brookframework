@@ -94,9 +94,10 @@ type
     class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
       Asize: csize_t): cssize_t; cdecl; static;
     class procedure DoStreamFree(Acls: Pcvoid); cdecl; static;
-    function GetHandle: Pointer; override;
     class procedure CheckStatus(AStatus: Word); static; inline;
     class procedure CheckStream(AStream: TStream); static; inline;
+    function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
+    function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
@@ -118,7 +119,7 @@ type
     function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
     function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
     function SendData(AStream: TStream; AStatus: Word): Boolean; virtual;
-    property Headers: TBrookStringMap read FHeaders write FHeaders;
+    property Headers: TBrookStringMap read FHeaders;
   end;
 
   TBrookHTTPServer = class(TBrookHandledComponent)
@@ -262,8 +263,7 @@ constructor TBrookHTTPResponse.Create(AHandle: Pointer);
 begin
   inherited Create;
   Fres := AHandle;
-  FHeaders := TBrookStringMap.Create(bk_httpres_headers(Fres));
-  FHeaders.ClearOnDestroy := False;
+  FHeaders := CreateHeaders(bk_httpres_headers(Fres));
 end;
 
 destructor TBrookHTTPResponse.Destroy;
@@ -287,6 +287,12 @@ class procedure TBrookHTTPResponse.CheckStream(AStream: TStream);
 begin
   if not Assigned(AStream) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
+end;
+
+function TBrookHTTPResponse.CreateHeaders(AHandle: Pointer): TBrookStringMap;
+begin
+  Result := TBrookStringMap.Create(AHandle);
+  Result.ClearOnDestroy := False;
 end;
 
 {$IFDEF FPC}
