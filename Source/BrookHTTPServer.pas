@@ -128,11 +128,12 @@ type
       const AContentType: string; AStatus: Word): Boolean; overload; virtual;
     function Send(AString: TBrookString; const AContentType: string;
       AStatus: Word): Boolean; overload; virtual;
-    function TrySendFile(ABlockSite: NativeUInt; const AFileName: TFileName;
-      ARendered: Boolean; AStatus: Word;
+    function TrySendFile(ABlockSite: NativeUInt; AMaxSize: UInt64;
+      const AFileName: TFileName; ARendered: Boolean; AStatus: Word;
       out AFailed: Boolean): Boolean; overload; virtual;
-    function SendFile(ABlockSite: NativeUInt; const AFileName: TFileName;
-      ARendered: Boolean; AStatus: Word): Boolean; overload; virtual;
+    function SendFile(ABlockSite: NativeUInt; AMaxSize: UInt64;
+      const AFileName: TFileName; ARendered: Boolean;
+      AStatus: Word): Boolean; overload; virtual;
     function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
     function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
     function SendData(AStream: TStream; AStatus: Word): Boolean; virtual;
@@ -439,15 +440,15 @@ begin
 end;
 
 function TBrookHTTPResponse.TrySendFile(ABlockSite: NativeUInt;
-  const AFileName: TFileName; ARendered: Boolean; AStatus: Word;
-  out AFailed: Boolean): Boolean;
+  AMaxSize: UInt64; const AFileName: TFileName; ARendered: Boolean;
+  AStatus: Word; out AFailed: Boolean): Boolean;
 var
   M: TMarshaller;
   R: cint;
 begin
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_sendfile(Fres, ABlockSite, M.ToCString(AFileName),
+  R := -bk_httpres_sendfile(Fres, ABlockSite, AMaxSize, M.ToCString(AFileName),
     ARendered, AStatus);
   Result := R = 0;
   if not Result then
@@ -458,16 +459,17 @@ begin
   end;
 end;
 
-function TBrookHTTPResponse.SendFile(ABlockSite: NativeUInt;
+function TBrookHTTPResponse.SendFile(ABlockSite: NativeUInt; AMaxSize: UInt64;
   const AFileName: TFileName; ARendered: Boolean; AStatus: Word): Boolean;
 begin
-  if not TrySendFile(ABlockSite, AFileName, ARendered, AStatus, Result) then
+  if not TrySendFile(ABlockSite, AMaxSize, AFileName, ARendered,
+    AStatus, Result) then
     raise EFileNotFoundException.CreateResFmt(@SFOpenError, [AFileName]);
 end;
 
 function TBrookHTTPResponse.SendFile(const AFileName: TFileName): Boolean;
 begin
-  Result := SendFile(4096, AFileName, False, 200);
+  Result := SendFile(4096, 0, AFileName, False, 200);
 end;
 
 function TBrookHTTPResponse.SendStream(AStream: TStream;
