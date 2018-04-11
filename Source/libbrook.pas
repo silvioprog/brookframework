@@ -213,8 +213,7 @@ type
   bk_httpsrv = record
   end;
 
-  bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth; req: Pbk_httpreq;
-    res: Pbk_httpreq): cbool; cdecl;
+  bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth): cbool; cdecl;
 
   bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
     res: Pbk_httpres); cdecl;
@@ -231,9 +230,11 @@ var
 
   bk_httpauth_setrealm: function(auth: Pbk_httpauth;
     const realm: Pcchar): cint; cdecl;
+  bk_httpauth_deny: function(auth: Pbk_httpauth; const justification: Pcchar;
+    const content_type: Pcchar): cint; cdecl;
+  bk_httpauth_cancel: function(auth: Pbk_httpauth): cint; cdecl;
   bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
-  bk_httpauth_cancel: function(auth: Pbk_httpauth): cint; cdecl;
 
   bk_httpsrv_new2: function(auth_cb: bk_httpauth_cb; auth_cls: Pcvoid;
     req_cb: bk_httpreq_cb; req_cls: Pcvoid;
@@ -345,6 +346,7 @@ begin
     bk_httpread_end := GetProcAddress(GBkLibHandle, 'bk_httpread_end');
 
     bk_httpauth_setrealm := GetProcAddress(GBkLibHandle, 'bk_httpauth_setrealm');
+    bk_httpauth_deny := GetProcAddress(GBkLibHandle, 'bk_httpauth_deny');
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
     bk_httpauth_cancel := GetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
@@ -419,9 +421,10 @@ begin
     bk_httpread_end := nil;
 
     bk_httpauth_setrealm := nil;
+    bk_httpauth_deny := nil;
+    bk_httpauth_cancel := nil;
     bk_httpauth_usr := nil;
     bk_httpauth_pwd := nil;
-    bk_httpauth_cancel := nil;
 
     bk_httpsrv_new2 := nil;
     bk_httpsrv_new := nil;

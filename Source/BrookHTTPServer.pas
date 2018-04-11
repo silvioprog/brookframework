@@ -39,12 +39,10 @@ type
     AException: Exception) of object;
 
   TBrookHTTPAuthenticationEvent = function(ASender: TObject;
-    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse): Boolean of object;
+    AAuthentication: TBrookHTTPAuthentication): Boolean of object;
 
   TBrookHTTPAuthenticationErrorEvent = procedure(ASender: TObject;
-    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse; AException: Exception) of object;
+    AAuthentication: TBrookHTTPAuthentication; AException: Exception) of object;
 
   TBrookHTTPRequestEvent = procedure(ASender: TObject;
     ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
@@ -60,14 +58,18 @@ type
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
     Fauth: Pbk_httpauth;
-    FPassword: string;
     FRealm: string;
     FUserName: string;
+    FPassword: string;
     procedure SetRealm(const AValue: string);
   protected
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
+    function Deny(const AJustification,
+      AContentType: string): Boolean; overload; virtual;
+    function Deny(const AFmt: string; const AArgs: array of const;
+      const AContentType: string): Boolean; overload; virtual;
     procedure Cancel; virtual;
     property Realm: string read FRealm write SetRealm;
     property UserName: string read FUserName;
@@ -165,8 +167,8 @@ type
     procedure SetPort(AValue: UInt16);
     procedure SetThreaded(AValue: Boolean);
   protected
-    class function DoAuthenticationCallback(Acls: Pcvoid; Aauth: Pbk_httpauth;
-      Areq: Pbk_httpreq; Ares: Pbk_httpreq): cbool; cdecl; static;
+    class function DoAuthenticationCallback(Acls: Pcvoid;
+      Aauth: Pbk_httpauth): cbool; cdecl; static;
     class procedure DoRequestCallback(Acls: Pcvoid; Areq: Pbk_httpreq;
       Ares: Pbk_httpres); cdecl; static;
     class procedure DoErrorCallback(Acls: Pcvoid;
@@ -179,11 +181,9 @@ type
     function GetHandle: Pointer; override;
     procedure DoError(ASender: TObject; AException: Exception); virtual;
     function DoAuthenticate(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse): Boolean; virtual;
+      AAuthentication: TBrookHTTPAuthentication): Boolean; virtual;
     procedure DoAuthenticateError(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse; AException: Exception); virtual;
+      AAuthentication: TBrookHTTPAuthentication; AException: Exception); virtual;
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); virtual;
     procedure DoRequestError(ASender: TObject; ARequest: TBrookHTTPRequest;
@@ -242,6 +242,26 @@ begin
   BkCheckLibrary;
   FRealm := AValue;
   CheckOSError(-bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
+end;
+
+function TBrookHTTPAuthentication.Deny(const AJustification,
+  AContentType: string): Boolean;
+var
+  M: TMarshaller;
+  R: cint;
+begin
+  BkCheckLibrary;
+  R := -bk_httpauth_deny(Fauth, M.ToCString(AJustification),
+    M.ToCString(AContentType));
+  Result := R = 0;
+  if (not Result) and (R <> EALREADY) then
+    CheckOSError(R);
+end;
+
+function TBrookHTTPAuthentication.Deny(const AFmt: string;
+  const AArgs: array of const; const AContentType: string): Boolean;
+begin
+  Result := Deny(Format(AFmt, AArgs), AContentType);
 end;
 
 procedure TBrookHTTPAuthentication.Cancel;
@@ -538,41 +558,29 @@ begin
 end;
 
 class function TBrookHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;
-  Aauth: Pbk_httpauth; Areq: Pbk_httpreq; Ares: Pbk_httpreq): cbool;
+  Aauth: Pbk_httpauth): cbool;
 var
   VSrv: TBrookHTTPServer absolute Acls;
   VAuth: TBrookHTTPAuthentication;
-  VReq: TBrookHTTPRequest;
-  VRes: TBrookHTTPResponse;
 begin
   VAuth := TBrookHTTPAuthentication.Create(Aauth);
   try
-    VReq := VSrv.CreateRequest(Areq);
     try
-      VRes := VSrv.CreateResponse(Ares);
-      try
-        try
-          Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
-        except
-          on E: EOSError do
-          begin
-            Result := False;
-            if VSrv.CatchOSErrors then
-              VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E)
-            else
-              VSrv.DoError(VSrv, E);
-          end;
-          on E: Exception do
-          begin
-            Result := False;
-            VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E);
-          end;
-        end;
-      finally
-        VRes.Free;
+      Result := VSrv.DoAuthenticate(VSrv, VAuth);
+    except
+      on E: EOSError do
+      begin
+        Result := False;
+        if VSrv.CatchOSErrors then
+          VSrv.DoAuthenticateError(VSrv, VAuth, E)
+        else
+          VSrv.DoError(VSrv, E);
       end;
-    finally
-      VReq.Free;
+      on E: Exception do
+      begin
+        Result := False;
+        VSrv.DoAuthenticateError(VSrv, VAuth, E);
+      end;
     end;
   finally
     VAuth.Free;
@@ -656,22 +664,19 @@ begin
 end;
 
 function TBrookHTTPServer.DoAuthenticate(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse): Boolean;
+  AAuthentication: TBrookHTTPAuthentication): Boolean;
 begin
   Result := Assigned(FOnAuthenticate) and
-    FOnAuthenticate(ASender, AAuthentication, ARequest, AResponse);
+    FOnAuthenticate(ASender, AAuthentication);
 end;
 
 procedure TBrookHTTPServer.DoAuthenticateError(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse; AException: Exception);
+  AAuthentication: TBrookHTTPAuthentication; AException: Exception);
 begin
   if Assigned(FOnAuthenticateError) then
-    FOnAuthenticateError(ASender, AAuthentication, ARequest, AResponse,
-      AException)
+    FOnAuthenticateError(ASender, AAuthentication, AException)
   else
-    AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
+    AAuthentication.Deny(AException.Message, BROOK_CONTENT_TYPE);
 end;
 
 procedure TBrookHTTPServer.DoRequest(ASender: TObject;
