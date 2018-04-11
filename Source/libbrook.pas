@@ -227,7 +227,7 @@ type
   bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
 
 var
-  bk_httpread_end: function(err: cbool): ssize_t; cdecl;
+  bk_httpread_end: function(err: cbool): cssize_t; cdecl;
 
   bk_httpauth_setrealm: function(auth: Pbk_httpauth;
     const realm: Pcchar): cint; cdecl;
