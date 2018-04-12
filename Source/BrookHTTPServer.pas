@@ -130,10 +130,10 @@ type
       const AContentType: string; AStatus: Word): Boolean; overload; virtual;
     function Send(AString: TBrookString; const AContentType: string;
       AStatus: Word): Boolean; overload; virtual;
-    function TrySendFile(ABlockSite: NativeUInt; AMaxSize: UInt64;
+    function TrySendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
       const AFileName: TFileName; ARendered: Boolean; AStatus: Word;
       out AFailed: Boolean): Boolean; overload; virtual;
-    function SendFile(ABlockSite: NativeUInt; AMaxSize: UInt64;
+    function SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
       const AFileName: TFileName; ARendered: Boolean;
       AStatus: Word): Boolean; overload; virtual;
     function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
@@ -459,7 +459,7 @@ begin
     CheckOSError(R);
 end;
 
-function TBrookHTTPResponse.TrySendFile(ABlockSite: NativeUInt;
+function TBrookHTTPResponse.TrySendFile(ABlockSize: NativeUInt;
   AMaxSize: UInt64; const AFileName: TFileName; ARendered: Boolean;
   AStatus: Word; out AFailed: Boolean): Boolean;
 var
@@ -468,7 +468,7 @@ var
 begin
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_sendfile(Fres, ABlockSite, AMaxSize, M.ToCString(AFileName),
+  R := -bk_httpres_sendfile(Fres, ABlockSize, AMaxSize, M.ToCString(AFileName),
     ARendered, AStatus);
   Result := R = 0;
   if not Result then
@@ -479,10 +479,10 @@ begin
   end;
 end;
 
-function TBrookHTTPResponse.SendFile(ABlockSite: NativeUInt; AMaxSize: UInt64;
+function TBrookHTTPResponse.SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
   const AFileName: TFileName; ARendered: Boolean; AStatus: Word): Boolean;
 begin
-  if not TrySendFile(ABlockSite, AMaxSize, AFileName, ARendered,
+  if not TrySendFile(ABlockSize, AMaxSize, AFileName, ARendered,
     AStatus, Result) then
     raise EFileNotFoundException.CreateResFmt(@SFOpenError, [AFileName]);
 end;

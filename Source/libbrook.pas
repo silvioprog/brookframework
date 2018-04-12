@@ -261,7 +261,7 @@ var
     const content_type: Pcchar; status: cuint): cint; cdecl;
   bk_httpres_sendstr: function(res: Pbk_httpres; str: Pbk_str;
     const content_type: Pcchar; status: cuint): cint; cdecl;
-  bk_httpres_sendfile: function(res: Pbk_httpres; block_site: csize_t;
+  bk_httpres_sendfile: function(res: Pbk_httpres; block_size: csize_t;
     max_size: cuint64_t; const filename: Pcchar; rendered: cbool;
     status: cuint): cint; cdecl;
   bk_httpres_sendstream: function(res: Pbk_httpres; size: cuint64_t;
