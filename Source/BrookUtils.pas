@@ -72,30 +72,39 @@ function BrookAlloc(ASize: NativeUInt): Pointer;
 }
 procedure BrookFree(APtr: Pointer);
 
+{ experimental: it will be documented and tested as soon as it is accepted as better API. }
+function BrookTmpDir: string;
+
 implementation
 
 function BrookVersion: Cardinal;
 begin
   BkCheckLibrary;
-  Exit(bk_version);
+  Result := bk_version;
 end;
 
 function BrookVersionStr: string;
 begin
   BkCheckLibrary;
-  Exit(TMarshal.ToString(bk_version_str));
+  Result := TMarshal.ToString(bk_version_str);
 end;
 
 function BrookAlloc(ASize: NativeUInt): Pointer;
 begin
   BkCheckLibrary;
-  Exit(bk_alloc(ASize));
+  Result := bk_alloc(ASize);
 end;
 
 procedure BrookFree(APtr: Pointer);
 begin
   BkCheckLibrary;
   bk_free(APtr);
+end;
+
+function BrookTmpDir: string;
+begin
+  BkCheckLibrary;
+  Result := TMarshal.ToString(bk_tmpdir);
 end;
 
 end.
