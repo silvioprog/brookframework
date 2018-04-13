@@ -28,6 +28,7 @@
 unit BrookHTTPAuth_frMain;
 
 {$MODE DELPHI}
+{$PUSH}{$WARN 5024 OFF}
 
 interface
 
@@ -172,10 +173,14 @@ begin
     [AException.Message], 'text/html; charset=utf-8', 500);
 end;
 
+{$PUSH}{$WARN 4055 OFF}
 procedure TfrMain.BrookHTTPServer1Error(ASender: TObject;
   AException: Exception);
 begin
   Application.QueueAsyncCall(DoError, PtrInt(NewStr(AException.Message)));
 end;
+{$POP}
+
+{$POP}
 
 end.
