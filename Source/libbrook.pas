@@ -202,6 +202,10 @@ type
   bk_httpauth = record
   end;
 
+  Pbk_httpupld = ^bk_httpupld;
+  bk_httpupld = record
+  end;
+
   Pbk_httpreq = ^bk_httpreq;
   bk_httpreq = record
   end;
@@ -227,8 +231,6 @@ type
   bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
 
 var
-  bk_httpread_end: function(err: cbool): cssize_t; cdecl;
-
   bk_httpauth_setrealm: function(auth: Pbk_httpauth;
     const realm: Pcchar): cint; cdecl;
   bk_httpauth_deny: function(auth: Pbk_httpauth; const justification: Pcchar;
@@ -237,21 +239,14 @@ var
   bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
 
-  bk_httpsrv_new2: function(auth_cb: bk_httpauth_cb; auth_cls: Pcvoid;
-    req_cb: bk_httpreq_cb; req_cls: Pcvoid;
-    err_cb: bk_httperr_cb; err_cls: Pcvoid): Pbk_httpsrv; cdecl;
-  bk_httpsrv_new: function(cb: bk_httpreq_cb; cls: Pcvoid): Pbk_httpsrv; cdecl;
-  bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
-  bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cuint16_t;
-    threaded: cbool): cint; cdecl;
-  bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
-
   bk_httpreq_headers: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_cookies: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_params: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_version: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_method: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_path: function(req: Pbk_httpreq): Pcchar; cdecl;
+  bk_httpreq_ispost: function(req: Pbk_httpreq): cbool; cdecl;
+  bk_httpreq_payload: function(req: Pbk_httpreq): Pbk_str; cdecl;
   bk_httpreq_setuserdata: function(req: Pbk_httpreq; data: Pcvoid): cint; cdecl;
   bk_httpreq_userdata: function(req: Pbk_httpreq): Pcvoid; cdecl;
 
@@ -271,6 +266,17 @@ var
   bk_httpres_senddata: function(res: Pbk_httpres; block_size: csize_t;
     read_cb: bk_httpread_cb; cls: Pcvoid; free_cb: bk_httpfree_cb;
     status: cuint): cint; cdecl;
+
+  bk_httpsrv_new2: function(auth_cb: bk_httpauth_cb; auth_cls: Pcvoid;
+    req_cb: bk_httpreq_cb; req_cls: Pcvoid;
+    err_cb: bk_httperr_cb; err_cls: Pcvoid): Pbk_httpsrv; cdecl;
+  bk_httpsrv_new: function(cb: bk_httpreq_cb; cls: Pcvoid): Pbk_httpsrv; cdecl;
+  bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
+  bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cuint16_t;
+    threaded: cbool): cint; cdecl;
+  bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
+
+  bk_httpread_end: function(err: cbool): cssize_t; cdecl;
 
 {$IFDEF VER3_0}
 procedure CheckOSError(LastError: Integer); inline;
@@ -345,19 +351,11 @@ begin
     bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
-    bk_httpread_end := GetProcAddress(GBkLibHandle, 'bk_httpread_end');
-
     bk_httpauth_setrealm := GetProcAddress(GBkLibHandle, 'bk_httpauth_setrealm');
     bk_httpauth_deny := GetProcAddress(GBkLibHandle, 'bk_httpauth_deny');
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
     bk_httpauth_cancel := GetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
-
-    bk_httpsrv_new2 := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new2');
-    bk_httpsrv_new := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new');
-    bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
-    bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
-    bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
 
     bk_httpreq_headers := GetProcAddress(GBkLibHandle, 'bk_httpreq_headers');
     bk_httpreq_cookies := GetProcAddress(GBkLibHandle, 'bk_httpreq_cookies');
@@ -365,6 +363,8 @@ begin
     bk_httpreq_version := GetProcAddress(GBkLibHandle, 'bk_httpreq_version');
     bk_httpreq_method := GetProcAddress(GBkLibHandle, 'bk_httpreq_method');
     bk_httpreq_path := GetProcAddress(GBkLibHandle, 'bk_httpreq_path');
+    bk_httpreq_ispost := GetProcAddress(GBkLibHandle, 'bk_httpreq_ispost');
+    bk_httpreq_payload := GetProcAddress(GBkLibHandle, 'bk_httpreq_payload');
     bk_httpreq_setuserdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_setuserdata');
     bk_httpreq_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_userdata');
 
@@ -375,6 +375,14 @@ begin
     bk_httpres_sendfile := GetProcAddress(GBkLibHandle, 'bk_httpres_sendfile');
     bk_httpres_sendstream := GetProcAddress(GBkLibHandle, 'bk_httpres_sendstream');
     bk_httpres_senddata := GetProcAddress(GBkLibHandle, 'bk_httpres_senddata');
+
+    bk_httpsrv_new2 := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new2');
+    bk_httpsrv_new := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new');
+    bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
+    bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
+    bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
+
+    bk_httpread_end := GetProcAddress(GBkLibHandle, 'bk_httpread_end');
 
     Result := GBkLibHandle;
   finally
@@ -421,19 +429,11 @@ begin
     bk_strmap_next := nil;
     bk_strmap_cleanup := nil;
 
-    bk_httpread_end := nil;
-
     bk_httpauth_setrealm := nil;
     bk_httpauth_deny := nil;
     bk_httpauth_cancel := nil;
     bk_httpauth_usr := nil;
     bk_httpauth_pwd := nil;
-
-    bk_httpsrv_new2 := nil;
-    bk_httpsrv_new := nil;
-    bk_httpsrv_free := nil;
-    bk_httpsrv_start := nil;
-    bk_httpsrv_stop := nil;
 
     bk_httpreq_headers := nil;
     bk_httpreq_cookies := nil;
@@ -441,6 +441,8 @@ begin
     bk_httpreq_version := nil;
     bk_httpreq_method := nil;
     bk_httpreq_path := nil;
+    bk_httpreq_ispost := nil;
+    bk_httpreq_payload := nil;
     bk_httpreq_setuserdata := nil;
     bk_httpreq_userdata := nil;
 
@@ -451,6 +453,14 @@ begin
     bk_httpres_sendfile := nil;
     bk_httpres_sendstream := nil;
     bk_httpres_senddata := nil;
+
+    bk_httpsrv_new2 := nil;
+    bk_httpsrv_new := nil;
+    bk_httpsrv_free := nil;
+    bk_httpsrv_start := nil;
+    bk_httpsrv_stop := nil;
+
+    bk_httpread_end := nil;
 
     Result := GBkLibHandle;
   finally
