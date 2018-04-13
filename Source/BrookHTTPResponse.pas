@@ -95,6 +95,9 @@ begin
   Result.ClearOnDestroy := False;
 end;
 
+{$IFDEF FPC}
+ {$PUSH}{$WARN 5024 OFF}
+{$ENDIF}
 class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid;
   Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t;
 begin
@@ -104,6 +107,9 @@ begin
   if Result = -1 then
     Result := bk_httpread_end(True);
 end;
+{$IFDEF FPC}
+ {$POP}
+{$ENDIF}
 
 class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid);
 begin
