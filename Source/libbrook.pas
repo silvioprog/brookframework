@@ -273,7 +273,7 @@ var
     status: cuint): cint; cdecl;
 
 {$IFDEF VER3_0}
-procedure CheckOSError(LastError: Integer); platform; inline;
+procedure CheckOSError(LastError: Integer); inline;
 {$ENDIF}
 
 { TODO: procedure BkAddUnloadLibraryProc }
