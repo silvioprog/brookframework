@@ -22,7 +22,7 @@ type
     FParams: TBrookStringMap;
     FPath: string;
     FPayload: TBrookString;
-    Freq: Pbk_httpreq;
+    FHandle: Pbk_httpreq;
     FUserData: Pointer;
     FVersion: string;
     procedure SetUserData(AValue: Pointer);
@@ -52,16 +52,16 @@ implementation
 constructor TBrookHTTPRequest.Create(AHandle: Pointer);
 begin
   inherited Create;
-  Freq := AHandle;
-  FHeaders := CreateHeaders(bk_httpreq_headers(Freq));
-  FCookies := CreateCookies(bk_httpreq_cookies(Freq));
-  FParams := CreateParams(bk_httpreq_params(Freq));
-  FPayload := CreatePayload(bk_httpreq_payload(Freq));
-  FVersion := TMarshal.ToString(bk_httpreq_version(Freq));
-  FMethod := TMarshal.ToString(bk_httpreq_method(Freq));
-  FPath := TMarshal.ToString(bk_httpreq_path(Freq));
-  FIsPost := bk_httpreq_ispost(Freq);
-  FUserData := bk_httpreq_userdata(Freq);
+  FHandle := AHandle;
+  FHeaders := CreateHeaders(bk_httpreq_headers(FHandle));
+  FCookies := CreateCookies(bk_httpreq_cookies(FHandle));
+  FParams := CreateParams(bk_httpreq_params(FHandle));
+  FPayload := CreatePayload(bk_httpreq_payload(FHandle));
+  FVersion := TMarshal.ToString(bk_httpreq_version(FHandle));
+  FMethod := TMarshal.ToString(bk_httpreq_method(FHandle));
+  FPath := TMarshal.ToString(bk_httpreq_path(FHandle));
+  FIsPost := bk_httpreq_ispost(FHandle);
+  FUserData := bk_httpreq_userdata(FHandle);
 end;
 
 destructor TBrookHTTPRequest.Destroy;
@@ -97,13 +97,13 @@ end;
 
 function TBrookHTTPRequest.GetHandle: Pointer;
 begin
-  Result := Freq;
+  Result := FHandle;
 end;
 
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpreq_setuserdata(Freq, AValue));
+  CheckOSError(-bk_httpreq_setuserdata(FHandle, AValue));
 end;
 
 end.

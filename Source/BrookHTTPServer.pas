@@ -56,7 +56,7 @@ type
     FThreaded: Boolean;
     FStreamedActive: Boolean;
     FStreamedAuthenticated: Boolean;
-    Fsrv: Pbk_httpsrv;
+    FHandle: Pbk_httpsrv;
     function IsActive: Boolean;
     function IsAuthenticated: Boolean;
     function IsCatchOSErrors: Boolean;
@@ -248,7 +248,7 @@ end;
 
 function TBrookHTTPServer.GetHandle: Pointer;
 begin
-  Result := Fsrv;
+  Result := FHandle;
 end;
 
 procedure TBrookHTTPServer.DoError(ASender: TObject; AException: Exception);
@@ -382,39 +382,39 @@ procedure TBrookHTTPServer.InternalStart;
 var
   VAuthCb: bk_httpauth_cb;
 begin
-  if Assigned(Fsrv) then
+  if Assigned(FHandle) then
     Exit;
   BkCheckLibrary;
   if FAuthenticated then
     VAuthCb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
   else
     VAuthCb := nil;
-  Fsrv := bk_httpsrv_new2(VAuthCb, Self,
+  FHandle := bk_httpsrv_new2(VAuthCb, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
-  if not Assigned(Fsrv) then
+  if not Assigned(FHandle) then
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandler);
   if FPort <= 0 then
   begin
-    bk_httpsrv_free(Fsrv);
-    Fsrv := nil;
+    bk_httpsrv_free(FHandle);
+    FHandle := nil;
     raise EInvalidOperation.CreateResFmt(
       @SBrookInvalidHTTPServerPort, [FPort]);
   end;
-  FActive := bk_httpsrv_start(Fsrv, FPort, FThreaded) = 0;
+  FActive := bk_httpsrv_start(FHandle, FPort, FThreaded) = 0;
   if FActive then
     Exit;
-  bk_httpsrv_free(Fsrv);
-  Fsrv := nil;
+  bk_httpsrv_free(FHandle);
+  FHandle := nil;
 end;
 
 procedure TBrookHTTPServer.InternalStop;
 begin
-  if not Assigned(Fsrv) then
+  if not Assigned(FHandle) then
     Exit;
   BkCheckLibrary;
-  bk_httpsrv_free(Fsrv);
-  Fsrv := nil;
+  bk_httpsrv_free(FHandle);
+  FHandle := nil;
   FActive := False;
 end;
 

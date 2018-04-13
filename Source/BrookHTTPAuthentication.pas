@@ -14,7 +14,7 @@ uses
 type
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
-    Fauth: Pbk_httpauth;
+    FHandle: Pbk_httpauth;
     FRealm: string;
     FUserName: string;
     FPassword: string;
@@ -38,14 +38,14 @@ implementation
 constructor TBrookHTTPAuthentication.Create(AHandle: Pointer);
 begin
   inherited Create;
-  Fauth := AHandle;
-  FUserName := TMarshal.ToString(bk_httpauth_usr(Fauth));
-  FPassword := TMarshal.ToString(bk_httpauth_pwd(Fauth));
+  FHandle := AHandle;
+  FUserName := TMarshal.ToString(bk_httpauth_usr(FHandle));
+  FPassword := TMarshal.ToString(bk_httpauth_pwd(FHandle));
 end;
 
 function TBrookHTTPAuthentication.GetHandle: Pointer;
 begin
-  Result := Fauth;
+  Result := FHandle;
 end;
 
 procedure TBrookHTTPAuthentication.SetRealm(const AValue: string);
@@ -56,7 +56,7 @@ begin
     Exit;
   BkCheckLibrary;
   FRealm := AValue;
-  CheckOSError(-bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
+  CheckOSError(-bk_httpauth_setrealm(FHandle, M.ToCString(FRealm)));
 end;
 
 function TBrookHTTPAuthentication.Deny(const AJustification,
@@ -66,7 +66,7 @@ var
   R: cint;
 begin
   BkCheckLibrary;
-  R := -bk_httpauth_deny(Fauth, M.ToCString(AJustification),
+  R := -bk_httpauth_deny(FHandle, M.ToCString(AJustification),
     M.ToCString(AContentType));
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
@@ -82,7 +82,7 @@ end;
 procedure TBrookHTTPAuthentication.Cancel;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpauth_cancel(Fauth));
+  CheckOSError(-bk_httpauth_cancel(FHandle));
 end;
 
 end.

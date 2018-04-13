@@ -279,7 +279,7 @@ var
   bk_httpread_end: function(err: cbool): cssize_t; cdecl;
 
 {$IFDEF VER3_0}
-procedure CheckOSError(LastError: Integer); inline;
+procedure CheckOSError(ALastError: Integer); inline;
 {$ENDIF}
 
 { TODO: procedure BkAddUnloadLibraryProc }
@@ -290,10 +290,10 @@ procedure BkCheckLibrary;
 implementation
 
 {$IFDEF VER3_0}
-procedure CheckOSError(LastError: Integer);
+procedure CheckOSError(ALastError: Integer);
 begin
-  if LastError <> 0 then
-    RaiseLastOSError(LastError);
+  if ALastError <> 0 then
+    RaiseLastOSError(ALastError);
 end;
 {$ENDIF}
 

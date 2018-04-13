@@ -23,7 +23,7 @@ type
   TBrookHTTPResponse = class(TBrookHandledPersistent)
   private
     FHeaders: TBrookStringMap;
-    Fres: Pbk_httpres;
+    FHandle: Pbk_httpres;
   protected
     class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
       Asize: csize_t): cssize_t; cdecl; static;
@@ -62,8 +62,8 @@ implementation
 constructor TBrookHTTPResponse.Create(AHandle: Pointer);
 begin
   inherited Create;
-  Fres := AHandle;
-  FHeaders := CreateHeaders(bk_httpres_headers(Fres));
+  FHandle := AHandle;
+  FHeaders := CreateHeaders(bk_httpres_headers(FHandle));
 end;
 
 destructor TBrookHTTPResponse.Destroy;
@@ -74,7 +74,7 @@ end;
 
 function TBrookHTTPResponse.GetHandle: Pointer;
 begin
-  Result := Fres;
+  Result := FHandle;
 end;
 
 class procedure TBrookHTTPResponse.CheckStatus(AStatus: Word);
@@ -124,7 +124,7 @@ var
 begin
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_send(Fres, M.ToCString(AValue),
+  R := -bk_httpres_send(FHandle, M.ToCString(AValue),
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
@@ -146,7 +146,7 @@ var
 begin
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_sendbinary(Fres, ABuffer, ASize,
+  R := -bk_httpres_sendbinary(FHandle, ABuffer, ASize,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
@@ -167,7 +167,7 @@ var
 begin
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_sendstr(Fres, AString.Handle,
+  R := -bk_httpres_sendstr(FHandle, AString.Handle,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
@@ -183,7 +183,7 @@ var
 begin
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_sendfile(Fres, ABlockSize, AMaxSize, M.ToCString(AFileName),
+  R := -bk_httpres_sendfile(FHandle, ABlockSize, AMaxSize, M.ToCString(AFileName),
     ARendered, AStatus);
   Result := R = 0;
   if not Result then
@@ -215,7 +215,7 @@ begin
   CheckStream(AStream);
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_sendstream(Fres, AStream.Size, BROOK_BLOCK_SIZE,
+  R := -bk_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
   Result := R = 0;
@@ -230,7 +230,7 @@ begin
   CheckStream(AStream);
   CheckStatus(AStatus);
   BkCheckLibrary;
-  R := -bk_httpres_senddata(Fres, BROOK_BLOCK_SIZE,
+  R := -bk_httpres_senddata(FHandle, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
   Result := R = 0;

@@ -47,7 +47,7 @@ type
   { String class and its related methods. }
   TBrookString = class(TBrookHandledPersistent)
   private
-    Fstr: Pbk_str;
+    FHandle: Pbk_str;
     FOwnsHandle: Boolean;
     function GetContent: TBytes;
     function GetLength: NativeUInt;
@@ -107,10 +107,10 @@ begin
   if FOwnsHandle then
   begin
     BkCheckLibrary;
-    Fstr := bk_str_new;
+    FHandle := bk_str_new;
   end
   else
-    Fstr := AHandle;
+    FHandle := AHandle;
 end;
 
 destructor TBrookString.Destroy;
@@ -119,8 +119,8 @@ begin
     if FOwnsHandle then
     begin
       BkCheckLibrary;
-      bk_str_free(Fstr);
-      Fstr := nil;
+      bk_str_free(FHandle);
+      FHandle := nil;
     end;
   finally
     inherited Destroy;
@@ -135,7 +135,7 @@ end;
 
 function TBrookString.GetHandle: Pointer;
 begin
-  Result := Fstr;
+  Result := FHandle;
 end;
 
 function TBrookString.WriteBytes(const ASource: TBytes;
@@ -143,7 +143,7 @@ function TBrookString.WriteBytes(const ASource: TBytes;
 begin
   BkCheckLibrary;
   Result := ALength;
-  CheckOSError(-bk_str_strcpy(Fstr, @ASource[0], Result));
+  CheckOSError(-bk_str_strcpy(FHandle, @ASource[0], Result));
 end;
 
 procedure TBrookString.Write(const ASource: string; AEncoding: TEncoding);
@@ -169,13 +169,13 @@ end;
 procedure TBrookString.Clear;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_str_clear(Fstr));
+  CheckOSError(-bk_str_clear(FHandle));
 end;
 
 function TBrookString.GetLength: NativeUInt;
 begin
   BkCheckLibrary;
-  Result := bk_str_length(Fstr);
+  Result := bk_str_length(FHandle);
   if NativeInt(Result) < 0 then
     CheckOSError(-Result);
 end;
@@ -195,7 +195,7 @@ end;
 function TBrookString.GetContent: TBytes;
 begin
   BkCheckLibrary;
-  Result := TMarshal.ToBytes(bk_str_content(Fstr), GetLength);
+  Result := TMarshal.ToBytes(bk_str_content(FHandle), GetLength);
 end;
 
 end.

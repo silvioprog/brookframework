@@ -35,4 +35,9 @@
   {$DEFINE MarshaledAString := PAnsiChar}
   {$POP}
  {$ENDIF}
+ { disables a lot of unnecessary warnings. }
+ {$IF FPC_FULLVERSION >= 30101}
+  {$WARN 5044 OFF}
+  {$WARN 6058 OFF}
+ {$ENDIF}
 {$ENDIF}
