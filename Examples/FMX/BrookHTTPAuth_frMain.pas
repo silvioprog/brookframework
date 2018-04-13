@@ -80,11 +80,9 @@ type
     procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
     function BrookHTTPServer1Authenticate(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse): Boolean;
+      AAuthentication: TBrookHTTPAuthentication): Boolean;
     procedure BrookHTTPServer1AuthenticateError(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse; AException: Exception);
+      AAuthentication: TBrookHTTPAuthentication; AException: Exception);
   end;
 
 var
@@ -136,32 +134,30 @@ begin
 end;
 
 function TfrMain.BrookHTTPServer1Authenticate(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse): Boolean;
+  AAuthentication: TBrookHTTPAuthentication): Boolean;
 begin
   AAuthentication.Realm := 'My realm';
   Result := AAuthentication.UserName.Equals('abc') and
     AAuthentication.Password.Equals('123');
   if not Result then
-    AResponse.Send(
-      '<html><head><title>Denied</title></head><body><font color="red">Go away</font></body></html>', 
-      'text/html; charset=utf-8', 200);
+    AAuthentication.Deny(
+      '<html><head><title>Denied</title></head><body><font color="red">Go away</font></body></html>',
+      'text/html; charset=utf-8');
 end;
 
 procedure TfrMain.BrookHTTPServer1AuthenticateError(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse; AException: Exception);
+  AAuthentication: TBrookHTTPAuthentication; AException: Exception);
 begin
-  AResponse.Send(
+  AAuthentication.Deny(
     '<html><head><title>Error</title></head><body><font color="red">%s</font></body></html>',
-    [AException.Message], 'text/html; charset=utf-8', 500);
+    [AException.Message], 'text/html; charset=utf-8');
 end;
 
 procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
   AResponse.Send(
-    '<html><head><title>Secret</title></head><body>Secret page</body></html>',
+    '<html><head><title>Secret</title></head><body><font color="green">Secret page</font></body></html>',
     'text/html; charset=utf-8', 200);
 end;
 
