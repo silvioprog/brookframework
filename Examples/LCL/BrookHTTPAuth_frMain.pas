@@ -28,8 +28,6 @@
 unit BrookHTTPAuth_frMain;
 
 {$MODE DELPHI}
-{$WARN 4055 OFF}
-{$WARN 5024 OFF}
 
 interface
 
@@ -43,6 +41,9 @@ uses
   Dialogs,
   Forms,
   LCLIntf,
+  BrookHTTPAuthentication,
+  BrookHTTPRequest,
+  BrookHTTPResponse,
   BrookHTTPServer;
 
 type

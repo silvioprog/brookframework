@@ -39,6 +39,10 @@ contains
   BrookUtils in '..\Source\BrookUtils.pas',
   BrookHandledClasses in '..\Source\BrookHandledClasses.pas',
   BrookString in '..\Source\BrookString.pas',
+  BrookHTTPExtra in '..\Source\BrookHTTPExtra.pas',
+  BrookHTTPAuthentication in '..\Source\BrookHTTPAuthentication.pas',
+  BrookHTTPRequest in '..\Source\BrookHTTPRequest.pas',
+  BrookHTTPResponse in '..\Source\BrookHTTPResponse.pas',
   BrookHTTPServer in '..\Source\BrookHTTPServer.pas',
   BrookIDEIntegration in 'BrookIDEIntegration.pas';
 

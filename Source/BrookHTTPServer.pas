@@ -5,36 +5,23 @@ unit BrookHTTPServer;
 interface
 
 uses
-  RtlConsts,
   SysUtils,
   Classes,
-  Platform,
   Marshalling,
   libbrook,
   BrookHandledClasses,
-  BrookString,
-  BrookStringMap;
-
-const
-  BROOK_BLOCK_SIZE = 4096;
-  BROOK_CONTENT_TYPE = 'text/plain; charset=utf-8';
+  BrookHTTPExtra,
+  BrookHTTPAuthentication,
+  BrookHTTPRequest,
+  BrookHTTPResponse;
 
 resourcestring
   SBrookOpNotAllowedActiveServer =
     'Operation is not allowed while the server is active';
   SBrookCannotCreateHTTPServerHandler = 'Cannot create HTTP server handler';
   SBrookInvalidHTTPServerPort = 'Invalid HTTP server port: %d';
-  SBrookInvalidHTTPStatus = 'Invalid status code: %d';
 
 type
-  TBrookHTTPAuthentication = class;
-
-  TBrookHTTPServer = class;
-
-  TBrookHTTPRequest = class;
-
-  TBrookHTTPResponse = class;
-
   TBrookHTTPErrorEvent = procedure(ASender: TObject;
     AException: Exception) of object;
 
@@ -54,93 +41,6 @@ type
   EBrookHTTPServerError = class(Exception);
 
   EBrookOpNotAllowedActiveServer = class(Exception);
-
-  TBrookHTTPAuthentication = class(TBrookHandledPersistent)
-  private
-    Fauth: Pbk_httpauth;
-    FRealm: string;
-    FUserName: string;
-    FPassword: string;
-    procedure SetRealm(const AValue: string);
-  protected
-    function GetHandle: Pointer; override;
-  public
-    constructor Create(AHandle: Pointer); virtual;
-    function Deny(const AJustification,
-      AContentType: string): Boolean; overload; virtual;
-    function Deny(const AFmt: string; const AArgs: array of const;
-      const AContentType: string): Boolean; overload; virtual;
-    procedure Cancel; virtual;
-    property Realm: string read FRealm write SetRealm;
-    property UserName: string read FUserName;
-    property Password: string read FPassword;
-  end;
-
-  TBrookHTTPRequest = class(TBrookHandledPersistent)
-  private
-    FCookies: TBrookStringMap;
-    FHeaders: TBrookStringMap;
-    FParams: TBrookStringMap;
-    Freq: Pbk_httpreq;
-    function GetMethod: string;
-    function GetPath: string;
-    function GetUserData: Pointer;
-    function GetVersion: string;
-    procedure SetUserData(AValue: Pointer);
-  protected
-    function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
-    function CreateCookies(AHandle: Pointer): TBrookStringMap; virtual;
-    function CreateParams(AHandle: Pointer): TBrookStringMap; virtual;
-    function GetHandle: Pointer; override;
-  public
-    constructor Create(AHandle: Pointer); virtual;
-    destructor Destroy; override;
-    property Headers: TBrookStringMap read FHeaders;
-    property Cookies: TBrookStringMap read FCookies;
-    property Params: TBrookStringMap read FParams;
-    { TODO: Fields }
-    property Version: string read GetVersion;
-    property Method: string read GetMethod;
-    property Path: string read GetPath;
-    property UserData: Pointer read GetUserData write SetUserData;
-  end;
-
-  TBrookHTTPResponse = class(TBrookHandledPersistent)
-  private
-    FHeaders: TBrookStringMap;
-    Fres: Pbk_httpres;
-  protected
-    class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
-      Asize: csize_t): cssize_t; cdecl; static;
-    class procedure DoStreamFree(Acls: Pcvoid); cdecl; static;
-    class procedure CheckStatus(AStatus: Word); static; inline;
-    class procedure CheckStream(AStream: TStream); static; inline;
-    function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
-    function GetHandle: Pointer; override;
-  public
-    constructor Create(AHandle: Pointer); virtual;
-    destructor Destroy; override;
-    function Send(const AValue, AContentType: string;
-      AStatus: Word): Boolean; overload; virtual;
-    function Send(const AFmt: string; const AArgs: array of const;
-      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
-    function Send(ABuffer: Pointer; ASize: NativeUInt;
-      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
-    function Send(const ABytes: TBytes; ASize: NativeUInt;
-      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
-    function Send(AString: TBrookString; const AContentType: string;
-      AStatus: Word): Boolean; overload; virtual;
-    function TrySendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
-      const AFileName: TFileName; ARendered: Boolean; AStatus: Word;
-      out AFailed: Boolean): Boolean; overload; virtual;
-    function SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
-      const AFileName: TFileName; ARendered: Boolean;
-      AStatus: Word): Boolean; overload; virtual;
-    function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
-    function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
-    function SendData(AStream: TStream; AStatus: Word): Boolean; virtual;
-    property Headers: TBrookStringMap read FHeaders;
-  end;
 
   TBrookHTTPServer = class(TBrookHandledComponent)
   private
@@ -201,7 +101,8 @@ type
     property Active: Boolean read FActive write SetActive stored IsActive;
     property Authenticated: Boolean read FAuthenticated write SetAuthenticated
       stored IsAuthenticated;
-    property Port: UInt16 read FPort write SetPort stored IsPort default 8080;
+    property Port: UInt16 read FPort write SetPort stored IsPort
+      default BROOK_PORT;
     property Threaded: Boolean read FThreaded write SetThreaded
       stored IsThreaded default False;
     property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
@@ -218,317 +119,10 @@ type
 
 implementation
 
-{ TBrookHTTPAuthentication }
-
-constructor TBrookHTTPAuthentication.Create(AHandle: Pointer);
-begin
-  inherited Create;
-  Fauth := AHandle;
-  FUserName := TMarshal.ToString(bk_httpauth_usr(Fauth));
-  FPassword := TMarshal.ToString(bk_httpauth_pwd(Fauth));
-end;
-
-function TBrookHTTPAuthentication.GetHandle: Pointer;
-begin
-  Result := Fauth;
-end;
-
-procedure TBrookHTTPAuthentication.SetRealm(const AValue: string);
-var
-  M: TMarshaller;
-begin
-  if AValue = FRealm then
-    Exit;
-  BkCheckLibrary;
-  FRealm := AValue;
-  CheckOSError(-bk_httpauth_setrealm(Fauth, M.ToCString(FRealm)));
-end;
-
-function TBrookHTTPAuthentication.Deny(const AJustification,
-  AContentType: string): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-begin
-  BkCheckLibrary;
-  R := -bk_httpauth_deny(Fauth, M.ToCString(AJustification),
-    M.ToCString(AContentType));
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
-end;
-
-function TBrookHTTPAuthentication.Deny(const AFmt: string;
-  const AArgs: array of const; const AContentType: string): Boolean;
-begin
-  Result := Deny(Format(AFmt, AArgs), AContentType);
-end;
-
-procedure TBrookHTTPAuthentication.Cancel;
-begin
-  BkCheckLibrary;
-  CheckOSError(-bk_httpauth_cancel(Fauth));
-end;
-
-{ TBrookHTTPRequest }
-
-constructor TBrookHTTPRequest.Create(AHandle: Pointer);
-begin
-  inherited Create;
-  Freq := AHandle;
-  FHeaders := CreateHeaders(bk_httpreq_headers(Freq));
-  FCookies := CreateCookies(bk_httpreq_cookies(Freq));
-  FParams := CreateParams(bk_httpreq_params(Freq));
-end;
-
-destructor TBrookHTTPRequest.Destroy;
-begin
-  FParams.Free;
-  FCookies.Free;
-  FHeaders.Free;
-  inherited Destroy;
-end;
-
-function TBrookHTTPRequest.CreateHeaders(AHandle: Pointer): TBrookStringMap;
-begin
-  Result := TBrookStringMap.Create(AHandle);
-  Result.ClearOnDestroy := False;
-end;
-
-function TBrookHTTPRequest.CreateCookies(AHandle: Pointer): TBrookStringMap;
-begin
-  Result := TBrookStringMap.Create(AHandle);
-  Result.ClearOnDestroy := False;
-end;
-
-function TBrookHTTPRequest.CreateParams(AHandle: Pointer): TBrookStringMap;
-begin
-  Result := TBrookStringMap.Create(AHandle);
-  Result.ClearOnDestroy := False;
-end;
-
-function TBrookHTTPRequest.GetHandle: Pointer;
-begin
-  Result := Freq;
-end;
-
-function TBrookHTTPRequest.GetVersion: string;
-begin
-  BkCheckLibrary;
-  Result := TMarshal.ToString(bk_httpreq_version(Freq));
-end;
-
-function TBrookHTTPRequest.GetMethod: string;
-begin
-  BkCheckLibrary;
-  Result := TMarshal.ToString(bk_httpreq_method(Freq));
-end;
-
-function TBrookHTTPRequest.GetPath: string;
-begin
-  BkCheckLibrary;
-  Result := TMarshal.ToString(bk_httpreq_path(Freq));
-end;
-
-function TBrookHTTPRequest.GetUserData: Pointer;
-begin
-  BkCheckLibrary;
-  Result := bk_httpreq_userdata(Freq);
-end;
-
-procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
-begin
-  BkCheckLibrary;
-  CheckOSError(-bk_httpreq_setuserdata(Freq, AValue));
-end;
-
-{ TBrookHTTPResponse }
-
-constructor TBrookHTTPResponse.Create(AHandle: Pointer);
-begin
-  inherited Create;
-  Fres := AHandle;
-  FHeaders := CreateHeaders(bk_httpres_headers(Fres));
-end;
-
-destructor TBrookHTTPResponse.Destroy;
-begin
-  FHeaders.Free;
-  inherited Destroy;
-end;
-
-function TBrookHTTPResponse.GetHandle: Pointer;
-begin
-  Result := Fres;
-end;
-
-class procedure TBrookHTTPResponse.CheckStatus(AStatus: Word);
-begin
-  if (AStatus < 100) or (AStatus > 599) then
-    raise EArgumentException.CreateResFmt(@SBrookInvalidHTTPStatus, [AStatus]);
-end;
-
-class procedure TBrookHTTPResponse.CheckStream(AStream: TStream);
-begin
-  if not Assigned(AStream) then
-    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AStream']);
-end;
-
-function TBrookHTTPResponse.CreateHeaders(AHandle: Pointer): TBrookStringMap;
-begin
-  Result := TBrookStringMap.Create(AHandle);
-  Result.ClearOnDestroy := False;
-end;
-
-{$IFDEF FPC}
- {$PUSH}{$WARN 5024 OFF}
-{$ENDIF}
-class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid;
-  Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t;
-begin
-  Result := TStream(Acls).Read(Abuf^, Asize);
-  if Result = 0 then
-    Exit(bk_httpread_end(False));
-  if Result = -1 then
-    Result := bk_httpread_end(True);
-end;
-{$IFDEF FPC}
- {$POP}
-{$ENDIF}
-
-class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid);
-begin
-  TStream(Acls).Free;
-end;
-
-function TBrookHTTPResponse.Send(const AValue, AContentType: string;
-  AStatus: Word): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-begin
-  CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_send(Fres, M.ToCString(AValue),
-    M.ToCString(AContentType), AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
-end;
-
-function TBrookHTTPResponse.Send(const AFmt: string;
-  const AArgs: array of const; const AContentType: string;
-  AStatus: Word): Boolean;
-begin
-  Result := Send(Format(AFmt, AArgs), AContentType, AStatus);
-end;
-
-function TBrookHTTPResponse.Send(ABuffer: Pointer; ASize: NativeUInt;
-  const AContentType: string; AStatus: Word): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-begin
-  CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendbinary(Fres, ABuffer, ASize,
-    M.ToCString(AContentType), AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
-end;
-
-function TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
-  const AContentType: string; AStatus: Word): Boolean;
-begin
-  Result := Send(@ABytes[0], ASize, AContentType, AStatus);
-end;
-
-function TBrookHTTPResponse.Send(AString: TBrookString;
-  const AContentType: string; AStatus: Word): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-begin
-  CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendstr(Fres, AString.Handle,
-    M.ToCString(AContentType), AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
-end;
-
-function TBrookHTTPResponse.TrySendFile(ABlockSize: NativeUInt;
-  AMaxSize: UInt64; const AFileName: TFileName; ARendered: Boolean;
-  AStatus: Word; out AFailed: Boolean): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-begin
-  CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendfile(Fres, ABlockSize, AMaxSize, M.ToCString(AFileName),
-    ARendered, AStatus);
-  Result := R = 0;
-  if not Result then
-  begin
-    AFailed := R = ENOENT;
-    if (not AFailed) and (R <> EALREADY) then
-      CheckOSError(R);
-  end;
-end;
-
-function TBrookHTTPResponse.SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
-  const AFileName: TFileName; ARendered: Boolean; AStatus: Word): Boolean;
-begin
-  if not TrySendFile(ABlockSize, AMaxSize, AFileName, ARendered,
-    AStatus, Result) then
-    raise EFileNotFoundException.CreateResFmt(@SFOpenError, [AFileName]);
-end;
-
-function TBrookHTTPResponse.SendFile(const AFileName: TFileName): Boolean;
-begin
-  Result := SendFile(4096, 0, AFileName, False, 200);
-end;
-
-function TBrookHTTPResponse.SendStream(AStream: TStream;
-  AStatus: Word): Boolean;
-var
-  R: cint;
-begin
-  CheckStream(AStream);
-  CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendstream(Fres, AStream.Size, BROOK_BLOCK_SIZE,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
-end;
-
-function TBrookHTTPResponse.SendData(AStream: TStream; AStatus: Word): Boolean;
-var
-  R: cint;
-begin
-  CheckStream(AStream);
-  CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_senddata(Fres, BROOK_BLOCK_SIZE,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
-end;
-
-{ TBrookHTTPServer }
-
 constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPort := 8080;
+  FPort := BROOK_PORT;
   FCatchOSErrors := True;
 end;
 
@@ -743,7 +337,7 @@ end;
 
 function TBrookHTTPServer.IsPort: Boolean;
 begin
-  Result := FPort <> 8080;
+  Result := FPort <> BROOK_PORT;
 end;
 
 function TBrookHTTPServer.IsThreaded: Boolean;

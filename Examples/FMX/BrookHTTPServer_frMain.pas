@@ -50,6 +50,8 @@ uses
   FMX.Forms,
   FMX.Controls.Presentation,
   BrookHandledClasses,
+  BrookHTTPRequest,
+  BrookHTTPResponse,
   BrookHTTPServer;
 
 type

@@ -30,12 +30,9 @@
  {$IFDEF CPU64}
   {$DEFINE CPU64BITS}
  {$ENDIF}
- {$WARN SYMBOL_PLATFORM OFF}
  {$IFDEF VER3_0}
   {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
   {$POP}
- {$ELSE}
-  {$WARN 6058 OFF}
  {$ENDIF}
 {$ENDIF}
