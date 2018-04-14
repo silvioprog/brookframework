@@ -242,6 +242,7 @@ var
   bk_httpreq_headers: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_cookies: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_params: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
+  bk_httpreq_fields: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_version: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_method: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_path: function(req: Pbk_httpreq): Pcchar; cdecl;
@@ -360,6 +361,7 @@ begin
     bk_httpreq_headers := GetProcAddress(GBkLibHandle, 'bk_httpreq_headers');
     bk_httpreq_cookies := GetProcAddress(GBkLibHandle, 'bk_httpreq_cookies');
     bk_httpreq_params := GetProcAddress(GBkLibHandle, 'bk_httpreq_params');
+    bk_httpreq_fields := GetProcAddress(GBkLibHandle, 'bk_httpreq_fields');
     bk_httpreq_version := GetProcAddress(GBkLibHandle, 'bk_httpreq_version');
     bk_httpreq_method := GetProcAddress(GBkLibHandle, 'bk_httpreq_method');
     bk_httpreq_path := GetProcAddress(GBkLibHandle, 'bk_httpreq_path');
@@ -438,6 +440,7 @@ begin
     bk_httpreq_headers := nil;
     bk_httpreq_cookies := nil;
     bk_httpreq_params := nil;
+    bk_httpreq_fields := nil;
     bk_httpreq_version := nil;
     bk_httpreq_method := nil;
     bk_httpreq_path := nil;
