@@ -125,11 +125,12 @@ type
   cuint = Cardinal;
   Pcuint = PCardinal;
   cuint64_t = UInt64;
-  csize_t = {$IFDEF CPU64BITS}UInt64{$ELSE}UInt32{$ENDIF};
-  Pcsize_t = ^csize_t;
-  cssize_t = {$IFDEF CPU64BITS}Int64{$ELSE}Integer{$ENDIF};
+  csize_t = NativeUInt;
+  Pcsize_t = PNativeUInt;
+  cssize_t = NativeInt;
 {$ENDIF}
   Pcvoid = Pointer;
+  cenum = cint;
   cva_list = Pointer;
 
 {$IFDEF FPC}
@@ -218,6 +219,18 @@ type
   bk_httpsrv = record
   end;
 
+type
+  BK_HTTPSRV_OPT = cenum;
+const
+  BK_HTTPSRV_OPT_UNKNOWN = 0;
+  BK_HTTPSRV_OPT_UPLD_DIR = 1;
+  BK_HTTPSRV_OPT_POST_BUFSIZE = 2;
+  BK_HTTPSRV_OPT_MAX_PAYLDSIZE = 4;
+  BK_HTTPSRV_OPT_THRD_POOL_SIZE = 8;
+  BK_HTTPSRV_OPT_CON_TIMEOUT = 16;
+  BK_HTTPSRV_OPT_CON_LIMIT = 32;
+
+type
   bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth): cbool; cdecl;
 
   bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
@@ -273,6 +286,10 @@ var
     err_cb: bk_httperr_cb; err_cls: Pcvoid): Pbk_httpsrv; cdecl;
   bk_httpsrv_new: function(cb: bk_httpreq_cb; cls: Pcvoid): Pbk_httpsrv; cdecl;
   bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
+  bk_httpsrv_setopt_va: function(srv: Pbk_httpsrv; opt: BK_HTTPSRV_OPT;
+    ap: cva_list): cint; cdecl;
+  bk_httpsrv_setopt: function(srv: Pbk_httpsrv;
+    opt: BK_HTTPSRV_OPT): cint; cdecl varargs;
   bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cuint16_t;
     threaded: cbool): cint; cdecl;
   bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
@@ -381,6 +398,8 @@ begin
     bk_httpsrv_new2 := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new2');
     bk_httpsrv_new := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new');
     bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
+    bk_httpsrv_setopt_va := GetProcAddress(GBkLibHandle, 'bk_httpsrv_setopt_va');
+    bk_httpsrv_setopt := GetProcAddress(GBkLibHandle, 'bk_httpsrv_setopt');
     bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
     bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
 
@@ -460,6 +479,8 @@ begin
     bk_httpsrv_new2 := nil;
     bk_httpsrv_new := nil;
     bk_httpsrv_free := nil;
+    bk_httpsrv_setopt_va := nil;
+    bk_httpsrv_setopt := nil;
     bk_httpsrv_start := nil;
     bk_httpsrv_stop := nil;
 

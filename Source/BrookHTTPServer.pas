@@ -18,7 +18,7 @@ uses
 resourcestring
   SBrookOpNotAllowedActiveServer =
     'Operation is not allowed while the server is active';
-  SBrookCannotCreateHTTPServerHandler = 'Cannot create HTTP server handler';
+  SBrookCannotCreateHTTPServerHandle = 'Cannot create HTTP server handle';
   SBrookInvalidHTTPServerPort = 'Invalid HTTP server port: %d';
 
 type
@@ -46,6 +46,9 @@ type
   private
     FAuthenticated: Boolean;
     FCatchOSErrors: Boolean;
+    FConnectionLimit: Cardinal;
+    FConnectionTimeout: Cardinal;
+    FMaxPayloadSize: NativeUInt;
     FOnAuthenticate: TBrookHTTPAuthenticationEvent;
     FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
     FOnRequest: TBrookHTTPRequestEvent;
@@ -53,19 +56,37 @@ type
     FActive: Boolean;
     FOnRequestError: TBrookHTTPRequestErrorEvent;
     FPort: UInt16;
+    FPostBufferSize: NativeUInt;
     FThreaded: Boolean;
     FStreamedActive: Boolean;
     FStreamedAuthenticated: Boolean;
     FHandle: Pbk_httpsrv;
+    FThreadPoolSize: Cardinal;
+    FUploadsDir: string;
     function IsActive: Boolean;
     function IsAuthenticated: Boolean;
     function IsCatchOSErrors: Boolean;
+    function IsConnectionLimit: Boolean;
+    function IsConnectionTimeout: Boolean;
+    function IsMaxPayloadSize: Boolean;
     function IsPort: Boolean;
+    function IsPostBufferSize: Boolean;
     function IsThreaded: Boolean;
+    function IsThreadPoolSize: Boolean;
+    function IsUploadsDir: Boolean;
     procedure SetAuthenticated(AValue: Boolean);
     procedure SetCatchOSErrors(AValue: Boolean);
+    procedure SetConnectionLimit(AValue: Cardinal);
+    procedure SetConnectionTimeout(AValue: Cardinal);
+    procedure SetMaxPayloadSize(AValue: NativeUInt);
     procedure SetPort(AValue: UInt16);
+    procedure SetPostBufferSize(AValue: NativeUInt);
     procedure SetThreaded(AValue: Boolean);
+    procedure SetThreadPoolSize(AValue: Cardinal);
+    procedure SetUploadsDir(const AValue: string);
+    procedure InternalCreateServerHandle; inline;
+    procedure InternalFreeServerHandle; inline;
+    procedure InternalCheckServerOption(Aopt: cint); inline;
   protected
     class function DoAuthenticationCallback(Acls: Pcvoid;
       Aauth: Pbk_httpauth): cbool; cdecl; static;
@@ -90,8 +111,8 @@ type
       AResponse: TBrookHTTPResponse; AException: Exception); virtual;
     procedure CheckInactive; inline;
     procedure SetActive(AValue: Boolean); virtual;
-    procedure InternalStart; virtual;
-    procedure InternalStop; virtual;
+    procedure DoStart; virtual;
+    procedure DoStop; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -107,6 +128,18 @@ type
       stored IsThreaded default False;
     property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
       stored IsCatchOSErrors default True;
+    property UploadsDir: string read FUploadsDir write SetUploadsDir
+      stored IsUploadsDir;
+    property PostBufferSize: NativeUInt read FPostBufferSize
+      write SetPostBufferSize stored IsPostBufferSize default 0;
+    property MaxPayloadSize: NativeUInt read FMaxPayloadSize
+      write SetMaxPayloadSize stored IsMaxPayloadSize default 0;
+    property ThreadPoolSize: Cardinal read FThreadPoolSize
+      write SetThreadPoolSize stored IsThreadPoolSize default 0;
+    property ConnectionTimeout: Cardinal read FConnectionTimeout
+      write SetConnectionTimeout stored IsConnectionTimeout default 0;
+    property ConnectionLimit: Cardinal read FConnectionLimit
+      write SetConnectionLimit stored IsConnectionLimit default 0;
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
       write FOnAuthenticate;
     property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
@@ -132,6 +165,42 @@ begin
     SetActive(False);
   finally
     inherited Destroy;
+  end;
+end;
+
+procedure TBrookHTTPServer.InternalCreateServerHandle;
+var
+  ACB: bk_httpauth_cb;
+begin
+  if FAuthenticated then
+    ACB := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
+  else
+    ACB := nil;
+  FHandle := bk_httpsrv_new2(ACB, Self,
+{$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
+{$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
+  if not Assigned(FHandle) then
+    raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandle);
+  if FPort <= 0 then
+  begin
+    InternalFreeServerHandle;
+    raise EInvalidOperation.CreateResFmt(
+      @SBrookInvalidHTTPServerPort, [FPort]);
+  end;
+end;
+
+procedure TBrookHTTPServer.InternalFreeServerHandle;
+begin
+  bk_httpsrv_free(FHandle);
+  FHandle := nil;
+end;
+
+procedure TBrookHTTPServer.InternalCheckServerOption(Aopt: cint);
+begin
+  if Aopt <> 0 then
+  begin
+    InternalFreeServerHandle;
+    CheckOSError(Aopt);
   end;
 end;
 
@@ -306,11 +375,39 @@ begin
   FPort := AValue;
 end;
 
+procedure TBrookHTTPServer.SetPostBufferSize(AValue: NativeUInt);
+begin
+  if not FStreamedActive then
+    CheckInactive;
+  FPostBufferSize := AValue;
+end;
+
 procedure TBrookHTTPServer.SetCatchOSErrors(AValue: Boolean);
 begin
   if not FStreamedActive then
     CheckInactive;
   FCatchOSErrors := AValue;
+end;
+
+procedure TBrookHTTPServer.SetConnectionLimit(AValue: Cardinal);
+begin
+  if not FStreamedActive then
+    CheckInactive;
+  FConnectionLimit := AValue;
+end;
+
+procedure TBrookHTTPServer.SetConnectionTimeout(AValue: Cardinal);
+begin
+  if not FStreamedActive then
+    CheckInactive;
+  FConnectionTimeout := AValue;
+end;
+
+procedure TBrookHTTPServer.SetMaxPayloadSize(AValue: NativeUInt);
+begin
+  if not FStreamedActive then
+    CheckInactive;
+  FMaxPayloadSize := AValue;
 end;
 
 procedure TBrookHTTPServer.SetThreaded(AValue: Boolean);
@@ -320,9 +417,38 @@ begin
   FThreaded := AValue;
 end;
 
+procedure TBrookHTTPServer.SetThreadPoolSize(AValue: Cardinal);
+begin
+  if not FStreamedActive then
+    CheckInactive;
+  FThreadPoolSize := AValue;
+end;
+
+procedure TBrookHTTPServer.SetUploadsDir(const AValue: string);
+begin
+  if not FStreamedActive then
+    CheckInactive;
+  FUploadsDir := AValue;
+end;
+
 function TBrookHTTPServer.IsCatchOSErrors: Boolean;
 begin
   Result := not FCatchOSErrors;
+end;
+
+function TBrookHTTPServer.IsConnectionLimit: Boolean;
+begin
+  Result := FConnectionLimit > 0;
+end;
+
+function TBrookHTTPServer.IsConnectionTimeout: Boolean;
+begin
+  Result := FConnectionTimeout > 0;
+end;
+
+function TBrookHTTPServer.IsMaxPayloadSize: Boolean;
+begin
+  Result := FMaxPayloadSize > 0;
 end;
 
 function TBrookHTTPServer.IsActive: Boolean;
@@ -340,9 +466,24 @@ begin
   Result := FPort <> BROOK_PORT;
 end;
 
+function TBrookHTTPServer.IsPostBufferSize: Boolean;
+begin
+  Result := FPostBufferSize > 0;
+end;
+
 function TBrookHTTPServer.IsThreaded: Boolean;
 begin
   Result := FThreaded;
+end;
+
+function TBrookHTTPServer.IsThreadPoolSize: Boolean;
+begin
+  Result := FThreadPoolSize > 0;
+end;
+
+function TBrookHTTPServer.IsUploadsDir: Boolean;
+begin
+  Result := not FUploadsDir.IsEmpty;
 end;
 
 procedure TBrookHTTPServer.SetAuthenticated(AValue: Boolean);
@@ -372,49 +513,49 @@ begin
       if csReading in ComponentState then
         FStreamedActive := True
       else
-        InternalStart;
+        DoStart;
     end
     else
-      InternalStop;
+      DoStop;
 end;
 
-procedure TBrookHTTPServer.InternalStart;
+procedure TBrookHTTPServer.DoStart;
 var
-  VAuthCb: bk_httpauth_cb;
+  M: TMarshaller;
 begin
   if Assigned(FHandle) then
     Exit;
   BkCheckLibrary;
-  if FAuthenticated then
-    VAuthCb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
-  else
-    VAuthCb := nil;
-  FHandle := bk_httpsrv_new2(VAuthCb, Self,
-{$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
-{$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
-  if not Assigned(FHandle) then
-    raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandler);
-  if FPort <= 0 then
-  begin
-    bk_httpsrv_free(FHandle);
-    FHandle := nil;
-    raise EInvalidOperation.CreateResFmt(
-      @SBrookInvalidHTTPServerPort, [FPort]);
-  end;
+  InternalCreateServerHandle;
+  if not FUploadsDir.IsEmpty then
+    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
+      BK_HTTPSRV_OPT_UPLD_DIR, M.ToCString(FUploadsDir)));
+  if FPostBufferSize > 0 then
+    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
+      BK_HTTPSRV_OPT_POST_BUFSIZE, FPostBufferSize));
+  if FMaxPayloadSize > 0 then
+    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
+      BK_HTTPSRV_OPT_MAX_PAYLDSIZE, FMaxPayloadSize));
+  if FThreadPoolSize > 0 then
+    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
+      BK_HTTPSRV_OPT_THRD_POOL_SIZE, FThreadPoolSize));
+  if FConnectionTimeout > 0 then
+    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
+      BK_HTTPSRV_OPT_CON_TIMEOUT, FConnectionTimeout));
+  if FConnectionLimit > 0 then
+    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
+      BK_HTTPSRV_OPT_CON_LIMIT, FConnectionLimit));
   FActive := bk_httpsrv_start(FHandle, FPort, FThreaded) = 0;
-  if FActive then
-    Exit;
-  bk_httpsrv_free(FHandle);
-  FHandle := nil;
+  if not FActive then
+    InternalFreeServerHandle;
 end;
 
-procedure TBrookHTTPServer.InternalStop;
+procedure TBrookHTTPServer.DoStop;
 begin
   if not Assigned(FHandle) then
     Exit;
   BkCheckLibrary;
-  bk_httpsrv_free(FHandle);
-  FHandle := nil;
+  InternalFreeServerHandle;
   FActive := False;
 end;
 

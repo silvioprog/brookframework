@@ -27,9 +27,6 @@
 
 {$IFDEF FPC}
  {$MODE DELPHI}
- {$IFDEF CPU64}
-  {$DEFINE CPU64BITS}
- {$ENDIF}
  {$IFDEF VER3_0}
   {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
