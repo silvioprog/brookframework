@@ -26,6 +26,7 @@ type
     FIsPost: Boolean;
     FUserData: Pointer;
     FHandle: Pbk_httpreq;
+    function GetPaths: TArray<string>;
     procedure SetUserData(AValue: Pointer);
   protected
     function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
@@ -45,6 +46,7 @@ type
     property Version: string read FVersion;
     property Method: string read FMethod;
     property Path: string read FPath;
+    property Paths: TArray<string> read GetPaths;
     property IsPost: Boolean read FIsPost;
     property UserData: Pointer read FUserData write SetUserData;
   end;
@@ -109,6 +111,11 @@ end;
 function TBrookHTTPRequest.CreatePayload(AHandle: Pointer): TBrookString;
 begin
   Result := TBrookString.Create(AHandle);
+end;
+
+function TBrookHTTPRequest.GetPaths: TArray<string>;
+begin
+  Result := Path.Split(['/'], TStringSplitOptions.ExcludeEmpty);
 end;
 
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
