@@ -145,6 +145,17 @@ type
 
   EBkLibraryNotLoaded = class(EFileNotFoundException);
 
+type
+  bk_err_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
+
+  bk_write_cb = function(cls: Pcvoid; offset: cuint64_t; const buf: Pcchar;
+    size: csize_t): csize_t; cdecl;
+
+  bk_read_cb = function(cls: Pcvoid; offset: cuint64_t; buf: Pcchar;
+    size: csize_t): cssize_t; cdecl;
+
+  bk_free_cb = procedure(cls: Pcvoid); cdecl;
+
 var
   bk_version: function: cuint; cdecl;
   bk_version_str: function: Pcchar; cdecl;
@@ -224,7 +235,7 @@ type
   BK_HTTPSRV_OPT = cenum;
 const
   BK_HTTPSRV_OPT_UNKNOWN = 0;
-  BK_HTTPSRV_OPT_UPLD_CB = 1;
+  BK_HTTPSRV_OPT_UPLD_CBS = 1;
   BK_HTTPSRV_OPT_UPLD_DIR = 2;
   BK_HTTPSRV_OPT_POST_BUFSIZE = 4;
   BK_HTTPSRV_OPT_MAX_PAYLDSIZE = 8;
@@ -238,18 +249,8 @@ type
   bk_httpupld_cb = function(cls: PPcvoid; const dir: Pcchar; const field: Pcchar;
     const name: Pcchar; const mime: Pcchar; const encoding: Pcchar): cint; cdecl;
 
-  bk_httpwrite_cb = function(cls: Pcvoid; offset: cuint64_t; const buf: Pcchar;
-    size: csize_t): csize_t; cdecl;
-
   bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
     res: Pbk_httpres); cdecl;
-
-  bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
-
-  bk_httpread_cb = function(cls: Pcvoid; offset: cuint64_t; buf: Pcchar;
-    size: csize_t): cssize_t; cdecl;
-
-  bk_httperr_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
 
 var
   bk_httpauth_setrealm: function(auth: Pbk_httpauth;
@@ -283,15 +284,15 @@ var
     max_size: cuint64_t; const filename: Pcchar; rendered: cbool;
     status: cuint): cint; cdecl;
   bk_httpres_sendstream: function(res: Pbk_httpres; size: cuint64_t;
-    block_size: csize_t; read_cb: bk_httpread_cb; cls: Pcvoid;
-    flush_cb: bk_httpfree_cb; status: cuint): cint; cdecl;
+    block_size: csize_t; read_cb: bk_read_cb; cls: Pcvoid; flush_cb: bk_free_cb;
+    status: cuint): cint; cdecl;
   bk_httpres_senddata: function(res: Pbk_httpres; block_size: csize_t;
-    read_cb: bk_httpread_cb; cls: Pcvoid; free_cb: bk_httpfree_cb;
+    read_cb: bk_read_cb; cls: Pcvoid; free_cb: bk_free_cb;
     status: cuint): cint; cdecl;
 
   bk_httpsrv_new2: function(auth_cb: bk_httpauth_cb; auth_cls: Pcvoid;
-    req_cb: bk_httpreq_cb; req_cls: Pcvoid;
-    err_cb: bk_httperr_cb; err_cls: Pcvoid): Pbk_httpsrv; cdecl;
+    req_cb: bk_httpreq_cb; req_cls: Pcvoid; err_cb: bk_err_cb;
+    err_cls: Pcvoid): Pbk_httpsrv; cdecl;
   bk_httpsrv_new: function(cb: bk_httpreq_cb; cls: Pcvoid): Pbk_httpsrv; cdecl;
   bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
   bk_httpsrv_setopt_va: function(srv: Pbk_httpsrv; opt: BK_HTTPSRV_OPT;
