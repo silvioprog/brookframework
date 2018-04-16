@@ -130,6 +130,7 @@ type
   cssize_t = NativeInt;
 {$ENDIF}
   Pcvoid = Pointer;
+  PPcvoid = PPointer;
   cenum = cint;
   cva_list = Pointer;
 
@@ -223,25 +224,33 @@ type
   BK_HTTPSRV_OPT = cenum;
 const
   BK_HTTPSRV_OPT_UNKNOWN = 0;
-  BK_HTTPSRV_OPT_UPLD_DIR = 1;
-  BK_HTTPSRV_OPT_POST_BUFSIZE = 2;
-  BK_HTTPSRV_OPT_MAX_PAYLDSIZE = 4;
-  BK_HTTPSRV_OPT_THRD_POOL_SIZE = 8;
-  BK_HTTPSRV_OPT_CON_TIMEOUT = 16;
-  BK_HTTPSRV_OPT_CON_LIMIT = 32;
+  BK_HTTPSRV_OPT_UPLD_CB = 1;
+  BK_HTTPSRV_OPT_UPLD_DIR = 2;
+  BK_HTTPSRV_OPT_POST_BUFSIZE = 4;
+  BK_HTTPSRV_OPT_MAX_PAYLDSIZE = 8;
+  BK_HTTPSRV_OPT_THRD_POOL_SIZE = 16;
+  BK_HTTPSRV_OPT_CON_TIMEOUT = 32;
+  BK_HTTPSRV_OPT_CON_LIMIT = 64;
 
 type
   bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth): cbool; cdecl;
 
+  bk_httpupld_cb = function(cls: PPcvoid; const dir: Pcchar;
+    const filename: Pcchar; const content_type: Pcchar;
+    const transfer_encoding: Pcchar): cint; cdecl;
+
+  bk_httpwrite_cb = function(cls: Pcvoid; offset: cuint64_t; const buf: Pcchar;
+    size: csize_t): csize_t; cdecl;
+
   bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
     res: Pbk_httpres); cdecl;
 
-  bk_httperr_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
+  bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
 
   bk_httpread_cb = function(cls: Pcvoid; offset: cuint64_t; buf: Pcchar;
     size: csize_t): cssize_t; cdecl;
 
-  bk_httpfree_cb = procedure(cls: Pcvoid); cdecl;
+  bk_httperr_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
 
 var
   bk_httpauth_setrealm: function(auth: Pbk_httpauth;
