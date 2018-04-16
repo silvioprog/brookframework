@@ -235,9 +235,8 @@ const
 type
   bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth): cbool; cdecl;
 
-  bk_httpupld_cb = function(cls: PPcvoid; const dir: Pcchar;
-    const filename: Pcchar; const content_type: Pcchar;
-    const transfer_encoding: Pcchar): cint; cdecl;
+  bk_httpupld_cb = function(cls: PPcvoid; const dir: Pcchar; const field: Pcchar;
+    const name: Pcchar; const mime: Pcchar; const encoding: Pcchar): cint; cdecl;
 
   bk_httpwrite_cb = function(cls: Pcvoid; offset: cuint64_t; const buf: Pcchar;
     size: csize_t): csize_t; cdecl;
