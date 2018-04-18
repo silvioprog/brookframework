@@ -171,7 +171,7 @@ type
 var
   bk_str_new: function: Pbk_str; cdecl;
   bk_str_free: procedure(str: Pbk_str); cdecl;
-  bk_str_strcpy: function(str: Pbk_str; const val: Pcchar;
+  bk_str_write: function(str: Pbk_str; const val: Pcchar;
     len: csize_t): cint; cdecl;
   bk_str_printf_va: function(str: Pbk_str; const fmt: Pcchar;
     ap: cva_list): cint; cdecl;
@@ -360,7 +360,7 @@ begin
 
     bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
     bk_str_free := GetProcAddress(GBkLibHandle, 'bk_str_free');
-    bk_str_strcpy := GetProcAddress(GBkLibHandle, 'bk_str_strcpy');
+    bk_str_write := GetProcAddress(GBkLibHandle, 'bk_str_write');
     bk_str_printf_va := GetProcAddress(GBkLibHandle, 'bk_str_printf_va');
     bk_str_printf := GetProcAddress(GBkLibHandle, 'bk_str_printf');
     bk_str_content := GetProcAddress(GBkLibHandle, 'bk_str_content');
@@ -441,7 +441,7 @@ begin
 
     bk_str_new := nil;
     bk_str_free := nil;
-    bk_str_strcpy := nil;
+    bk_str_write := nil;
     bk_str_printf_va := nil;
     bk_str_printf := nil;
     bk_str_content := nil;
