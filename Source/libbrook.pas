@@ -161,6 +161,7 @@ var
   bk_version_str: function: Pcchar; cdecl;
   bk_alloc: function(size: csize_t): Pcvoid; cdecl;
   bk_free: procedure(ptr: Pcvoid); cdecl;
+  bk_strerror: function(errnum: cint; buf: Pcchar; len: csize_t): cint; cdecl;
   bk_tmpdir: function: Pcchar; cdecl;
 
 type
@@ -356,6 +357,7 @@ begin
     bk_version_str := GetProcAddress(GBkLibHandle, 'bk_version_str');
     bk_alloc := GetProcAddress(GBkLibHandle, 'bk_alloc');
     bk_free := GetProcAddress(GBkLibHandle, 'bk_free');
+    bk_strerror := GetProcAddress(GBkLibHandle, 'bk_strerror');
     bk_tmpdir := GetProcAddress(GBkLibHandle, 'bk_tmpdir');
 
     bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
@@ -437,6 +439,7 @@ begin
     bk_version_str := nil;
     bk_alloc := nil;
     bk_free := nil;
+    bk_strerror := nil;
     bk_tmpdir := nil;
 
     bk_str_new := nil;

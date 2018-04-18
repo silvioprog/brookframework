@@ -34,6 +34,7 @@ unit BrookUtils;
 interface
 
 uses
+  SysUtils,
   libbrook,
   Marshalling;
 
@@ -73,6 +74,9 @@ function BrookAlloc(ASize: NativeUInt): Pointer;
 procedure BrookFree(APtr: Pointer);
 
 { experimental: it will be documented and tested as soon as it is accepted as better API. }
+function BrookStrError(AErrorNum: Integer): string;
+
+{ experimental: it will be documented and tested as soon as it is accepted as better API. }
 function BrookTmpDir: string;
 
 implementation
@@ -99,6 +103,21 @@ procedure BrookFree(APtr: Pointer);
 begin
   BkCheckLibrary;
   bk_free(APtr);
+end;
+
+function BrookStrError(AErrorNum: Integer): string;
+var
+  B: Pcchar;
+begin
+  BkCheckLibrary;
+  B := GetMem(High(Byte));
+  Assert(Assigned(B));
+  try
+    CheckOSError(bk_strerror(AErrorNum, B, High(Byte)));
+    Result := TMarshal.ToString(B, High(Byte));
+  finally
+    FreeMem(B, High(Byte));
+  end;
 end;
 
 function BrookTmpDir: string;
