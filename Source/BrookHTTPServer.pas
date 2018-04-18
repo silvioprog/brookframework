@@ -532,10 +532,10 @@ begin
       BK_HTTPSRV_OPT_UPLD_DIR, M.ToCString(FUploadsDir)));
   if FPostBufferSize > 0 then
     InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_POST_BUFSIZE, FPostBufferSize));
+      BK_HTTPSRV_OPT_POST_BUF_SIZE, FPostBufferSize));
   if FMaxPayloadSize > 0 then
     InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_MAX_PAYLDSIZE, FMaxPayloadSize));
+      BK_HTTPSRV_OPT_MAX_PAYLD_SIZE, FMaxPayloadSize));
   if FThreadPoolSize > 0 then
     InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
       BK_HTTPSRV_OPT_THRD_POOL_SIZE, FThreadPoolSize));

@@ -148,13 +148,13 @@ type
 type
   bk_err_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
 
-  bk_write_cb = function(cls: Pcvoid; offset: cuint64_t; const buf: Pcchar;
+  bk_write_cb = function(handle: Pcvoid; offset: cuint64_t; const buf: Pcchar;
     size: csize_t): csize_t; cdecl;
 
-  bk_read_cb = function(cls: Pcvoid; offset: cuint64_t; buf: Pcchar;
+  bk_read_cb = function(handle: Pcvoid; offset: cuint64_t; buf: Pcchar;
     size: csize_t): cssize_t; cdecl;
 
-  bk_free_cb = procedure(cls: Pcvoid); cdecl;
+  bk_free_cb = procedure(handle: Pcvoid); cdecl;
 
 var
   bk_version: function: cuint; cdecl;
@@ -237,17 +237,19 @@ const
   BK_HTTPSRV_OPT_UNKNOWN = 0;
   BK_HTTPSRV_OPT_UPLD_CBS = 1;
   BK_HTTPSRV_OPT_UPLD_DIR = 2;
-  BK_HTTPSRV_OPT_POST_BUFSIZE = 4;
-  BK_HTTPSRV_OPT_MAX_PAYLDSIZE = 8;
-  BK_HTTPSRV_OPT_THRD_POOL_SIZE = 16;
-  BK_HTTPSRV_OPT_CON_TIMEOUT = 32;
-  BK_HTTPSRV_OPT_CON_LIMIT = 64;
+  BK_HTTPSRV_OPT_POST_BUF_SIZE = 4;
+  BK_HTTPSRV_OPT_MAX_PAYLD_SIZE = 8;
+  BK_HTTPSRV_OPT_MAX_UPLD_SIZE = 16;
+  BK_HTTPSRV_OPT_THRD_POOL_SIZE = 32;
+  BK_HTTPSRV_OPT_CON_TIMEOUT = 64;
+  BK_HTTPSRV_OPT_CON_LIMIT = 128;
 
 type
   bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth): cbool; cdecl;
 
-  bk_httpupld_cb = function(cls: PPcvoid; const dir: Pcchar; const field: Pcchar;
-    const name: Pcchar; const mime: Pcchar; const encoding: Pcchar): cint; cdecl;
+  bk_httpupld_cb = function(cls: Pcvoid; handle: PPcvoid; const dir: Pcchar;
+    const field: Pcchar; const name: Pcchar; const mime: Pcchar;
+    const encoding: Pcchar): cint; cdecl;
 
   bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
     res: Pbk_httpres); cdecl;
@@ -284,10 +286,10 @@ var
     max_size: cuint64_t; const filename: Pcchar; rendered: cbool;
     status: cuint): cint; cdecl;
   bk_httpres_sendstream: function(res: Pbk_httpres; size: cuint64_t;
-    block_size: csize_t; read_cb: bk_read_cb; cls: Pcvoid; flush_cb: bk_free_cb;
-    status: cuint): cint; cdecl;
+    block_size: csize_t; read_cb: bk_read_cb; handle: Pcvoid;
+    flush_cb: bk_free_cb; status: cuint): cint; cdecl;
   bk_httpres_senddata: function(res: Pbk_httpres; block_size: csize_t;
-    read_cb: bk_read_cb; cls: Pcvoid; free_cb: bk_free_cb;
+    read_cb: bk_read_cb; handle: Pcvoid; free_cb: bk_free_cb;
     status: cuint): cint; cdecl;
 
   bk_httpsrv_new2: function(auth_cb: bk_httpauth_cb; auth_cls: Pcvoid;
