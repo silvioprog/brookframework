@@ -63,6 +63,7 @@ type
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
     function GetPort: UInt16;
+    function GetThreaded: Boolean;
     function IsActive: Boolean;
     function IsAuthenticated: Boolean;
     function IsCatchOSErrors: Boolean;
@@ -124,7 +125,7 @@ type
       stored IsAuthenticated;
     property Port: UInt16 read GetPort write SetPort stored IsPort
       default 0;
-    property Threaded: Boolean read FThreaded write SetThreaded
+    property Threaded: Boolean read GetThreaded write SetThreaded
       stored IsThreaded default False;
     property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
       stored IsCatchOSErrors default True;
@@ -455,9 +456,19 @@ begin
   if FActive and not (csDesigning in ComponentState) then
   begin
     BkCheckLibrary;
-    BkCheckLastError(bk_httpsrv_port(FHandle, @FPort));
+    FPort := bk_httpsrv_port(FHandle);
   end;
   Result := FPort;
+end;
+
+function TBrookHTTPServer.GetThreaded: Boolean;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FThreaded := bk_httpsrv_threaded(FHandle);
+  end;
+  Result := FThreaded;
 end;
 
 function TBrookHTTPServer.IsAuthenticated: Boolean;

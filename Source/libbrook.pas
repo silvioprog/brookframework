@@ -90,54 +90,38 @@ type
   Pcchar = MarshaledAString;
 {$IF DEFINED(MSWINDOWS)}
   cbool = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.BOOL;
-  Pcbool = { TODO: };
   cuint16_t = UInt16;
-  Pcuint16_t = PUInt16;
   cint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.LONG;
   cuint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.UINT;
-  Pcuint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.PUINT;
   cuint64_t = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.ULONG64;
   csize_t = {$IFDEF FPC}System{$ELSE}Winapi.Windows{$ENDIF}.SIZE_T;
-  Pcsize_t = {$IFDEF FPC}^csize_t{$ELSE}Winapi.Windows.PSIZE_T{$ENDIF};
   cssize_t = {$IFDEF FPC}NativeInt{$ELSE}Winapi.Windows.SSIZE_T{$ENDIF};
   ctime_t = { TODO: };
 {$ELSEIF DEFINED(POSIX)}
   cbool = LongBool;
-  Pcbool = { TODO: };
   cuint16_t = UInt16;
-  Pcuint16_t = PUInt16;
   cint = Integer;
   cuint = Cardinal;
-  Pcuint = PCardinal;
   cuint64_t = UInt64;
   csize_t = Posix.SysTypes.size_t;
-  Pcsize_t = Posix.SysTypes.Psize_t;
   cssize_t = Posix.SysTypes.ssize_t;
   ctime_t = Posix.SysTypes.time_t;
 {$ELSEIF DEFINED(UNIX)}
   cbool = UnixType.cbool;
-  Pcbool = UnixType.pcbool;
   cuint16_t = UnixType.cuint16;
-  Pcuint16_t = UnixType.pcuint16;
   cint = UnixType.cint;
   cuint = UnixType.cuint;
-  Pcuint = UnixType.pcuint;
   cuint64_t = UnixType.cuint64;
   csize_t = UnixType.size_t;
-  Pcsize_t = UnixType.psize_t;
   cssize_t = UnixType.ssize_t;
   ctime_t = UnixType.time_t;
 {$ELSE}
   cbool = LongBool;
-  Pcbool = { TODO: };
   cuint16_t = UInt16;
-  Pcuint16_t = PUInt16;
   cint = Integer;
   cuint = Cardinal;
-  Pcuint = PCardinal;
   cuint64_t = UInt64;
   csize_t = NativeUInt;
-  Pcsize_t = PNativeUInt;
   cssize_t = NativeInt;
   ctime_t = Int64;
 {$ENDIF}
@@ -316,8 +300,8 @@ var
   bk_httpsrv_listen: function(srv: Pbk_httpsrv; port: cuint16_t;
     threaded: cbool): cint; cdecl;
   bk_httpsrv_shutdown: function(srv: Pbk_httpsrv): cint; cdecl;
-  bk_httpsrv_port: function(srv: Pbk_httpsrv; port: Pcuint16_t): cint; cdecl;
-  bk_httpsrv_threaded: function(srv: Pbk_httpsrv; threaded: Pcbool): cint; cdecl;
+  bk_httpsrv_port: function(srv: Pbk_httpsrv): cuint16_t; cdecl;
+  bk_httpsrv_threaded: function(srv: Pbk_httpsrv): cbool; cdecl;
   bk_httpsrv_set_upld_cbs: function(srv: Pbk_httpsrv; cb: bk_httpupld_cb;
     cls: Pcvoid; write_cb: bk_write_cb; free_cb: bk_free_cb; save_cb: bk_save_cb;
     save_as_cb: bk_save_as_cb): cint; cdecl;
