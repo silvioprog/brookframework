@@ -19,7 +19,6 @@ resourcestring
   SBrookOpNotAllowedActiveServer =
     'Operation is not allowed while the server is active';
   SBrookCannotCreateHTTPServerHandle = 'Cannot create HTTP server handle';
-  SBrookInvalidHTTPServerPort = 'Invalid HTTP server port: %d';
 
 type
   TBrookHTTPErrorEvent = procedure(ASender: TObject;
@@ -63,6 +62,7 @@ type
     FHandle: Pbk_httpsrv;
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
+    function GetPort: UInt16;
     function IsActive: Boolean;
     function IsAuthenticated: Boolean;
     function IsCatchOSErrors: Boolean;
@@ -122,8 +122,8 @@ type
     property Active: Boolean read FActive write SetActive stored IsActive;
     property Authenticated: Boolean read FAuthenticated write SetAuthenticated
       stored IsAuthenticated;
-    property Port: UInt16 read FPort write SetPort stored IsPort
-      default BROOK_PORT;
+    property Port: UInt16 read GetPort write SetPort stored IsPort
+      default 0;
     property Threaded: Boolean read FThreaded write SetThreaded
       stored IsThreaded default False;
     property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
@@ -155,7 +155,6 @@ implementation
 constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPort := BROOK_PORT;
   FCatchOSErrors := True;
 end;
 
@@ -181,12 +180,6 @@ begin
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(FHandle) then
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandle);
-  if FPort <= 0 then
-  begin
-    InternalFreeServerHandle;
-    raise EInvalidOperation.CreateResFmt(
-      @SBrookInvalidHTTPServerPort, [FPort]);
-  end;
 end;
 
 procedure TBrookHTTPServer.InternalFreeServerHandle;
@@ -457,6 +450,16 @@ begin
   Result := FActive;
 end;
 
+function TBrookHTTPServer.GetPort: UInt16;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    BkCheckLastError(bk_httpsrv_port(FHandle, @FPort));
+  end;
+  Result := FPort;
+end;
+
 function TBrookHTTPServer.IsAuthenticated: Boolean;
 begin
   Result := FAuthenticated;
@@ -464,7 +467,7 @@ end;
 
 function TBrookHTTPServer.IsPort: Boolean;
 begin
-  Result := FPort <> BROOK_PORT;
+  Result := FPort <> 0;
 end;
 
 function TBrookHTTPServer.IsPostBufferSize: Boolean;
