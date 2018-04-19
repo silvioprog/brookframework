@@ -78,6 +78,8 @@ type
       AException: Exception);
     procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
+  public
+    procedure UpdateLink;
   end;
 
 var
@@ -87,9 +89,18 @@ implementation
 
 {$R *.fmx}
 
+procedure TfrMain.UpdateLink;
+begin
+  lbLink.Text := Concat('http://localhost:', edPort.Text);
+end;
+
 procedure TfrMain.acStartExecute(Sender: TObject);
 begin
+  BrookHTTPServer1.Port := edPort.Text.ToInteger;
   BrookHTTPServer1.Open;
+  if edPort.Value = 0 then
+    edPort.Value := BrookHTTPServer1.Port;
+  UpdateLink;
 end;
 
 procedure TfrMain.acStopExecute(Sender: TObject);
@@ -99,8 +110,7 @@ end;
 
 procedure TfrMain.edPortChange(Sender: TObject);
 begin
-  BrookHTTPServer1.Port := edPort.Text.ToInteger;
-  lbLink.Text := Concat('http://localhost:', BrookHTTPServer1.Port.ToString);
+  UpdateLink;
 end;
 
 procedure TfrMain.lbLinkMouseEnter(Sender: TObject);

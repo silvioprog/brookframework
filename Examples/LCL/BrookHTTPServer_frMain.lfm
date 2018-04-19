@@ -22,10 +22,8 @@ object frMain: TfrMain
     Top = 17
     Width = 66
     MaxValue = 65535
-    MinValue = 1
     OnChange = edPortChange
     TabOrder = 2
-    Value = 8080
   end
   object btStart: TButton
     Left = 128
@@ -48,8 +46,8 @@ object frMain: TfrMain
     Left = 20
     Height = 15
     Top = 64
-    Width = 110
-    Caption = 'http://localhost:8080'
+    Width = 83
+    Caption = 'http://localhost'
     Enabled = False
     Font.Color = clBlue
     Font.Style = [fsUnderline]

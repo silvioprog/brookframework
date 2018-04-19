@@ -77,6 +77,8 @@ type
     procedure lbLinkMouseLeave(Sender: TObject);
   protected
     procedure DoError(AData: PtrInt);
+  public
+    procedure UpdateLink;
   end;
 
 var
@@ -97,9 +99,18 @@ begin
   end;
 end;
 
+procedure TfrMain.UpdateLink;
+begin
+  lbLink.Caption := Concat('http://localhost:', edPort.Value.ToString);
+end;
+
 procedure TfrMain.acStartExecute(Sender: TObject);
 begin
+  BrookHTTPServer1.Port := edPort.Value;
   BrookHTTPServer1.Open;
+  if edPort.Value = 0 then
+    edPort.Value := BrookHTTPServer1.Port;
+  UpdateLink;
 end;
 
 procedure TfrMain.acStopExecute(Sender: TObject);
@@ -109,8 +120,7 @@ end;
 
 procedure TfrMain.edPortChange(Sender: TObject);
 begin
-  BrookHTTPServer1.Port := edPort.Value;
-  lbLink.Caption := Concat('http://localhost:', BrookHTTPServer1.Port.ToString);
+  UpdateLink;
 end;
 
 procedure TfrMain.lbLinkMouseEnter(Sender: TObject);

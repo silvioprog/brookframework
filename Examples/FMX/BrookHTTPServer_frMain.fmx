@@ -13,9 +13,7 @@ object frMain: TfrMain
     Touch.InteractiveGestures = [LongTap, DoubleTap]
     TabOrder = 1
     Cursor = crIBeam
-    Min = 80.000000000000000000
     Max = 65535.000000000000000000
-    Value = 8080.000000000000000000
     Position.X = 72.000000000000000000
     Position.Y = 30.000000000000000000
     Enabled = False
@@ -57,13 +55,13 @@ object frMain: TfrMain
     HitTest = True
     Position.X = 32.000000000000000000
     Position.Y = 72.000000000000000000
-    Size.Width = 110.000000000000000000
+    Size.Width = 82.000000000000000000
     Size.Height = 16.000000000000000000
     Size.PlatformDefault = False
     TextSettings.Font.StyleExt = {04040000000000000004000000}
     TextSettings.FontColor = claBlue
     TextSettings.WordWrap = False
-    Text = 'http://localhost:8080'
+    Text = 'http://localhost'
     TabOrder = 4
     OnClick = lbLinkClick
     OnMouseEnter = lbLinkMouseEnter
@@ -88,7 +86,6 @@ object frMain: TfrMain
     end
   end
   object BrookHTTPServer1: TBrookHTTPServer
-    Threaded = False
     OnRequest = BrookHTTPServer1Request
     OnRequestError = BrookHTTPServer1RequestError
     OnError = BrookHTTPServer1Error
