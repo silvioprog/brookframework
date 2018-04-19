@@ -89,12 +89,12 @@ implementation
 
 procedure TfrMain.acStartExecute(Sender: TObject);
 begin
-  BrookHTTPServer1.Start;
+  BrookHTTPServer1.Open;
 end;
 
 procedure TfrMain.acStopExecute(Sender: TObject);
 begin
-  BrookHTTPServer1.Stop;
+  BrookHTTPServer1.Close;
 end;
 
 procedure TfrMain.edPortChange(Sender: TObject);

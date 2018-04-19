@@ -65,7 +65,7 @@ begin
   FVersion := TMarshal.ToString(bk_httpreq_version(FHandle));
   FMethod := TMarshal.ToString(bk_httpreq_method(FHandle));
   FPath := TMarshal.ToString(bk_httpreq_path(FHandle));
-  FIsPost := bk_httpreq_ispost(FHandle);
+  FIsPost := bk_httpreq_is_post(FHandle);
   FUserData := bk_httpreq_userdata(FHandle);
 end;
 
@@ -121,7 +121,7 @@ end;
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
 begin
   BkCheckLibrary;
-  BkCheckLastError(-bk_httpreq_setuserdata(FHandle, AValue));
+  BkCheckLastError(-bk_httpreq_set_userdata(FHandle, AValue));
 end;
 
 end.

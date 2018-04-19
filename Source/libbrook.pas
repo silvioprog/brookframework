@@ -90,7 +90,9 @@ type
   Pcchar = MarshaledAString;
 {$IF DEFINED(MSWINDOWS)}
   cbool = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.BOOL;
+  Pcbool = { TODO: };
   cuint16_t = UInt16;
+  Pcuint16_t = PUInt16;
   cint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.LONG;
   cuint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.UINT;
   Pcuint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.PUINT;
@@ -98,9 +100,12 @@ type
   csize_t = {$IFDEF FPC}System{$ELSE}Winapi.Windows{$ENDIF}.SIZE_T;
   Pcsize_t = {$IFDEF FPC}^csize_t{$ELSE}Winapi.Windows.PSIZE_T{$ENDIF};
   cssize_t = {$IFDEF FPC}NativeInt{$ELSE}Winapi.Windows.SSIZE_T{$ENDIF};
+  ctime_t = { TODO: };
 {$ELSEIF DEFINED(POSIX)}
   cbool = LongBool;
+  Pcbool = { TODO: };
   cuint16_t = UInt16;
+  Pcuint16_t = PUInt16;
   cint = Integer;
   cuint = Cardinal;
   Pcuint = PCardinal;
@@ -108,9 +113,12 @@ type
   csize_t = Posix.SysTypes.size_t;
   Pcsize_t = Posix.SysTypes.Psize_t;
   cssize_t = Posix.SysTypes.ssize_t;
+  ctime_t = Posix.SysTypes.time_t;
 {$ELSEIF DEFINED(UNIX)}
   cbool = UnixType.cbool;
+  Pcbool = UnixType.pcbool;
   cuint16_t = UnixType.cuint16;
+  Pcuint16_t = UnixType.pcuint16;
   cint = UnixType.cint;
   cuint = UnixType.cuint;
   Pcuint = UnixType.pcuint;
@@ -118,9 +126,12 @@ type
   csize_t = UnixType.size_t;
   Pcsize_t = UnixType.psize_t;
   cssize_t = UnixType.ssize_t;
+  ctime_t = UnixType.time_t;
 {$ELSE}
   cbool = LongBool;
+  Pcbool = { TODO: };
   cuint16_t = UInt16;
+  Pcuint16_t = PUInt16;
   cint = Integer;
   cuint = Cardinal;
   Pcuint = PCardinal;
@@ -128,6 +139,7 @@ type
   csize_t = NativeUInt;
   Pcsize_t = PNativeUInt;
   cssize_t = NativeInt;
+  ctime_t = Int64;
 {$ENDIF}
   Pcvoid = Pointer;
   PPcvoid = PPointer;
@@ -156,6 +168,11 @@ type
 
   bk_free_cb = procedure(handle: Pcvoid); cdecl;
 
+  bk_save_cb = function(handle: Pcvoid; overwritten: cbool): cint; cdecl;
+
+  bk_save_as_cb = function(handle: Pcvoid; const path: Pcchar;
+    overwritten: cbool): cint; cdecl;
+
 var
   bk_version: function: cuint; cdecl;
   bk_version_str: function: Pcchar; cdecl;
@@ -163,6 +180,7 @@ var
   bk_free: procedure(ptr: Pcvoid); cdecl;
   bk_strerror: function(errnum: cint; buf: Pcchar; len: csize_t): Pcchar; cdecl;
   bk_tmpdir: function: Pcchar; cdecl;
+  bk_htime: function(t: ctime_t; buf: Pcchar; len: csize_t): cint; cdecl;
 
 type
   Pbk_str = ^bk_str;
@@ -216,6 +234,7 @@ type
   bk_httpauth = record
   end;
 
+  PPbk_httpupld = ^Pbk_httpupld;
   Pbk_httpupld = ^bk_httpupld;
   bk_httpupld = record
   end;
@@ -233,19 +252,6 @@ type
   end;
 
 type
-  BK_HTTPSRV_OPT = cenum;
-const
-  BK_HTTPSRV_OPT_UNKNOWN = 0;
-  BK_HTTPSRV_OPT_UPLD_CBS = 1;
-  BK_HTTPSRV_OPT_UPLD_DIR = 2;
-  BK_HTTPSRV_OPT_POST_BUF_SIZE = 4;
-  BK_HTTPSRV_OPT_MAX_PAYLD_SIZE = 8;
-  BK_HTTPSRV_OPT_MAX_UPLD_SIZE = 16;
-  BK_HTTPSRV_OPT_THRD_POOL_SIZE = 32;
-  BK_HTTPSRV_OPT_CON_TIMEOUT = 64;
-  BK_HTTPSRV_OPT_CON_LIMIT = 128;
-
-type
   bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth): cbool; cdecl;
 
   bk_httpupld_cb = function(cls: Pcvoid; handle: PPcvoid; const dir: Pcchar;
@@ -256,13 +262,21 @@ type
     res: Pbk_httpres); cdecl;
 
 var
-  bk_httpauth_setrealm: function(auth: Pbk_httpauth;
+  bk_httpauth_set_realm: function(auth: Pbk_httpauth;
     const realm: Pcchar): cint; cdecl;
+  bk_httpauth_realm: function(auth: Pbk_httpauth): pcchar; cdecl;
   bk_httpauth_deny: function(auth: Pbk_httpauth; const justification: Pcchar;
     const content_type: Pcchar): cint; cdecl;
   bk_httpauth_cancel: function(auth: Pbk_httpauth): cint; cdecl;
   bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
+
+  bk_httpuplds_next: function(uplds: Pbk_httpupld;
+    upld: PPbk_httpupld): cint; cdecl;
+  bk_httpupld_save: function(upld: Pbk_httpupld;
+    overwritten: cbool): cint; cdecl;
+  bk_httpupld_save_as: function(upld: Pbk_httpupld; const path: Pcchar;
+    overwritten: cbool): cint; cdecl;
 
   bk_httpreq_headers: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_cookies: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
@@ -271,9 +285,10 @@ var
   bk_httpreq_version: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_method: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_path: function(req: Pbk_httpreq): Pcchar; cdecl;
-  bk_httpreq_ispost: function(req: Pbk_httpreq): cbool; cdecl;
+  bk_httpreq_is_post: function(req: Pbk_httpreq): cbool; cdecl;
   bk_httpreq_payload: function(req: Pbk_httpreq): Pbk_str; cdecl;
-  bk_httpreq_setuserdata: function(req: Pbk_httpreq; data: Pcvoid): cint; cdecl;
+  bk_httpreq_uploads: function(req: Pbk_httpreq): PPbk_httpupld; cdecl;
+  bk_httpreq_set_userdata: function(req: Pbk_httpreq; data: Pcvoid): cint; cdecl;
   bk_httpreq_userdata: function(req: Pbk_httpreq): Pcvoid; cdecl;
 
   bk_httpres_headers: function(res: Pbk_httpres): PPbk_strmap; cdecl;
@@ -298,13 +313,28 @@ var
     err_cls: Pcvoid): Pbk_httpsrv; cdecl;
   bk_httpsrv_new: function(cb: bk_httpreq_cb; cls: Pcvoid): Pbk_httpsrv; cdecl;
   bk_httpsrv_free: procedure(srv: Pbk_httpsrv); cdecl;
-  bk_httpsrv_setopt_va: function(srv: Pbk_httpsrv; opt: BK_HTTPSRV_OPT;
-    ap: cva_list): cint; cdecl;
-  bk_httpsrv_setopt: function(srv: Pbk_httpsrv;
-    opt: BK_HTTPSRV_OPT): cint; cdecl varargs;
-  bk_httpsrv_start: function(srv: Pbk_httpsrv; port: cuint16_t;
+  bk_httpsrv_listen: function(srv: Pbk_httpsrv; port: cuint16_t;
     threaded: cbool): cint; cdecl;
-  bk_httpsrv_stop: function(srv: Pbk_httpsrv): cint; cdecl;
+  bk_httpsrv_shutdown: function(srv: Pbk_httpsrv): cint; cdecl;
+  bk_httpsrv_port: function(srv: Pbk_httpsrv; port: Pcuint16_t): cint; cdecl;
+  bk_httpsrv_threaded: function(srv: Pbk_httpsrv; threaded: Pcbool): cint; cdecl;
+  bk_httpsrv_set_upld_cbs: function(srv: Pbk_httpsrv; cb: bk_httpupld_cb;
+    cls: Pcvoid; write_cb: bk_write_cb; free_cb: bk_free_cb; save_cb: bk_save_cb;
+    save_as_cb: bk_save_as_cb): cint; cdecl;
+  bk_httpsrv_set_upld_dir: function(srv: Pbk_httpsrv;
+    const dir: Pcchar): cint; cdecl;
+  bk_httpsrv_set_post_buf_size: function(srv: Pbk_httpsrv;
+    size: csize_t): cint; cdecl;
+  bk_httpsrv_set_max_payld_size: function(srv: Pbk_httpsrv;
+    size: csize_t): cint; cdecl;
+  bk_httpsrv_set_max_uplds_size: function(srv: Pbk_httpsrv;
+    size: cuint64_t): cint; cdecl;
+  bk_httpsrv_set_thr_pool_size: function(srv: Pbk_httpsrv;
+    size: cuint): cint; cdecl;
+  bk_httpsrv_set_con_timeout: function(srv: Pbk_httpsrv;
+    timeout: cuint): cint; cdecl;
+  bk_httpsrv_set_con_limit: function(srv: Pbk_httpsrv;
+    limit: cuint): cint; cdecl;
 
   bk_httpread_end: function(err: cbool): cssize_t; cdecl;
 
@@ -348,6 +378,7 @@ begin
     bk_free := GetProcAddress(GBkLibHandle, 'bk_free');
     bk_strerror := GetProcAddress(GBkLibHandle, 'bk_strerror');
     bk_tmpdir := GetProcAddress(GBkLibHandle, 'bk_tmpdir');
+    bk_htime := GetProcAddress(GBkLibHandle, 'bk_htime');
 
     bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
     bk_str_free := GetProcAddress(GBkLibHandle, 'bk_str_free');
@@ -371,11 +402,16 @@ begin
     bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
-    bk_httpauth_setrealm := GetProcAddress(GBkLibHandle, 'bk_httpauth_setrealm');
+    bk_httpauth_set_realm := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_realm');
+    bk_httpauth_realm := GetProcAddress(GBkLibHandle, 'bk_httpauth_realm');
     bk_httpauth_deny := GetProcAddress(GBkLibHandle, 'bk_httpauth_deny');
+    bk_httpauth_cancel := GetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
-    bk_httpauth_cancel := GetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
+
+    bk_httpuplds_next := GetProcAddress(GBkLibHandle, 'bk_httpuplds_next');
+    bk_httpupld_save := GetProcAddress(GBkLibHandle, 'bk_httpupld_save');
+    bk_httpupld_save_as := GetProcAddress(GBkLibHandle, 'bk_httpupld_save_as');
 
     bk_httpreq_headers := GetProcAddress(GBkLibHandle, 'bk_httpreq_headers');
     bk_httpreq_cookies := GetProcAddress(GBkLibHandle, 'bk_httpreq_cookies');
@@ -384,9 +420,10 @@ begin
     bk_httpreq_version := GetProcAddress(GBkLibHandle, 'bk_httpreq_version');
     bk_httpreq_method := GetProcAddress(GBkLibHandle, 'bk_httpreq_method');
     bk_httpreq_path := GetProcAddress(GBkLibHandle, 'bk_httpreq_path');
-    bk_httpreq_ispost := GetProcAddress(GBkLibHandle, 'bk_httpreq_ispost');
+    bk_httpreq_is_post := GetProcAddress(GBkLibHandle, 'bk_httpreq_is_post');
     bk_httpreq_payload := GetProcAddress(GBkLibHandle, 'bk_httpreq_payload');
-    bk_httpreq_setuserdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_setuserdata');
+    bk_httpreq_uploads := GetProcAddress(GBkLibHandle, 'bk_httpreq_uploads');
+    bk_httpreq_set_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_set_userdata');
     bk_httpreq_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_userdata');
 
     bk_httpres_headers := GetProcAddress(GBkLibHandle, 'bk_httpres_headers');
@@ -400,10 +437,18 @@ begin
     bk_httpsrv_new2 := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new2');
     bk_httpsrv_new := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new');
     bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
-    bk_httpsrv_setopt_va := GetProcAddress(GBkLibHandle, 'bk_httpsrv_setopt_va');
-    bk_httpsrv_setopt := GetProcAddress(GBkLibHandle, 'bk_httpsrv_setopt');
-    bk_httpsrv_start := GetProcAddress(GBkLibHandle, 'bk_httpsrv_start');
-    bk_httpsrv_stop := GetProcAddress(GBkLibHandle, 'bk_httpsrv_stop');
+    bk_httpsrv_listen := GetProcAddress(GBkLibHandle, 'bk_httpsrv_listen');
+    bk_httpsrv_shutdown := GetProcAddress(GBkLibHandle, 'bk_httpsrv_shutdown');
+    bk_httpsrv_port := GetProcAddress(GBkLibHandle, 'bk_httpsrv_port');
+    bk_httpsrv_threaded := GetProcAddress(GBkLibHandle, 'bk_httpsrv_threaded');
+    bk_httpsrv_set_upld_cbs := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_cbs');
+    bk_httpsrv_set_upld_dir := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_dir');
+    bk_httpsrv_set_post_buf_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_post_buf_size');
+    bk_httpsrv_set_max_payld_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_payld_size');
+    bk_httpsrv_set_max_uplds_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_uplds_size');
+    bk_httpsrv_set_thr_pool_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_thr_pool_size');
+    bk_httpsrv_set_con_timeout := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_timeout');
+    bk_httpsrv_set_con_limit := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_limit');
 
     bk_httpread_end := GetProcAddress(GBkLibHandle, 'bk_httpread_end');
 
@@ -430,6 +475,7 @@ begin
     bk_free := nil;
     bk_strerror := nil;
     bk_tmpdir := nil;
+    bk_htime := nil;
 
     bk_str_new := nil;
     bk_str_free := nil;
@@ -453,11 +499,16 @@ begin
     bk_strmap_next := nil;
     bk_strmap_cleanup := nil;
 
-    bk_httpauth_setrealm := nil;
+    bk_httpauth_set_realm := nil;
+    bk_httpauth_realm := nil;
     bk_httpauth_deny := nil;
     bk_httpauth_cancel := nil;
     bk_httpauth_usr := nil;
     bk_httpauth_pwd := nil;
+
+    bk_httpuplds_next := nil;
+    bk_httpupld_save := nil;
+    bk_httpupld_save_as := nil;
 
     bk_httpreq_headers := nil;
     bk_httpreq_cookies := nil;
@@ -466,9 +517,10 @@ begin
     bk_httpreq_version := nil;
     bk_httpreq_method := nil;
     bk_httpreq_path := nil;
-    bk_httpreq_ispost := nil;
+    bk_httpreq_is_post := nil;
     bk_httpreq_payload := nil;
-    bk_httpreq_setuserdata := nil;
+    bk_httpreq_uploads := nil;
+    bk_httpreq_set_userdata := nil;
     bk_httpreq_userdata := nil;
 
     bk_httpres_headers := nil;
@@ -482,10 +534,18 @@ begin
     bk_httpsrv_new2 := nil;
     bk_httpsrv_new := nil;
     bk_httpsrv_free := nil;
-    bk_httpsrv_setopt_va := nil;
-    bk_httpsrv_setopt := nil;
-    bk_httpsrv_start := nil;
-    bk_httpsrv_stop := nil;
+    bk_httpsrv_listen := nil;
+    bk_httpsrv_shutdown := nil;
+    bk_httpsrv_port := nil;
+    bk_httpsrv_threaded := nil;
+    bk_httpsrv_set_upld_cbs := nil;
+    bk_httpsrv_set_upld_dir := nil;
+    bk_httpsrv_set_post_buf_size := nil;
+    bk_httpsrv_set_max_payld_size := nil;
+    bk_httpsrv_set_max_uplds_size := nil;
+    bk_httpsrv_set_thr_pool_size := nil;
+    bk_httpsrv_set_con_timeout := nil;
+    bk_httpsrv_set_con_limit := nil;
 
     bk_httpread_end := nil;
 

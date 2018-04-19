@@ -111,13 +111,13 @@ type
       AResponse: TBrookHTTPResponse; AException: Exception); virtual;
     procedure CheckInactive; inline;
     procedure SetActive(AValue: Boolean); virtual;
-    procedure DoStart; virtual;
-    procedure DoStop; virtual;
+    procedure DoOpen; virtual;
+    procedure DoClose; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Start;
-    procedure Stop;
+    procedure Open; inline;
+    procedure Close; inline;
   published
     property Active: Boolean read FActive write SetActive stored IsActive;
     property Authenticated: Boolean read FAuthenticated write SetAuthenticated
@@ -191,6 +191,7 @@ end;
 
 procedure TBrookHTTPServer.InternalFreeServerHandle;
 begin
+  { bk_httpsrv_shutdown() is called internally by bk_httpsrv_free(). }
   bk_httpsrv_free(FHandle);
   FHandle := nil;
 end;
@@ -513,13 +514,13 @@ begin
       if csReading in ComponentState then
         FStreamedActive := True
       else
-        DoStart;
+        DoOpen;
     end
     else
-      DoStop;
+      DoClose;
 end;
 
-procedure TBrookHTTPServer.DoStart;
+procedure TBrookHTTPServer.DoOpen;
 var
   M: TMarshaller;
 begin
@@ -528,29 +529,30 @@ begin
   BkCheckLibrary;
   InternalCreateServerHandle;
   if not FUploadsDir.IsEmpty then
-    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_UPLD_DIR, M.ToCString(FUploadsDir)));
+    InternalCheckServerOption(bk_httpsrv_set_upld_dir(FHandle,
+      M.ToCString(FUploadsDir)));
   if FPostBufferSize > 0 then
-    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_POST_BUF_SIZE, FPostBufferSize));
+    InternalCheckServerOption(bk_httpsrv_set_post_buf_size(FHandle,
+      FPostBufferSize));
   if FMaxPayloadSize > 0 then
-    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_MAX_PAYLD_SIZE, FMaxPayloadSize));
+    InternalCheckServerOption(bk_httpsrv_set_max_payld_size(FHandle,
+      FMaxPayloadSize));
+  { TODO: bk_httpsrv_set_max_uplds_size }
   if FThreadPoolSize > 0 then
-    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_THRD_POOL_SIZE, FThreadPoolSize));
+    InternalCheckServerOption(bk_httpsrv_set_thr_pool_size(FHandle,
+      FThreadPoolSize));
   if FConnectionTimeout > 0 then
-    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_CON_TIMEOUT, FConnectionTimeout));
+    InternalCheckServerOption(bk_httpsrv_set_con_timeout(FHandle,
+      FConnectionTimeout));
   if FConnectionLimit > 0 then
-    InternalCheckServerOption(bk_httpsrv_setopt(FHandle,
-      BK_HTTPSRV_OPT_CON_LIMIT, FConnectionLimit));
-  FActive := bk_httpsrv_start(FHandle, FPort, FThreaded) = 0;
+    InternalCheckServerOption(bk_httpsrv_set_con_limit(FHandle,
+      FConnectionLimit));
+  FActive := bk_httpsrv_listen(FHandle, FPort, FThreaded) = 0;
   if not FActive then
     InternalFreeServerHandle;
 end;
 
-procedure TBrookHTTPServer.DoStop;
+procedure TBrookHTTPServer.DoClose;
 begin
   if not Assigned(FHandle) then
     Exit;
@@ -559,12 +561,12 @@ begin
   FActive := False;
 end;
 
-procedure TBrookHTTPServer.Start;
+procedure TBrookHTTPServer.Open;
 begin
   SetActive(True);
 end;
 
-procedure TBrookHTTPServer.Stop;
+procedure TBrookHTTPServer.Close;
 begin
   SetActive(False);
 end;
