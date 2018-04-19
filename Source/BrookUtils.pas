@@ -74,7 +74,9 @@ function BrookAlloc(ASize: NativeUInt): Pointer;
 procedure BrookFree(APtr: Pointer);
 
 { experimental: it will be documented and tested as soon as it is accepted as better API. }
-function BrookStrError(AErrorNum: Integer): string;
+function BrookStrError(AErrorNum: Integer; ALength: Integer): string; overload;
+
+function BrookStrError(AErrorNum: Integer): string; overload;
 
 { experimental: it will be documented and tested as soon as it is accepted as better API. }
 function BrookTmpDir: string;
@@ -105,19 +107,18 @@ begin
   bk_free(APtr);
 end;
 
-function BrookStrError(AErrorNum: Integer): string;
+function BrookStrError(AErrorNum: Integer; ALength: Integer): string;
 var
-  B: Pcchar;
+  B: TBytes;
 begin
   BkCheckLibrary;
-  B := GetMem(High(Byte));
-  Assert(Assigned(B));
-  try
-    CheckOSError(bk_strerror(AErrorNum, B, High(Byte)));
-    Result := TMarshal.ToString(B, High(Byte));
-  finally
-    FreeMem(B, High(Byte));
-  end;
+  SetLength(B, ALength);
+  Result := TMarshal.ToString(bk_strerror(AErrorNum, @B[0], ALength), ALength);
+end;
+
+function BrookStrError(AErrorNum: Integer): string;
+begin
+  Result := BrookStrError(AErrorNum, 256);
 end;
 
 function BrookTmpDir: string;

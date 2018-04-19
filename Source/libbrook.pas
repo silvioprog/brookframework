@@ -161,7 +161,7 @@ var
   bk_version_str: function: Pcchar; cdecl;
   bk_alloc: function(size: csize_t): Pcvoid; cdecl;
   bk_free: procedure(ptr: Pcvoid); cdecl;
-  bk_strerror: function(errnum: cint; buf: Pcchar; len: csize_t): cint; cdecl;
+  bk_strerror: function(errnum: cint; buf: Pcchar; len: csize_t): Pcchar; cdecl;
   bk_tmpdir: function: Pcchar; cdecl;
 
 type
