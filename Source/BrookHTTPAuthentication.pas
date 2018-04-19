@@ -56,7 +56,7 @@ begin
     Exit;
   BkCheckLibrary;
   FRealm := AValue;
-  CheckOSError(-bk_httpauth_setrealm(FHandle, M.ToCString(FRealm)));
+  BkCheckLastError(-bk_httpauth_setrealm(FHandle, M.ToCString(FRealm)));
 end;
 
 function TBrookHTTPAuthentication.Deny(const AJustification,
@@ -70,7 +70,7 @@ begin
     M.ToCString(AContentType));
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
+    BkCheckLastError(R);
 end;
 
 function TBrookHTTPAuthentication.Deny(const AFmt: string;
@@ -82,7 +82,7 @@ end;
 procedure TBrookHTTPAuthentication.Cancel;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpauth_cancel(FHandle));
+  BkCheckLastError(-bk_httpauth_cancel(FHandle));
 end;
 
 end.

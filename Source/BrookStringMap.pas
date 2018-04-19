@@ -313,7 +313,7 @@ begin
   BkCheckLibrary;
   Result := bk_strmap_count(FHandle^);
   if Result < 0 then
-    CheckOSError(-Result);
+    BkCheckLastError(-Result);
 end;
 
 function TBrookStringMap.GetValue(const AName: string): string;
@@ -348,7 +348,8 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_strmap_add(FHandle, M.ToCString(AName), M.ToCString(AValue)));
+  BkCheckLastError(-bk_strmap_add(FHandle, M.ToCString(AName),
+    M.ToCString(AValue)));
   DoChange(bkmoAdd);
 end;
 
@@ -357,7 +358,8 @@ var
   M: TMarshaller;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_strmap_set(FHandle, M.ToCString(AName), M.ToCString(AValue)));
+  BkCheckLastError(-bk_strmap_set(FHandle, M.ToCString(AName),
+    M.ToCString(AValue)));
   DoChange(bkmoAddOrSet);
 end;
 
@@ -369,7 +371,7 @@ begin
   BkCheckLibrary;
   R := bk_strmap_rm(FHandle, M.ToCString(AName));
   if (R <> 0) and (R <> -ENOENT) then
-    CheckOSError(-R);
+    BkCheckLastError(-R);
   DoChange(bkmoRemove);
 end;
 
@@ -394,7 +396,7 @@ begin
     APair := TBrookStringPair.Create(AName, TMarshal.ToString(bk_strmap_val(P)))
   else
     if R <> -ENOENT then
-      CheckOSError(-R);
+      BkCheckLastError(-R);
 end;
 
 function TBrookStringMap.Get(const AName: string): string;
@@ -437,7 +439,7 @@ begin
     Exit(False);
   BkCheckLibrary;
   R := bk_strmap_next(@FNextHandle);
-  CheckOSError(-R);
+  BkCheckLastError(-R);
   Result := R = 0;
   if Result and Assigned(FNextHandle) then
     APair := CreatePair(FNextHandle);
@@ -455,7 +457,7 @@ begin
   R := bk_strmap_iter(FHandle^,
 {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
   if R <> -1 then
-    CheckOSError(-R);
+    BkCheckLastError(-R);
 end;
 
 procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
@@ -466,7 +468,7 @@ begin
   BkCheckLibrary;
   M.Code := @AComparator;
   M.Data := AData;
-  CheckOSError(-bk_strmap_sort(FHandle,
+  BkCheckLastError(-bk_strmap_sort(FHandle,
 {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
 end;
 

@@ -200,7 +200,7 @@ begin
   if Aopt <> 0 then
   begin
     InternalFreeServerHandle;
-    CheckOSError(Aopt);
+    BkCheckLastError(Aopt);
   end;
 end;
 

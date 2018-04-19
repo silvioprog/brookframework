@@ -121,7 +121,7 @@ end;
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_httpreq_setuserdata(FHandle, AValue));
+  BkCheckLastError(-bk_httpreq_setuserdata(FHandle, AValue));
 end;
 
 end.

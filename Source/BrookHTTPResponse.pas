@@ -128,7 +128,7 @@ begin
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
+    BkCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.Send(const AFmt: string;
@@ -150,7 +150,7 @@ begin
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
+    BkCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
@@ -171,7 +171,7 @@ begin
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
+    BkCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.TrySendFile(ABlockSize: NativeUInt;
@@ -190,7 +190,7 @@ begin
   begin
     AFailed := R = ENOENT;
     if (not AFailed) and (R <> EALREADY) then
-      CheckOSError(R);
+      BkCheckLastError(R);
   end;
 end;
 
@@ -220,7 +220,7 @@ begin
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
+    BkCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.SendData(AStream: TStream; AStatus: Word): Boolean;
@@ -235,7 +235,7 @@ begin
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    CheckOSError(R);
+    BkCheckLastError(R);
 end;
 
 end.

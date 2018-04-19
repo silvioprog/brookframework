@@ -143,7 +143,7 @@ function TBrookString.WriteBytes(const ASource: TBytes;
 begin
   BkCheckLibrary;
   Result := ALength;
-  CheckOSError(-bk_str_write(FHandle, @ASource[0], Result));
+  BkCheckLastError(-bk_str_write(FHandle, @ASource[0], Result));
 end;
 
 procedure TBrookString.Write(const ASource: string; AEncoding: TEncoding);
@@ -169,7 +169,7 @@ end;
 procedure TBrookString.Clear;
 begin
   BkCheckLibrary;
-  CheckOSError(-bk_str_clear(FHandle));
+  BkCheckLastError(-bk_str_clear(FHandle));
 end;
 
 function TBrookString.GetLength: NativeUInt;

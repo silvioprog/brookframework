@@ -33,7 +33,6 @@
   {$POP}
  {$ENDIF}
  //{$IF FPC_FULLVERSION >= 30101} commented to fix "[dcc32 Error] E2026 Constant expression expected"
-  {$WARN 5044 OFF} // Warning: Symbol "%s" is not portable
   {$WARN 6058 OFF} // Note: Call to subroutine "%s" marked as inline is not inlined
  //{$ENDIF}
 {$ENDIF}

@@ -308,24 +308,13 @@ var
 
   bk_httpread_end: function(err: cbool): cssize_t; cdecl;
 
-{$IFDEF VER3_0}
-procedure CheckOSError(ALastError: Integer); inline;
-{$ENDIF}
-
 { TODO: procedure BkAddUnloadLibraryProc }
 function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
 function BkUnloadLibrary: TLibHandle;
 procedure BkCheckLibrary;
+procedure BkCheckLastError(ALastError: Integer); inline;
 
 implementation
-
-{$IFDEF VER3_0}
-procedure CheckOSError(ALastError: Integer);
-begin
-  if ALastError <> 0 then
-    RaiseLastOSError(ALastError);
-end;
-{$ENDIF}
 
 var
   GBkLock: TCriticalSection = nil;
@@ -511,6 +500,17 @@ begin
   if GBkLibHandle = NilHandle then
     raise EBkLibraryNotLoaded.CreateResFmt(@SBkLibraryNotLoaded,
       [IfThen(GBkLastLibName = '', BK_LIB_NAME, GBkLastLibName)]);
+end;
+
+procedure BkCheckLastError(ALastError: Integer);
+var
+  B: TBytes;
+begin
+  if (ALastError = 0) or (not Assigned(bk_strerror)) then
+    Exit;
+  SetLength(B, 256);
+  bk_strerror(ALastError, @B[0], 256);
+  raise EOSError.Create(string(TEncoding.UTF8.GetString(B)));
 end;
 
 initialization
