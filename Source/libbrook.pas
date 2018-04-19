@@ -96,7 +96,7 @@ type
   cuint64_t = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.ULONG64;
   csize_t = {$IFDEF FPC}System{$ELSE}Winapi.Windows{$ENDIF}.SIZE_T;
   cssize_t = {$IFDEF FPC}NativeInt{$ELSE}Winapi.Windows.SSIZE_T{$ENDIF};
-  ctime_t = { TODO: };
+  ctime_t = Int64;
 {$ELSEIF DEFINED(POSIX)}
   cbool = LongBool;
   cuint16_t = UInt16;
