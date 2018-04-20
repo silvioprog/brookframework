@@ -81,6 +81,13 @@ function BrookStrError(AErrorNum: Integer): string; overload;
 { experimental: it will be documented and tested as soon as it is accepted as better API. }
 function BrookTmpDir: string;
 
+{ experimental: it will be documented and tested as soon as it is accepted as better API. }
+procedure BrookHTime(ATime: Int64; ABuffer: TBytes; ALength: NativeUInt;
+  AGMT: Boolean); overload;
+
+{ experimental: it will be documented and tested as soon as it is accepted as better API. }
+function BrookHTime(ATime: Int64; AGMT: Boolean): string; overload;
+
 implementation
 
 function BrookVersion: Cardinal;
@@ -125,6 +132,25 @@ function BrookTmpDir: string;
 begin
   BkCheckLibrary;
   Result := TMarshal.ToString(bk_tmpdir);
+end;
+
+procedure BrookHTime(ATime: Int64; ABuffer: TBytes; ALength: NativeUInt;
+  AGMT: Boolean);
+begin
+  BkCheckLibrary;
+  BkCheckLastError(bk_htime(ATime, @ABuffer[0], ALength, AGMT));
+end;
+
+function BrookHTime(ATime: Int64; AGMT: Boolean): string; overload;
+const
+  BUF_LEN = 30;
+var
+  B: TBytes;
+begin
+  SetLength(B, BUF_LEN);
+  BrookHTime(ATime, B, BUF_LEN, AGMT);
+  SetLength(Result, BUF_LEN);
+  Move(B[0], Result[1], BUF_LEN);
 end;
 
 end.
