@@ -35,6 +35,7 @@ type
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
+    function SetCookie(const AName, AValue: string): Boolean; virtual;
     function Send(const AValue, AContentType: string;
       AStatus: Word): Boolean; overload; virtual;
     function Send(const AFmt: string; const AArgs: array of const;
@@ -114,6 +115,18 @@ end;
 class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid);
 begin
   TStream(Acls).Free;
+end;
+
+function TBrookHTTPResponse.SetCookie(const AName, AValue: string): Boolean;
+var
+  M: TMarshaller;
+  R: cint;
+begin
+  BkCheckLibrary;
+  R := -bk_httpres_set_cookie(FHandle, M.ToCString(AName), M.ToCString(AValue));
+  Result := R = 0;
+  if (not Result) and (R <> EINVAL) then
+    BkCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.Send(const AValue, AContentType: string;
