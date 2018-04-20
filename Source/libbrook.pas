@@ -317,18 +317,25 @@ var
     save_cb: bk_save_cb; save_as_cb: bk_save_as_cb): cint; cdecl;
   bk_httpsrv_set_upld_dir: function(srv: Pbk_httpsrv;
     const dir: Pcchar): cint; cdecl;
+  bk_httpsrv_upld_dir: function(srv: Pbk_httpsrv): Pcchar; cdecl;
   bk_httpsrv_set_post_buf_size: function(srv: Pbk_httpsrv;
     size: csize_t): cint; cdecl;
+  bk_httpsrv_post_buf_size: function(srv: Pbk_httpsrv): csize_t; cdecl;
   bk_httpsrv_set_max_payld_size: function(srv: Pbk_httpsrv;
     size: csize_t): cint; cdecl;
+  bk_httpsrv_max_payld_size: function(srv: Pbk_httpsrv): csize_t; cdecl;
   bk_httpsrv_set_max_uplds_size: function(srv: Pbk_httpsrv;
     size: cuint64_t): cint; cdecl;
+  bk_httpsrv_max_uplds_size: function(srv: Pbk_httpsrv): cuint64_t; cdecl;
   bk_httpsrv_set_thr_pool_size: function(srv: Pbk_httpsrv;
     size: cuint): cint; cdecl;
+  bk_httpsrv_thr_pool_size: function(srv: Pbk_httpsrv): cuint; cdecl;
   bk_httpsrv_set_con_timeout: function(srv: Pbk_httpsrv;
     timeout: cuint): cint; cdecl;
+  bk_httpsrv_con_timeout: function(srv: Pbk_httpsrv): cuint; cdecl;
   bk_httpsrv_set_con_limit: function(srv: Pbk_httpsrv;
     limit: cuint): cint; cdecl;
+  bk_httpsrv_con_limit: function(srv: Pbk_httpsrv): cuint; cdecl;
 
   bk_httpread_end: function(err: cbool): cssize_t; cdecl;
 
@@ -442,12 +449,19 @@ begin
     bk_httpsrv_threaded := GetProcAddress(GBkLibHandle, 'bk_httpsrv_threaded');
     bk_httpsrv_set_upld_cbs := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_cbs');
     bk_httpsrv_set_upld_dir := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_dir');
+    bk_httpsrv_upld_dir := GetProcAddress(GBkLibHandle, 'bk_httpsrv_upld_dir');
     bk_httpsrv_set_post_buf_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_post_buf_size');
+    bk_httpsrv_post_buf_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_post_buf_size');
     bk_httpsrv_set_max_payld_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_payld_size');
+    bk_httpsrv_max_payld_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_max_payld_size');
     bk_httpsrv_set_max_uplds_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_uplds_size');
+    bk_httpsrv_max_uplds_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_max_uplds_size');
     bk_httpsrv_set_thr_pool_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_thr_pool_size');
+    bk_httpsrv_thr_pool_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_thr_pool_size');
     bk_httpsrv_set_con_timeout := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_timeout');
+    bk_httpsrv_con_timeout := GetProcAddress(GBkLibHandle, 'bk_httpsrv_con_timeout');
     bk_httpsrv_set_con_limit := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_limit');
+    bk_httpsrv_con_limit := GetProcAddress(GBkLibHandle, 'bk_httpsrv_con_limit');
 
     bk_httpread_end := GetProcAddress(GBkLibHandle, 'bk_httpread_end');
 
@@ -544,12 +558,19 @@ begin
     bk_httpsrv_threaded := nil;
     bk_httpsrv_set_upld_cbs := nil;
     bk_httpsrv_set_upld_dir := nil;
+    bk_httpsrv_upld_dir := nil;
     bk_httpsrv_set_post_buf_size := nil;
+    bk_httpsrv_post_buf_size := nil;
     bk_httpsrv_set_max_payld_size := nil;
+    bk_httpsrv_max_payld_size := nil;
     bk_httpsrv_set_max_uplds_size := nil;
+    bk_httpsrv_max_uplds_size := nil;
     bk_httpsrv_set_thr_pool_size := nil;
+    bk_httpsrv_thr_pool_size := nil;
     bk_httpsrv_set_con_timeout := nil;
+    bk_httpsrv_con_timeout := nil;
     bk_httpsrv_set_con_limit := nil;
+    bk_httpsrv_con_limit := nil;
 
     bk_httpread_end := nil;
 

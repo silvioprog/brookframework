@@ -22,6 +22,7 @@ type
     FPassword: string;
     function GetRealm: string;
     procedure SetRealm(const AValue: string);
+    function GetPaths: TArray<string>;
   protected
     function GetHandle: Pointer; override;
   public
@@ -34,6 +35,7 @@ type
     property Version: string read FVersion;
     property Method: string read FMethod;
     property Path: string read FPath;
+    property Paths: TArray<string> read GetPaths;
     property Realm: string read GetRealm write SetRealm;
     property UserName: string read FUserName;
     property Password: string read FPassword;
@@ -55,6 +57,11 @@ end;
 function TBrookHTTPAuthentication.GetHandle: Pointer;
 begin
   Result := FHandle;
+end;
+
+function TBrookHTTPAuthentication.GetPaths: TArray<string>;
+begin
+  Result := Path.Split(['/'], TStringSplitOptions.ExcludeEmpty);
 end;
 
 procedure TBrookHTTPAuthentication.SetRealm(const AValue: string);

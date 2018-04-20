@@ -48,6 +48,7 @@ type
     FConnectionLimit: Cardinal;
     FConnectionTimeout: Cardinal;
     FMaxPayloadSize: NativeUInt;
+    FMaxUpldsSize: UInt64;
     FOnAuthenticate: TBrookHTTPAuthenticationEvent;
     FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
     FOnRequest: TBrookHTTPRequestEvent;
@@ -62,14 +63,22 @@ type
     FHandle: Pbk_httpsrv;
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
+    function GetConnectionLimit: Cardinal;
+    function GetConnectionTimeout: Cardinal;
+    function GetMaxPayloadSize: NativeUInt;
+    function GetMaxUpldsSize: UInt64;
     function GetPort: UInt16;
+    function GetPostBufferSize: NativeUInt;
     function GetThreaded: Boolean;
+    function GetThreadPoolSize: Cardinal;
+    function GetUploadsDir: string;
     function IsActive: Boolean;
     function IsAuthenticated: Boolean;
     function IsCatchOSErrors: Boolean;
     function IsConnectionLimit: Boolean;
     function IsConnectionTimeout: Boolean;
     function IsMaxPayloadSize: Boolean;
+    function IsMaxUpldsSize: Boolean;
     function IsPort: Boolean;
     function IsPostBufferSize: Boolean;
     function IsThreaded: Boolean;
@@ -80,6 +89,7 @@ type
     procedure SetConnectionLimit(AValue: Cardinal);
     procedure SetConnectionTimeout(AValue: Cardinal);
     procedure SetMaxPayloadSize(AValue: NativeUInt);
+    procedure SetMaxUpldsSize(AValue: UInt64);
     procedure SetPort(AValue: UInt16);
     procedure SetPostBufferSize(AValue: NativeUInt);
     procedure SetThreaded(AValue: Boolean);
@@ -129,17 +139,19 @@ type
       stored IsThreaded default False;
     property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
       stored IsCatchOSErrors default True;
-    property UploadsDir: string read FUploadsDir write SetUploadsDir
+    property UploadsDir: string read GetUploadsDir write SetUploadsDir
       stored IsUploadsDir;
-    property PostBufferSize: NativeUInt read FPostBufferSize
+    property PostBufferSize: NativeUInt read GetPostBufferSize
       write SetPostBufferSize stored IsPostBufferSize default 0;
-    property MaxPayloadSize: NativeUInt read FMaxPayloadSize
+    property MaxPayloadSize: NativeUInt read GetMaxPayloadSize
       write SetMaxPayloadSize stored IsMaxPayloadSize default 0;
-    property ThreadPoolSize: Cardinal read FThreadPoolSize
+    property MaxUpldsSize: UInt64 read GetMaxUpldsSize write SetMaxUpldsSize
+      stored IsMaxUpldsSize default 0;
+    property ThreadPoolSize: Cardinal read GetThreadPoolSize
       write SetThreadPoolSize stored IsThreadPoolSize default 0;
-    property ConnectionTimeout: Cardinal read FConnectionTimeout
+    property ConnectionTimeout: Cardinal read GetConnectionTimeout
       write SetConnectionTimeout stored IsConnectionTimeout default 0;
-    property ConnectionLimit: Cardinal read FConnectionLimit
+    property ConnectionLimit: Cardinal read GetConnectionLimit
       write SetConnectionLimit stored IsConnectionLimit default 0;
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
       write FOnAuthenticate;
@@ -405,6 +417,13 @@ begin
   FMaxPayloadSize := AValue;
 end;
 
+procedure TBrookHTTPServer.SetMaxUpldsSize(AValue: UInt64);
+begin
+  if not FStreamedActive then
+    CheckInactive;
+  FMaxUpldsSize := AValue;
+end;
+
 procedure TBrookHTTPServer.SetThreaded(AValue: Boolean);
 begin
   if not FStreamedActive then
@@ -446,6 +465,11 @@ begin
   Result := FMaxPayloadSize > 0;
 end;
 
+function TBrookHTTPServer.IsMaxUpldsSize: Boolean;
+begin
+  Result := FMaxUpldsSize > 0;
+end;
+
 function TBrookHTTPServer.IsActive: Boolean;
 begin
   Result := FActive;
@@ -469,6 +493,76 @@ begin
     FThreaded := bk_httpsrv_threaded(FHandle);
   end;
   Result := FThreaded;
+end;
+
+function TBrookHTTPServer.GetUploadsDir: string;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FUploadsDir := TMarshal.ToString(bk_httpsrv_upld_dir(FHandle));
+  end;
+  Result := FUploadsDir;
+end;
+
+function TBrookHTTPServer.GetPostBufferSize: NativeUInt;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FPostBufferSize := bk_httpsrv_post_buf_size(FHandle);
+  end;
+  Result := FPostBufferSize;
+end;
+
+function TBrookHTTPServer.GetMaxPayloadSize: NativeUInt;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FMaxPayloadSize := bk_httpsrv_max_payld_size(FHandle);
+  end;
+  Result := FMaxPayloadSize;
+end;
+
+function TBrookHTTPServer.GetMaxUpldsSize: UInt64;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FMaxUpldsSize := bk_httpsrv_max_uplds_size(FHandle);
+  end;
+  Result := FMaxUpldsSize;
+end;
+
+function TBrookHTTPServer.GetThreadPoolSize: Cardinal;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FThreadPoolSize := bk_httpsrv_thr_pool_size(FHandle);
+  end;
+  Result := FThreadPoolSize;
+end;
+
+function TBrookHTTPServer.GetConnectionTimeout: Cardinal;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FConnectionTimeout := bk_httpsrv_con_timeout(FHandle);
+  end;
+  Result := FConnectionTimeout;
+end;
+
+function TBrookHTTPServer.GetConnectionLimit: Cardinal;
+begin
+  if FActive and not (csDesigning in ComponentState) then
+  begin
+    BkCheckLibrary;
+    FConnectionLimit := bk_httpsrv_con_limit(FHandle);
+  end;
+  Result := FConnectionLimit;
 end;
 
 function TBrookHTTPServer.IsAuthenticated: Boolean;
