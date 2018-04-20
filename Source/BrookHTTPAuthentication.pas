@@ -15,6 +15,9 @@ type
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
     FHandle: Pbk_httpauth;
+    FVersion: string;
+    FMethod: string;
+    FPath: string;
     FUserName: string;
     FPassword: string;
     function GetRealm: string;
@@ -28,6 +31,9 @@ type
     function Deny(const AFmt: string; const AArgs: array of const;
       const AContentType: string): Boolean; overload; virtual;
     procedure Cancel; virtual;
+    property Version: string read FVersion;
+    property Method: string read FMethod;
+    property Path: string read FPath;
     property Realm: string read GetRealm write SetRealm;
     property UserName: string read FUserName;
     property Password: string read FPassword;
@@ -39,6 +45,9 @@ constructor TBrookHTTPAuthentication.Create(AHandle: Pointer);
 begin
   inherited Create;
   FHandle := AHandle;
+  FVersion := TMarshal.ToString(bk_httpauth_version(FHandle));
+  FMethod := TMarshal.ToString(bk_httpauth_method(FHandle));
+  FPath := TMarshal.ToString(bk_httpauth_path(FHandle));
   FUserName := TMarshal.ToString(bk_httpauth_usr(FHandle));
   FPassword := TMarshal.ToString(bk_httpauth_pwd(FHandle));
 end;
