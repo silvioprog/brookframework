@@ -138,17 +138,17 @@ procedure BrookHTime(ATime: Int64; ABuffer: TBytes; ALength: NativeUInt;
   AGMT: Boolean);
 begin
   BkCheckLibrary;
-  BkCheckLastError(bk_htime(ATime, @ABuffer[0], ALength, AGMT));
+  BkCheckLastError(-bk_htime(ATime, @ABuffer[0], ALength, AGMT));
 end;
 
-function BrookHTime(ATime: Int64; AGMT: Boolean): string; overload;
+function BrookHTime(ATime: Int64; AGMT: Boolean): string;
 const
-  BUF_LEN = 30;
+  BUF_LEN = 29;
 var
   B: TBytes;
 begin
   SetLength(B, BUF_LEN);
-  BrookHTime(ATime, B, BUF_LEN, AGMT);
+  BrookHTime(ATime, B, BUF_LEN + SizeOf(Byte), AGMT);
   SetLength(Result, BUF_LEN);
   Move(B[0], Result[1], BUF_LEN);
 end;
