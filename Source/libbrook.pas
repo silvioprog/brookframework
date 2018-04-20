@@ -164,8 +164,6 @@ var
   bk_free: procedure(ptr: Pcvoid); cdecl;
   bk_strerror: function(errnum: cint; buf: Pcchar; len: csize_t): Pcchar; cdecl;
   bk_tmpdir: function: Pcchar; cdecl;
-  bk_htime: function(t: ctime_t; buf: Pcchar; len: csize_t;
-    gmt: cbool): cint; cdecl;
 
 type
   Pbk_str = ^bk_str;
@@ -224,18 +222,6 @@ type
   bk_httpupld = record
   end;
 
-type
-  bk_httpcookie_same_site = cenum;
-const
-  BK_HTTPCOOKIE_NONE = 0;
-  BK_HTTPCOOKIE_STRICT = 1;
-  BK_HTTPCOOKIE_LAX = 2;
-
-type
-  Pbk_httpcookie = ^bk_httpcookie;
-  bk_httpcookie = record
-  end;
-
   Pbk_httpreq = ^bk_httpreq;
   bk_httpreq = record
   end;
@@ -275,26 +261,6 @@ var
   bk_httpupld_save_as: function(upld: Pbk_httpupld; const path: Pcchar;
     overwritten: cbool): cint; cdecl;
 
-  bk_httpcookie_new: function(const name: Pcchar;
-    const val: Pcchar): Pbk_httpcookie; cdecl;
-  bk_httpcookie_free: procedure(cookie: Pbk_httpcookie); cdecl;
-  bk_httpcookie_set_expires: function(cookie: Pbk_httpcookie;
-    expires: ctime_t): cint; cdecl;
-  bk_httpcookie_set_max_age: function(cookie: Pbk_httpcookie;
-    max_age: cuint): cint; cdecl;
-  bk_httpcookie_set_domain: function(cookie: Pbk_httpcookie;
-    const domain: Pcchar): cint; cdecl;
-  bk_httpcookie_set_path: function(cookie: Pbk_httpcookie;
-    const path: Pcchar): cint; cdecl;
-  bk_httpcookie_set_secure: function(cookie: Pbk_httpcookie;
-    secure: cbool): cint; cdecl;
-  bk_httpcookie_set_http_only: function(cookie: Pbk_httpcookie;
-    http_only: cbool): cint; cdecl;
-  bk_httpcookie_set_same_site: function(cookie: Pbk_httpcookie;
-    same_site: bk_httpcookie_same_site): cint; cdecl;
-  bk_httpcookie_clear: function(cookie: Pbk_httpcookie): cint; cdecl;
-  bk_httpcookie_tostring: function(cookie: Pbk_httpcookie): Pcchar; cdecl;
-
   bk_httpreq_headers: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_cookies: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
   bk_httpreq_params: function(req: Pbk_httpreq): PPbk_strmap; cdecl;
@@ -310,8 +276,6 @@ var
   bk_httpreq_userdata: function(req: Pbk_httpreq): Pcvoid; cdecl;
 
   bk_httpres_headers: function(res: Pbk_httpres): PPbk_strmap; cdecl;
-  bk_httpres_add_cookie: function(res: Pbk_httpres;
-    cookie: Pbk_httpcookie): cint; cdecl;
   bk_httpres_set_cookie: function(res: Pbk_httpres; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
   bk_httpres_printf_va: function(res: Pbk_httpres; const content_type: Pcchar;
@@ -404,7 +368,6 @@ begin
     bk_free := GetProcAddress(GBkLibHandle, 'bk_free');
     bk_strerror := GetProcAddress(GBkLibHandle, 'bk_strerror');
     bk_tmpdir := GetProcAddress(GBkLibHandle, 'bk_tmpdir');
-    bk_htime := GetProcAddress(GBkLibHandle, 'bk_htime');
 
     bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
     bk_str_free := GetProcAddress(GBkLibHandle, 'bk_str_free');
@@ -439,18 +402,6 @@ begin
     bk_httpupld_save := GetProcAddress(GBkLibHandle, 'bk_httpupld_save');
     bk_httpupld_save_as := GetProcAddress(GBkLibHandle, 'bk_httpupld_save_as');
 
-    bk_httpcookie_new := GetProcAddress(GBkLibHandle, 'bk_httpcookie_new');
-    bk_httpcookie_free := GetProcAddress(GBkLibHandle, 'bk_httpcookie_free');
-    bk_httpcookie_set_expires := GetProcAddress(GBkLibHandle, 'bk_httpcookie_set_expires');
-    bk_httpcookie_set_max_age := GetProcAddress(GBkLibHandle, 'bk_httpcookie_set_max_age');
-    bk_httpcookie_set_domain := GetProcAddress(GBkLibHandle, 'bk_httpcookie_set_domain');
-    bk_httpcookie_set_path := GetProcAddress(GBkLibHandle, 'bk_httpcookie_set_path');
-    bk_httpcookie_set_secure := GetProcAddress(GBkLibHandle, 'bk_httpcookie_set_secure');
-    bk_httpcookie_set_http_only := GetProcAddress(GBkLibHandle, 'bk_httpcookie_set_http_only');
-    bk_httpcookie_set_same_site := GetProcAddress(GBkLibHandle, 'bk_httpcookie_set_same_site');
-    bk_httpcookie_clear := GetProcAddress(GBkLibHandle, 'bk_httpcookie_clear');
-    bk_httpcookie_tostring := GetProcAddress(GBkLibHandle, 'bk_httpcookie_tostring');
-
     bk_httpreq_headers := GetProcAddress(GBkLibHandle, 'bk_httpreq_headers');
     bk_httpreq_cookies := GetProcAddress(GBkLibHandle, 'bk_httpreq_cookies');
     bk_httpreq_params := GetProcAddress(GBkLibHandle, 'bk_httpreq_params');
@@ -465,7 +416,6 @@ begin
     bk_httpreq_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_userdata');
 
     bk_httpres_headers := GetProcAddress(GBkLibHandle, 'bk_httpres_headers');
-    bk_httpres_add_cookie := GetProcAddress(GBkLibHandle, 'bk_httpres_add_cookie');
     bk_httpres_set_cookie := GetProcAddress(GBkLibHandle, 'bk_httpres_set_cookie');
     bk_httpres_printf_va := GetProcAddress(GBkLibHandle, 'bk_httpres_printf_va');
     bk_httpres_printf := GetProcAddress(GBkLibHandle, 'bk_httpres_printf');
@@ -517,7 +467,6 @@ begin
     bk_free := nil;
     bk_strerror := nil;
     bk_tmpdir := nil;
-    bk_htime := nil;
 
     bk_str_new := nil;
     bk_str_free := nil;
@@ -552,18 +501,6 @@ begin
     bk_httpupld_save := nil;
     bk_httpupld_save_as := nil;
 
-    bk_httpcookie_new := nil;
-    bk_httpcookie_free := nil;
-    bk_httpcookie_set_expires := nil;
-    bk_httpcookie_set_max_age := nil;
-    bk_httpcookie_set_domain := nil;
-    bk_httpcookie_set_path := nil;
-    bk_httpcookie_set_secure := nil;
-    bk_httpcookie_set_http_only := nil;
-    bk_httpcookie_set_same_site := nil;
-    bk_httpcookie_clear := nil;
-    bk_httpcookie_tostring := nil;
-
     bk_httpreq_headers := nil;
     bk_httpreq_cookies := nil;
     bk_httpreq_params := nil;
@@ -578,7 +515,6 @@ begin
     bk_httpreq_userdata := nil;
 
     bk_httpres_headers := nil;
-    bk_httpres_add_cookie := nil;
     bk_httpres_set_cookie := nil;
     bk_httpres_printf_va := nil;
     bk_httpres_printf := nil;
