@@ -96,7 +96,7 @@ type
   cuint64_t = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.ULONG64;
   csize_t = {$IFDEF FPC}System{$ELSE}Winapi.Windows{$ENDIF}.SIZE_T;
   cssize_t = {$IFDEF FPC}NativeInt{$ELSE}Winapi.Windows.SSIZE_T{$ENDIF};
-  ctime_t = Int64;
+  ctime_t = NativeUInt;
 {$ELSEIF DEFINED(POSIX)}
   cbool = LongBool;
   cuint16_t = UInt16;
@@ -123,7 +123,7 @@ type
   cuint64_t = UInt64;
   csize_t = NativeUInt;
   cssize_t = NativeInt;
-  ctime_t = Int64;
+  ctime_t = NativeUInt;
 {$ENDIF}
   Pcvoid = Pointer;
   PPcvoid = PPointer;
@@ -621,14 +621,17 @@ begin
 end;
 
 procedure BkCheckLastError(ALastError: Integer);
+const
+  BUF_LEN = 255;
 var
   B: TBytes;
 begin
   if (ALastError = 0) or (not Assigned(bk_strerror)) then
     Exit;
-  SetLength(B, 256);
-  bk_strerror(ALastError, @B[0], 256);
-  raise EOSError.Create(string(TEncoding.UTF8.GetString(B)));
+  SetLength(B, BUF_LEN);
+  bk_strerror(ALastError, @B[0], BUF_LEN + SizeOf(Byte));
+  raise EOSError.Create(
+{$IFDEF FPC}string({$ENDIF}TEncoding.UTF8.GetString(B, 0, BUF_LEN)){$IFDEF FPC}){$ENDIF};
 end;
 
 initialization

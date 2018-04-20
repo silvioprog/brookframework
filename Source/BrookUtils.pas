@@ -120,12 +120,13 @@ var
 begin
   BkCheckLibrary;
   SetLength(B, ALength);
-  Result := TMarshal.ToString(bk_strerror(AErrorNum, @B[0], ALength), ALength);
+  Result := TMarshal.ToString(bk_strerror(AErrorNum, @B[0],
+    ALength + SizeOf(Byte)), ALength);
 end;
 
 function BrookStrError(AErrorNum: Integer): string;
 begin
-  Result := BrookStrError(AErrorNum, 256);
+  Result := BrookStrError(AErrorNum, 255);
 end;
 
 function BrookTmpDir: string;
@@ -149,8 +150,8 @@ var
 begin
   SetLength(B, BUF_LEN);
   BrookHTime(ATime, B, BUF_LEN + SizeOf(Byte), AGMT);
-  SetLength(Result, BUF_LEN);
-  Move(B[0], Result[1], BUF_LEN);
+  Result :=
+{$IFDEF FPC}string({$ENDIF}TEncoding.UTF8.GetString(B, 0, BUF_LEN){$IFDEF FPC}){$ENDIF};
 end;
 
 end.
