@@ -117,8 +117,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Open; inline;
-    procedure Close; inline;
+    procedure Open;
+    procedure Close;
   published
     property Active: Boolean read FActive write SetActive stored IsActive;
     property Authenticated: Boolean read FAuthenticated write SetAuthenticated
