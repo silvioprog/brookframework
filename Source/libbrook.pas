@@ -275,9 +275,9 @@ var
   bk_httpreq_is_post: function(req: Pbk_httpreq): cbool; cdecl;
   bk_httpreq_payload: function(req: Pbk_httpreq): Pbk_str; cdecl;
   bk_httpreq_uploads: function(req: Pbk_httpreq): PPbk_httpupld; cdecl;
-  bk_httpreq_set_userdata: function(req: Pbk_httpreq;
+  bk_httpreq_set_user_data: function(req: Pbk_httpreq;
     data: Pcvoid): cint; cdecl;
-  bk_httpreq_userdata: function(req: Pbk_httpreq): Pcvoid; cdecl;
+  bk_httpreq_user_data: function(req: Pbk_httpreq): Pcvoid; cdecl;
 
   bk_httpres_headers: function(res: Pbk_httpres): PPbk_strmap; cdecl;
   bk_httpres_set_cookie: function(res: Pbk_httpres; const name: Pcchar;
@@ -426,8 +426,8 @@ begin
     bk_httpreq_is_post := GetProcAddress(GBkLibHandle, 'bk_httpreq_is_post');
     bk_httpreq_payload := GetProcAddress(GBkLibHandle, 'bk_httpreq_payload');
     bk_httpreq_uploads := GetProcAddress(GBkLibHandle, 'bk_httpreq_uploads');
-    bk_httpreq_set_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_set_userdata');
-    bk_httpreq_userdata := GetProcAddress(GBkLibHandle, 'bk_httpreq_userdata');
+    bk_httpreq_set_user_data := GetProcAddress(GBkLibHandle, 'bk_httpreq_set_user_data');
+    bk_httpreq_user_data := GetProcAddress(GBkLibHandle, 'bk_httpreq_user_data');
 
     bk_httpres_headers := GetProcAddress(GBkLibHandle, 'bk_httpres_headers');
     bk_httpres_set_cookie := GetProcAddress(GBkLibHandle, 'bk_httpres_set_cookie');
@@ -535,8 +535,8 @@ begin
     bk_httpreq_is_post := nil;
     bk_httpreq_payload := nil;
     bk_httpreq_uploads := nil;
-    bk_httpreq_set_userdata := nil;
-    bk_httpreq_userdata := nil;
+    bk_httpreq_set_user_data := nil;
+    bk_httpreq_user_data := nil;
 
     bk_httpres_headers := nil;
     bk_httpres_set_cookie := nil;
