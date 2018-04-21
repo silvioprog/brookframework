@@ -27,7 +27,6 @@ type
     FUserData: Pointer;
     FHandle: Pbk_httpreq;
     function GetPaths: TArray<string>;
-    procedure SetUserData(AValue: Pointer);
   protected
     function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
     function CreateCookies(AHandle: Pointer): TBrookStringMap; virtual;
@@ -48,7 +47,7 @@ type
     property Path: string read FPath;
     property Paths: TArray<string> read GetPaths;
     property IsPost: Boolean read FIsPost;
-    property UserData: Pointer read FUserData write SetUserData;
+    property UserData: Pointer read FUserData;
   end;
 
 implementation
@@ -116,12 +115,6 @@ end;
 function TBrookHTTPRequest.GetPaths: TArray<string>;
 begin
   Result := Path.Split(['/'], TStringSplitOptions.ExcludeEmpty);
-end;
-
-procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
-begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_httpreq_set_user_data(FHandle, AValue));
 end;
 
 end.
