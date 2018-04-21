@@ -344,8 +344,6 @@ var
 { TODO: procedure BkAddUnloadLibraryProc }
 function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
 function BkUnloadLibrary: TLibHandle;
-function BkGetProcAddress(ALibHandle: TLibHandle;
-  const AProcName: PChar): Pointer; inline;
 procedure BkCheckLibrary;
 procedure BkCheckLastError(ALastError: Integer); inline;
 
@@ -377,97 +375,97 @@ begin
     { TODO: check the library version }
     GBkLastLibName := AFileName;
 
-    bk_version := BkGetProcAddress(GBkLibHandle, 'bk_version');
-    bk_version_str := BkGetProcAddress(GBkLibHandle, 'bk_version_str');
-    bk_alloc := BkGetProcAddress(GBkLibHandle, 'bk_alloc');
-    bk_free := BkGetProcAddress(GBkLibHandle, 'bk_free');
-    bk_strerror := BkGetProcAddress(GBkLibHandle, 'bk_strerror');
-    bk_tmpdir := BkGetProcAddress(GBkLibHandle, 'bk_tmpdir');
+    bk_version := GetProcAddress(GBkLibHandle, 'bk_version');
+    bk_version_str := GetProcAddress(GBkLibHandle, 'bk_version_str');
+    bk_alloc := GetProcAddress(GBkLibHandle, 'bk_alloc');
+    bk_free := GetProcAddress(GBkLibHandle, 'bk_free');
+    bk_strerror := GetProcAddress(GBkLibHandle, 'bk_strerror');
+    bk_tmpdir := GetProcAddress(GBkLibHandle, 'bk_tmpdir');
 
-    bk_str_new := BkGetProcAddress(GBkLibHandle, 'bk_str_new');
-    bk_str_free := BkGetProcAddress(GBkLibHandle, 'bk_str_free');
-    bk_str_write := BkGetProcAddress(GBkLibHandle, 'bk_str_write');
-    bk_str_printf_va := BkGetProcAddress(GBkLibHandle, 'bk_str_printf_va');
-    bk_str_printf := BkGetProcAddress(GBkLibHandle, 'bk_str_printf');
-    bk_str_content := BkGetProcAddress(GBkLibHandle, 'bk_str_content');
-    bk_str_length := BkGetProcAddress(GBkLibHandle, 'bk_str_length');
-    bk_str_clear := BkGetProcAddress(GBkLibHandle, 'bk_str_clear');
+    bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
+    bk_str_free := GetProcAddress(GBkLibHandle, 'bk_str_free');
+    bk_str_write := GetProcAddress(GBkLibHandle, 'bk_str_write');
+    bk_str_printf_va := GetProcAddress(GBkLibHandle, 'bk_str_printf_va');
+    bk_str_printf := GetProcAddress(GBkLibHandle, 'bk_str_printf');
+    bk_str_content := GetProcAddress(GBkLibHandle, 'bk_str_content');
+    bk_str_length := GetProcAddress(GBkLibHandle, 'bk_str_length');
+    bk_str_clear := GetProcAddress(GBkLibHandle, 'bk_str_clear');
 
-    bk_strmap_name := BkGetProcAddress(GBkLibHandle, 'bk_strmap_name');
-    bk_strmap_val := BkGetProcAddress(GBkLibHandle, 'bk_strmap_val');
-    bk_strmap_add := BkGetProcAddress(GBkLibHandle, 'bk_strmap_add');
-    bk_strmap_set := BkGetProcAddress(GBkLibHandle, 'bk_strmap_set');
-    bk_strmap_find := BkGetProcAddress(GBkLibHandle, 'bk_strmap_find');
-    bk_strmap_get := BkGetProcAddress(GBkLibHandle, 'bk_strmap_get');
-    bk_strmap_rm := BkGetProcAddress(GBkLibHandle, 'bk_strmap_rm');
-    bk_strmap_iter := BkGetProcAddress(GBkLibHandle, 'bk_strmap_iter');
-    bk_strmap_sort := BkGetProcAddress(GBkLibHandle, 'bk_strmap_sort');
-    bk_strmap_count := BkGetProcAddress(GBkLibHandle, 'bk_strmap_count');
-    bk_strmap_next := BkGetProcAddress(GBkLibHandle, 'bk_strmap_next');
-    bk_strmap_cleanup := BkGetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
+    bk_strmap_name := GetProcAddress(GBkLibHandle, 'bk_strmap_name');
+    bk_strmap_val := GetProcAddress(GBkLibHandle, 'bk_strmap_val');
+    bk_strmap_add := GetProcAddress(GBkLibHandle, 'bk_strmap_add');
+    bk_strmap_set := GetProcAddress(GBkLibHandle, 'bk_strmap_set');
+    bk_strmap_find := GetProcAddress(GBkLibHandle, 'bk_strmap_find');
+    bk_strmap_get := GetProcAddress(GBkLibHandle, 'bk_strmap_get');
+    bk_strmap_rm := GetProcAddress(GBkLibHandle, 'bk_strmap_rm');
+    bk_strmap_iter := GetProcAddress(GBkLibHandle, 'bk_strmap_iter');
+    bk_strmap_sort := GetProcAddress(GBkLibHandle, 'bk_strmap_sort');
+    bk_strmap_count := GetProcAddress(GBkLibHandle, 'bk_strmap_count');
+    bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
+    bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
-    bk_httpauth_version := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_version');
-    bk_httpauth_method := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_method');
-    bk_httpauth_path := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_path');
-    bk_httpauth_set_realm := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_set_realm');
-    bk_httpauth_realm := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_realm');
-    bk_httpauth_deny := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_deny');
-    bk_httpauth_cancel := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
-    bk_httpauth_usr := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
-    bk_httpauth_pwd := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
-    bk_httpauth_set_user_data := BkGetProcAddress(GBkLibHandle, 'bk_httpauth_set_user_data');
+    bk_httpauth_version := GetProcAddress(GBkLibHandle, 'bk_httpauth_version');
+    bk_httpauth_method := GetProcAddress(GBkLibHandle, 'bk_httpauth_method');
+    bk_httpauth_path := GetProcAddress(GBkLibHandle, 'bk_httpauth_path');
+    bk_httpauth_set_realm := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_realm');
+    bk_httpauth_realm := GetProcAddress(GBkLibHandle, 'bk_httpauth_realm');
+    bk_httpauth_deny := GetProcAddress(GBkLibHandle, 'bk_httpauth_deny');
+    bk_httpauth_cancel := GetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
+    bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
+    bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
+    bk_httpauth_set_user_data := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_user_data');
 
-    bk_httpuplds_next := BkGetProcAddress(GBkLibHandle, 'bk_httpuplds_next');
-    bk_httpupld_save := BkGetProcAddress(GBkLibHandle, 'bk_httpupld_save');
-    bk_httpupld_save_as := BkGetProcAddress(GBkLibHandle, 'bk_httpupld_save_as');
+    bk_httpuplds_next := GetProcAddress(GBkLibHandle, 'bk_httpuplds_next');
+    bk_httpupld_save := GetProcAddress(GBkLibHandle, 'bk_httpupld_save');
+    bk_httpupld_save_as := GetProcAddress(GBkLibHandle, 'bk_httpupld_save_as');
 
-    bk_httpreq_headers := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_headers');
-    bk_httpreq_cookies := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_cookies');
-    bk_httpreq_params := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_params');
-    bk_httpreq_fields := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_fields');
-    bk_httpreq_version := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_version');
-    bk_httpreq_method := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_method');
-    bk_httpreq_path := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_path');
-    bk_httpreq_is_post := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_is_post');
-    bk_httpreq_payload := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_payload');
-    bk_httpreq_uploads := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_uploads');
-    bk_httpreq_user_data := BkGetProcAddress(GBkLibHandle, 'bk_httpreq_user_data');
+    bk_httpreq_headers := GetProcAddress(GBkLibHandle, 'bk_httpreq_headers');
+    bk_httpreq_cookies := GetProcAddress(GBkLibHandle, 'bk_httpreq_cookies');
+    bk_httpreq_params := GetProcAddress(GBkLibHandle, 'bk_httpreq_params');
+    bk_httpreq_fields := GetProcAddress(GBkLibHandle, 'bk_httpreq_fields');
+    bk_httpreq_version := GetProcAddress(GBkLibHandle, 'bk_httpreq_version');
+    bk_httpreq_method := GetProcAddress(GBkLibHandle, 'bk_httpreq_method');
+    bk_httpreq_path := GetProcAddress(GBkLibHandle, 'bk_httpreq_path');
+    bk_httpreq_is_post := GetProcAddress(GBkLibHandle, 'bk_httpreq_is_post');
+    bk_httpreq_payload := GetProcAddress(GBkLibHandle, 'bk_httpreq_payload');
+    bk_httpreq_uploads := GetProcAddress(GBkLibHandle, 'bk_httpreq_uploads');
+    bk_httpreq_user_data := GetProcAddress(GBkLibHandle, 'bk_httpreq_user_data');
 
-    bk_httpres_headers := BkGetProcAddress(GBkLibHandle, 'bk_httpres_headers');
-    bk_httpres_set_cookie := BkGetProcAddress(GBkLibHandle, 'bk_httpres_set_cookie');
-    bk_httpres_printf_va := BkGetProcAddress(GBkLibHandle, 'bk_httpres_printf_va');
-    bk_httpres_printf := BkGetProcAddress(GBkLibHandle, 'bk_httpres_printf');
-    bk_httpres_send := BkGetProcAddress(GBkLibHandle, 'bk_httpres_send');
-    bk_httpres_sendbinary := BkGetProcAddress(GBkLibHandle, 'bk_httpres_sendbinary');
-    bk_httpres_sendstr := BkGetProcAddress(GBkLibHandle, 'bk_httpres_sendstr');
-    bk_httpres_sendfile := BkGetProcAddress(GBkLibHandle, 'bk_httpres_sendfile');
-    bk_httpres_sendstream := BkGetProcAddress(GBkLibHandle, 'bk_httpres_sendstream');
-    bk_httpres_senddata := BkGetProcAddress(GBkLibHandle, 'bk_httpres_senddata');
+    bk_httpres_headers := GetProcAddress(GBkLibHandle, 'bk_httpres_headers');
+    bk_httpres_set_cookie := GetProcAddress(GBkLibHandle, 'bk_httpres_set_cookie');
+    bk_httpres_printf_va := GetProcAddress(GBkLibHandle, 'bk_httpres_printf_va');
+    bk_httpres_printf := GetProcAddress(GBkLibHandle, 'bk_httpres_printf');
+    bk_httpres_send := GetProcAddress(GBkLibHandle, 'bk_httpres_send');
+    bk_httpres_sendbinary := GetProcAddress(GBkLibHandle, 'bk_httpres_sendbinary');
+    bk_httpres_sendstr := GetProcAddress(GBkLibHandle, 'bk_httpres_sendstr');
+    bk_httpres_sendfile := GetProcAddress(GBkLibHandle, 'bk_httpres_sendfile');
+    bk_httpres_sendstream := GetProcAddress(GBkLibHandle, 'bk_httpres_sendstream');
+    bk_httpres_senddata := GetProcAddress(GBkLibHandle, 'bk_httpres_senddata');
 
-    bk_httpsrv_new2 := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_new2');
-    bk_httpsrv_new := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_new');
-    bk_httpsrv_free := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
-    bk_httpsrv_listen := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_listen');
-    bk_httpsrv_shutdown := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_shutdown');
-    bk_httpsrv_port := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_port');
-    bk_httpsrv_threaded := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_threaded');
-    bk_httpsrv_set_upld_cbs := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_cbs');
-    bk_httpsrv_set_upld_dir := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_dir');
-    bk_httpsrv_upld_dir := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_upld_dir');
-    bk_httpsrv_set_post_buf_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_post_buf_size');
-    bk_httpsrv_post_buf_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_post_buf_size');
-    bk_httpsrv_set_max_payld_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_payld_size');
-    bk_httpsrv_max_payld_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_max_payld_size');
-    bk_httpsrv_set_max_uplds_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_uplds_size');
-    bk_httpsrv_max_uplds_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_max_uplds_size');
-    bk_httpsrv_set_thr_pool_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_thr_pool_size');
-    bk_httpsrv_thr_pool_size := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_thr_pool_size');
-    bk_httpsrv_set_con_timeout := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_timeout');
-    bk_httpsrv_con_timeout := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_con_timeout');
-    bk_httpsrv_set_con_limit := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_limit');
-    bk_httpsrv_con_limit := BkGetProcAddress(GBkLibHandle, 'bk_httpsrv_con_limit');
+    bk_httpsrv_new2 := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new2');
+    bk_httpsrv_new := GetProcAddress(GBkLibHandle, 'bk_httpsrv_new');
+    bk_httpsrv_free := GetProcAddress(GBkLibHandle, 'bk_httpsrv_free');
+    bk_httpsrv_listen := GetProcAddress(GBkLibHandle, 'bk_httpsrv_listen');
+    bk_httpsrv_shutdown := GetProcAddress(GBkLibHandle, 'bk_httpsrv_shutdown');
+    bk_httpsrv_port := GetProcAddress(GBkLibHandle, 'bk_httpsrv_port');
+    bk_httpsrv_threaded := GetProcAddress(GBkLibHandle, 'bk_httpsrv_threaded');
+    bk_httpsrv_set_upld_cbs := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_cbs');
+    bk_httpsrv_set_upld_dir := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_upld_dir');
+    bk_httpsrv_upld_dir := GetProcAddress(GBkLibHandle, 'bk_httpsrv_upld_dir');
+    bk_httpsrv_set_post_buf_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_post_buf_size');
+    bk_httpsrv_post_buf_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_post_buf_size');
+    bk_httpsrv_set_max_payld_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_payld_size');
+    bk_httpsrv_max_payld_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_max_payld_size');
+    bk_httpsrv_set_max_uplds_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_max_uplds_size');
+    bk_httpsrv_max_uplds_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_max_uplds_size');
+    bk_httpsrv_set_thr_pool_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_thr_pool_size');
+    bk_httpsrv_thr_pool_size := GetProcAddress(GBkLibHandle, 'bk_httpsrv_thr_pool_size');
+    bk_httpsrv_set_con_timeout := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_timeout');
+    bk_httpsrv_con_timeout := GetProcAddress(GBkLibHandle, 'bk_httpsrv_con_timeout');
+    bk_httpsrv_set_con_limit := GetProcAddress(GBkLibHandle, 'bk_httpsrv_set_con_limit');
+    bk_httpsrv_con_limit := GetProcAddress(GBkLibHandle, 'bk_httpsrv_con_limit');
 
-    bk_httpread_end := BkGetProcAddress(GBkLibHandle, 'bk_httpread_end');
+    bk_httpread_end := GetProcAddress(GBkLibHandle, 'bk_httpread_end');
 
     Result := GBkLibHandle;
   finally
@@ -582,16 +580,6 @@ begin
   finally
     GBkLock.Release;
   end;
-end;
-
-function BkGetProcAddress(ALibHandle: TLibHandle;
-  const AProcName: PChar): Pointer;
-begin
-  Result :=
-{$IFDEF FPC}GetProcedureAddress{$ELSE}GetProcAddress{$ENDIF}(ALibHandle, AProcName);
-  if not Assigned(Result) then
-    raise EBkLibrarySymbolNotFound.CreateResFmt(@SBkLibrarySymbolNotFound,
-      [AProcName]);
 end;
 
 procedure BkCheckLibrary;
