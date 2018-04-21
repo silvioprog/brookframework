@@ -345,7 +345,7 @@ var
 function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
 function BkUnloadLibrary: TLibHandle;
 function BkGetProcAddress(ALibHandle: TLibHandle;
-  const AProcName: string): Pointer; inline;
+  const AProcName: PChar): Pointer; inline;
 procedure BkCheckLibrary;
 procedure BkCheckLastError(ALastError: Integer); inline;
 
@@ -585,7 +585,7 @@ begin
 end;
 
 function BkGetProcAddress(ALibHandle: TLibHandle;
-  const AProcName: string): Pointer;
+  const AProcName: PChar): Pointer;
 begin
   Result :=
 {$IFDEF FPC}GetProcedureAddress{$ELSE}GetProcAddress{$ENDIF}(ALibHandle, AProcName);
