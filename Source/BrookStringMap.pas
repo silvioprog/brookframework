@@ -141,6 +141,10 @@ type
     constructor Create(AHandle: Pointer); virtual;
     { Frees an instance of @link(TBrookStringMap). }
     destructor Destroy; override;
+    { Checks if the map contains items.
+
+      @returns(@True when map contains items, @False otherwise.) }
+    function Has: Boolean; virtual;
     { Gets an instance of @link(TBrookStringMapEnumerator). }
     function GetEnumerator: TBrookStringMapEnumerator;
     { Adds a pair of strings to the map.
@@ -306,6 +310,11 @@ begin
   BkCheckLibrary;
   Result := TBrookStringPair.Create(TMarshal.ToString(bk_strmap_name(Apair)),
     TMarshal.ToString(bk_strmap_val(Apair)));
+end;
+
+function TBrookStringMap.Has: Boolean;
+begin
+  Result := Assigned(FHandle) and Assigned(FHandle^);
 end;
 
 function TBrookStringMap.GetCount: Integer;
