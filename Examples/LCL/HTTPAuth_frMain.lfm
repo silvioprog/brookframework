@@ -3,7 +3,7 @@ object frMain: TfrMain
   Height = 160
   Top = 149
   Width = 320
-  Caption = 'BrookHTTPServer example'
+  Caption = 'HTTP auth example'
   ClientHeight = 160
   ClientWidth = 320
   Position = poDesktopCenter
@@ -62,13 +62,13 @@ object frMain: TfrMain
     left = 48
     top = 60
     object acStart: TAction
-      Category = 'HTTP server'
+      Category = 'HTTP auth'
       Caption = '&Start'
       OnExecute = acStartExecute
       ShortCut = 120
     end
     object acStop: TAction
-      Category = 'HTTP server'
+      Category = 'HTTP auth'
       Caption = 'S&top'
       Enabled = False
       OnExecute = acStopExecute
@@ -76,6 +76,9 @@ object frMain: TfrMain
     end
   end
   object BrookHTTPServer1: TBrookHTTPServer
+    Authenticated = True
+    OnAuthenticate = BrookHTTPServer1Authenticate
+    OnAuthenticateError = BrookHTTPServer1AuthenticateError
     OnRequest = BrookHTTPServer1Request
     OnRequestError = BrookHTTPServer1RequestError
     OnError = BrookHTTPServer1Error

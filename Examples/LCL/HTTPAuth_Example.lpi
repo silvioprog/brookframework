@@ -7,7 +7,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <Title Value="BrookHTTPCookie_Example"/>
+      <Title Value="HTTPAuth_Example"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -33,12 +33,12 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="BrookHTTPCookie_Example.lpr"/>
+        <Filename Value="HTTPAuth_Example.lpr"/>
         <IsPartOfProject Value="True"/>
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
-        <Filename Value="BrookHTTPCookie_frMain.pas"/>
+        <Filename Value="HTTPAuth_frMain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frMain"/>
         <HasResources Value="True"/>
@@ -52,7 +52,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="BrookHTTPCookie_Example"/>
+      <Filename Value="HTTPAuth_Example"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

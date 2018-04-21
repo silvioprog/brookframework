@@ -3,7 +3,7 @@ object frMain: TfrMain
   Height = 240
   Top = 137
   Width = 320
-  Caption = 'BrookStringMap example'
+  Caption = 'String map example'
   ClientHeight = 240
   ClientWidth = 320
   OnCreate = FormCreate

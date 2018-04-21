@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program BrookHTTPCookie_Example;
+program HTTPCookie_Example;
 
 {$MODE DELPHI}
 
@@ -37,7 +37,7 @@ uses
 {$ENDIF}
   Interfaces,
   Forms,
-  BrookHTTPCookie_frMain;
+  HTTPCookie_frMain;
 
 {$R *.res}
 

@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit BrookHTTPAuth_frMain;
+unit HTTPAuth_frMain;
 
 {$MODE DELPHI}
 {$PUSH}{$WARN 5024 OFF}

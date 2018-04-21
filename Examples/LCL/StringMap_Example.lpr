@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program BrookStringMap_Example;
+program StringMap_Example;
 
 {$MODE DELPHI}
 
@@ -37,7 +37,7 @@ uses
 {$ENDIF}
   Interfaces,
   Forms,
-  BrookStringMap_frMain;
+  StringMap_frMain;
 
 {$R *.res}
 

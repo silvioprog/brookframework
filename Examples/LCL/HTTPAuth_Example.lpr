@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program BrookHTTPServer_Example;
+program HTTPAuth_Example;
 
 {$MODE DELPHI}
 
@@ -37,7 +37,7 @@ uses
 {$ENDIF}
   Interfaces,
   Forms,
-  BrookHTTPServer_frMain;
+  HTTPAuth_frMain;
 
 {$R *.res}
 

@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program BrookString_Example;
+program HTTPServer_Example;
 
 {$MODE DELPHI}
 
@@ -37,13 +37,15 @@ uses
 {$ENDIF}
   Interfaces,
   Forms,
-  BrookString_frMain;
+  HTTPServer_frMain;
 
 {$R *.res}
 
 begin
+  Application.Scaled := True;
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TfrMain, frMain);
   Application.Run;
 end.
+

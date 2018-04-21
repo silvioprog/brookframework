@@ -3,7 +3,7 @@ object frMain: TfrMain
   Height = 240
   Top = 154
   Width = 390
-  Caption = 'BrookString example'
+  Caption = 'String example'
   ClientHeight = 240
   ClientWidth = 390
   OnCreate = FormCreate

@@ -25,38 +25,36 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit BrookStringMap_frMain;
+{ This example show a basic usage of TBrookString. }
+
+unit String_frMain;
 
 {$MODE DELPHI}
-{$WARN 5024 OFF}
 
 interface
 
 uses
   SysUtils,
   StdCtrls,
-  ExtCtrls,
-  ValEdit,
   Forms,
-  BrookStringMap;
+  Dialogs,
+  BrookString;
 
 type
   TfrMain = class(TForm)
-    btAdd: TButton;
-    btRemove: TButton;
+    btAddNow: TButton;
+    btShowContent: TButton;
     btClear: TButton;
-    pnTop: TPanel;
-    veMap: TValueListEditor;
-    procedure btAddClick(Sender: TObject);
+    lbDesc: TLabel;
+    procedure btAddNowClick(Sender: TObject);
     procedure btClearClick(Sender: TObject);
-    procedure btRemoveClick(Sender: TObject);
+    procedure btShowContentClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FMap: TBrookStringMap;
-    FMapHandle: Pointer;
-    procedure DoMapChange(ASender: TObject;
-      AOperation: TBrookStringMapOperation);
+    FString: TBrookString;
+  protected
+    procedure UpdateButtons;
   end;
 
 var
@@ -68,48 +66,35 @@ implementation
 
 procedure TfrMain.FormCreate(Sender: TObject);
 begin
-  FMap := TBrookStringMap.Create(@FMapHandle);
-  FMap.OnChange := DoMapChange;
+  FString := TBrookString.Create(nil);
 end;
 
 procedure TfrMain.FormDestroy(Sender: TObject);
 begin
-  FMap.Free;
+  FString.Free;
 end;
 
-procedure TfrMain.btAddClick(Sender: TObject);
-var
-  S: string;
+procedure TfrMain.UpdateButtons;
 begin
-  S := Succ(FMap.Count).ToString;
-  FMap.Add(Concat('Name', S), Concat('Value', S));
+  btShowContent.Enabled := FString.Length > 0;
+  btClear.Enabled := btShowContent.Enabled;
 end;
 
-procedure TfrMain.btRemoveClick(Sender: TObject);
+procedure TfrMain.btAddNowClick(Sender: TObject);
 begin
-  FMap.Remove(Concat('Name', FMap.Count.ToString));
+  FString.Write(Format('%s%s', [FormatDateTime('hh:nn:ss.zzz', Now), sLineBreak]));
+  UpdateButtons;
+end;
+
+procedure TfrMain.btShowContentClick(Sender: TObject);
+begin
+  ShowMessageFmt('All clicks:%s%s%s', [sLineBreak, sLineBreak, FString.Text]);
 end;
 
 procedure TfrMain.btClearClick(Sender: TObject);
 begin
-  FMap.Clear;
-end;
-
-procedure TfrMain.DoMapChange(ASender: TObject;
-  AOperation: TBrookStringMapOperation);
-var
-  P: TBrookStringPair;
-begin
-  veMap.Clear;
-  for P in FMap do
-    veMap.Strings.
-{$IFDEF VER3_0}
-      Add(Concat(P.Name, veMap.Strings.NameValueSeparator, P.Value))
-{$ELSE}
-      AddPair(P.Name, P.Value)
-{$ENDIF};
-  btRemove.Enabled := FMap.Count > 0;
-  btClear.Enabled := btRemove.Enabled;
+  FString.Clear;
+  UpdateButtons;
 end;
 
 end.

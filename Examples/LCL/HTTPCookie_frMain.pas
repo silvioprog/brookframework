@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit BrookHTTPCookie_frMain;
+unit HTTPCookie_frMain;
 
 {$MODE DELPHI}
 {$PUSH}{$WARN 5024 OFF}
@@ -44,7 +44,7 @@ uses
   LCLIntf,
   BrookHTTPRequest,
   BrookHTTPResponse,
-  BrookHTTPServer, BrookStringMap;
+  BrookHTTPServer;
 
 type
   TfrMain = class(TForm)

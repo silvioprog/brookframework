@@ -7,9 +7,13 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <Title Value="BrookStringMap_Example"/>
+      <Title Value="HTTPCookie_Example"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <BuildModes Count="1" Active="Default">
       <Item1 Name="Default" Default="True"/>
@@ -29,12 +33,12 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="BrookStringMap_Example.lpr"/>
+        <Filename Value="HTTPCookie_Example.lpr"/>
         <IsPartOfProject Value="True"/>
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
-        <Filename Value="BrookStringMap_frMain.pas"/>
+        <Filename Value="HTTPCookie_frMain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frMain"/>
         <HasResources Value="True"/>
@@ -48,7 +52,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="BrookStringMap_Example"/>
+      <Filename Value="HTTPCookie_Example"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -63,7 +67,7 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
+    <Exceptions Count="3" IgnoreAll="True">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>

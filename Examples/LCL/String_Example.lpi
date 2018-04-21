@@ -7,13 +7,9 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <Title Value="BrookHTTPAuth_Example"/>
-      <Scaled Value="True"/>
+      <Title Value="String_Example"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <XPManifest>
-        <DpiAware Value="True"/>
-      </XPManifest>
     </General>
     <BuildModes Count="1" Active="Default">
       <Item1 Name="Default" Default="True"/>
@@ -33,12 +29,12 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="BrookHTTPAuth_Example.lpr"/>
+        <Filename Value="String_Example.lpr"/>
         <IsPartOfProject Value="True"/>
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
-        <Filename Value="BrookHTTPAuth_frMain.pas"/>
+        <Filename Value="String_frMain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frMain"/>
         <HasResources Value="True"/>
@@ -46,13 +42,14 @@
         <IsVisibleTab Value="True"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="BrookHTTPAuth_Example"/>
+      <Filename Value="String_Example"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
@@ -67,7 +64,7 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3" IgnoreAll="True">
+    <Exceptions Count="3">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
