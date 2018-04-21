@@ -1,9 +1,9 @@
-program BrookHTTPAuth_Example;
+program HTTPAuth_Example;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
-  BrookHTTPAuth_frMain in 'BrookHTTPAuth_frMain.pas' {frMain};
+  HTTPAuth_frMain in 'HTTPAuth_frMain.pas' {frMain};
 
 {$R *.res}
 

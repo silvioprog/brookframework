@@ -25,12 +25,12 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program BrookStringMap_Example;
+program StringMap_Example;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
-  BrookStringMap_frMain in 'BrookStringMap_frMain.pas' {frMain};
+  StringMap_frMain in 'StringMap_frMain.pas' {frMain};
 
 {$R *.res}
 

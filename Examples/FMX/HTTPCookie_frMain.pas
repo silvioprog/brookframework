@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit BrookHTTPServer_frMain;
+unit HTTPCookie_frMain;
 
 interface
 
@@ -81,6 +81,13 @@ type
   public
     procedure UpdateLink;
   end;
+
+const
+  EMPTY_FAVICON = '<link rel="icon" href="data:,">';
+  CONTENT_TYPE = 'text/html; charset=utf-8';
+  INITIAL_PAGE = Concat('<html><head>', EMPTY_FAVICON, '<title>Cookies</title></head><body>Use F5 to refresh this page ...</body></html>');
+  COUNT_PAGE = Concat('<html><head>', EMPTY_FAVICON, '<title>Cookies</title></head><body>Refresh number: %d</body></html>');
+  COOKIE_NAME = 'refresh_count';
 
 var
   frMain: TfrMain;
@@ -140,10 +147,20 @@ end;
 
 procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+var
+  VCount: Integer;
 begin
-  AResponse.Send(
-    '<html><head><title>Hello world</title></head><body>Hello world</body></html>',
-    'text/html; charset=utf-8', 200);
+  if not ARequest.Cookies.Has then
+  begin
+    AResponse.Send(INITIAL_PAGE, CONTENT_TYPE, 200);
+    AResponse.SetCookie(COOKIE_NAME, '1');
+  end
+  else
+  begin
+    VCount := ARequest.Cookies.Get(COOKIE_NAME).ToInteger;
+    AResponse.Send(COUNT_PAGE, [VCount], CONTENT_TYPE, 200);
+    AResponse.SetCookie(COOKIE_NAME, Succ(VCount).ToString);
+  end;
 end;
 
 procedure TfrMain.BrookHTTPServer1RequestError(ASender: TObject;

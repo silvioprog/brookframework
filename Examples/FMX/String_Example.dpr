@@ -25,12 +25,12 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program BrookString_Example;
+program String_Example;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
-  BrookString_frMain in 'BrookString_frMain.pas' {frMain};
+  String_frMain in 'String_frMain.pas' {frMain};
 
 {$R *.res}
 

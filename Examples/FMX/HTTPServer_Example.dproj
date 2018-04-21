@@ -3,7 +3,7 @@
         <ProjectGuid>{2F75EC74-2C86-4D22-A886-19D394BA062F}</ProjectGuid>
         <ProjectVersion>18.4</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
-        <MainSource>BrookHTTPAuth_Example.dpr</MainSource>
+        <MainSource>HTTPServer_Example.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -84,7 +84,7 @@
         <AUP_READ_PHONE_STATE>true</AUP_READ_PHONE_STATE>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
-        <SanitizedProjectName>BrookHTTPAuth_Example</SanitizedProjectName>
+        <SanitizedProjectName>HTTPServer_Example</SanitizedProjectName>
         <DCC_UnitSearchPath>..\..\Source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
@@ -162,7 +162,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="BrookHTTPAuth_frMain.pas">
+        <DCCReference Include="HTTPServer_frMain.pas">
             <Form>frMain</Form>
             <FormType>fmx</FormType>
         </DCCReference>
@@ -184,7 +184,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">BrookHTTPAuth_Example.dpr</Source>
+                    <Source Name="MainSource">HTTPServer_Example.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k250.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
@@ -214,9 +214,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="Win32\Debug\BrookHTTPAuth_Example.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="Win32\Debug\HTTPServer_Example.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>BrookHTTPAuth_Example.exe</RemoteName>
+                        <RemoteName>HTTPServer_Example.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

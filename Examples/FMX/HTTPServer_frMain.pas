@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit BrookHTTPAuth_frMain;
+unit HTTPServer_frMain;
 
 interface
 
@@ -50,7 +50,6 @@ uses
   FMX.Forms,
   FMX.Controls.Presentation,
   BrookHandledClasses,
-  BrookHTTPAuthentication,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPServer;
@@ -79,10 +78,6 @@ type
       AException: Exception);
     procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
-    function BrookHTTPServer1Authenticate(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication): Boolean;
-    procedure BrookHTTPServer1AuthenticateError(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication; AException: Exception);
   public
     procedure UpdateLink;
   end;
@@ -143,31 +138,11 @@ begin
   lbLink.Enabled := not acStart.Enabled;
 end;
 
-function TfrMain.BrookHTTPServer1Authenticate(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication): Boolean;
-begin
-  AAuthentication.Realm := 'My realm';
-  Result := AAuthentication.UserName.Equals('abc') and
-    AAuthentication.Password.Equals('123');
-  if not Result then
-    AAuthentication.Deny(
-      '<html><head><title>Denied</title></head><body><font color="red">Go away</font></body></html>',
-      'text/html; charset=utf-8');
-end;
-
-procedure TfrMain.BrookHTTPServer1AuthenticateError(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication; AException: Exception);
-begin
-  AAuthentication.Deny(
-    '<html><head><title>Error</title></head><body><font color="red">%s</font></body></html>',
-    [AException.Message], 'text/html; charset=utf-8');
-end;
-
 procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
   AResponse.Send(
-    '<html><head><title>Secret</title></head><body><font color="green">Secret page</font></body></html>',
+    '<html><head><title>Hello world</title></head><body>Hello world</body></html>',
     'text/html; charset=utf-8', 200);
 end;
 

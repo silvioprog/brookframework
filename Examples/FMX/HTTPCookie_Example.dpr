@@ -1,9 +1,9 @@
-program BrookHTTPCookie_Example;
+program HTTPCookie_Example;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
-  BrookHTTPCookie_frMain in 'BrookHTTPCookie_frMain.pas' {frMain};
+  HTTPCookie_frMain in 'HTTPCookie_frMain.pas' {frMain};
 
 {$R *.res}
 

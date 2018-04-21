@@ -1,9 +1,9 @@
-program BrookHTTPServer_Example;
+program HTTPServer_Example;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
-  BrookHTTPServer_frMain in 'BrookHTTPServer_frMain.pas' {frMain};
+  HTTPServer_frMain in 'HTTPServer_frMain.pas' {frMain};
 
 {$R *.res}
 

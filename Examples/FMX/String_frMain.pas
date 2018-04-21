@@ -25,7 +25,7 @@
  * along with Brook library.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit BrookString_frMain;
+unit String_frMain;
 
 interface
 
