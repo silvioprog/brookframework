@@ -21,6 +21,7 @@ type
     FUserName: string;
     FPassword: string;
     function GetRealm: string;
+    function GetUserData: Pointer;
     procedure SetRealm(const AValue: string);
     procedure SetUserData(AValue: Pointer);
     function GetPaths: TArray<string>;
@@ -40,7 +41,7 @@ type
     property Realm: string read GetRealm write SetRealm;
     property UserName: string read FUserName;
     property Password: string read FPassword;
-    property UserData: Pointer write SetUserData;
+    property UserData: Pointer read GetUserData write SetUserData;
   end;
 
 implementation
@@ -84,6 +85,12 @@ function TBrookHTTPAuthentication.GetRealm: string;
 begin
   BkCheckLibrary;
   Result := TMarshal.ToString(bk_httpauth_realm(FHandle));
+end;
+
+function TBrookHTTPAuthentication.GetUserData: Pointer;
+begin
+  BkCheckLibrary;
+  Result := bk_httpauth_user_data(FHandle);
 end;
 
 function TBrookHTTPAuthentication.Deny(const AJustification,

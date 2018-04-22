@@ -261,6 +261,7 @@ var
   bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_set_user_data: function(auth: Pbk_httpauth;
     data: Pcvoid): cint; cdecl;
+  bk_httpauth_user_data: function(auth: Pbk_httpauth): Pcchar; cdecl;
 
   bk_httpuplds_next: function(uplds: Pbk_httpupld;
     upld: PPbk_httpupld): cint; cdecl;
@@ -414,6 +415,7 @@ begin
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
     bk_httpauth_set_user_data := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_user_data');
+    bk_httpauth_user_data := GetProcAddress(GBkLibHandle, 'bk_httpauth_user_data');
 
     bk_httpuplds_next := GetProcAddress(GBkLibHandle, 'bk_httpuplds_next');
     bk_httpupld_save := GetProcAddress(GBkLibHandle, 'bk_httpupld_save');
@@ -523,6 +525,7 @@ begin
     bk_httpauth_usr := nil;
     bk_httpauth_pwd := nil;
     bk_httpauth_set_user_data := nil;
+    bk_httpauth_user_data := nil;
 
     bk_httpuplds_next := nil;
     bk_httpupld_save := nil;
