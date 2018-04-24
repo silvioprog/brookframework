@@ -218,6 +218,8 @@ type
       write SetValue; default;
     { Indicates the end of map. }
     property EOF: Boolean read IsEOF;
+    { Indicates if the map is empty. }
+    property Empty: Boolean read IsEmpty;
   published
     { Clears the list on destroy. }
     property ClearOnDestroy: Boolean read FClearOnDestroy write FClearOnDestroy;
