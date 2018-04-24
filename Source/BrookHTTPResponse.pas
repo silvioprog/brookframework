@@ -14,7 +14,8 @@ uses
   BrookHandledClasses,
   BrookString,
   BrookStringMap,
-  BrookHTTPExtra;
+  BrookHTTPExtra,
+  BrookHTTPUploads;
 
 resourcestring
   SBrookInvalidHTTPStatus = 'Invalid status code: %d';
@@ -24,6 +25,7 @@ type
   private
     FHeaders: TBrookStringMap;
     FHandle: Pbk_httpres;
+    FUploads: TBrookHTTPUploads;
   protected
     class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
       Asize: csize_t): cssize_t; cdecl; static;
@@ -56,6 +58,7 @@ type
     function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
     function SendData(AStream: TStream; AStatus: Word): Boolean; virtual;
     property Headers: TBrookStringMap read FHeaders;
+    property Uploads: TBrookHTTPUploads read FUploads;
   end;
 
 implementation
@@ -100,7 +103,7 @@ end;
  {$PUSH}{$WARN 5024 OFF}
 {$ENDIF}
 class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid;
-  Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t;
+  Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t; cdecl;
 begin
   Result := TStream(Acls).Read(Abuf^, Asize);
   if Result = 0 then
@@ -112,7 +115,7 @@ end;
  {$POP}
 {$ENDIF}
 
-class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid);
+class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid); cdecl;
 begin
   TStream(Acls).Free;
 end;

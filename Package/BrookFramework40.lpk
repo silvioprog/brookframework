@@ -11,7 +11,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="16">
+    <Files Count="17">
       <Item1>
         <Filename Value="../Source/libbrook.inc"/>
         <Type Value="Include"/>
@@ -61,22 +61,26 @@
         <UnitName Value="BrookHTTPAuthentication"/>
       </Item12>
       <Item13>
-        <Filename Value="../Source/BrookHTTPRequest.pas"/>
-        <UnitName Value="BrookHTTPRequest"/>
+        <Filename Value="../Source/BrookHTTPUploads.pas"/>
+        <UnitName Value="BrookHTTPUploads"/>
       </Item13>
       <Item14>
-        <Filename Value="../Source/BrookHTTPResponse.pas"/>
-        <UnitName Value="BrookHTTPResponse"/>
+        <Filename Value="../Source/BrookHTTPRequest.pas"/>
+        <UnitName Value="BrookHTTPRequest"/>
       </Item14>
       <Item15>
-        <Filename Value="../Source/BrookHTTPServer.pas"/>
-        <UnitName Value="BrookHTTPServer"/>
+        <Filename Value="../Source/BrookHTTPResponse.pas"/>
+        <UnitName Value="BrookHTTPResponse"/>
       </Item15>
       <Item16>
+        <Filename Value="../Source/BrookHTTPServer.pas"/>
+        <UnitName Value="BrookHTTPServer"/>
+      </Item16>
+      <Item17>
         <Filename Value="BrookIDEIntegration.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookIDEIntegration"/>
-      </Item16>
+      </Item17>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

@@ -42,6 +42,7 @@ contains
   BrookStringMap in '..\Source\BrookStringMap.pas',
   BrookHTTPExtra in '..\Source\BrookHTTPExtra.pas',
   BrookHTTPAuthentication in '..\Source\BrookHTTPAuthentication.pas',
+  BrookHTTPUploads in '..\Source\BrookHTTPUploads.pas',
   BrookHTTPRequest in '..\Source\BrookHTTPRequest.pas',
   BrookHTTPResponse in '..\Source\BrookHTTPResponse.pas',
   BrookHTTPServer in '..\Source\BrookHTTPServer.pas',
