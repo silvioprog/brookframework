@@ -103,7 +103,7 @@ end;
  {$PUSH}{$WARN 5024 OFF}
 {$ENDIF}
 class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid;
-  Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t; cdecl;
+  Aoffset: cuint64_t; Abuf: Pcchar; Asize: csize_t): cssize_t;
 begin
   Result := TStream(Acls).Read(Abuf^, Asize);
   if Result = 0 then
@@ -115,7 +115,7 @@ end;
  {$POP}
 {$ENDIF}
 
-class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid); cdecl;
+class procedure TBrookHTTPResponse.DoStreamFree(Acls: Pcvoid);
 begin
   TStream(Acls).Free;
 end;
