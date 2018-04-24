@@ -37,6 +37,7 @@ type
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
+    function SetCookie(const AName, AValue: string): Boolean; virtual;
     function Deny(const AJustification,
       AContentType: string): Boolean; overload; virtual;
     function Deny(const AFmt: string; const AArgs: array of const;
@@ -103,6 +104,19 @@ function TBrookHTTPAuthentication.CreateParams(
 begin
   Result := TBrookStringMap.Create(AHandle);
   Result.ClearOnDestroy := False;
+end;
+
+function TBrookHTTPAuthentication.SetCookie(const AName,
+  AValue: string): Boolean;
+var
+  M: TMarshaller;
+  R: cint;
+begin
+  BkCheckLibrary;
+  R := -bk_httpauth_set_cookie(FHandle, M.ToCString(AName), M.ToCString(AValue));
+  Result := R = 0;
+  if (not Result) and (R <> EINVAL) then
+    BkCheckLastError(R);
 end;
 
 function TBrookHTTPAuthentication.GetPaths: TArray<string>;

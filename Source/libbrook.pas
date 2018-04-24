@@ -262,6 +262,8 @@ var
   bk_httpauth_cancel: function(auth: Pbk_httpauth): cint; cdecl;
   bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
+  bk_httpauth_set_cookie: function(auth: Pbk_httpauth; const name: Pcchar;
+    const val: Pcchar): cint; cdecl;
   bk_httpauth_set_user_data: function(auth: Pbk_httpauth;
     data: Pcvoid): cint; cdecl;
   bk_httpauth_user_data: function(auth: Pbk_httpauth): Pcchar; cdecl;
@@ -420,6 +422,7 @@ begin
     bk_httpauth_cancel := GetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
+    bk_httpauth_set_cookie := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_cookie');
     bk_httpauth_set_user_data := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_user_data');
     bk_httpauth_user_data := GetProcAddress(GBkLibHandle, 'bk_httpauth_user_data');
 
@@ -533,6 +536,7 @@ begin
     bk_httpauth_cancel := nil;
     bk_httpauth_usr := nil;
     bk_httpauth_pwd := nil;
+    bk_httpauth_set_cookie := nil;
     bk_httpauth_set_user_data := nil;
     bk_httpauth_user_data := nil;
 
