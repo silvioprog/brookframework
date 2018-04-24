@@ -248,6 +248,9 @@ type
     res: Pbk_httpres); cdecl;
 
 var
+  bk_httpauth_headers: function(auth: Pbk_httpauth): PPbk_strmap; cdecl;
+  bk_httpauth_cookies: function(auth: Pbk_httpauth): PPbk_strmap; cdecl;
+  bk_httpauth_params: function(auth: Pbk_httpauth): PPbk_strmap; cdecl;
   bk_httpauth_version: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_method: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_path: function(auth: Pbk_httpauth): Pcchar; cdecl;
@@ -405,6 +408,9 @@ begin
     bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
+    bk_httpauth_headers := GetProcAddress(GBkLibHandle, 'bk_httpauth_headers');
+    bk_httpauth_cookies := GetProcAddress(GBkLibHandle, 'bk_httpauth_cookies');
+    bk_httpauth_params := GetProcAddress(GBkLibHandle, 'bk_httpauth_params');
     bk_httpauth_version := GetProcAddress(GBkLibHandle, 'bk_httpauth_version');
     bk_httpauth_method := GetProcAddress(GBkLibHandle, 'bk_httpauth_method');
     bk_httpauth_path := GetProcAddress(GBkLibHandle, 'bk_httpauth_path');
@@ -515,6 +521,9 @@ begin
     bk_strmap_next := nil;
     bk_strmap_cleanup := nil;
 
+    bk_httpauth_headers := nil;
+    bk_httpauth_cookies := nil;
+    bk_httpauth_params := nil;
     bk_httpauth_version := nil;
     bk_httpauth_method := nil;
     bk_httpauth_path := nil;

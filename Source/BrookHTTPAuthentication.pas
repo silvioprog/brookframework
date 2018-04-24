@@ -9,17 +9,21 @@ uses
   Platform,
   Marshalling,
   libbrook,
-  BrookHandledClasses;
+  BrookHandledClasses,
+  BrookStringMap;
 
 type
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
-    FHandle: Pbk_httpauth;
+    FHeaders: TBrookStringMap;
+    FCookies: TBrookStringMap;
+    FParams: TBrookStringMap;
     FVersion: string;
     FMethod: string;
     FPath: string;
     FUserName: string;
     FPassword: string;
+    FHandle: Pbk_httpauth;
     function GetRealm: string;
     function GetUserData: Pointer;
     procedure SetRealm(const AValue: string);
@@ -27,13 +31,20 @@ type
     function GetPaths: TArray<string>;
   protected
     function GetHandle: Pointer; override;
+    function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
+    function CreateCookies(AHandle: Pointer): TBrookStringMap; virtual;
+    function CreateParams(AHandle: Pointer): TBrookStringMap; virtual;
   public
     constructor Create(AHandle: Pointer); virtual;
+    destructor Destroy; override;
     function Deny(const AJustification,
       AContentType: string): Boolean; overload; virtual;
     function Deny(const AFmt: string; const AArgs: array of const;
       const AContentType: string): Boolean; overload; virtual;
     procedure Cancel; virtual;
+    property Headers: TBrookStringMap read FHeaders;
+    property Cookies: TBrookStringMap read FCookies;
+    property Params: TBrookStringMap read FParams;
     property Version: string read FVersion;
     property Method: string read FMethod;
     property Path: string read FPath;
@@ -50,6 +61,9 @@ constructor TBrookHTTPAuthentication.Create(AHandle: Pointer);
 begin
   inherited Create;
   FHandle := AHandle;
+  FHeaders := CreateHeaders(bk_httpauth_headers(FHandle));
+  FCookies := CreateCookies(bk_httpauth_cookies(FHandle));
+  FParams := CreateParams(bk_httpauth_params(FHandle));
   FVersion := TMarshal.ToString(bk_httpauth_version(FHandle));
   FMethod := TMarshal.ToString(bk_httpauth_method(FHandle));
   FPath := TMarshal.ToString(bk_httpauth_path(FHandle));
@@ -57,9 +71,38 @@ begin
   FPassword := TMarshal.ToString(bk_httpauth_pwd(FHandle));
 end;
 
+destructor TBrookHTTPAuthentication.Destroy;
+begin
+  FHeaders.Free;
+  FCookies.Free;
+  FParams.Free;
+  inherited Destroy;
+end;
+
 function TBrookHTTPAuthentication.GetHandle: Pointer;
 begin
   Result := FHandle;
+end;
+
+function TBrookHTTPAuthentication.CreateHeaders(
+  AHandle: Pointer): TBrookStringMap;
+begin
+  Result := TBrookStringMap.Create(AHandle);
+  Result.ClearOnDestroy := False;
+end;
+
+function TBrookHTTPAuthentication.CreateCookies(
+  AHandle: Pointer): TBrookStringMap;
+begin
+  Result := TBrookStringMap.Create(AHandle);
+  Result.ClearOnDestroy := False;
+end;
+
+function TBrookHTTPAuthentication.CreateParams(
+  AHandle: Pointer): TBrookStringMap;
+begin
+  Result := TBrookStringMap.Create(AHandle);
+  Result.ClearOnDestroy := False;
 end;
 
 function TBrookHTTPAuthentication.GetPaths: TArray<string>;
