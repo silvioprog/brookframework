@@ -154,16 +154,20 @@ var
   VCount: Integer;
 begin
   if ARequest.Cookies.IsEmpty then
+    VCount := 0
+  else
+    VCount := StrToIntDef(ARequest.Cookies.Get(COOKIE_NAME), 0);
+  if VCount = 0  then
   begin
     AResponse.Send(INITIAL_PAGE, CONTENT_TYPE, 200);
-    AResponse.SetCookie(COOKIE_NAME, '1');
+    VCount := 1;
   end
   else
   begin
-    VCount := ARequest.Cookies.Get(COOKIE_NAME).ToInteger;
     AResponse.Send(COUNT_PAGE, [VCount], CONTENT_TYPE, 200);
-    AResponse.SetCookie(COOKIE_NAME, Succ(VCount).ToString);
+    Inc(VCount);
   end;
+  AResponse.SetCookie(COOKIE_NAME, VCount.ToString);
 end;
 
 procedure TfrMain.BrookHTTPServer1RequestError(ASender: TObject;
