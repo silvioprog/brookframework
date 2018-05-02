@@ -150,7 +150,7 @@ procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
 var
   VCount: Integer;
 begin
-  if not ARequest.Cookies.Has then
+  if ARequest.Cookies.IsEmpty then
   begin
     AResponse.Send(INITIAL_PAGE, CONTENT_TYPE, 200);
     AResponse.SetCookie(COOKIE_NAME, '1');
