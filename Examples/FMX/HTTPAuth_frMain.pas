@@ -80,9 +80,11 @@ type
     procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
     function BrookHTTPServer1Authenticate(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication): Boolean;
+      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse): Boolean;
     procedure BrookHTTPServer1AuthenticateError(ASender: TObject;
-      AAuthentication: TBrookHTTPAuthentication; AException: Exception);
+      AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse; AException: Exception);
   public
     procedure UpdateLink;
   end;
@@ -144,7 +146,8 @@ begin
 end;
 
 function TfrMain.BrookHTTPServer1Authenticate(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication): Boolean;
+  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse): Boolean;
 begin
   AAuthentication.Realm := 'My realm';
   Result := AAuthentication.UserName.Equals('abc') and
@@ -156,7 +159,8 @@ begin
 end;
 
 procedure TfrMain.BrookHTTPServer1AuthenticateError(ASender: TObject;
-  AAuthentication: TBrookHTTPAuthentication; AException: Exception);
+  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse; AException: Exception);
 begin
   AAuthentication.Deny(
     '<html><head><title>Error</title></head><body><font color="red">%s</font></body></html>',

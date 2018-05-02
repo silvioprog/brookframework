@@ -166,6 +166,7 @@ var
   bk_alloc: function(size: csize_t): Pcvoid; cdecl;
   bk_free: procedure(ptr: Pcvoid); cdecl;
   bk_strerror: function(errnum: cint; buf: Pcchar; len: csize_t): Pcchar; cdecl;
+  bk_is_post: function(const method: Pcchar): cbool; cdecl;
   bk_tmpdir: function: Pcchar; cdecl;
 
 type
@@ -238,7 +239,8 @@ type
   end;
 
 type
-  bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth): cbool; cdecl;
+  bk_httpauth_cb = function(cls: Pcvoid; auth: Pbk_httpauth; req: Pbk_httpreq;
+    res: Pbk_httpres): cbool; cdecl;
 
   bk_httpupld_cb = function(cls: Pcvoid; handle: PPcvoid; const dir: Pcchar;
     const field: Pcchar; const name: Pcchar; const mime: Pcchar;
@@ -248,12 +250,6 @@ type
     res: Pbk_httpres); cdecl;
 
 var
-  bk_httpauth_headers: function(auth: Pbk_httpauth): PPbk_strmap; cdecl;
-  bk_httpauth_cookies: function(auth: Pbk_httpauth): PPbk_strmap; cdecl;
-  bk_httpauth_params: function(auth: Pbk_httpauth): PPbk_strmap; cdecl;
-  bk_httpauth_version: function(auth: Pbk_httpauth): Pcchar; cdecl;
-  bk_httpauth_method: function(auth: Pbk_httpauth): Pcchar; cdecl;
-  bk_httpauth_path: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_set_realm: function(auth: Pbk_httpauth;
     const realm: Pcchar): cint; cdecl;
   bk_httpauth_realm: function(auth: Pbk_httpauth): pcchar; cdecl;
@@ -262,11 +258,6 @@ var
   bk_httpauth_cancel: function(auth: Pbk_httpauth): cint; cdecl;
   bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
-  bk_httpauth_set_cookie: function(auth: Pbk_httpauth; const name: Pcchar;
-    const val: Pcchar): cint; cdecl;
-  bk_httpauth_set_user_data: function(auth: Pbk_httpauth;
-    data: Pcvoid): cint; cdecl;
-  bk_httpauth_user_data: function(auth: Pbk_httpauth): Pcchar; cdecl;
 
   bk_httpuplds_next: function(uplds: Pbk_httpupld;
     upld: PPbk_httpupld): cint; cdecl;
@@ -282,9 +273,11 @@ var
   bk_httpreq_version: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_method: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_path: function(req: Pbk_httpreq): Pcchar; cdecl;
-  bk_httpreq_is_post: function(req: Pbk_httpreq): cbool; cdecl;
   bk_httpreq_payload: function(req: Pbk_httpreq): Pbk_str; cdecl;
+  bk_httpreq_uploading: function(req: Pbk_httpreq): cbool; cdecl;
   bk_httpreq_uploads: function(req: Pbk_httpreq): PPbk_httpupld; cdecl;
+  bk_httpreq_set_user_data: function(req: Pbk_httpreq;
+    data: Pcvoid): cint; cdecl;
   bk_httpreq_user_data: function(req: Pbk_httpreq): Pcvoid; cdecl;
 
   bk_httpres_headers: function(res: Pbk_httpres): PPbk_strmap; cdecl;
@@ -386,6 +379,7 @@ begin
     bk_alloc := GetProcAddress(GBkLibHandle, 'bk_alloc');
     bk_free := GetProcAddress(GBkLibHandle, 'bk_free');
     bk_strerror := GetProcAddress(GBkLibHandle, 'bk_strerror');
+    bk_is_post := GetProcAddress(GBkLibHandle, 'bk_is_post');
     bk_tmpdir := GetProcAddress(GBkLibHandle, 'bk_tmpdir');
 
     bk_str_new := GetProcAddress(GBkLibHandle, 'bk_str_new');
@@ -410,21 +404,12 @@ begin
     bk_strmap_next := GetProcAddress(GBkLibHandle, 'bk_strmap_next');
     bk_strmap_cleanup := GetProcAddress(GBkLibHandle, 'bk_strmap_cleanup');
 
-    bk_httpauth_headers := GetProcAddress(GBkLibHandle, 'bk_httpauth_headers');
-    bk_httpauth_cookies := GetProcAddress(GBkLibHandle, 'bk_httpauth_cookies');
-    bk_httpauth_params := GetProcAddress(GBkLibHandle, 'bk_httpauth_params');
-    bk_httpauth_version := GetProcAddress(GBkLibHandle, 'bk_httpauth_version');
-    bk_httpauth_method := GetProcAddress(GBkLibHandle, 'bk_httpauth_method');
-    bk_httpauth_path := GetProcAddress(GBkLibHandle, 'bk_httpauth_path');
     bk_httpauth_set_realm := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_realm');
     bk_httpauth_realm := GetProcAddress(GBkLibHandle, 'bk_httpauth_realm');
     bk_httpauth_deny := GetProcAddress(GBkLibHandle, 'bk_httpauth_deny');
     bk_httpauth_cancel := GetProcAddress(GBkLibHandle, 'bk_httpauth_cancel');
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
-    bk_httpauth_set_cookie := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_cookie');
-    bk_httpauth_set_user_data := GetProcAddress(GBkLibHandle, 'bk_httpauth_set_user_data');
-    bk_httpauth_user_data := GetProcAddress(GBkLibHandle, 'bk_httpauth_user_data');
 
     bk_httpuplds_next := GetProcAddress(GBkLibHandle, 'bk_httpuplds_next');
     bk_httpupld_save := GetProcAddress(GBkLibHandle, 'bk_httpupld_save');
@@ -437,9 +422,10 @@ begin
     bk_httpreq_version := GetProcAddress(GBkLibHandle, 'bk_httpreq_version');
     bk_httpreq_method := GetProcAddress(GBkLibHandle, 'bk_httpreq_method');
     bk_httpreq_path := GetProcAddress(GBkLibHandle, 'bk_httpreq_path');
-    bk_httpreq_is_post := GetProcAddress(GBkLibHandle, 'bk_httpreq_is_post');
     bk_httpreq_payload := GetProcAddress(GBkLibHandle, 'bk_httpreq_payload');
+    bk_httpreq_uploading := GetProcAddress(GBkLibHandle, 'bk_httpreq_uploading');
     bk_httpreq_uploads := GetProcAddress(GBkLibHandle, 'bk_httpreq_uploads');
+    bk_httpreq_set_user_data := GetProcAddress(GBkLibHandle, 'bk_httpreq_set_user_data');
     bk_httpreq_user_data := GetProcAddress(GBkLibHandle, 'bk_httpreq_user_data');
 
     bk_httpres_headers := GetProcAddress(GBkLibHandle, 'bk_httpres_headers');
@@ -500,6 +486,7 @@ begin
     bk_alloc := nil;
     bk_free := nil;
     bk_strerror := nil;
+    bk_is_post := nil;
     bk_tmpdir := nil;
 
     bk_str_new := nil;
@@ -524,21 +511,12 @@ begin
     bk_strmap_next := nil;
     bk_strmap_cleanup := nil;
 
-    bk_httpauth_headers := nil;
-    bk_httpauth_cookies := nil;
-    bk_httpauth_params := nil;
-    bk_httpauth_version := nil;
-    bk_httpauth_method := nil;
-    bk_httpauth_path := nil;
     bk_httpauth_set_realm := nil;
     bk_httpauth_realm := nil;
     bk_httpauth_deny := nil;
     bk_httpauth_cancel := nil;
     bk_httpauth_usr := nil;
     bk_httpauth_pwd := nil;
-    bk_httpauth_set_cookie := nil;
-    bk_httpauth_set_user_data := nil;
-    bk_httpauth_user_data := nil;
 
     bk_httpuplds_next := nil;
     bk_httpupld_save := nil;
@@ -551,9 +529,10 @@ begin
     bk_httpreq_version := nil;
     bk_httpreq_method := nil;
     bk_httpreq_path := nil;
-    bk_httpreq_is_post := nil;
     bk_httpreq_payload := nil;
+    bk_httpreq_uploading := nil;
     bk_httpreq_uploads := nil;
+    bk_httpreq_set_user_data := nil;
     bk_httpreq_user_data := nil;
 
     bk_httpres_headers := nil;

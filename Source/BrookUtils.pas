@@ -79,6 +79,9 @@ function BrookStrError(AErrorNum: Integer; ALength: Integer): string; overload;
 function BrookStrError(AErrorNum: Integer): string; overload;
 
 { experimental: it will be documented and tested as soon as it is accepted as better API. }
+function BrookIsPost(const AMethod: string): Boolean;
+
+{ experimental: it will be documented and tested as soon as it is accepted as better API. }
 function BrookTmpDir: string;
 
 implementation
@@ -120,6 +123,13 @@ end;
 function BrookStrError(AErrorNum: Integer): string;
 begin
   Result := BrookStrError(AErrorNum, 255);
+end;
+
+function BrookIsPost(const AMethod: string): Boolean;
+var
+  M: TMarshaller;
+begin
+  Result := bk_is_post(M.ToCString(AMethod));
 end;
 
 function BrookTmpDir: string;

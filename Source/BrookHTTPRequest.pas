@@ -23,8 +23,7 @@ type
     FVersion: string;
     FMethod: string;
     FPath: string;
-    FIsPost: Boolean;
-    FUserData: Pointer;
+    FUploading: Boolean;
     FHandle: Pbk_httpreq;
     function GetPaths: TArray<string>;
   protected
@@ -34,6 +33,8 @@ type
     function CreateFields(AHandle: Pointer): TBrookStringMap; virtual;
     function CreatePayload(AHandle: Pointer): TBrookString; virtual;
     function GetHandle: Pointer; override;
+    function GetUserData: Pointer; virtual;
+    procedure SetUserData(AValue: Pointer); virtual;
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
@@ -46,8 +47,8 @@ type
     property Method: string read FMethod;
     property Path: string read FPath;
     property Paths: TArray<string> read GetPaths;
-    property IsPost: Boolean read FIsPost;
-    property UserData: Pointer read FUserData;
+    property Uploading: Boolean read FUploading;
+    property UserData: Pointer read GetUserData write SetUserData;
   end;
 
 implementation
@@ -64,8 +65,7 @@ begin
   FVersion := TMarshal.ToString(bk_httpreq_version(FHandle));
   FMethod := TMarshal.ToString(bk_httpreq_method(FHandle));
   FPath := TMarshal.ToString(bk_httpreq_path(FHandle));
-  FIsPost := bk_httpreq_is_post(FHandle);
-  FUserData := bk_httpreq_user_data(FHandle);
+  FUploading := bk_httpreq_uploading(FHandle);
 end;
 
 destructor TBrookHTTPRequest.Destroy;
@@ -115,6 +115,18 @@ end;
 function TBrookHTTPRequest.GetPaths: TArray<string>;
 begin
   Result := Path.Split(['/'], TStringSplitOptions.ExcludeEmpty);
+end;
+
+procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
+begin
+  BkCheckLibrary;
+  BkCheckLastError(-bk_httpreq_set_user_data(FHandle, AValue));
+end;
+
+function TBrookHTTPRequest.GetUserData: Pointer;
+begin
+  BkCheckLibrary;
+  Result := bk_httpreq_user_data(FHandle);
 end;
 
 end.
