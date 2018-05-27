@@ -9,60 +9,107 @@ object frMain: TfrMain
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   DesignerMasterStyle = 0
-  object edPort: TNumberBox
-    Touch.InteractiveGestures = [LongTap, DoubleTap]
-    TabOrder = 1
-    Cursor = crIBeam
-    Max = 65535.000000000000000000
-    Position.X = 72.000000000000000000
-    Position.Y = 30.000000000000000000
-    Enabled = False
-    Size.Width = 57.000000000000000000
-    Size.Height = 22.000000000000000000
+  object pnTop: TPanel
+    Align = Top
+    Margins.Left = 6.000000000000000000
+    Margins.Top = 6.000000000000000000
+    Margins.Right = 6.000000000000000000
+    Margins.Bottom = 6.000000000000000000
+    Position.X = 6.000000000000000000
+    Position.Y = 6.000000000000000000
+    Size.Width = 348.000000000000000000
+    Size.Height = 51.000000000000000000
     Size.PlatformDefault = False
-    OnChange = edPortChange
-  end
-  object btStart: TButton
-    Action = acStart
-    Enabled = True
-    ImageIndex = -1
-    Position.X = 144.000000000000000000
-    Position.Y = 30.000000000000000000
-    TabOrder = 2
-  end
-  object btStop: TButton
-    Action = acStop
-    Enabled = False
-    ImageIndex = -1
-    Position.X = 240.000000000000000000
-    Position.Y = 30.000000000000000000
-    TabOrder = 3
-  end
-  object lbPort: TLabel
-    Position.X = 32.000000000000000000
-    Position.Y = 32.000000000000000000
-    Size.Width = 33.000000000000000000
-    Size.Height = 17.000000000000000000
-    Size.PlatformDefault = False
-    Text = '&Port'
     TabOrder = 0
+    object lbPort: TLabel
+      Align = Left
+      AutoSize = True
+      StyledSettings = [Family, Size, FontColor]
+      Margins.Top = 10.000000000000000000
+      Margins.Right = 4.000000000000000000
+      Margins.Bottom = 10.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 39.000000000000000000
+      Size.Height = 31.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.Font.StyleExt = {00070000000000000004000000}
+      TextSettings.HorzAlign = Trailing
+      Text = '&Port:'
+      TabOrder = 0
+    end
+    object edPort: TNumberBox
+      Touch.InteractiveGestures = [LongTap, DoubleTap]
+      Align = Left
+      TabOrder = 1
+      Cursor = crIBeam
+      Max = 65535.000000000000000000
+      TextSettings.HorzAlign = Trailing
+      Position.X = 43.000000000000000000
+      Position.Y = 14.000000000000000000
+      Enabled = False
+      Margins.Top = 14.000000000000000000
+      Margins.Right = 10.000000000000000000
+      Margins.Bottom = 14.000000000000000000
+      Size.Width = 80.000000000000000000
+      Size.Height = 23.000000000000000000
+      Size.PlatformDefault = False
+      OnChange = edPortChange
+    end
+    object btStart: TButton
+      Action = acStart
+      Align = Left
+      Cursor = crHandPoint
+      Enabled = True
+      ImageIndex = -1
+      Margins.Left = 10.000000000000000000
+      Margins.Top = 10.000000000000000000
+      Margins.Bottom = 10.000000000000000000
+      Position.X = 143.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 80.000000000000000000
+      Size.Height = 31.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+    end
+    object btStop: TButton
+      Action = acStop
+      Align = Left
+      Cursor = crHandPoint
+      Enabled = False
+      ImageIndex = -1
+      Margins.Left = 10.000000000000000000
+      Margins.Top = 10.000000000000000000
+      Margins.Right = 10.000000000000000000
+      Margins.Bottom = 10.000000000000000000
+      Position.X = 233.000000000000000000
+      Position.Y = 10.000000000000000000
+      Size.Width = 80.000000000000000000
+      Size.Height = 31.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 3
+    end
   end
   object lbLink: TLabel
+    Align = Top
     AutoSize = True
     Cursor = crHandPoint
     Enabled = False
     StyledSettings = [Family, Size]
     HitTest = True
-    Position.X = 32.000000000000000000
-    Position.Y = 72.000000000000000000
-    Size.Width = 82.000000000000000000
+    Margins.Left = 6.000000000000000000
+    Margins.Top = 6.000000000000000000
+    Margins.Right = 6.000000000000000000
+    Margins.Bottom = 6.000000000000000000
+    Position.X = 6.000000000000000000
+    Position.Y = 69.000000000000000000
+    Size.Width = 348.000000000000000000
     Size.Height = 16.000000000000000000
     Size.PlatformDefault = False
     TextSettings.Font.StyleExt = {04040000000000000004000000}
     TextSettings.FontColor = claBlue
     TextSettings.WordWrap = False
     Text = 'http://localhost'
-    TabOrder = 4
+    TabOrder = 1
     OnClick = lbLinkClick
     OnMouseEnter = lbLinkMouseEnter
     OnMouseLeave = lbLinkMouseLeave
@@ -79,7 +126,7 @@ object frMain: TfrMain
     end
     object acStop: TAction
       Category = 'HTTP auth'
-      Text = '&Stop'
+      Text = 'S&top'
       Enabled = False
       ShortCut = 121
       OnExecute = acStopExecute

@@ -30,10 +30,6 @@ unit HTTPServer_frMain;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
-  Winapi.ShellAPI,
-  Winapi.Windows,
-{$ENDIF}
   System.SysUtils,
   System.UITypes,
   System.Classes,
@@ -52,7 +48,8 @@ uses
   BrookHandledClasses,
   BrookHTTPRequest,
   BrookHTTPResponse,
-  BrookHTTPServer;
+  BrookHTTPServer,
+  Utility;
 
 type
   TfrMain = class(TForm)
@@ -65,6 +62,7 @@ type
     acStart: TAction;
     acStop: TAction;
     BrookHTTPServer1: TBrookHTTPServer;
+    pnTop: TPanel;
     procedure acStartExecute(Sender: TObject);
     procedure acStopExecute(Sender: TObject);
     procedure edPortChange(Sender: TObject);
@@ -125,9 +123,7 @@ end;
 
 procedure TfrMain.lbLinkClick(Sender: TObject);
 begin
-{$IFDEF MSWINDOWS}
-  ShellExecute(0, 'open', PChar(lbLink.Text), '', '', SW_SHOWNORMAL);
-{$ENDIF}
+  Utility.OpenURL(lbLink.Text);
 end;
 
 procedure TfrMain.alMainUpdate(Action: TBasicAction; var Handled: Boolean);

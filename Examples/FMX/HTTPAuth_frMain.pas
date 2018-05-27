@@ -30,10 +30,6 @@ unit HTTPAuth_frMain;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
-  Winapi.ShellAPI,
-  Winapi.Windows,
-{$ENDIF}
   System.SysUtils,
   System.UITypes,
   System.Classes,
@@ -53,7 +49,8 @@ uses
   BrookHTTPAuthentication,
   BrookHTTPRequest,
   BrookHTTPResponse,
-  BrookHTTPServer;
+  BrookHTTPServer,
+  Utility;
 
 type
   TfrMain = class(TForm)
@@ -132,9 +129,7 @@ end;
 
 procedure TfrMain.lbLinkClick(Sender: TObject);
 begin
-{$IFDEF MSWINDOWS}
-  ShellExecute(0, 'open', PChar(lbLink.Text), '', '', SW_SHOWNORMAL);
-{$ENDIF}
+  OpenURL(lbLink.Text);
 end;
 
 procedure TfrMain.alMainUpdate(Action: TBasicAction; var Handled: Boolean);
