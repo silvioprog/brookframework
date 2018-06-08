@@ -10,11 +10,13 @@ uses
   libbrook,
   BrookHandledClasses,
   BrookString,
-  BrookStringMap;
+  BrookStringMap,
+  BrookHTTPUploads;
 
 type
   TBrookHTTPRequest = class(TBrookHandledPersistent)
   private
+    FUploads: TBrookHTTPUploads;
     FHeaders: TBrookStringMap;
     FCookies: TBrookStringMap;
     FParams: TBrookStringMap;
@@ -47,6 +49,7 @@ type
     property Method: string read FMethod;
     property Path: string read FPath;
     property Paths: TArray<string> read GetPaths;
+    property Uploads: TBrookHTTPUploads read FUploads;
     property Uploading: Boolean read FUploading;
     property UserData: Pointer read GetUserData write SetUserData;
   end;
