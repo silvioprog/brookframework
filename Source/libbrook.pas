@@ -246,6 +246,8 @@ type
     const field: Pcchar; const name: Pcchar; const mime: Pcchar;
     const encoding: Pcchar): cint; cdecl;
 
+  bk_httpuplds_iter_cb = function(cls: Pcvoid; upld: Pbk_httpupld): cint; cdecl;
+
   bk_httpreq_cb = procedure(cls: Pcvoid; req: Pbk_httpreq;
     res: Pbk_httpres); cdecl;
 
@@ -259,8 +261,19 @@ var
   bk_httpauth_usr: function(auth: Pbk_httpauth): Pcchar; cdecl;
   bk_httpauth_pwd: function(auth: Pbk_httpauth): Pcchar; cdecl;
 
+  bk_httpuplds_iter: function(uplds: Pbk_httpupld; cb: bk_httpuplds_iter_cb;
+    cls: Pcvoid): cint; cdecl;
   bk_httpuplds_next: function(uplds: Pbk_httpupld;
     upld: PPbk_httpupld): cint; cdecl;
+  bk_httpuplds_count: function(uplds: Pbk_httpupld): cint; cdecl;
+
+  bk_httpupld_handle: function(uplds: Pbk_httpupld): Pcvoid; cdecl;
+  bk_httpupld_dir: function(uplds: Pbk_httpupld): Pcchar; cdecl;
+  bk_httpupld_field: function(uplds: Pbk_httpupld): Pcchar; cdecl;
+  bk_httpupld_name: function(uplds: Pbk_httpupld): Pcchar; cdecl;
+  bk_httpupld_mime: function(uplds: Pbk_httpupld): Pcchar; cdecl;
+  bk_httpupld_encoding: function(uplds: Pbk_httpupld): Pcchar; cdecl;
+  bk_httpupld_size: function(uplds: Pbk_httpupld): cuint64_t; cdecl;
   bk_httpupld_save: function(upld: Pbk_httpupld;
     overwritten: cbool): cint; cdecl;
   bk_httpupld_save_as: function(upld: Pbk_httpupld; const path: Pcchar;
@@ -275,7 +288,7 @@ var
   bk_httpreq_path: function(req: Pbk_httpreq): Pcchar; cdecl;
   bk_httpreq_payload: function(req: Pbk_httpreq): Pbk_str; cdecl;
   bk_httpreq_uploading: function(req: Pbk_httpreq): cbool; cdecl;
-  bk_httpreq_uploads: function(req: Pbk_httpreq): PPbk_httpupld; cdecl;
+  bk_httpreq_uploads: function(req: Pbk_httpreq): Pbk_httpupld; cdecl;
   bk_httpreq_set_user_data: function(req: Pbk_httpreq;
     data: Pcvoid): cint; cdecl;
   bk_httpreq_user_data: function(req: Pbk_httpreq): Pcvoid; cdecl;
@@ -411,7 +424,17 @@ begin
     bk_httpauth_usr := GetProcAddress(GBkLibHandle, 'bk_httpauth_usr');
     bk_httpauth_pwd := GetProcAddress(GBkLibHandle, 'bk_httpauth_pwd');
 
+    bk_httpuplds_iter := GetProcAddress(GBkLibHandle, 'bk_httpuplds_iter');
     bk_httpuplds_next := GetProcAddress(GBkLibHandle, 'bk_httpuplds_next');
+    bk_httpuplds_count := GetProcAddress(GBkLibHandle, '');
+
+    bk_httpupld_handle := GetProcAddress(GBkLibHandle, 'bk_httpupld_handle');
+    bk_httpupld_dir := GetProcAddress(GBkLibHandle, 'bk_httpupld_dir');
+    bk_httpupld_field := GetProcAddress(GBkLibHandle, 'bk_httpupld_field');
+    bk_httpupld_name := GetProcAddress(GBkLibHandle, 'bk_httpupld_name');
+    bk_httpupld_mime := GetProcAddress(GBkLibHandle, 'bk_httpupld_mime');
+    bk_httpupld_encoding := GetProcAddress(GBkLibHandle, 'bk_httpupld_encoding');
+    bk_httpupld_size := GetProcAddress(GBkLibHandle, 'bk_httpupld_size');
     bk_httpupld_save := GetProcAddress(GBkLibHandle, 'bk_httpupld_save');
     bk_httpupld_save_as := GetProcAddress(GBkLibHandle, 'bk_httpupld_save_as');
 
@@ -518,7 +541,17 @@ begin
     bk_httpauth_usr := nil;
     bk_httpauth_pwd := nil;
 
+    bk_httpuplds_iter := nil;
     bk_httpuplds_next := nil;
+    bk_httpuplds_count := nil;
+
+    bk_httpupld_handle := nil;
+    bk_httpupld_dir := nil;
+    bk_httpupld_field := nil;
+    bk_httpupld_name := nil;
+    bk_httpupld_mime := nil;
+    bk_httpupld_encoding := nil;
+    bk_httpupld_size := nil;
     bk_httpupld_save := nil;
     bk_httpupld_save_as := nil;
 
