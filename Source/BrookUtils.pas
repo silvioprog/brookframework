@@ -133,9 +133,16 @@ begin
 end;
 
 function BrookTmpDir: string;
+var
+  S: Pcchar;
 begin
   BkCheckLibrary;
-  Result := TMarshal.ToString(bk_tmpdir);
+  S := bk_tmpdir;
+  try
+    Result := TMarshal.ToString(S);
+  finally
+    bk_free(S);
+  end;
 end;
 
 end.
