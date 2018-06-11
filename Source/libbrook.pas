@@ -263,8 +263,7 @@ var
 
   bk_httpuplds_iter: function(uplds: Pbk_httpupld; cb: bk_httpuplds_iter_cb;
     cls: Pcvoid): cint; cdecl;
-  bk_httpuplds_next: function(uplds: Pbk_httpupld;
-    upld: PPbk_httpupld): cint; cdecl;
+  bk_httpuplds_next: function(upld: PPbk_httpupld): cint; cdecl;
   bk_httpuplds_count: function(uplds: Pbk_httpupld): cint; cdecl;
 
   bk_httpupld_handle: function(uplds: Pbk_httpupld): Pcvoid; cdecl;
