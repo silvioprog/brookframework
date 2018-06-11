@@ -29,6 +29,7 @@ type
     FHandle: Pbk_httpreq;
     function GetPaths: TArray<string>;
   protected
+    function CreateUploads(AHandle: Pointer): TBrookHTTPUploads; virtual;
     function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
     function CreateCookies(AHandle: Pointer): TBrookStringMap; virtual;
     function CreateParams(AHandle: Pointer): TBrookStringMap; virtual;
@@ -60,6 +61,7 @@ constructor TBrookHTTPRequest.Create(AHandle: Pointer);
 begin
   inherited Create;
   FHandle := AHandle;
+  FUploads := CreateUploads(bk_httpreq_uploads(AHandle));
   FHeaders := CreateHeaders(bk_httpreq_headers(FHandle));
   FCookies := CreateCookies(bk_httpreq_cookies(FHandle));
   FParams := CreateParams(bk_httpreq_params(FHandle));
@@ -73,6 +75,7 @@ end;
 
 destructor TBrookHTTPRequest.Destroy;
 begin
+  FUploads.Free;
   FHeaders.Free;
   FCookies.Free;
   FParams.Free;
@@ -81,9 +84,9 @@ begin
   inherited Destroy;
 end;
 
-function TBrookHTTPRequest.GetHandle: Pointer;
+function TBrookHTTPRequest.CreateUploads(AHandle: Pointer): TBrookHTTPUploads;
 begin
-  Result := FHandle;
+  Result := TBrookHTTPUploads.Create(AHandle);
 end;
 
 function TBrookHTTPRequest.CreateHeaders(AHandle: Pointer): TBrookStringMap;
@@ -113,6 +116,11 @@ end;
 function TBrookHTTPRequest.CreatePayload(AHandle: Pointer): TBrookString;
 begin
   Result := TBrookString.Create(AHandle);
+end;
+
+function TBrookHTTPRequest.GetHandle: Pointer;
+begin
+  Result := FHandle;
 end;
 
 function TBrookHTTPRequest.GetPaths: TArray<string>;
