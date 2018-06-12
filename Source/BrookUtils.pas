@@ -112,12 +112,17 @@ end;
 
 function BrookStrError(AErrorNum: Integer; ALength: Integer): string;
 var
-  B: TBytes;
+  P: MarshaledAString;
 begin
   BkCheckLibrary;
-  SetLength(B, ALength);
-  Result := TMarshal.ToString(bk_strerror(AErrorNum, @B[0],
-    ALength + SizeOf(Byte)), ALength);
+  ALength := ALength + SizeOf(Byte);
+  GetMem(P, ALength);
+  try
+    bk_strerror(AErrorNum, P, ALength);
+    Result := TMarshal.ToString(P, Length(P));
+  finally
+    FreeMem(P, ALength);
+  end;
 end;
 
 function BrookStrError(AErrorNum: Integer): string;
