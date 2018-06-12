@@ -182,8 +182,12 @@ end;
 procedure TfrMain.BrookHTTPServer1Error(ASender: TObject;
   AException: Exception);
 begin
-  TDialogService.MessageDialog(AException.Message, TMsgDlgType.mtError,
-    [TMsgDlgBtn.mbOK], TMsgDlgBtn.mbOK, 0, nil);
+  TThread.Synchronize(nil,
+    procedure
+    begin
+      TDialogService.MessageDialog(AException.Message, TMsgDlgType.mtError,
+        [TMsgDlgBtn.mbOK], TMsgDlgBtn.mbOK, 0, nil);
+    end);
 end;
 
 end.
