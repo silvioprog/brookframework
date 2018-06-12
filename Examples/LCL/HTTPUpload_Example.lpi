@@ -7,9 +7,13 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <Title Value="StringMap_Example"/>
+      <Title Value="HTTPUpload_Example"/>
+      <Scaled Value="True"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <BuildModes Count="1" Active="Default">
       <Item1 Name="Default" Default="True"/>
@@ -29,12 +33,12 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="StringMap_Example.lpr"/>
+        <Filename Value="HTTPUpload_Example.lpr"/>
         <IsPartOfProject Value="True"/>
         <UsageCount Value="20"/>
       </Unit0>
       <Unit1>
-        <Filename Value="StringMap_frMain.pas"/>
+        <Filename Value="HTTPUpload_frMain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frMain"/>
         <HasResources Value="True"/>
@@ -48,13 +52,16 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="StringMap_Example"/>
+      <Filename Value="HTTPUpload_Example"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
