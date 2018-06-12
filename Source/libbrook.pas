@@ -356,7 +356,7 @@ var
 function BkLoadLibrary(const AFileName: TFileName): TLibHandle;
 function BkUnloadLibrary: TLibHandle;
 procedure BkCheckLibrary;
-procedure BkCheckLastError(ALastError: Integer); inline;
+procedure BkCheckLastError(ALastError: Integer);
 
 implementation
 
@@ -618,16 +618,22 @@ end;
 
 procedure BkCheckLastError(ALastError: Integer);
 const
-  BUF_LEN = 255;
+  BUF_LEN = 256;
 var
-  B: TBytes;
+  S: RawByteString;
+  P: MarshaledAString;
 begin
   if (ALastError = 0) or (not Assigned(bk_strerror)) then
     Exit;
-  SetLength(B, BUF_LEN);
-  bk_strerror(ALastError, @B[0], BUF_LEN + SizeOf(Byte));
-  raise EOSError.Create(
-{$IFDEF FPC}string({$ENDIF}TEncoding.UTF8.GetString(B, 0, BUF_LEN)){$IFDEF FPC}){$ENDIF};
+  GetMem(P, BUF_LEN);
+  try
+    bk_strerror(ALastError, P, BUF_LEN);
+    SetString(S, P, Length(P) - SizeOf(Byte));
+    SetCodePage(RawByteString(S), CP_UTF8, False);
+    raise EOSError.Create(string(S));
+  finally
+    FreeMem(P, BUF_LEN);
+  end;
 end;
 
 initialization
