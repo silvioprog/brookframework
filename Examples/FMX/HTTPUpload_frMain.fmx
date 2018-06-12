@@ -43,7 +43,6 @@ object frMain: TfrMain
       TabOrder = 1
       Cursor = crIBeam
       Max = 65535.000000000000000000
-      Value = 8080.000000000000000000
       TextSettings.HorzAlign = Trailing
       Position.X = 43.000000000000000000
       Position.Y = 14.000000000000000000
