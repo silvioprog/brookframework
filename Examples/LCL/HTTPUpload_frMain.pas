@@ -69,6 +69,7 @@ type
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
       AException: Exception);
     procedure edPortChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure lbLinkClick(Sender: TObject);
     procedure lbLinkMouseEnter(Sender: TObject);
     procedure lbLinkMouseLeave(Sender: TObject);
@@ -112,6 +113,11 @@ var
 implementation
 
 {$R *.lfm}
+
+procedure TfrMain.FormCreate(Sender: TObject);
+begin
+  BrookHTTPServer1.UploadsDir := BrookTmpDir;
+end;
 
 procedure TfrMain.DoError(AData: PtrInt);
 var
@@ -193,7 +199,7 @@ begin
   else
   begin
     if ARequest.Params.TryValue('file', VFile) then
-      AResponse.SendFile(Concat(BrookTmpDir, PathDelim, VFile))
+      AResponse.SendFile(Concat(BrookHTTPServer1.UploadsDir, PathDelim, VFile))
     else
       AResponse.Send(PAGE_FORM, CONTENT_TYPE, 200);
   end;

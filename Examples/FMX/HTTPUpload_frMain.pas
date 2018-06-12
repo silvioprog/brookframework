@@ -31,6 +31,9 @@ interface
 
 uses
   System.SysUtils,
+{$IFDEF ANDROID}
+  System.IOUtils,
+{$ENDIF}
   System.UITypes,
   System.Classes,
   System.Actions,
@@ -45,8 +48,8 @@ uses
   FMX.DialogService,
   FMX.Forms,
   FMX.Controls.Presentation,
-  BrookHandledClasses,
   BrookUtils,
+  BrookHandledClasses,
   BrookHTTPUploads,
   BrookHTTPRequest,
   BrookHTTPResponse,
@@ -78,6 +81,7 @@ type
       AException: Exception);
     procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
+    procedure FormCreate(Sender: TObject);
   public
     procedure UpdateLink;
   end;
@@ -116,6 +120,12 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TfrMain.FormCreate(Sender: TObject);
+begin
+  BrookHTTPServer1.UploadsDir :=
+{$IFDEF ANDROID}TPath.GetTempPath{$ELSE}BrookTmpDir{$ENDIF};
+end;
 
 procedure TfrMain.UpdateLink;
 begin
@@ -186,7 +196,7 @@ begin
   else
   begin
     if ARequest.Params.TryValue('file', VFile) then
-      AResponse.SendFile(Concat(BrookTmpDir, PathDelim, VFile))
+      AResponse.SendFile(Concat(BrookHTTPServer1.UploadsDir, PathDelim, VFile))
     else
       AResponse.Send(PAGE_FORM, CONTENT_TYPE, 200);
   end;

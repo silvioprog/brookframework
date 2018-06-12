@@ -6,6 +6,7 @@ object frMain: TfrMain
   Caption = 'HTTP upload example'
   ClientHeight = 160
   ClientWidth = 320
+  OnCreate = FormCreate
   Position = poDesktopCenter
   LCLVersion = '1.8.4.0'
   object lbPort: TLabel
