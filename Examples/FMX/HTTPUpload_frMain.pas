@@ -174,7 +174,7 @@ begin
   begin
     VList := '<ol>';
     for VUpload in ARequest.Uploads do
-      if VUpload.TrySave(false, VError) then
+      if VUpload.TrySave(False, VError) then
         VList := Concat(VList, '<li><a href="?file=', VUpload.Name, '">',
           VUpload.Name, '</a></li>')
       else
@@ -204,8 +204,12 @@ end;
 procedure TfrMain.BrookHTTPServer1Error(ASender: TObject;
   AException: Exception);
 begin
-  TDialogService.MessageDialog(AException.Message, TMsgDlgType.mtError,
-    [TMsgDlgBtn.mbOK], TMsgDlgBtn.mbOK, 0, nil);
+  TThread.Synchronize(nil,
+    procedure
+    begin
+      TDialogService.MessageDialog(AException.Message, TMsgDlgType.mtError,
+        [TMsgDlgBtn.mbOK], TMsgDlgBtn.mbOK, 0, nil);
+    end);
 end;
 
 end.
