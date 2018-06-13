@@ -27,14 +27,13 @@ type
     function GetHandle: Pointer;
   public
     constructor Create(AHandle: Pointer);
-    function TrySave(AOverwritten: Boolean; out AError: string): Boolean; overload;
-    function TrySave(out AError: string): Boolean; overload;
+    function Save(AOverwritten: Boolean; out AError: string): Boolean; overload;
+    function Save(out AError: string): Boolean; overload;
     procedure Save(AOverwritten: Boolean); overload;
     procedure Save; overload;
-    function TrySaveAs(const APath: TFileName; AOverwritten: Boolean;
+    function SaveAs(const APath: TFileName; AOverwritten: Boolean;
       out AError: string): Boolean; overload;
-    function TrySaveAs(const APath: TFileName;
-      out AError: string): Boolean; overload;
+    function SaveAs(const APath: TFileName; out AError: string): Boolean; overload;
     procedure SaveAs(const APath: TFileName; AOverwritten: Boolean); overload;
     procedure SaveAs(const APath: TFileName); overload;
     property Handle: Pointer read GetHandle;
@@ -119,7 +118,7 @@ begin
   FSize := bk_httpupld_size(FHandle);
 end;
 
-function TBrookHTTPUpload.TrySave(AOverwritten: Boolean;
+function TBrookHTTPUpload.Save(AOverwritten: Boolean;
   out AError: string): Boolean;
 var
   R: cint;
@@ -131,9 +130,9 @@ begin
     AError := BrookStrError(-R);
 end;
 
-function TBrookHTTPUpload.TrySave(out AError: string): Boolean;
+function TBrookHTTPUpload.Save(out AError: string): Boolean;
 begin
-  Result := TrySave(True, AError);
+  Result := Save(True, AError);
 end;
 
 procedure TBrookHTTPUpload.Save(AOverwritten: Boolean);
@@ -147,7 +146,7 @@ begin
   Save(True);
 end;
 
-function TBrookHTTPUpload.TrySaveAs(const APath: TFileName;
+function TBrookHTTPUpload.SaveAs(const APath: TFileName;
   AOverwritten: Boolean; out AError: string): Boolean;
 var
   R: cint;
@@ -160,10 +159,10 @@ begin
     AError := BrookStrError(-R);
 end;
 
-function TBrookHTTPUpload.TrySaveAs(const APath: TFileName;
+function TBrookHTTPUpload.SaveAs(const APath: TFileName;
   out AError: string): Boolean;
 begin
-  Result := TrySaveAs(APath, True, AError);
+  Result := SaveAs(APath, True, AError);
 end;
 
 procedure TBrookHTTPUpload.SaveAs(const APath: TFileName; AOverwritten: Boolean);

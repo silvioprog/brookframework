@@ -187,7 +187,7 @@ begin
   begin
     VList := '<ol>';
     for VUpload in ARequest.Uploads do
-      if VUpload.TrySave(False, VError) then
+      if VUpload.Save(False, VError) then
         VList := Concat(VList, '<li><a href="?file=', VUpload.Name, '">',
           VUpload.Name, '</a></li>')
       else
