@@ -10,4 +10,4 @@
 brookrt.pas
 brookex.pas
 packages/lib
-*.DS_Store
+.DS_Store
