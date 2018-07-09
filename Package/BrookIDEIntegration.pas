@@ -44,7 +44,7 @@ uses
   DesignIntf,
   DesignEditors
 {$ENDIF},
-  libbrook;
+  libsagui;
 
 resourcestring
   SBrookSelectLibraryTitle = 'Select library';

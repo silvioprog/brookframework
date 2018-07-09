@@ -29,7 +29,7 @@
 
 unit Platform;
 
-{$I libbrook.inc}
+{$I libsagui.inc}
 
 interface
 

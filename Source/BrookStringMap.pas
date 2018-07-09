@@ -38,7 +38,7 @@ uses
   SysUtils,
   Platform,
   Marshalling,
-  libbrook,
+  libsagui,
   BrookHandledClasses;
 
 type
@@ -46,11 +46,11 @@ type
 
   { Identifies the kind of operation in the map.
 
-    @value(bkmoNone None operation or map cleaned.)
-    @value(bkmoAdd Pair added to the map.)
-    @value(bkmoAddOrSet Pair added or set to the map.)
-    @value(bkmoRemove Pair removed from the map.) }
-  TBrookStringMapOperation = (bkmoNone, bkmoAdd, bkmoAddOrSet, bkmoRemove);
+    @value(sgmoNone None operation or map cleaned.)
+    @value(sgmoAdd Pair added to the map.)
+    @value(sgmoAddOrSet Pair added or set to the map.)
+    @value(sgmoRemove Pair removed from the map.) }
+  TBrookStringMapOperation = (sgmoNone, sgmoAdd, sgmoAddOrSet, sgmoRemove);
 
   { Event to notify a change in the map.
 
@@ -118,19 +118,19 @@ type
   TBrookStringMap = class(TBrookHandledPersistent)
   private
     FClearOnDestroy: Boolean;
-    FNextHandle: Pbk_strmap;
-    FHandle: PPbk_strmap;
+    FNextHandle: Psg_strmap;
+    FHandle: PPsg_strmap;
     FOnChange: TBrookStringMapChangeEvent;
     function GetCount: Integer;
     function GetValue(const AName: string): string;
     procedure SetValue(const AName, AValue: string);
   protected
     class function DoIterate(Acls: Pcvoid;
-      Apair: Pbk_strmap): cint; cdecl; static;
-    class function DoSort(Acls: Pcvoid; Apair_a: Pbk_strmap;
-      Apair_b: Pbk_strmap): cint; cdecl; static;
+      Apair: Psg_strmap): cint; cdecl; static;
+    class function DoSort(Acls: Pcvoid; Apair_a: Psg_strmap;
+      Apair_b: Psg_strmap): cint; cdecl; static;
     class function CreatePair(
-      Apair: Pbk_strmap): TBrookStringPair; static; inline;
+      Apair: Psg_strmap): TBrookStringPair; static; inline;
     function GetHandle: Pointer; override;
     function IsEOF: Boolean; virtual;
     procedure DoChange(AOperation: TBrookStringMapOperation); virtual;
@@ -287,7 +287,7 @@ begin
   Result := TBrookStringMapEnumerator.Create(Self);
 end;
 
-class function TBrookStringMap.DoIterate(Acls: Pcvoid; Apair: Pbk_strmap): cint;
+class function TBrookStringMap.DoIterate(Acls: Pcvoid; Apair: Psg_strmap): cint;
 var
   M: PMethod absolute Acls;
 begin
@@ -296,8 +296,8 @@ begin
   Result := TBrookStringMapIterator(M.Code)(M.Data, CreatePair(Apair));
 end;
 
-class function TBrookStringMap.DoSort(Acls: Pcvoid; Apair_a: Pbk_strmap;
-  Apair_b: Pbk_strmap): cint;
+class function TBrookStringMap.DoSort(Acls: Pcvoid; Apair_a: Psg_strmap;
+  Apair_b: Psg_strmap): cint;
 var
   M: PMethod absolute Acls;
 begin
@@ -307,11 +307,11 @@ begin
     CreatePair(Apair_b));
 end;
 
-class function TBrookStringMap.CreatePair(Apair: Pbk_strmap): TBrookStringPair;
+class function TBrookStringMap.CreatePair(Apair: Psg_strmap): TBrookStringPair;
 begin
-  BkCheckLibrary;
-  Result := TBrookStringPair.Create(TMarshal.ToString(bk_strmap_name(Apair)),
-    TMarshal.ToString(bk_strmap_val(Apair)));
+  SgCheckLibrary;
+  Result := TBrookStringPair.Create(TMarshal.ToString(sg_strmap_name(Apair)),
+    TMarshal.ToString(sg_strmap_val(Apair)));
 end;
 
 function TBrookStringMap.IsEmpty: Boolean;
@@ -321,10 +321,10 @@ end;
 
 function TBrookStringMap.GetCount: Integer;
 begin
-  BkCheckLibrary;
-  Result := bk_strmap_count(FHandle^);
+  SgCheckLibrary;
+  Result := sg_strmap_count(FHandle^);
   if Result < 0 then
-    BkCheckLastError(-Result);
+    SgCheckLastError(-Result);
 end;
 
 function TBrookStringMap.GetValue(const AName: string): string;
@@ -358,20 +358,20 @@ procedure TBrookStringMap.Add(const AName, AValue: string);
 var
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_strmap_add(FHandle, M.ToCString(AName),
+  SgCheckLibrary;
+  SgCheckLastError(-sg_strmap_add(FHandle, M.ToCString(AName),
     M.ToCString(AValue)));
-  DoChange(bkmoAdd);
+  DoChange(sgmoAdd);
 end;
 
 procedure TBrookStringMap.AddOrSet(const AName, AValue: string);
 var
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_strmap_set(FHandle, M.ToCString(AName),
+  SgCheckLibrary;
+  SgCheckLastError(-sg_strmap_set(FHandle, M.ToCString(AName),
     M.ToCString(AValue)));
-  DoChange(bkmoAddOrSet);
+  DoChange(sgmoAddOrSet);
 end;
 
 procedure TBrookStringMap.Remove(const AName: string);
@@ -379,43 +379,43 @@ var
   R: cint;
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  R := bk_strmap_rm(FHandle, M.ToCString(AName));
+  SgCheckLibrary;
+  R := sg_strmap_rm(FHandle, M.ToCString(AName));
   if (R <> 0) and (R <> -ENOENT) then
-    BkCheckLastError(-R);
-  DoChange(bkmoRemove);
+    SgCheckLastError(-R);
+  DoChange(sgmoRemove);
 end;
 
 procedure TBrookStringMap.Clear;
 begin
-  BkCheckLibrary;
-  bk_strmap_cleanup(FHandle);
-  DoChange(bkmoNone);
+  SgCheckLibrary;
+  sg_strmap_cleanup(FHandle);
+  DoChange(sgmoNone);
 end;
 
 function TBrookStringMap.Find(const AName: string;
   out APair: TBrookStringPair): Boolean;
 var
   R: cint;
-  P: Pbk_strmap;
+  P: Psg_strmap;
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  R := bk_strmap_find(FHandle^, M.ToCString(AName), @P);
+  SgCheckLibrary;
+  R := sg_strmap_find(FHandle^, M.ToCString(AName), @P);
   Result := R = 0;
   if Result then
-    APair := TBrookStringPair.Create(AName, TMarshal.ToString(bk_strmap_val(P)))
+    APair := TBrookStringPair.Create(AName, TMarshal.ToString(sg_strmap_val(P)))
   else
     if R <> -ENOENT then
-      BkCheckLastError(-R);
+      SgCheckLastError(-R);
 end;
 
 function TBrookStringMap.Get(const AName: string): string;
 var
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  Result := TMarshal.ToString(bk_strmap_get(FHandle^, M.ToCString(AName)));
+  SgCheckLibrary;
+  Result := TMarshal.ToString(sg_strmap_get(FHandle^, M.ToCString(AName)));
 end;
 
 function TBrookStringMap.TryValue(const AName: string;
@@ -424,8 +424,8 @@ var
   P: Pcchar;
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  P := bk_strmap_get(FHandle^, M.ToCString(AName));
+  SgCheckLibrary;
+  P := sg_strmap_get(FHandle^, M.ToCString(AName));
   Result := Assigned(P);
   if Result then
     AValue := TMarshal.ToString(P);
@@ -437,7 +437,7 @@ begin
   Result := Assigned(FNextHandle);
   if Result then
   begin
-    BkCheckLibrary;
+    SgCheckLibrary;
     APair := CreatePair(FNextHandle);
   end;
 end;
@@ -448,9 +448,9 @@ var
 begin
   if not Assigned(@FNextHandle) then
     Exit(False);
-  BkCheckLibrary;
-  R := bk_strmap_next(@FNextHandle);
-  BkCheckLastError(-R);
+  SgCheckLibrary;
+  R := sg_strmap_next(@FNextHandle);
+  SgCheckLastError(-R);
   Result := R = 0;
   if Result and Assigned(FNextHandle) then
     APair := CreatePair(FNextHandle);
@@ -462,13 +462,13 @@ var
   R: cint;
   M: TMethod;
 begin
-  BkCheckLibrary;
+  SgCheckLibrary;
   M.Code := @AIterator;
   M.Data := AData;
-  R := bk_strmap_iter(FHandle^,
+  R := sg_strmap_iter(FHandle^,
 {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
   if R <> -1 then
-    BkCheckLastError(-R);
+    SgCheckLastError(-R);
 end;
 
 procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
@@ -476,10 +476,10 @@ procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
 var
   M: TMethod;
 begin
-  BkCheckLibrary;
+  SgCheckLibrary;
   M.Code := @AComparator;
   M.Data := AData;
-  BkCheckLastError(-bk_strmap_sort(FHandle,
+  SgCheckLastError(-sg_strmap_sort(FHandle,
 {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
 end;
 

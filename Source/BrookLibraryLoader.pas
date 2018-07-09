@@ -36,7 +36,7 @@ interface
 uses
   SysUtils,
   Classes,
-  libbrook,
+  libsagui,
   BrookHandledClasses,
   BrookUtils;
 
@@ -138,7 +138,7 @@ end;
 
 procedure TBrookLibraryLoader.Load;
 begin
-  FHandle := BkLoadLibrary(FLibraryName);
+  FHandle := SgLoadLibrary(FLibraryName);
   FEnabled := FHandle <> NilHandle;
   if FEnabled then
     FVersion := BrookVersionStr
@@ -148,7 +148,7 @@ end;
 
 procedure TBrookLibraryLoader.Unload;
 begin
-  FHandle := BkUnloadLibrary;
+  FHandle := SgUnloadLibrary;
   FEnabled := FHandle <> NilHandle;
   if not FEnabled then
     FVersion := '';

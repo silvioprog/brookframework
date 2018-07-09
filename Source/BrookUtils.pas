@@ -35,7 +35,7 @@ interface
 
 uses
   SysUtils,
-  libbrook,
+  libsagui,
   Marshalling;
 
 {
@@ -88,37 +88,37 @@ implementation
 
 function BrookVersion: Cardinal;
 begin
-  BkCheckLibrary;
-  Result := bk_version;
+  SgCheckLibrary;
+  Result := sg_version;
 end;
 
 function BrookVersionStr: string;
 begin
-  BkCheckLibrary;
-  Result := TMarshal.ToString(bk_version_str);
+  SgCheckLibrary;
+  Result := TMarshal.ToString(sg_version_str);
 end;
 
 function BrookAlloc(ASize: NativeUInt): Pointer;
 begin
-  BkCheckLibrary;
-  Result := bk_alloc(ASize);
+  SgCheckLibrary;
+  Result := sg_alloc(ASize);
 end;
 
 procedure BrookFree(APtr: Pointer);
 begin
-  BkCheckLibrary;
-  bk_free(APtr);
+  SgCheckLibrary;
+  sg_free(APtr);
 end;
 
 function BrookStrError(AErrorNum: Integer; ALength: Integer): string;
 var
   P: MarshaledAString;
 begin
-  BkCheckLibrary;
+  SgCheckLibrary;
   ALength := ALength + SizeOf(Byte);
   GetMem(P, ALength);
   try
-    bk_strerror(AErrorNum, P, ALength);
+    sg_strerror(AErrorNum, P, ALength);
     Result := TMarshal.ToString(P, Length(P));
   finally
     FreeMem(P, ALength);
@@ -134,19 +134,19 @@ function BrookIsPost(const AMethod: string): Boolean;
 var
   M: TMarshaller;
 begin
-  Result := bk_is_post(M.ToCString(AMethod));
+  Result := sg_is_post(M.ToCString(AMethod));
 end;
 
 function BrookTmpDir: string;
 var
   S: Pcchar;
 begin
-  BkCheckLibrary;
-  S := bk_tmpdir;
+  SgCheckLibrary;
+  S := sg_tmpdir;
   try
     Result := TMarshal.ToString(S);
   finally
-    bk_free(S);
+    sg_free(S);
   end;
 end;
 

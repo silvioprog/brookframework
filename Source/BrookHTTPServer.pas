@@ -8,7 +8,7 @@ uses
   SysUtils,
   Classes,
   Marshalling,
-  libbrook,
+  libsagui,
   BrookHandledClasses,
   BrookHTTPExtra,
   BrookHTTPAuthentication,
@@ -62,7 +62,7 @@ type
     FThreaded: Boolean;
     FStreamedActive: Boolean;
     FStreamedAuthenticated: Boolean;
-    FHandle: Pbk_httpsrv;
+    FHandle: Psg_httpsrv;
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
     function GetConnectionLimit: Cardinal;
@@ -101,10 +101,10 @@ type
     procedure InternalFreeServerHandle; inline;
     procedure InternalCheckServerOption(Aopt: cint); inline;
   protected
-    class function DoAuthenticationCallback(Acls: Pcvoid; Aauth: Pbk_httpauth;
-      Areq: Pbk_httpreq; Ares: Pbk_httpres): cbool; cdecl; static;
-    class procedure DoRequestCallback(Acls: Pcvoid; Areq: Pbk_httpreq;
-      Ares: Pbk_httpres); cdecl; static;
+    class function DoAuthenticationCallback(Acls: Pcvoid; Aauth: Psg_httpauth;
+      Areq: Psg_httpreq; Ares: Psg_httpres): cbool; cdecl; static;
+    class procedure DoRequestCallback(Acls: Pcvoid; Areq: Psg_httpreq;
+      Ares: Psg_httpres); cdecl; static;
     class procedure DoErrorCallback(Acls: Pcvoid;
       const Aerr: Pcchar); cdecl; static;
     function CreateAuthentication(
@@ -186,13 +186,13 @@ end;
 
 procedure TBrookHTTPServer.InternalCreateServerHandle;
 var
-  ACB: bk_httpauth_cb;
+  ACB: sg_httpauth_cb;
 begin
   if FAuthenticated then
     ACB := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
   else
     ACB := nil;
-  FHandle := bk_httpsrv_new2(ACB, Self,
+  FHandle := sg_httpsrv_new2(ACB, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(FHandle) then
@@ -201,8 +201,8 @@ end;
 
 procedure TBrookHTTPServer.InternalFreeServerHandle;
 begin
-  { bk_httpsrv_shutdown() is called internally by bk_httpsrv_free(). }
-  bk_httpsrv_free(FHandle);
+  { sg_httpsrv_shutdown() is called internally by sg_httpsrv_free(). }
+  sg_httpsrv_free(FHandle);
   FHandle := nil;
 end;
 
@@ -211,7 +211,7 @@ begin
   if Aopt <> 0 then
   begin
     InternalFreeServerHandle;
-    BkCheckLastError(Aopt);
+    SgCheckLastError(Aopt);
   end;
 end;
 
@@ -232,7 +232,7 @@ begin
 end;
 
 class function TBrookHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;
-  Aauth: Pbk_httpauth; Areq: Pbk_httpreq; Ares: Pbk_httpres): cbool;
+  Aauth: Psg_httpauth; Areq: Psg_httpreq; Ares: Psg_httpres): cbool;
 var
   VSrv: TBrookHTTPServer absolute Acls;
   VAuth: TBrookHTTPAuthentication;
@@ -268,7 +268,7 @@ begin
 end;
 
 class procedure TBrookHTTPServer.DoRequestCallback(Acls: Pcvoid;
-  Areq: Pbk_httpreq; Ares: Pbk_httpres);
+  Areq: Psg_httpreq; Ares: Psg_httpres);
 var
   VSrv: TBrookHTTPServer absolute Acls;
   VReq: TBrookHTTPRequest;
@@ -489,8 +489,8 @@ function TBrookHTTPServer.GetPort: UInt16;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FPort := bk_httpsrv_port(FHandle);
+    SgCheckLibrary;
+    FPort := sg_httpsrv_port(FHandle);
   end;
   Result := FPort;
 end;
@@ -499,8 +499,8 @@ function TBrookHTTPServer.GetThreaded: Boolean;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FThreaded := bk_httpsrv_threaded(FHandle);
+    SgCheckLibrary;
+    FThreaded := sg_httpsrv_threaded(FHandle);
   end;
   Result := FThreaded;
 end;
@@ -509,8 +509,8 @@ function TBrookHTTPServer.GetUploadsDir: string;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FUploadsDir := TMarshal.ToString(bk_httpsrv_upld_dir(FHandle));
+    SgCheckLibrary;
+    FUploadsDir := TMarshal.ToString(sg_httpsrv_upld_dir(FHandle));
   end;
   Result := FUploadsDir;
 end;
@@ -519,8 +519,8 @@ function TBrookHTTPServer.GetPostBufferSize: NativeUInt;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FPostBufferSize := bk_httpsrv_post_buf_size(FHandle);
+    SgCheckLibrary;
+    FPostBufferSize := sg_httpsrv_post_buf_size(FHandle);
   end;
   Result := FPostBufferSize;
 end;
@@ -529,8 +529,8 @@ function TBrookHTTPServer.GetMaxPayloadSize: NativeUInt;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FMaxPayloadSize := bk_httpsrv_max_payld_size(FHandle);
+    SgCheckLibrary;
+    FMaxPayloadSize := sg_httpsrv_max_payld_size(FHandle);
   end;
   Result := FMaxPayloadSize;
 end;
@@ -539,8 +539,8 @@ function TBrookHTTPServer.GetMaxUpldsSize: UInt64;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FMaxUpldsSize := bk_httpsrv_max_uplds_size(FHandle);
+    SgCheckLibrary;
+    FMaxUpldsSize := sg_httpsrv_max_uplds_size(FHandle);
   end;
   Result := FMaxUpldsSize;
 end;
@@ -549,8 +549,8 @@ function TBrookHTTPServer.GetThreadPoolSize: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FThreadPoolSize := bk_httpsrv_thr_pool_size(FHandle);
+    SgCheckLibrary;
+    FThreadPoolSize := sg_httpsrv_thr_pool_size(FHandle);
   end;
   Result := FThreadPoolSize;
 end;
@@ -559,8 +559,8 @@ function TBrookHTTPServer.GetConnectionTimeout: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FConnectionTimeout := bk_httpsrv_con_timeout(FHandle);
+    SgCheckLibrary;
+    FConnectionTimeout := sg_httpsrv_con_timeout(FHandle);
   end;
   Result := FConnectionTimeout;
 end;
@@ -569,8 +569,8 @@ function TBrookHTTPServer.GetConnectionLimit: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    BkCheckLibrary;
-    FConnectionLimit := bk_httpsrv_con_limit(FHandle);
+    SgCheckLibrary;
+    FConnectionLimit := sg_httpsrv_con_limit(FHandle);
   end;
   Result := FConnectionLimit;
 end;
@@ -623,7 +623,7 @@ begin
   if csDesigning in ComponentState then
   begin
     if not (csLoading in ComponentState) then
-      BkCheckLibrary;
+      SgCheckLibrary;
     FActive := AValue;
   end
   else
@@ -644,28 +644,28 @@ var
 begin
   if Assigned(FHandle) then
     Exit;
-  BkCheckLibrary;
+  SgCheckLibrary;
   InternalCreateServerHandle;
   if not FUploadsDir.IsEmpty then
-    InternalCheckServerOption(bk_httpsrv_set_upld_dir(FHandle,
+    InternalCheckServerOption(sg_httpsrv_set_upld_dir(FHandle,
       M.ToCString(FUploadsDir)));
   if FPostBufferSize > 0 then
-    InternalCheckServerOption(bk_httpsrv_set_post_buf_size(FHandle,
+    InternalCheckServerOption(sg_httpsrv_set_post_buf_size(FHandle,
       FPostBufferSize));
   if FMaxPayloadSize > 0 then
-    InternalCheckServerOption(bk_httpsrv_set_max_payld_size(FHandle,
+    InternalCheckServerOption(sg_httpsrv_set_max_payld_size(FHandle,
       FMaxPayloadSize));
-  { TODO: bk_httpsrv_set_max_uplds_size }
+  { TODO: sg_httpsrv_set_max_uplds_size }
   if FThreadPoolSize > 0 then
-    InternalCheckServerOption(bk_httpsrv_set_thr_pool_size(FHandle,
+    InternalCheckServerOption(sg_httpsrv_set_thr_pool_size(FHandle,
       FThreadPoolSize));
   if FConnectionTimeout > 0 then
-    InternalCheckServerOption(bk_httpsrv_set_con_timeout(FHandle,
+    InternalCheckServerOption(sg_httpsrv_set_con_timeout(FHandle,
       FConnectionTimeout));
   if FConnectionLimit > 0 then
-    InternalCheckServerOption(bk_httpsrv_set_con_limit(FHandle,
+    InternalCheckServerOption(sg_httpsrv_set_con_limit(FHandle,
       FConnectionLimit));
-  FActive := bk_httpsrv_listen(FHandle, FPort, FThreaded) = 0;
+  FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded) = 0;
   if not FActive then
     InternalFreeServerHandle;
 end;
@@ -674,7 +674,7 @@ procedure TBrookHTTPServer.DoClose;
 begin
   if not Assigned(FHandle) then
     Exit;
-  BkCheckLibrary;
+  SgCheckLibrary;
   InternalFreeServerHandle;
   FActive := False;
 end;

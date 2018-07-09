@@ -7,7 +7,7 @@ interface
 uses
   SysUtils,
   Marshalling,
-  libbrook,
+  libsagui,
   BrookHandledClasses,
   BrookString,
   BrookStringMap,
@@ -26,7 +26,7 @@ type
     FMethod: string;
     FPath: string;
     FUploading: Boolean;
-    FHandle: Pbk_httpreq;
+    FHandle: Psg_httpreq;
     function GetPaths: TArray<string>;
   protected
     function CreateUploads(AHandle: Pointer): TBrookHTTPUploads; virtual;
@@ -61,16 +61,16 @@ constructor TBrookHTTPRequest.Create(AHandle: Pointer);
 begin
   inherited Create;
   FHandle := AHandle;
-  FUploads := CreateUploads(bk_httpreq_uploads(AHandle));
-  FHeaders := CreateHeaders(bk_httpreq_headers(FHandle));
-  FCookies := CreateCookies(bk_httpreq_cookies(FHandle));
-  FParams := CreateParams(bk_httpreq_params(FHandle));
-  FFields := CreateFields(bk_httpreq_fields(FHandle));
-  FPayload := CreatePayload(bk_httpreq_payload(FHandle));
-  FVersion := TMarshal.ToString(bk_httpreq_version(FHandle));
-  FMethod := TMarshal.ToString(bk_httpreq_method(FHandle));
-  FPath := TMarshal.ToString(bk_httpreq_path(FHandle));
-  FUploading := bk_httpreq_uploading(FHandle);
+  FUploads := CreateUploads(sg_httpreq_uploads(AHandle));
+  FHeaders := CreateHeaders(sg_httpreq_headers(FHandle));
+  FCookies := CreateCookies(sg_httpreq_cookies(FHandle));
+  FParams := CreateParams(sg_httpreq_params(FHandle));
+  FFields := CreateFields(sg_httpreq_fields(FHandle));
+  FPayload := CreatePayload(sg_httpreq_payload(FHandle));
+  FVersion := TMarshal.ToString(sg_httpreq_version(FHandle));
+  FMethod := TMarshal.ToString(sg_httpreq_method(FHandle));
+  FPath := TMarshal.ToString(sg_httpreq_path(FHandle));
+  FUploading := sg_httpreq_uploading(FHandle);
 end;
 
 destructor TBrookHTTPRequest.Destroy;
@@ -130,14 +130,14 @@ end;
 
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_httpreq_set_user_data(FHandle, AValue));
+  SgCheckLibrary;
+  SgCheckLastError(-sg_httpreq_set_user_data(FHandle, AValue));
 end;
 
 function TBrookHTTPRequest.GetUserData: Pointer;
 begin
-  BkCheckLibrary;
-  Result := bk_httpreq_user_data(FHandle);
+  SgCheckLibrary;
+  Result := sg_httpreq_user_data(FHandle);
 end;
 
 end.

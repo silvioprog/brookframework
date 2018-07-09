@@ -7,7 +7,7 @@ interface
 uses
   SysUtils,
   Marshalling,
-  libbrook,
+  libsagui,
   BrookUtils,
   BrookHandledClasses;
 
@@ -16,7 +16,7 @@ type
 
   TBrookHTTPUpload = record
   private
-    FHandle: Pbk_httpupld;
+    FHandle: Psg_httpupld;
     FStreamHandle: Pointer;
     FDirectory: string;
     FField: string;
@@ -60,8 +60,8 @@ type
 
   TBrookHTTPUploads = class(TBrookHandledPersistent)
   private
-    FHandle: Pbk_httpupld;
-    FCurr: Pbk_httpupld;
+    FHandle: Psg_httpupld;
+    FCurr: Psg_httpupld;
     function GetCount: Integer;
     function GetCurr: Pointer;
   protected
@@ -70,7 +70,7 @@ type
     constructor Create(AHandle: Pointer); virtual;
     function GetHandle: Pointer; override;
     function GetEnumerator: TBrookHTTPUploadsEnumerator;
-    { TODO: Iterate::bk_httpuplds_iter() }
+    { TODO: Iterate::sg_httpuplds_iter() }
     procedure First(out AUpload: TBrookHTTPUpload); virtual;
     procedure Next(out AUpload: TBrookHTTPUpload); virtual;
     function IsEOF: Boolean; virtual;
@@ -109,13 +109,13 @@ end;
 constructor TBrookHTTPUpload.Create(AHandle: Pointer);
 begin
   FHandle := AHandle;
-  FStreamHandle := bk_httpupld_handle(FHandle);
-  FDirectory := TMarshal.ToString(bk_httpupld_dir(FHandle));
-  FField := TMarshal.ToString(bk_httpupld_field(FHandle));
-  FName := TMarshal.ToString(bk_httpupld_name(FHandle));
-  FMime := TMarshal.ToString(bk_httpupld_mime(FHandle));
-  FEncoding := TMarshal.ToString(bk_httpupld_encoding(FHandle));
-  FSize := bk_httpupld_size(FHandle);
+  FStreamHandle := sg_httpupld_handle(FHandle);
+  FDirectory := TMarshal.ToString(sg_httpupld_dir(FHandle));
+  FField := TMarshal.ToString(sg_httpupld_field(FHandle));
+  FName := TMarshal.ToString(sg_httpupld_name(FHandle));
+  FMime := TMarshal.ToString(sg_httpupld_mime(FHandle));
+  FEncoding := TMarshal.ToString(sg_httpupld_encoding(FHandle));
+  FSize := sg_httpupld_size(FHandle);
 end;
 
 function TBrookHTTPUpload.Save(AOverwritten: Boolean;
@@ -123,8 +123,8 @@ function TBrookHTTPUpload.Save(AOverwritten: Boolean;
 var
   R: cint;
 begin
-  BkCheckLibrary;
-  R := bk_httpupld_save(FHandle, AOverwritten);
+  SgCheckLibrary;
+  R := sg_httpupld_save(FHandle, AOverwritten);
   Result := R = 0;
   if not Result then
     AError := BrookStrError(-R);
@@ -137,8 +137,8 @@ end;
 
 procedure TBrookHTTPUpload.Save(AOverwritten: Boolean);
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_httpupld_save(FHandle, AOverwritten));
+  SgCheckLibrary;
+  SgCheckLastError(-sg_httpupld_save(FHandle, AOverwritten));
 end;
 
 procedure TBrookHTTPUpload.Save;
@@ -152,8 +152,8 @@ var
   R: cint;
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  R := bk_httpupld_save_as(FHandle, M.ToCString(APath), AOverwritten);
+  SgCheckLibrary;
+  R := sg_httpupld_save_as(FHandle, M.ToCString(APath), AOverwritten);
   Result := R = 0;
   if not Result then
     AError := BrookStrError(-R);
@@ -169,8 +169,8 @@ procedure TBrookHTTPUpload.SaveAs(const APath: TFileName; AOverwritten: Boolean)
 var
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_httpupld_save_as(FHandle, M.ToCString(APath),
+  SgCheckLibrary;
+  SgCheckLastError(-sg_httpupld_save_as(FHandle, M.ToCString(APath),
     AOverwritten));
 end;
 
@@ -204,15 +204,15 @@ end;
 
 procedure TBrookHTTPUploads.First(out AUpload: TBrookHTTPUpload);
 begin
-  BkCheckLibrary;
+  SgCheckLibrary;
   FCurr := FHandle;
   AUpload := TBrookHTTPUpload.Create(FCurr);
 end;
 
 procedure TBrookHTTPUploads.Next(out AUpload: TBrookHTTPUpload);
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_httpuplds_next(@FCurr));
+  SgCheckLibrary;
+  SgCheckLastError(-sg_httpuplds_next(@FCurr));
   AUpload := TBrookHTTPUpload.Create(FCurr);
 end;
 
@@ -223,8 +223,8 @@ end;
 
 function TBrookHTTPUploads.GetCount: Integer;
 begin
-  BkCheckLibrary;
-  Result := bk_httpuplds_count(FHandle);
+  SgCheckLibrary;
+  Result := sg_httpuplds_count(FHandle);
 end;
 
 function TBrookHTTPUploads.GetCurr: Pointer;

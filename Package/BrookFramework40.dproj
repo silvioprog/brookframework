@@ -99,7 +99,7 @@
         </DelphiCompile>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="designide.dcp"/>
-        <DCCReference Include="..\Source\libbrook.pas"/>
+        <DCCReference Include="..\Source\libsagui.pas"/>
         <DCCReference Include="..\Source\Platform.pas"/>
         <DCCReference Include="..\Source\Marshalling.pas"/>
         <DCCReference Include="..\Source\BrookLibraryLoader.pas"/>

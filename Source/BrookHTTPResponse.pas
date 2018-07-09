@@ -10,7 +10,7 @@ uses
   Classes,
   Platform,
   Marshalling,
-  libbrook,
+  libsagui,
   BrookHandledClasses,
   BrookString,
   BrookStringMap,
@@ -23,7 +23,7 @@ type
   TBrookHTTPResponse = class(TBrookHandledPersistent)
   private
     FHeaders: TBrookStringMap;
-    FHandle: Pbk_httpres;
+    FHandle: Psg_httpres;
   protected
     class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
       Asize: csize_t): cssize_t; cdecl; static;
@@ -64,7 +64,7 @@ constructor TBrookHTTPResponse.Create(AHandle: Pointer);
 begin
   inherited Create;
   FHandle := AHandle;
-  FHeaders := CreateHeaders(bk_httpres_headers(FHandle));
+  FHeaders := CreateHeaders(sg_httpres_headers(FHandle));
 end;
 
 destructor TBrookHTTPResponse.Destroy;
@@ -104,9 +104,9 @@ class function TBrookHTTPResponse.DoStreamRead(Acls: Pcvoid;
 begin
   Result := TStream(Acls).Read(Abuf^, Asize);
   if Result = 0 then
-    Exit(bk_httpread_end(False));
+    Exit(sg_httpread_end(False));
   if Result = -1 then
-    Result := bk_httpread_end(True);
+    Result := sg_httpread_end(True);
 end;
 {$IFDEF FPC}
  {$POP}
@@ -122,11 +122,11 @@ var
   M: TMarshaller;
   R: cint;
 begin
-  BkCheckLibrary;
-  R := -bk_httpres_set_cookie(FHandle, M.ToCString(AName), M.ToCString(AValue));
+  SgCheckLibrary;
+  R := -sg_httpres_set_cookie(FHandle, M.ToCString(AName), M.ToCString(AValue));
   Result := R = 0;
   if (not Result) and (R <> EINVAL) then
-    BkCheckLastError(R);
+    SgCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.Send(const AValue, AContentType: string;
@@ -136,12 +136,12 @@ var
   R: cint;
 begin
   CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_send(FHandle, M.ToCString(AValue),
+  SgCheckLibrary;
+  R := -sg_httpres_send(FHandle, M.ToCString(AValue),
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    BkCheckLastError(R);
+    SgCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.Send(const AFmt: string;
@@ -158,12 +158,12 @@ var
   R: cint;
 begin
   CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendbinary(FHandle, ABuffer, ASize,
+  SgCheckLibrary;
+  R := -sg_httpres_sendbinary(FHandle, ABuffer, ASize,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    BkCheckLastError(R);
+    SgCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
@@ -179,12 +179,12 @@ var
   R: cint;
 begin
   CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendstr(FHandle, AString.Handle,
+  SgCheckLibrary;
+  R := -sg_httpres_sendstr(FHandle, AString.Handle,
     M.ToCString(AContentType), AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    BkCheckLastError(R);
+    SgCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.TrySendFile(ABlockSize: NativeUInt;
@@ -195,15 +195,15 @@ var
   R: cint;
 begin
   CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendfile(FHandle, ABlockSize, AMaxSize, M.ToCString(AFileName),
+  SgCheckLibrary;
+  R := -sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize, M.ToCString(AFileName),
     ARendered, AStatus);
   Result := R = 0;
   if not Result then
   begin
     AFailed := R = ENOENT;
     if (not AFailed) and (R <> EALREADY) then
-      BkCheckLastError(R);
+      SgCheckLastError(R);
   end;
 end;
 
@@ -227,13 +227,13 @@ var
 begin
   CheckStream(AStream);
   CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
+  SgCheckLibrary;
+  R := -sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    BkCheckLastError(R);
+    SgCheckLastError(R);
 end;
 
 function TBrookHTTPResponse.SendData(AStream: TStream; AStatus: Word): Boolean;
@@ -242,13 +242,13 @@ var
 begin
   CheckStream(AStream);
   CheckStatus(AStatus);
-  BkCheckLibrary;
-  R := -bk_httpres_senddata(FHandle, BROOK_BLOCK_SIZE,
+  SgCheckLibrary;
+  R := -sg_httpres_senddata(FHandle, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    BkCheckLastError(R);
+    SgCheckLastError(R);
 end;
 
 end.

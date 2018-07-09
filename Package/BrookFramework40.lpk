@@ -13,12 +13,12 @@
     </CompilerOptions>
     <Files Count="17">
       <Item1>
-        <Filename Value="../Source/libbrook.inc"/>
+        <Filename Value="../Source/libsagui.inc"/>
         <Type Value="Include"/>
       </Item1>
       <Item2>
-        <Filename Value="../Source/libbrook.pas"/>
-        <UnitName Value="libbrook"/>
+        <Filename Value="../Source/libsagui.pas"/>
+        <UnitName Value="libsagui"/>
       </Item2>
       <Item3>
         <Filename Value="../Source/Platform.pas"/>

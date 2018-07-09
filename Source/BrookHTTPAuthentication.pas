@@ -8,7 +8,7 @@ uses
   SysUtils,
   Platform,
   Marshalling,
-  libbrook,
+  libsagui,
   BrookHandledClasses;
 
 type
@@ -16,7 +16,7 @@ type
   private
     FUserName: string;
     FPassword: string;
-    FHandle: Pbk_httpauth;
+    FHandle: Psg_httpauth;
     function GetRealm: string;
     procedure SetRealm(const AValue: string);
   protected
@@ -39,8 +39,8 @@ constructor TBrookHTTPAuthentication.Create(AHandle: Pointer);
 begin
   inherited Create;
   FHandle := AHandle;
-  FUserName := TMarshal.ToString(bk_httpauth_usr(FHandle));
-  FPassword := TMarshal.ToString(bk_httpauth_pwd(FHandle));
+  FUserName := TMarshal.ToString(sg_httpauth_usr(FHandle));
+  FPassword := TMarshal.ToString(sg_httpauth_pwd(FHandle));
 end;
 
 function TBrookHTTPAuthentication.GetHandle: Pointer;
@@ -52,14 +52,14 @@ procedure TBrookHTTPAuthentication.SetRealm(const AValue: string);
 var
   M: TMarshaller;
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_httpauth_set_realm(FHandle, M.ToCString(AValue)));
+  SgCheckLibrary;
+  SgCheckLastError(-sg_httpauth_set_realm(FHandle, M.ToCString(AValue)));
 end;
 
 function TBrookHTTPAuthentication.GetRealm: string;
 begin
-  BkCheckLibrary;
-  Result := TMarshal.ToString(bk_httpauth_realm(FHandle));
+  SgCheckLibrary;
+  Result := TMarshal.ToString(sg_httpauth_realm(FHandle));
 end;
 
 function TBrookHTTPAuthentication.Deny(const AJustification,
@@ -68,12 +68,12 @@ var
   M: TMarshaller;
   R: cint;
 begin
-  BkCheckLibrary;
-  R := -bk_httpauth_deny(FHandle, M.ToCString(AJustification),
+  SgCheckLibrary;
+  R := -sg_httpauth_deny(FHandle, M.ToCString(AJustification),
     M.ToCString(AContentType));
   Result := R = 0;
   if (not Result) and (R <> EALREADY) then
-    BkCheckLastError(R);
+    SgCheckLastError(R);
 end;
 
 function TBrookHTTPAuthentication.Deny(const AFmt: string;
@@ -84,8 +84,8 @@ end;
 
 procedure TBrookHTTPAuthentication.Cancel;
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_httpauth_cancel(FHandle));
+  SgCheckLibrary;
+  SgCheckLastError(-sg_httpauth_cancel(FHandle));
 end;
 
 end.

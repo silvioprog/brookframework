@@ -37,7 +37,7 @@ uses
   RTLConsts,
   SysUtils,
   Classes,
-  libbrook,
+  libsagui,
   Marshalling,
   BrookHandledClasses;
 
@@ -47,7 +47,7 @@ type
   { String class and its related methods. }
   TBrookString = class(TBrookHandledPersistent)
   private
-    FHandle: Pbk_str;
+    FHandle: Psg_str;
     FOwnsHandle: Boolean;
     function GetContent: TBytes;
     function GetLength: NativeUInt;
@@ -106,8 +106,8 @@ begin
   FOwnsHandle := not Assigned(AHandle);
   if FOwnsHandle then
   begin
-    BkCheckLibrary;
-    FHandle := bk_str_new;
+    SgCheckLibrary;
+    FHandle := sg_str_new;
   end
   else
     FHandle := AHandle;
@@ -118,8 +118,8 @@ begin
   try
     if FOwnsHandle then
     begin
-      BkCheckLibrary;
-      bk_str_free(FHandle);
+      SgCheckLibrary;
+      sg_str_free(FHandle);
       FHandle := nil;
     end;
   finally
@@ -141,9 +141,9 @@ end;
 function TBrookString.WriteBytes(const ASource: TBytes;
   ALength: NativeUInt): NativeUInt;
 begin
-  BkCheckLibrary;
+  SgCheckLibrary;
   Result := ALength;
-  BkCheckLastError(-bk_str_write(FHandle, @ASource[0], Result));
+  SgCheckLastError(-sg_str_write(FHandle, @ASource[0], Result));
 end;
 
 procedure TBrookString.Write(const ASource: string; AEncoding: TEncoding);
@@ -168,14 +168,14 @@ end;
 
 procedure TBrookString.Clear;
 begin
-  BkCheckLibrary;
-  BkCheckLastError(-bk_str_clear(FHandle));
+  SgCheckLibrary;
+  SgCheckLastError(-sg_str_clear(FHandle));
 end;
 
 function TBrookString.GetLength: NativeUInt;
 begin
-  BkCheckLibrary;
-  Result := bk_str_length(FHandle);
+  SgCheckLibrary;
+  Result := sg_str_length(FHandle);
 end;
 
 procedure TBrookString.SetText(const AValue: string);
@@ -192,8 +192,8 @@ end;
 
 function TBrookString.GetContent: TBytes;
 begin
-  BkCheckLibrary;
-  Result := TMarshal.ToBytes(bk_str_content(FHandle), GetLength);
+  SgCheckLibrary;
+  Result := TMarshal.ToBytes(sg_str_content(FHandle), GetLength);
 end;
 
 end.
