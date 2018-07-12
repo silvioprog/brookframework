@@ -37,12 +37,12 @@ type
     function CreateFields(AHandle: Pointer): TBrookStringMap; virtual;
     function CreatePayload(AHandle: Pointer): TBrookString; virtual;
     function GetHandle: Pointer; override;
-    function IsPost: Boolean; virtual;
     function GetUserData: Pointer; virtual;
     procedure SetUserData(AValue: Pointer); virtual;
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
+    function IsPost: Boolean; virtual;
     property Headers: TBrookStringMap read FHeaders;
     property Cookies: TBrookStringMap read FCookies;
     property Params: TBrookStringMap read FParams;
