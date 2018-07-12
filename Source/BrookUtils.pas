@@ -134,6 +134,7 @@ function BrookIsPost(const AMethod: string): Boolean;
 var
   M: TMarshaller;
 begin
+  SgCheckLibrary;
   Result := sg_is_post(M.ToCString(AMethod));
 end;
 
