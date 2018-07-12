@@ -8,6 +8,7 @@ uses
   SysUtils,
   Marshalling,
   libsagui,
+  BrookUtils,
   BrookHandledClasses,
   BrookString,
   BrookStringMap,
@@ -36,6 +37,7 @@ type
     function CreateFields(AHandle: Pointer): TBrookStringMap; virtual;
     function CreatePayload(AHandle: Pointer): TBrookString; virtual;
     function GetHandle: Pointer; override;
+    function IsPost: Boolean; virtual;
     function GetUserData: Pointer; virtual;
     procedure SetUserData(AValue: Pointer); virtual;
   public
@@ -126,6 +128,11 @@ end;
 function TBrookHTTPRequest.GetPaths: TArray<string>;
 begin
   Result := Path.Split(['/'], TStringSplitOptions.ExcludeEmpty);
+end;
+
+function TBrookHTTPRequest.IsPost: Boolean;
+begin
+  Result := BrookIsPost(FMethod);
 end;
 
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
