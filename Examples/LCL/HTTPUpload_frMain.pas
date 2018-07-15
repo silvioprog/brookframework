@@ -116,7 +116,8 @@ implementation
 
 procedure TfrMain.FormCreate(Sender: TObject);
 begin
-  BrookHTTPServer1.UploadsDir := BrookTmpDir;
+  if BrookHTTPServer1.UploadsDir.IsEmpty then
+    BrookHTTPServer1.UploadsDir := BrookTmpDir;
 end;
 
 procedure TfrMain.DoError(AData: PtrInt);

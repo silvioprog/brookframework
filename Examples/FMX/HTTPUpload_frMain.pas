@@ -123,7 +123,8 @@ implementation
 
 procedure TfrMain.FormCreate(Sender: TObject);
 begin
-  BrookHTTPServer1.UploadsDir :=
+  if BrookHTTPServer1.UploadsDir.IsEmpty then
+    BrookHTTPServer1.UploadsDir :=
 {$IFDEF ANDROID}TPath.GetTempPath{$ELSE}BrookTmpDir{$ENDIF};
 end;
 
