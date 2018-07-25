@@ -23,10 +23,9 @@ type
     function GetHandle: Pointer; override;
   public
     constructor Create(AHandle: Pointer); virtual;
-    function Deny(const AJustification,
-      AContentType: string): Boolean; overload; virtual;
-    function Deny(const AFmt: string; const AArgs: array of const;
-      const AContentType: string): Boolean; overload; virtual;
+    procedure Deny(const AJustification, AContentType: string); overload; virtual;
+    procedure Deny(const AFmt: string; const AArgs: array of const;
+      const AContentType: string); overload; virtual;
     procedure Cancel; virtual;
     property Realm: string read GetRealm write SetRealm;
     property UserName: string read FUserName;
@@ -62,24 +61,20 @@ begin
   Result := TMarshal.ToString(sg_httpauth_realm(FHandle));
 end;
 
-function TBrookHTTPAuthentication.Deny(const AJustification,
-  AContentType: string): Boolean;
+procedure TBrookHTTPAuthentication.Deny(const AJustification,
+  AContentType: string);
 var
   M: TMarshaller;
-  R: cint;
 begin
   SgCheckLibrary;
-  R := -sg_httpauth_deny(FHandle, M.ToCString(AJustification),
-    M.ToCString(AContentType));
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    SgCheckLastError(R);
+  SgCheckLastError(-sg_httpauth_deny(FHandle, M.ToCString(AJustification),
+    M.ToCString(AContentType)));
 end;
 
-function TBrookHTTPAuthentication.Deny(const AFmt: string;
-  const AArgs: array of const; const AContentType: string): Boolean;
+procedure TBrookHTTPAuthentication.Deny(const AFmt: string;
+  const AArgs: array of const; const AContentType: string);
 begin
-  Result := Deny(Format(AFmt, AArgs), AContentType);
+  Deny(Format(AFmt, AArgs), AContentType);
 end;
 
 procedure TBrookHTTPAuthentication.Cancel;

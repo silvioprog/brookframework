@@ -6,13 +6,13 @@ interface
 
 uses
   RTLConsts,
+  SysConst,
   SysUtils,
   Classes,
   Platform,
   Marshalling,
   libsagui,
   BrookHandledClasses,
-  BrookString,
   BrookStringMap,
   BrookHTTPExtra;
 
@@ -36,25 +36,19 @@ type
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
     function SetCookie(const AName, AValue: string): Boolean; virtual;
-    function Send(const AValue, AContentType: string;
-      AStatus: Word): Boolean; overload; virtual;
-    function Send(const AFmt: string; const AArgs: array of const;
-      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
-    function Send(ABuffer: Pointer; ASize: NativeUInt;
-      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
-    function Send(const ABytes: TBytes; ASize: NativeUInt;
-      const AContentType: string; AStatus: Word): Boolean; overload; virtual;
-    function Send(AString: TBrookString; const AContentType: string;
-      AStatus: Word): Boolean; overload; virtual;
-    function TrySendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
-      const AFileName: TFileName; ARendered: Boolean; AStatus: Word;
-      out AFailed: Boolean): Boolean; overload; virtual;
-    function SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
+    procedure Send(const AValue, AContentType: string;
+      AStatus: Word); overload; virtual;
+    procedure Send(const AFmt: string; const AArgs: array of const;
+      const AContentType: string; AStatus: Word); overload; virtual;
+    procedure Send(const ABytes: TBytes; ASize: NativeUInt;
+      const AContentType: string; AStatus: Word); overload; virtual;
+    procedure SendBinary(ABuffer: Pointer; ASize: NativeUInt;
+      const AContentType: string; AStatus: Word); virtual;
+    procedure SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
       const AFileName: TFileName; ARendered: Boolean;
-      AStatus: Word): Boolean; overload; virtual;
-    function SendFile(const AFileName: TFileName): Boolean; overload; virtual;
-    function SendStream(AStream: TStream; AStatus: Word): Boolean; virtual;
-    function SendData(AStream: TStream; AStatus: Word): Boolean; virtual;
+      AStatus: Word); overload; virtual;
+    procedure SendFile(const AFileName: TFileName); overload; virtual;
+    procedure SendStream(AStream: TStream; AStatus: Word);
     property Headers: TBrookStringMap read FHeaders;
   end;
 
@@ -129,126 +123,66 @@ begin
     SgCheckLastError(R);
 end;
 
-function TBrookHTTPResponse.Send(const AValue, AContentType: string;
-  AStatus: Word): Boolean;
+procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
+  AStatus: Word);
 var
   M: TMarshaller;
-  R: cint;
 begin
-  CheckStatus(AStatus);
-  SgCheckLibrary;
-  R := -sg_httpres_send(FHandle, M.ToCString(AValue),
+  SendBinary(M.ToCString(AValue), Length(AValue),
     M.ToCString(AContentType), AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    SgCheckLastError(R);
 end;
 
-function TBrookHTTPResponse.Send(const AFmt: string;
-  const AArgs: array of const; const AContentType: string;
-  AStatus: Word): Boolean;
+procedure TBrookHTTPResponse.Send(const AFmt: string;
+  const AArgs: array of const; const AContentType: string; AStatus: Word);
 begin
-  Result := Send(Format(AFmt, AArgs), AContentType, AStatus);
+  Send(Format(AFmt, AArgs), AContentType, AStatus);
 end;
 
-function TBrookHTTPResponse.Send(ABuffer: Pointer; ASize: NativeUInt;
-  const AContentType: string; AStatus: Word): Boolean;
+procedure TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
+  const AContentType: string; AStatus: Word);
+begin
+  SendBinary(@ABytes[0], ASize, AContentType, AStatus);
+end;
+
+procedure TBrookHTTPResponse.SendBinary(ABuffer: Pointer; ASize: NativeUInt;
+  const AContentType: string; AStatus: Word);
+var
+  M: TMarshaller;
+begin
+  CheckStatus(AStatus);
+  SgCheckLibrary;
+  SgCheckLastError(-sg_httpres_sendbinary(FHandle, ABuffer, ASize,
+    M.ToCString(AContentType), AStatus));
+end;
+
+procedure TBrookHTTPResponse.SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
+  const AFileName: TFileName; ARendered: Boolean; AStatus: Word);
 var
   M: TMarshaller;
   R: cint;
 begin
   CheckStatus(AStatus);
   SgCheckLibrary;
-  R := -sg_httpres_sendbinary(FHandle, ABuffer, ASize,
-    M.ToCString(AContentType), AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    SgCheckLastError(R);
+  R := -sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize,
+    M.ToCString(AFileName), ARendered, AStatus);
+  if R = ENOENT then
+    raise EFileNotFoundException.CreateRes(@SFileNotFound);
+  SgCheckLastError(R);
 end;
 
-function TBrookHTTPResponse.Send(const ABytes: TBytes; ASize: NativeUInt;
-  const AContentType: string; AStatus: Word): Boolean;
+procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName);
 begin
-  Result := Send(@ABytes[0], ASize, AContentType, AStatus);
+  SendFile(BROOK_BLOCK_SIZE, 0, AFileName, False, 200);
 end;
 
-function TBrookHTTPResponse.Send(AString: TBrookString;
-  const AContentType: string; AStatus: Word): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-begin
-  CheckStatus(AStatus);
-  SgCheckLibrary;
-  R := -sg_httpres_sendstr(FHandle, AString.Handle,
-    M.ToCString(AContentType), AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    SgCheckLastError(R);
-end;
-
-function TBrookHTTPResponse.TrySendFile(ABlockSize: NativeUInt;
-  AMaxSize: UInt64; const AFileName: TFileName; ARendered: Boolean;
-  AStatus: Word; out AFailed: Boolean): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-begin
-  CheckStatus(AStatus);
-  SgCheckLibrary;
-  R := -sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize, M.ToCString(AFileName),
-    ARendered, AStatus);
-  Result := R = 0;
-  if not Result then
-  begin
-    AFailed := R = ENOENT;
-    if (not AFailed) and (R <> EALREADY) then
-      SgCheckLastError(R);
-  end;
-end;
-
-function TBrookHTTPResponse.SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
-  const AFileName: TFileName; ARendered: Boolean; AStatus: Word): Boolean;
-begin
-  if not TrySendFile(ABlockSize, AMaxSize, AFileName, ARendered,
-    AStatus, Result) then
-    raise EFileNotFoundException.CreateResFmt(@SFOpenError, [AFileName]);
-end;
-
-function TBrookHTTPResponse.SendFile(const AFileName: TFileName): Boolean;
-begin
-  Result := SendFile(BROOK_BLOCK_SIZE, 0, AFileName, False, 200);
-end;
-
-function TBrookHTTPResponse.SendStream(AStream: TStream;
-  AStatus: Word): Boolean;
-var
-  R: cint;
+procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word);
 begin
   CheckStream(AStream);
   CheckStatus(AStatus);
   SgCheckLibrary;
-  R := -sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
+  SgCheckLastError(-sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    SgCheckLastError(R);
-end;
-
-function TBrookHTTPResponse.SendData(AStream: TStream; AStatus: Word): Boolean;
-var
-  R: cint;
-begin
-  CheckStream(AStream);
-  CheckStatus(AStatus);
-  SgCheckLibrary;
-  R := -sg_httpres_senddata(FHandle, BROOK_BLOCK_SIZE,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus);
-  Result := R = 0;
-  if (not Result) and (R <> EALREADY) then
-    SgCheckLastError(R);
+{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus));
 end;
 
 end.

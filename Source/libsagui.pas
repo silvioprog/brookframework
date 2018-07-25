@@ -299,11 +299,7 @@ var
     status: cuint; const fmt: Pcchar; ap: cva_list): cint; cdecl;
   sg_httpres_printf: function(res: Psg_httpres; const content_type: Pcchar;
     status: cuint; const fmt: Pcchar): cint; cdecl varargs;
-  sg_httpres_send: function(res: Psg_httpres; const val: Pcchar;
-    const content_type: Pcchar; status: cuint): cint; cdecl;
   sg_httpres_sendbinary: function(res: Psg_httpres; buf: Pcvoid; size: size_t;
-    const content_type: Pcchar; status: cuint): cint; cdecl;
-  sg_httpres_sendstr: function(res: Psg_httpres; str: Psg_str;
     const content_type: Pcchar; status: cuint): cint; cdecl;
   sg_httpres_sendfile: function(res: Psg_httpres; block_size: csize_t;
     max_size: cuint64_t; const filename: Pcchar; rendered: cbool;
@@ -311,9 +307,6 @@ var
   sg_httpres_sendstream: function(res: Psg_httpres; size: cuint64_t;
     block_size: csize_t; read_cb: sg_read_cb; handle: Pcvoid;
     flush_cb: sg_free_cb; status: cuint): cint; cdecl;
-  sg_httpres_senddata: function(res: Psg_httpres; block_size: csize_t;
-    read_cb: sg_read_cb; handle: Pcvoid; free_cb: sg_free_cb;
-    status: cuint): cint; cdecl;
 
   sg_httpsrv_new2: function(auth_cb: sg_httpauth_cb; auth_cls: Pcvoid;
     req_cb: sg_httpreq_cb; req_cls: Pcvoid; err_cb: sg_err_cb;
@@ -454,12 +447,9 @@ begin
     sg_httpres_set_cookie := GetProcAddress(GSgLibHandle, 'sg_httpres_set_cookie');
     sg_httpres_printf_va := GetProcAddress(GSgLibHandle, 'sg_httpres_printf_va');
     sg_httpres_printf := GetProcAddress(GSgLibHandle, 'sg_httpres_printf');
-    sg_httpres_send := GetProcAddress(GSgLibHandle, 'sg_httpres_send');
     sg_httpres_sendbinary := GetProcAddress(GSgLibHandle, 'sg_httpres_sendbinary');
-    sg_httpres_sendstr := GetProcAddress(GSgLibHandle, 'sg_httpres_sendstr');
     sg_httpres_sendfile := GetProcAddress(GSgLibHandle, 'sg_httpres_sendfile');
     sg_httpres_sendstream := GetProcAddress(GSgLibHandle, 'sg_httpres_sendstream');
-    sg_httpres_senddata := GetProcAddress(GSgLibHandle, 'sg_httpres_senddata');
 
     sg_httpsrv_new2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new2');
     sg_httpsrv_new := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new');
@@ -571,12 +561,9 @@ begin
     sg_httpres_set_cookie := nil;
     sg_httpres_printf_va := nil;
     sg_httpres_printf := nil;
-    sg_httpres_send := nil;
     sg_httpres_sendbinary := nil;
-    sg_httpres_sendstr := nil;
     sg_httpres_sendfile := nil;
     sg_httpres_sendstream := nil;
-    sg_httpres_senddata := nil;
 
     sg_httpsrv_new2 := nil;
     sg_httpsrv_new := nil;
