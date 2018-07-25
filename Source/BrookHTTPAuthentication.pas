@@ -6,7 +6,6 @@ interface
 
 uses
   SysUtils,
-  Platform,
   Marshalling,
   libsagui,
   BrookHandledClasses;

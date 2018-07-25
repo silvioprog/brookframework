@@ -5,7 +5,7 @@
  *  |___/\__,_|\__, |\__,_|_|
  *             |___/
  *
- *   –– a smart C library which helps you write quickly REST APIs.
+ *   –– a smart C library which helps you write quickly embedded HTTP servers.
  *
  * Copyright (c) 2012-2018 Silvio Clecio <silvioprog@gmail.com>
  *
@@ -295,10 +295,6 @@ var
   sg_httpres_headers: function(res: Psg_httpres): PPsg_strmap; cdecl;
   sg_httpres_set_cookie: function(res: Psg_httpres; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
-  sg_httpres_printf_va: function(res: Psg_httpres; const content_type: Pcchar;
-    status: cuint; const fmt: Pcchar; ap: cva_list): cint; cdecl;
-  sg_httpres_printf: function(res: Psg_httpres; const content_type: Pcchar;
-    status: cuint; const fmt: Pcchar): cint; cdecl varargs;
   sg_httpres_sendbinary: function(res: Psg_httpres; buf: Pcvoid; size: size_t;
     const content_type: Pcchar; status: cuint): cint; cdecl;
   sg_httpres_sendfile: function(res: Psg_httpres; block_size: csize_t;
@@ -445,8 +441,6 @@ begin
 
     sg_httpres_headers := GetProcAddress(GSgLibHandle, 'sg_httpres_headers');
     sg_httpres_set_cookie := GetProcAddress(GSgLibHandle, 'sg_httpres_set_cookie');
-    sg_httpres_printf_va := GetProcAddress(GSgLibHandle, 'sg_httpres_printf_va');
-    sg_httpres_printf := GetProcAddress(GSgLibHandle, 'sg_httpres_printf');
     sg_httpres_sendbinary := GetProcAddress(GSgLibHandle, 'sg_httpres_sendbinary');
     sg_httpres_sendfile := GetProcAddress(GSgLibHandle, 'sg_httpres_sendfile');
     sg_httpres_sendstream := GetProcAddress(GSgLibHandle, 'sg_httpres_sendstream');
@@ -559,8 +553,6 @@ begin
 
     sg_httpres_headers := nil;
     sg_httpres_set_cookie := nil;
-    sg_httpres_printf_va := nil;
-    sg_httpres_printf := nil;
     sg_httpres_sendbinary := nil;
     sg_httpres_sendfile := nil;
     sg_httpres_sendstream := nil;
