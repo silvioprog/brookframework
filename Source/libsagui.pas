@@ -310,7 +310,7 @@ var
   sg_httpsrv_new: function(cb: sg_httpreq_cb; cls: Pcvoid): Psg_httpsrv; cdecl;
   sg_httpsrv_free: procedure(srv: Psg_httpsrv); cdecl;
   sg_httpsrv_listen: function(srv: Psg_httpsrv; port: cuint16_t;
-    threaded: cbool): cint; cdecl;
+    threaded: cbool): cbool; cdecl;
   sg_httpsrv_shutdown: function(srv: Psg_httpsrv): cint; cdecl;
   sg_httpsrv_port: function(srv: Psg_httpsrv): cuint16_t; cdecl;
   sg_httpsrv_threaded: function(srv: Psg_httpsrv): cbool; cdecl;

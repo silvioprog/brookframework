@@ -665,7 +665,7 @@ begin
   if FConnectionLimit > 0 then
     InternalCheckServerOption(sg_httpsrv_set_con_limit(FHandle,
       FConnectionLimit));
-  FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded) = 0;
+  FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
   if not FActive then
     InternalFreeServerHandle;
 end;
