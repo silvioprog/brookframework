@@ -611,7 +611,7 @@ begin
   GetMem(P, BUF_LEN);
   try
     sg_strerror(ALastError, P, BUF_LEN);
-    SetString(S, P, Length(P) - SizeOf(Byte));
+    SetString(S, P, Length(P));
     SetCodePage(RawByteString(S), CP_UTF8, False);
     raise EOSError.Create(string(S));
   finally
