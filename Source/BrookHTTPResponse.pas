@@ -128,8 +128,8 @@ procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
 var
   M: TMarshaller;
 begin
-  SendBinary(M.ToCString(AValue), Length(AValue),
-    M.ToCString(AContentType), AStatus);
+  SgCheckLastError(-sg_httpres_sendbinary(FHandle, M.ToCString(AValue),
+    Length(AValue), M.ToCString(AContentType), AStatus));
 end;
 
 procedure TBrookHTTPResponse.Send(const AFmt: string;
