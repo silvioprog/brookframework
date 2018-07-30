@@ -47,9 +47,11 @@ type
   private
     FAuthenticated: Boolean;
     FCatchOSErrors: Boolean;
+    FCertificate: TStringList;
     FConnectionLimit: Cardinal;
     FConnectionTimeout: Cardinal;
     FPayloadLimit: NativeUInt;
+    FPrivateKey: TStringList;
     FUploadsLimit: UInt64;
     FOnAuthenticate: TBrookHTTPAuthenticationEvent;
     FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
@@ -88,9 +90,11 @@ type
     function IsUploadsDir: Boolean;
     procedure SetAuthenticated(AValue: Boolean);
     procedure SetCatchOSErrors(AValue: Boolean);
+    procedure SetCertificate(AValue: TStringList);
     procedure SetConnectionLimit(AValue: Cardinal);
     procedure SetConnectionTimeout(AValue: Cardinal);
     procedure SetPayloadLimit(AValue: NativeUInt);
+    procedure SetPrivateKey(AValue: TStringList);
     procedure SetUploadsLimit(AValue: UInt64);
     procedure SetPort(AValue: UInt16);
     procedure SetPostBufferSize(AValue: NativeUInt);
@@ -157,6 +161,8 @@ type
       write SetConnectionTimeout stored IsConnectionTimeout default 0;
     property ConnectionLimit: Cardinal read GetConnectionLimit
       write SetConnectionLimit stored IsConnectionLimit default 0;
+    property PrivateKey: TStringList read FPrivateKey write SetPrivateKey;
+    property Certificate: TStringList read FCertificate write SetCertificate;
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
       write FOnAuthenticate;
     property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
@@ -172,11 +178,17 @@ implementation
 constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FPrivateKey := TStringList.Create;
+  FCertificate := TStringList.Create;
+  FPrivateKey.LineBreak := '';
+  FCertificate.LineBreak := '';
   FCatchOSErrors := True;
 end;
 
 destructor TBrookHTTPServer.Destroy;
 begin
+  FPrivateKey.Free;
+  FCertificate.Free;
   try
     SetActive(False);
   finally
@@ -406,6 +418,16 @@ begin
   FCatchOSErrors := AValue;
 end;
 
+procedure TBrookHTTPServer.SetCertificate(AValue: TStringList);
+begin
+  if FCertificate = AValue then
+    Exit;
+  if Assigned(AValue) then
+    FCertificate.Assign(AValue)
+  else
+    FCertificate.Clear;
+end;
+
 procedure TBrookHTTPServer.SetConnectionLimit(AValue: Cardinal);
 begin
   if not FStreamedActive then
@@ -425,6 +447,16 @@ begin
   if not FStreamedActive then
     CheckInactive;
   FPayloadLimit := AValue;
+end;
+
+procedure TBrookHTTPServer.SetPrivateKey(AValue: TStringList);
+begin
+  if FPrivateKey = AValue then
+    Exit;
+  if Assigned(AValue) then
+    FPrivateKey.Assign(AValue)
+  else
+    FPrivateKey.Clear;
 end;
 
 procedure TBrookHTTPServer.SetUploadsLimit(AValue: UInt64);
@@ -665,7 +697,11 @@ begin
   if FConnectionLimit > 0 then
     InternalCheckServerOption(sg_httpsrv_set_con_limit(FHandle,
       FConnectionLimit));
-  FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
+  if (FPrivateKey.Count > 0) and (FCertificate.Count > 0) then
+    FActive := sg_httpsrv_tls_listen(FHandle, M.ToCString(FPrivateKey.Text),
+      M.ToCString(FCertificate.Text), FPort, FThreaded)
+  else
+    FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
   if not FActive then
     InternalFreeServerHandle;
 end;

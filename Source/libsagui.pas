@@ -311,6 +311,8 @@ var
   sg_httpsrv_free: procedure(srv: Psg_httpsrv); cdecl;
   sg_httpsrv_listen: function(srv: Psg_httpsrv; port: cuint16_t;
     threaded: cbool): cbool; cdecl;
+  sg_httpsrv_tls_listen: function(srv: Psg_httpsrv; const key: Pcchar;
+    const cert: Pcchar; port: cuint16_t; threaded: cbool): cbool; cdecl;
   sg_httpsrv_shutdown: function(srv: Psg_httpsrv): cint; cdecl;
   sg_httpsrv_port: function(srv: Psg_httpsrv): cuint16_t; cdecl;
   sg_httpsrv_threaded: function(srv: Psg_httpsrv): cbool; cdecl;
@@ -449,6 +451,7 @@ begin
     sg_httpsrv_new := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new');
     sg_httpsrv_free := GetProcAddress(GSgLibHandle, 'sg_httpsrv_free');
     sg_httpsrv_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_listen');
+    sg_httpsrv_tls_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_tls_listen');
     sg_httpsrv_shutdown := GetProcAddress(GSgLibHandle, 'sg_httpsrv_shutdown');
     sg_httpsrv_port := GetProcAddress(GSgLibHandle, 'sg_httpsrv_port');
     sg_httpsrv_threaded := GetProcAddress(GSgLibHandle, 'sg_httpsrv_threaded');
@@ -561,6 +564,7 @@ begin
     sg_httpsrv_new := nil;
     sg_httpsrv_free := nil;
     sg_httpsrv_listen := nil;
+    sg_httpsrv_tls_listen := nil;
     sg_httpsrv_shutdown := nil;
     sg_httpsrv_port := nil;
     sg_httpsrv_threaded := nil;
