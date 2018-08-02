@@ -164,8 +164,9 @@ var
   sg_version: function: cuint; cdecl;
   sg_version_str: function: Pcchar; cdecl;
   sg_alloc: function(size: csize_t): Pcvoid; cdecl;
+  sg_realloc: procedure(ptr: Pcvoid; size: csize_t); cdecl;
   sg_free: procedure(ptr: Pcvoid); cdecl;
-  sg_strerror: function(errnum: cint; buf: Pcchar; len: csize_t): Pcchar; cdecl;
+  sg_strerror: function(errnum: cint; str: Pcchar; len: csize_t): Pcchar; cdecl;
   sg_is_post: function(const method: Pcchar): cbool; cdecl;
   sg_tmpdir: function: Pcchar; cdecl;
 
@@ -264,7 +265,7 @@ var
   sg_httpuplds_iter: function(uplds: Psg_httpupld; cb: sg_httpuplds_iter_cb;
     cls: Pcvoid): cint; cdecl;
   sg_httpuplds_next: function(upld: PPsg_httpupld): cint; cdecl;
-  sg_httpuplds_count: function(uplds: Psg_httpupld): cint; cdecl;
+  sg_httpuplds_count: function(uplds: Psg_httpupld): cuint; cdecl;
 
   sg_httpupld_handle: function(uplds: Psg_httpupld): Pcvoid; cdecl;
   sg_httpupld_dir: function(uplds: Psg_httpupld): Pcchar; cdecl;
@@ -288,6 +289,9 @@ var
   sg_httpreq_payload: function(req: Psg_httpreq): Psg_str; cdecl;
   sg_httpreq_uploading: function(req: Psg_httpreq): cbool; cdecl;
   sg_httpreq_uploads: function(req: Psg_httpreq): Psg_httpupld; cdecl;
+{$IFDEF SG_HTTPS_SUPPORT}
+  sg_httpreq_tls_session: function(req: Psg_httpreq): Pcvoid; cdecl;
+{$ENDIF}
   sg_httpreq_set_user_data: function(req: Psg_httpreq;
     data: Pcvoid): cint; cdecl;
   sg_httpreq_user_data: function(req: Psg_httpreq): Pcvoid; cdecl;
@@ -295,6 +299,7 @@ var
   sg_httpres_headers: function(res: Psg_httpres): PPsg_strmap; cdecl;
   sg_httpres_set_cookie: function(res: Psg_httpres; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
+  { sg_httpres_send }
   sg_httpres_sendbinary: function(res: Psg_httpres; buf: Pcvoid; size: size_t;
     const content_type: Pcchar; status: cuint): cint; cdecl;
   sg_httpres_sendfile: function(res: Psg_httpres; block_size: csize_t;
@@ -302,17 +307,22 @@ var
     status: cuint): cint; cdecl;
   sg_httpres_sendstream: function(res: Psg_httpres; size: cuint64_t;
     block_size: csize_t; read_cb: sg_read_cb; handle: Pcvoid;
-    flush_cb: sg_free_cb; status: cuint): cint; cdecl;
+    free_cb: sg_free_cb; status: cuint): cint; cdecl;
 
   sg_httpsrv_new2: function(auth_cb: sg_httpauth_cb; auth_cls: Pcvoid;
     req_cb: sg_httpreq_cb; req_cls: Pcvoid; err_cb: sg_err_cb;
     err_cls: Pcvoid): Psg_httpsrv; cdecl;
   sg_httpsrv_new: function(cb: sg_httpreq_cb; cls: Pcvoid): Psg_httpsrv; cdecl;
   sg_httpsrv_free: procedure(srv: Psg_httpsrv); cdecl;
-  sg_httpsrv_listen: function(srv: Psg_httpsrv; port: cuint16_t;
-    threaded: cbool): cbool; cdecl;
+{$IFDEF SG_HTTPS_SUPPORT}
+  sg_httpsrv_tls_listen2: function(srv: Psg_httpsrv; const key: Pcchar;
+    const pwd: Pcchar; const cert: Pcchar; const trust: Pcchar;
+    const dhparams: Pcchar; port: cuint16_t; threaded: cbool): cbool; cdecl;
   sg_httpsrv_tls_listen: function(srv: Psg_httpsrv; const key: Pcchar;
     const cert: Pcchar; port: cuint16_t; threaded: cbool): cbool; cdecl;
+{$ENDIF}
+  sg_httpsrv_listen: function(srv: Psg_httpsrv; port: cuint16_t;
+    threaded: cbool): cbool; cdecl;
   sg_httpsrv_shutdown: function(srv: Psg_httpsrv): cint; cdecl;
   sg_httpsrv_port: function(srv: Psg_httpsrv): cuint16_t; cdecl;
   sg_httpsrv_threaded: function(srv: Psg_httpsrv): cbool; cdecl;
@@ -380,6 +390,7 @@ begin
     sg_version := GetProcAddress(GSgLibHandle, 'sg_version');
     sg_version_str := GetProcAddress(GSgLibHandle, 'sg_version_str');
     sg_alloc := GetProcAddress(GSgLibHandle, 'sg_alloc');
+    sg_realloc := GetProcAddress(GSgLibHandle, 'sg_realloc');
     sg_free := GetProcAddress(GSgLibHandle, 'sg_free');
     sg_strerror := GetProcAddress(GSgLibHandle, 'sg_strerror');
     sg_is_post := GetProcAddress(GSgLibHandle, 'sg_is_post');
@@ -438,6 +449,7 @@ begin
     sg_httpreq_payload := GetProcAddress(GSgLibHandle, 'sg_httpreq_payload');
     sg_httpreq_uploading := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploading');
     sg_httpreq_uploads := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploads');
+    sg_httpreq_tls_session := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploads');
     sg_httpreq_set_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_set_user_data');
     sg_httpreq_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_user_data');
 
@@ -450,8 +462,11 @@ begin
     sg_httpsrv_new2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new2');
     sg_httpsrv_new := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new');
     sg_httpsrv_free := GetProcAddress(GSgLibHandle, 'sg_httpsrv_free');
-    sg_httpsrv_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_listen');
+{$IFDEF SG_HTTPS_SUPPORT}
+    sg_httpsrv_tls_listen2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_tls_listen2');
     sg_httpsrv_tls_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_tls_listen');
+{$ENDIF}
+    sg_httpsrv_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_listen');
     sg_httpsrv_shutdown := GetProcAddress(GSgLibHandle, 'sg_httpsrv_shutdown');
     sg_httpsrv_port := GetProcAddress(GSgLibHandle, 'sg_httpsrv_port');
     sg_httpsrv_threaded := GetProcAddress(GSgLibHandle, 'sg_httpsrv_threaded');
@@ -493,6 +508,7 @@ begin
     sg_version := nil;
     sg_version_str := nil;
     sg_alloc := nil;
+    sg_realloc := nil;
     sg_free := nil;
     sg_strerror := nil;
     sg_is_post := nil;
@@ -551,6 +567,7 @@ begin
     sg_httpreq_payload := nil;
     sg_httpreq_uploading := nil;
     sg_httpreq_uploads := nil;
+    sg_httpreq_tls_session := nil;
     sg_httpreq_set_user_data := nil;
     sg_httpreq_user_data := nil;
 
@@ -563,8 +580,11 @@ begin
     sg_httpsrv_new2 := nil;
     sg_httpsrv_new := nil;
     sg_httpsrv_free := nil;
-    sg_httpsrv_listen := nil;
+{$IFDEF SG_HTTPS_SUPPORT}
+    sg_httpsrv_tls_listen2 := nil;
     sg_httpsrv_tls_listen := nil;
+{$ENDIF}
+    sg_httpsrv_listen := nil;
     sg_httpsrv_shutdown := nil;
     sg_httpsrv_port := nil;
     sg_httpsrv_threaded := nil;

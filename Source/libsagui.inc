@@ -36,3 +36,4 @@
   {$WARN 6058 OFF} // Note: Call to subroutine "%s" marked as inline is not inlined
  {$ENDIF}
 {$ENDIF}
+{$DEFINE SG_HTTPS_SUPPORT}
