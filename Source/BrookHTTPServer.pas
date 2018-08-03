@@ -182,7 +182,7 @@ type
       write SetConnectionTimeout stored IsConnectionTimeout default 0;
     property ConnectionLimit: Cardinal read GetConnectionLimit
       write SetConnectionLimit stored IsConnectionLimit default 0;
-    property Security: TBrookHTTPServerSecurity read FSecurity write FSecurity;
+    property Security: TBrookHTTPServerSecurity read FSecurity;
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
       write FOnAuthenticate;
     property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
