@@ -427,7 +427,7 @@ begin
 
     sg_httpuplds_iter := GetProcAddress(GSgLibHandle, 'sg_httpuplds_iter');
     sg_httpuplds_next := GetProcAddress(GSgLibHandle, 'sg_httpuplds_next');
-    sg_httpuplds_count := GetProcAddress(GSgLibHandle, '');
+    sg_httpuplds_count := GetProcAddress(GSgLibHandle, 'sg_httpuplds_count');
 
     sg_httpupld_handle := GetProcAddress(GSgLibHandle, 'sg_httpupld_handle');
     sg_httpupld_dir := GetProcAddress(GSgLibHandle, 'sg_httpupld_dir');
@@ -449,7 +449,9 @@ begin
     sg_httpreq_payload := GetProcAddress(GSgLibHandle, 'sg_httpreq_payload');
     sg_httpreq_uploading := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploading');
     sg_httpreq_uploads := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploads');
-    sg_httpreq_tls_session := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploads');
+{$IFDEF SG_HTTPS_SUPPORT}
+    sg_httpreq_tls_session := GetProcAddress(GSgLibHandle, 'sg_httpreq_tls_session');
+{$ENDIF}
     sg_httpreq_set_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_set_user_data');
     sg_httpreq_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_user_data');
 
@@ -567,7 +569,9 @@ begin
     sg_httpreq_payload := nil;
     sg_httpreq_uploading := nil;
     sg_httpreq_uploads := nil;
+{$IFDEF SG_HTTPS_SUPPORT}
     sg_httpreq_tls_session := nil;
+{$ENDIF}
     sg_httpreq_set_user_data := nil;
     sg_httpreq_user_data := nil;
 
