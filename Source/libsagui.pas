@@ -81,10 +81,10 @@ const
 {$ENDIF}, '.', SharedSuffix);
 
 resourcestring
-  SSgLibraryNotLoaded = 'Library ''%s'' not loaded';
-  SSgLibrarySymbolNotFound = 'Symbol ''%s'' not found';
+  SSgLibraryNotLoaded = 'Library ''%s'' not loaded.';
+  SSgLibrarySymbolNotFound = 'Symbol ''%s'' not found.';
 {$IFDEF MSWINDOWS}
-  SSgInvalidLibrary = 'Invalid library ''%s''';
+  SSgInvalidLibrary = 'Invalid library ''%s''.';
 {$ENDIF}
 
 type

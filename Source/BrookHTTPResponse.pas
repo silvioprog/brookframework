@@ -17,7 +17,7 @@ uses
   BrookHTTPExtra;
 
 resourcestring
-  SBrookInvalidHTTPStatus = 'Invalid status code: %d';
+  SBrookInvalidHTTPStatus = 'Invalid status code: %d.';
 
 type
   TBrookHTTPResponse = class(TBrookHandledPersistent)

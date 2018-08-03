@@ -43,7 +43,7 @@ uses
 resourcestring
   { Indicates not allowed operation when the library is loaded. }
   SBrookOpNotAllowedLoadedLib =
-    'Operation is not allowed while the library is loaded';
+    'Operation is not allowed while the library is loaded.';
 
 type
   { Raised when an operation is not allowed while the library is loaded. }

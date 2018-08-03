@@ -17,8 +17,10 @@ uses
 
 resourcestring
   SBrookOpNotAllowedActiveServer =
-    'Operation is not allowed while the server is active';
-  SBrookCannotCreateHTTPServerHandle = 'Cannot create HTTP server handle';
+    'Operation is not allowed while the server is active.';
+  SBrookCannotCreateHTTPServerHandle = 'Cannot create HTTP server handle.';
+  SBrookEmptyPrivateKey = 'Private key cannot be empty.';
+  SBrookEmptyCertificate = 'Certificate cannot be empty.';
 
 type
   TBrookHTTPErrorEvent = procedure(ASender: TObject;
@@ -39,34 +41,54 @@ type
     ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
     AException: Exception) of object;
 
-  EBrookHTTPServerError = class(Exception);
+  EBrookHTTPServerSecurity = class(Exception);
+
+  EBrookHTTPServer = class(Exception);
 
   EBrookOpNotAllowedActiveServer = class(Exception);
 
+  TBrookHTTPServerSecurity = class(TPersistent)
+  private
+    FActive: Boolean;
+    FPrivateKey: string;
+    FPrivatePassword: string;
+    FCertificate: string;
+    FTrust: string;
+    FDHParams: string;
+    procedure SetActive(AValue: Boolean);
+  published
+    property Active: Boolean read FActive write SetActive;
+    property PrivateKey: string read FPrivateKey write FPrivateKey;
+    property PrivatePassword: string read FPrivatePassword
+      write FPrivatePassword;
+    property Certificate: string read FCertificate write FCertificate;
+    property Trust: string read FTrust write FTrust;
+    property DHParams: string read FDHParams write FDHParams;
+  end;
+
   TBrookHTTPServer = class(TBrookHandledComponent)
   private
+    FHandle: Psg_httpsrv;
     FAuthenticated: Boolean;
     FCatchOSErrors: Boolean;
-    FCertificate: TStringList;
     FConnectionLimit: Cardinal;
     FConnectionTimeout: Cardinal;
     FPayloadLimit: NativeUInt;
-    FPrivateKey: TStringList;
     FUploadsLimit: UInt64;
-    FOnAuthenticate: TBrookHTTPAuthenticationEvent;
-    FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
-    FOnRequest: TBrookHTTPRequestEvent;
-    FOnError: TBrookHTTPErrorEvent;
     FActive: Boolean;
-    FOnRequestError: TBrookHTTPRequestErrorEvent;
     FPort: UInt16;
     FPostBufferSize: NativeUInt;
     FThreaded: Boolean;
     FStreamedActive: Boolean;
     FStreamedAuthenticated: Boolean;
-    FHandle: Psg_httpsrv;
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
+    FSecurity: TBrookHTTPServerSecurity;
+    FOnAuthenticate: TBrookHTTPAuthenticationEvent;
+    FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
+    FOnRequest: TBrookHTTPRequestEvent;
+    FOnRequestError: TBrookHTTPRequestErrorEvent;
+    FOnError: TBrookHTTPErrorEvent;
     function GetConnectionLimit: Cardinal;
     function GetConnectionTimeout: Cardinal;
     function GetPayloadLimit: NativeUInt;
@@ -90,11 +112,9 @@ type
     function IsUploadsDir: Boolean;
     procedure SetAuthenticated(AValue: Boolean);
     procedure SetCatchOSErrors(AValue: Boolean);
-    procedure SetCertificate(AValue: TStringList);
     procedure SetConnectionLimit(AValue: Cardinal);
     procedure SetConnectionTimeout(AValue: Cardinal);
     procedure SetPayloadLimit(AValue: NativeUInt);
-    procedure SetPrivateKey(AValue: TStringList);
     procedure SetUploadsLimit(AValue: UInt64);
     procedure SetPort(AValue: UInt16);
     procedure SetPostBufferSize(AValue: NativeUInt);
@@ -113,6 +133,7 @@ type
       const Aerr: Pcchar); cdecl; static;
     function CreateAuthentication(
       AHandle: Pointer): TBrookHTTPAuthentication; virtual;
+    function CreateSecurity: TBrookHTTPServerSecurity; virtual;
     function CreateRequest(AHandle: Pointer): TBrookHTTPRequest; virtual;
     function CreateResponse(AHandle: Pointer): TBrookHTTPResponse; virtual;
     procedure Loaded; override;
@@ -161,8 +182,7 @@ type
       write SetConnectionTimeout stored IsConnectionTimeout default 0;
     property ConnectionLimit: Cardinal read GetConnectionLimit
       write SetConnectionLimit stored IsConnectionLimit default 0;
-    property PrivateKey: TStringList read FPrivateKey write SetPrivateKey;
-    property Certificate: TStringList read FCertificate write SetCertificate;
+    property Security: TBrookHTTPServerSecurity read FSecurity write FSecurity;
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
       write FOnAuthenticate;
     property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
@@ -175,20 +195,31 @@ type
 
 implementation
 
+{ TBrookHTTPServerSecurity }
+
+procedure TBrookHTTPServerSecurity.SetActive(AValue: Boolean);
+begin
+  if FActive = AValue then
+    Exit;
+  if FPrivateKey.IsEmpty then
+    raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyPrivateKey);
+  if FCertificate.IsEmpty then
+    raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyCertificate);
+  FActive := AValue;
+end;
+
+{ TBrookHTTPServer }
+
 constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPrivateKey := TStringList.Create;
-  FCertificate := TStringList.Create;
-  FPrivateKey.LineBreak := '';
-  FCertificate.LineBreak := '';
+  FSecurity := CreateSecurity;
   FCatchOSErrors := True;
 end;
 
 destructor TBrookHTTPServer.Destroy;
 begin
-  FPrivateKey.Free;
-  FCertificate.Free;
+  FSecurity.Free;
   try
     SetActive(False);
   finally
@@ -231,6 +262,11 @@ function TBrookHTTPServer.CreateAuthentication(
   AHandle: Pointer): TBrookHTTPAuthentication;
 begin
   Result := TBrookHTTPAuthentication.Create(AHandle);
+end;
+
+function TBrookHTTPServer.CreateSecurity: TBrookHTTPServerSecurity;
+begin
+  Result := TBrookHTTPServerSecurity.Create;
 end;
 
 function TBrookHTTPServer.CreateRequest(AHandle: Pointer): TBrookHTTPRequest;
@@ -310,9 +346,9 @@ class procedure TBrookHTTPServer.DoErrorCallback(Acls: Pcvoid;
   const Aerr: Pcchar);
 var
   VServer: TBrookHTTPServer absolute Acls;
-  VException: EBrookHTTPServerError;
+  VException: EBrookHTTPServer;
 begin
-  VException := EBrookHTTPServerError.Create(TMarshal.ToString(Aerr));
+  VException := EBrookHTTPServer.Create(TMarshal.ToString(Aerr));
   try
     VServer.DoError(VServer, VException);
   finally
@@ -418,16 +454,6 @@ begin
   FCatchOSErrors := AValue;
 end;
 
-procedure TBrookHTTPServer.SetCertificate(AValue: TStringList);
-begin
-  if FCertificate = AValue then
-    Exit;
-  if Assigned(AValue) then
-    FCertificate.Assign(AValue)
-  else
-    FCertificate.Clear;
-end;
-
 procedure TBrookHTTPServer.SetConnectionLimit(AValue: Cardinal);
 begin
   if not FStreamedActive then
@@ -447,16 +473,6 @@ begin
   if not FStreamedActive then
     CheckInactive;
   FPayloadLimit := AValue;
-end;
-
-procedure TBrookHTTPServer.SetPrivateKey(AValue: TStringList);
-begin
-  if FPrivateKey = AValue then
-    Exit;
-  if Assigned(AValue) then
-    FPrivateKey.Assign(AValue)
-  else
-    FPrivateKey.Clear;
 end;
 
 procedure TBrookHTTPServer.SetUploadsLimit(AValue: UInt64);
@@ -697,9 +713,11 @@ begin
   if FConnectionLimit > 0 then
     InternalCheckServerOption(sg_httpsrv_set_con_limit(FHandle,
       FConnectionLimit));
-  if (FPrivateKey.Count > 0) and (FCertificate.Count > 0) then
-    FActive := sg_httpsrv_tls_listen(FHandle, M.ToCString(FPrivateKey.Text),
-      M.ToCString(FCertificate.Text), FPort, FThreaded)
+  if FSecurity.Active then
+    FActive := sg_httpsrv_tls_listen2(FHandle, M.ToCString(FSecurity.PrivateKey),
+      M.ToCString(FSecurity.PrivatePassword), M.ToCString(FSecurity.Certificate),
+      M.ToCString(FSecurity.Trust), M.ToCString(FSecurity.DHParams), FPort,
+      FThreaded)
   else
     FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
   if not FActive then
