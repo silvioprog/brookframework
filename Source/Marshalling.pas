@@ -63,6 +63,7 @@ type
 {$ENDIF}
   public
     function ToCString(const S: string): MarshaledAString; inline;
+    function ToCNullable(const S: string): MarshaledAString; inline;
   end;
 
 implementation
@@ -108,6 +109,13 @@ begin
 {$ELSE}
     AsAnsi(S, CP_UTF8).ToPointer
 {$ENDIF};
+end;
+
+function TMarshaller.ToCNullable(const S: string): MarshaledAString;
+begin
+  if S.IsEmpty then
+    Exit(nil);
+  Result := ToCString(S);
 end;
 
 end.

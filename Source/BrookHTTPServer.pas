@@ -754,10 +754,12 @@ begin
   if FSecurity.Active then
   begin
     FSecurity.Validate;
-    FActive := sg_httpsrv_tls_listen2(FHandle, M.ToCString(FSecurity.PrivateKey),
-      M.ToCString(FSecurity.PrivatePassword), M.ToCString(FSecurity.Certificate),
-      M.ToCString(FSecurity.Trust), M.ToCString(FSecurity.DHParams), FPort,
-      FThreaded);
+    FActive := sg_httpsrv_tls_listen2(FHandle,
+      M.ToCNullable(FSecurity.PrivateKey),
+      M.ToCNullable(FSecurity.PrivatePassword),
+      M.ToCNullable(FSecurity.Certificate),
+      M.ToCNullable(FSecurity.Trust),
+      M.ToCNullable(FSecurity.DHParams), FPort, FThreaded);
   end
   else
     FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
