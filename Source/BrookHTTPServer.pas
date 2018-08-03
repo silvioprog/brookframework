@@ -55,9 +55,12 @@ type
     FCertificate: string;
     FTrust: string;
     FDHParams: string;
-    procedure SetActive(AValue: Boolean);
+  public
+    procedure Assign(ASource: TPersistent); override;
+    procedure Clear; virtual;
+    procedure Validate; inline;
   published
-    property Active: Boolean read FActive write SetActive;
+    property Active: Boolean read FActive write FActive;
     property PrivateKey: string read FPrivateKey write FPrivateKey;
     property PrivatePassword: string read FPrivatePassword
       write FPrivatePassword;
@@ -115,6 +118,7 @@ type
     procedure SetConnectionLimit(AValue: Cardinal);
     procedure SetConnectionTimeout(AValue: Cardinal);
     procedure SetPayloadLimit(AValue: NativeUInt);
+    procedure SetSecurity(AValue: TBrookHTTPServerSecurity);
     procedure SetUploadsLimit(AValue: UInt64);
     procedure SetPort(AValue: UInt16);
     procedure SetPostBufferSize(AValue: NativeUInt);
@@ -182,7 +186,7 @@ type
       write SetConnectionTimeout stored IsConnectionTimeout default 0;
     property ConnectionLimit: Cardinal read GetConnectionLimit
       write SetConnectionLimit stored IsConnectionLimit default 0;
-    property Security: TBrookHTTPServerSecurity read FSecurity;
+    property Security: TBrookHTTPServerSecurity read FSecurity write SetSecurity;
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
       write FOnAuthenticate;
     property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
@@ -197,15 +201,39 @@ implementation
 
 { TBrookHTTPServerSecurity }
 
-procedure TBrookHTTPServerSecurity.SetActive(AValue: Boolean);
+procedure TBrookHTTPServerSecurity.Assign(ASource: TPersistent);
+var
+  VSource: TBrookHTTPServerSecurity;
 begin
-  if FActive = AValue then
-    Exit;
+  if ASsigned(ASource) and (ASource is TBrookHTTPServerSecurity) then
+  begin
+    VSource := ASource as TBrookHTTPServerSecurity;
+    FPrivateKey := VSource.FPrivateKey;
+    FPrivatePassword := VSource.FPrivatePassword;
+    FCertificate := VSource.FCertificate;
+    FTrust := VSource.FTrust;
+    FDHParams := VSource.FDHParams;
+  end
+  else
+    inherited Assign(ASource);
+end;
+
+procedure TBrookHTTPServerSecurity.Validate;
+begin
   if FPrivateKey.IsEmpty then
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyPrivateKey);
   if FCertificate.IsEmpty then
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyCertificate);
-  FActive := AValue;
+end;
+
+procedure TBrookHTTPServerSecurity.Clear;
+begin
+  FActive := False;
+  FPrivateKey := '';
+  FPrivatePassword := '';
+  FCertificate := '';
+  FTrust := '';
+  FDHParams := '';
 end;
 
 { TBrookHTTPServer }
@@ -475,6 +503,16 @@ begin
   FPayloadLimit := AValue;
 end;
 
+procedure TBrookHTTPServer.SetSecurity(AValue: TBrookHTTPServerSecurity);
+begin
+  if FSecurity = AValue then
+    Exit;
+  if Assigned(AValue) then
+    FSecurity.Assign(AValue)
+  else
+    FSecurity.Clear;
+end;
+
 procedure TBrookHTTPServer.SetUploadsLimit(AValue: UInt64);
 begin
   if not FStreamedActive then
@@ -714,10 +752,13 @@ begin
     InternalCheckServerOption(sg_httpsrv_set_con_limit(FHandle,
       FConnectionLimit));
   if FSecurity.Active then
+  begin
+    FSecurity.Validate;
     FActive := sg_httpsrv_tls_listen2(FHandle, M.ToCString(FSecurity.PrivateKey),
       M.ToCString(FSecurity.PrivatePassword), M.ToCString(FSecurity.Certificate),
       M.ToCString(FSecurity.Trust), M.ToCString(FSecurity.DHParams), FPort,
-      FThreaded)
+      FThreaded);
+  end
   else
     FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
   if not FActive then
