@@ -127,7 +127,7 @@ begin
   R := sg_httpupld_save(FHandle, AOverwritten);
   Result := R = 0;
   if not Result then
-    AError := BrookStrError(-R);
+    AError := BrookStrError(R);
 end;
 
 function TBrookHTTPUpload.Save(out AError: string): Boolean;
@@ -138,7 +138,7 @@ end;
 procedure TBrookHTTPUpload.Save(AOverwritten: Boolean);
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpupld_save(FHandle, AOverwritten));
+  SgCheckLastError(sg_httpupld_save(FHandle, AOverwritten));
 end;
 
 procedure TBrookHTTPUpload.Save;
@@ -156,7 +156,7 @@ begin
   R := sg_httpupld_save_as(FHandle, M.ToCString(APath), AOverwritten);
   Result := R = 0;
   if not Result then
-    AError := BrookStrError(-R);
+    AError := BrookStrError(R);
 end;
 
 function TBrookHTTPUpload.SaveAs(const APath: TFileName;
@@ -170,7 +170,7 @@ var
   M: TMarshaller;
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpupld_save_as(FHandle, M.ToCString(APath),
+  SgCheckLastError(sg_httpupld_save_as(FHandle, M.ToCString(APath),
     AOverwritten));
 end;
 
@@ -212,8 +212,9 @@ end;
 procedure TBrookHTTPUploads.Next(out AUpload: TBrookHTTPUpload);
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpuplds_next(@FCurr));
-  AUpload := TBrookHTTPUpload.Create(FCurr);
+  SgCheckLastError(sg_httpuplds_next(@FCurr));
+  if Assigned(FCurr) then
+    AUpload := TBrookHTTPUpload.Create(FCurr);
 end;
 
 function TBrookHTTPUploads.IsEOF: Boolean;
