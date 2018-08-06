@@ -51,7 +51,7 @@ var
   M: TMarshaller;
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpauth_set_realm(FHandle, M.ToCString(AValue)));
+  SgCheckLastError(sg_httpauth_set_realm(FHandle, M.ToCString(AValue)));
 end;
 
 function TBrookHTTPAuthentication.GetRealm: string;
@@ -66,7 +66,7 @@ var
   M: TMarshaller;
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpauth_deny(FHandle, M.ToCString(AJustification),
+  SgCheckLastError(sg_httpauth_deny(FHandle, M.ToCString(AJustification),
     M.ToCString(AContentType)));
 end;
 
@@ -79,7 +79,7 @@ end;
 procedure TBrookHTTPAuthentication.Cancel;
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpauth_cancel(FHandle));
+  SgCheckLastError(sg_httpauth_cancel(FHandle));
 end;
 
 end.

@@ -147,7 +147,7 @@ end;
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpreq_set_user_data(FHandle, AValue));
+  SgCheckLastError(sg_httpreq_set_user_data(FHandle, AValue));
 end;
 
 function TBrookHTTPRequest.GetUserData: Pointer;

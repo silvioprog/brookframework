@@ -35,7 +35,7 @@ type
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
-    function SetCookie(const AName, AValue: string): Boolean; virtual;
+    procedure SetCookie(const AName, AValue: string); virtual;
     procedure Send(const AValue, AContentType: string;
       AStatus: Word); overload; virtual;
     procedure Send(const AFmt: string; const AArgs: array of const;
@@ -111,16 +111,13 @@ begin
   TStream(Acls).Free;
 end;
 
-function TBrookHTTPResponse.SetCookie(const AName, AValue: string): Boolean;
+procedure TBrookHTTPResponse.SetCookie(const AName, AValue: string);
 var
   M: TMarshaller;
-  R: cint;
 begin
   SgCheckLibrary;
-  R := -sg_httpres_set_cookie(FHandle, M.ToCString(AName), M.ToCString(AValue));
-  Result := R = 0;
-  if (not Result) and (R <> EINVAL) then
-    SgCheckLastError(R);
+  SgCheckLastError(sg_httpres_set_cookie(FHandle, M.ToCString(AName),
+    M.ToCString(AValue)));
 end;
 
 procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
@@ -128,7 +125,7 @@ procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
 var
   M: TMarshaller;
 begin
-  SgCheckLastError(-sg_httpres_sendbinary(FHandle, M.ToCString(AValue),
+  SgCheckLastError(sg_httpres_sendbinary(FHandle, M.ToCString(AValue),
     Length(AValue), M.ToCString(AContentType), AStatus));
 end;
 
@@ -151,7 +148,7 @@ var
 begin
   CheckStatus(AStatus);
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpres_sendbinary(FHandle, ABuffer, ASize,
+  SgCheckLastError(sg_httpres_sendbinary(FHandle, ABuffer, ASize,
     M.ToCString(AContentType), AStatus));
 end;
 
@@ -163,7 +160,7 @@ var
 begin
   CheckStatus(AStatus);
   SgCheckLibrary;
-  R := -sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize,
+  R := sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize,
     M.ToCString(AFileName), ARendered, AStatus);
   if R = ENOENT then
     raise EFileNotFoundException.CreateRes(@SFileNotFound);
@@ -180,7 +177,7 @@ begin
   CheckStream(AStream);
   CheckStatus(AStatus);
   SgCheckLibrary;
-  SgCheckLastError(-sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
+  SgCheckLastError(sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus));
 end;
