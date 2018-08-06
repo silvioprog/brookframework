@@ -323,8 +323,6 @@ function TBrookStringMap.GetCount: Integer;
 begin
   SgCheckLibrary;
   Result := sg_strmap_count(FHandle^);
-  if Result < 0 then
-    SgCheckLastError(-Result);
 end;
 
 function TBrookStringMap.GetValue(const AName: string): string;
@@ -359,7 +357,7 @@ var
   M: TMarshaller;
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_strmap_add(FHandle, M.ToCString(AName),
+  SgCheckLastError(sg_strmap_add(FHandle, M.ToCString(AName),
     M.ToCString(AValue)));
   DoChange(sgmoAdd);
 end;
@@ -369,7 +367,7 @@ var
   M: TMarshaller;
 begin
   SgCheckLibrary;
-  SgCheckLastError(-sg_strmap_set(FHandle, M.ToCString(AName),
+  SgCheckLastError(sg_strmap_set(FHandle, M.ToCString(AName),
     M.ToCString(AValue)));
   DoChange(sgmoAddOrSet);
 end;
@@ -381,8 +379,8 @@ var
 begin
   SgCheckLibrary;
   R := sg_strmap_rm(FHandle, M.ToCString(AName));
-  if (R <> 0) and (R <> -ENOENT) then
-    SgCheckLastError(-R);
+  if (R <> 0) and (R <> ENOENT) then
+    SgCheckLastError(R);
   DoChange(sgmoRemove);
 end;
 
@@ -406,8 +404,8 @@ begin
   if Result then
     APair := TBrookStringPair.Create(AName, TMarshal.ToString(sg_strmap_val(P)))
   else
-    if R <> -ENOENT then
-      SgCheckLastError(-R);
+    if R <> ENOENT then
+      SgCheckLastError(R);
 end;
 
 function TBrookStringMap.Get(const AName: string): string;
@@ -443,16 +441,11 @@ begin
 end;
 
 function TBrookStringMap.Next(out APair: TBrookStringPair): Boolean;
-var
-  R: cint;
 begin
-  if not Assigned(@FNextHandle) then
-    Exit(False);
   SgCheckLibrary;
-  R := sg_strmap_next(@FNextHandle);
-  SgCheckLastError(-R);
-  Result := R = 0;
-  if Result and Assigned(FNextHandle) then
+  SgCheckLastError(sg_strmap_next(@FNextHandle));
+  Result := Assigned(FNextHandle);
+  if Result then
     APair := CreatePair(FNextHandle);
 end;
 
@@ -463,12 +456,14 @@ var
   M: TMethod;
 begin
   SgCheckLibrary;
+  if not Assigned(FHandle^) then
+    Exit;
   M.Code := @AIterator;
   M.Data := AData;
   R := sg_strmap_iter(FHandle^,
 {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
   if R <> -1 then
-    SgCheckLastError(-R);
+    SgCheckLastError(R);
 end;
 
 procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
@@ -479,7 +474,7 @@ begin
   SgCheckLibrary;
   M.Code := @AComparator;
   M.Data := AData;
-  SgCheckLastError(-sg_strmap_sort(FHandle,
+  SgCheckLastError(sg_strmap_sort(FHandle,
 {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
 end;
 

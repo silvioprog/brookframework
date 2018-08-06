@@ -115,7 +115,7 @@ var
   P: MarshaledAString;
 begin
   SgCheckLibrary;
-  ALength := ALength + SizeOf(Byte);
+  ALength := ALength + 1;
   GetMem(P, ALength);
   try
     sg_strerror(AErrorNum, P, ALength);
