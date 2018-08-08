@@ -75,7 +75,7 @@ const
 
   SG_LIB_NAME = Concat(
 {$IFDEF MSWINDOWS}
-    'libsagui-0'
+    'libsagui-1'
 {$ELSE}
     'libsagui'
 {$ENDIF}, '.', SharedSuffix);
