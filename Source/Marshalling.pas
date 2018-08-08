@@ -111,7 +111,8 @@ begin
 {$ENDIF};
 end;
 
-function TMarshaller.ToCNullable(const S: string): MarshaledAString;
+function {$IFDEF FPC}TMarshaller{$ELSE}TMarshallerHelper{$ENDIF}.ToCNullable(
+  const S: string): MarshaledAString;
 begin
   if S.IsEmpty then
     Exit(nil);
