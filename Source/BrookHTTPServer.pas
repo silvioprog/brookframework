@@ -769,7 +769,9 @@ begin
   if FPayloadLimit > 0 then
     InternalCheckServerOption(sg_httpsrv_set_payld_limit(FHandle,
       FPayloadLimit));
-  { TODO: sg_httpsrv_set_uplds_limit }
+  if FUploadsLimit > 0 then
+    InternalCheckServerOption(sg_httpsrv_set_uplds_limit(FHandle,
+      FUploadsLimit));
   if FThreadPoolSize > 0 then
     InternalCheckServerOption(sg_httpsrv_set_thr_pool_size(FHandle,
       FThreadPoolSize));
