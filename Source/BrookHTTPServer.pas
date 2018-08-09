@@ -15,6 +15,17 @@ uses
   BrookHTTPRequest,
   BrookHTTPResponse;
 
+const
+{$IFDEF CPUARM}
+  BROOK_POST_BUFFER_SIZE = 1024; // ~1 Kb
+  BROOK_PAYLOAD_LIMIT = 1048576; // ~1 MB
+  BROOK_UPLOADS_LIMIT = 16777216; // ~16 MB
+{$ELSE}
+  BROOK_POST_BUFFER_SIZE = 4096; // ~4 kB
+  BROOK_PAYLOAD_LIMIT = 4194304; // ~4 MB
+  BROOK_UPLOADS_LIMIT = 67108864; // ~64 MB
+{$ENDIF}
+
 resourcestring
   SBrookOpNotAllowedActiveServer =
     'Operation is not allowed while the server is active.';
@@ -185,11 +196,13 @@ type
     property UploadsDir: string read GetUploadsDir write SetUploadsDir
       stored IsUploadsDir;
     property PostBufferSize: NativeUInt read GetPostBufferSize
-      write SetPostBufferSize stored IsPostBufferSize default 0;
+      write SetPostBufferSize stored IsPostBufferSize
+      default BROOK_POST_BUFFER_SIZE;
     property PayloadLimit: NativeUInt read GetPayloadLimit
-      write SetPayloadLimit stored IsPayloadLimit default 0;
+      write SetPayloadLimit stored IsPayloadLimit
+      default BROOK_PAYLOAD_LIMIT;
     property UploadsLimit: UInt64 read GetUploadsLimit write SetUploadsLimit
-      stored IsUploadsLimit default 0;
+      stored IsUploadsLimit default BROOK_UPLOADS_LIMIT;
     property ThreadPoolSize: Cardinal read GetThreadPoolSize
       write SetThreadPoolSize stored IsThreadPoolSize default 0;
     property ConnectionTimeout: Cardinal read GetConnectionTimeout
@@ -261,6 +274,9 @@ begin
   FSecurity := CreateSecurity;
 {$ENDIF}
   FCatchOSErrors := True;
+  FPostBufferSize := BROOK_POST_BUFFER_SIZE;
+  FPayloadLimit := BROOK_PAYLOAD_LIMIT;
+  FUploadsLimit := BROOK_UPLOADS_LIMIT;
 end;
 
 destructor TBrookHTTPServer.Destroy;
