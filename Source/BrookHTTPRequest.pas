@@ -52,7 +52,7 @@ type
     FVersion: string;
     FMethod: string;
     FPath: string;
-    FUploading: Boolean;
+    FIsUploading: Boolean;
     FTLSSession: Pointer;
     FHandle: Psg_httpreq;
     function GetPaths: TArray<string>;
@@ -79,7 +79,7 @@ type
     property Method: string read FMethod;
     property Path: string read FPath;
     property Paths: TArray<string> read GetPaths;
-    property Uploading: Boolean read FUploading;
+    property IsUploading: Boolean read FIsUploading;
     property Uploads: TBrookHTTPUploads read FUploads;
     property TLSSession: Pointer read FTLSSession;
     property UserData: Pointer read GetUserData write SetUserData;
@@ -100,7 +100,7 @@ begin
   FVersion := TMarshal.ToString(sg_httpreq_version(FHandle));
   FMethod := TMarshal.ToString(sg_httpreq_method(FHandle));
   FPath := TMarshal.ToString(sg_httpreq_path(FHandle));
-  FUploading := sg_httpreq_uploading(FHandle);
+  FIsUploading := sg_httpreq_is_uploading(FHandle);
   if Assigned(sg_httpreq_tls_session) then
     FTLSSession := sg_httpreq_tls_session(FHandle);
 end;

@@ -284,7 +284,7 @@ var
   sg_httpreq_method: function(req: Psg_httpreq): Pcchar; cdecl;
   sg_httpreq_path: function(req: Psg_httpreq): Pcchar; cdecl;
   sg_httpreq_payload: function(req: Psg_httpreq): Psg_str; cdecl;
-  sg_httpreq_uploading: function(req: Psg_httpreq): cbool; cdecl;
+  sg_httpreq_is_uploading: function(req: Psg_httpreq): cbool; cdecl;
   sg_httpreq_uploads: function(req: Psg_httpreq): Psg_httpupld; cdecl;
   sg_httpreq_tls_session: function(req: Psg_httpreq): Pcvoid; cdecl;
   sg_httpreq_set_user_data: function(req: Psg_httpreq;
@@ -318,7 +318,7 @@ var
     threaded: cbool): cbool; cdecl;
   sg_httpsrv_shutdown: function(srv: Psg_httpsrv): cint; cdecl;
   sg_httpsrv_port: function(srv: Psg_httpsrv): cuint16_t; cdecl;
-  sg_httpsrv_threaded: function(srv: Psg_httpsrv): cbool; cdecl;
+  sg_httpsrv_is_threaded: function(srv: Psg_httpsrv): cbool; cdecl;
   sg_httpsrv_set_upld_cbs: function(srv: Psg_httpsrv; cb: sg_httpupld_cb;
     cls: Pcvoid; write_cb: sg_write_cb; free_cb: sg_free_cb;
     save_cb: sg_save_cb; save_as_cb: sg_save_as_cb): cint; cdecl;
@@ -440,7 +440,7 @@ begin
     sg_httpreq_method := GetProcAddress(GSgLibHandle, 'sg_httpreq_method');
     sg_httpreq_path := GetProcAddress(GSgLibHandle, 'sg_httpreq_path');
     sg_httpreq_payload := GetProcAddress(GSgLibHandle, 'sg_httpreq_payload');
-    sg_httpreq_uploading := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploading');
+    sg_httpreq_is_uploading := GetProcAddress(GSgLibHandle, 'sg_httpreq_is_uploading');
     sg_httpreq_uploads := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploads');
     sg_httpreq_tls_session := GetProcAddress(GSgLibHandle, 'sg_httpreq_tls_session');
     sg_httpreq_set_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_set_user_data');
@@ -460,7 +460,7 @@ begin
     sg_httpsrv_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_listen');
     sg_httpsrv_shutdown := GetProcAddress(GSgLibHandle, 'sg_httpsrv_shutdown');
     sg_httpsrv_port := GetProcAddress(GSgLibHandle, 'sg_httpsrv_port');
-    sg_httpsrv_threaded := GetProcAddress(GSgLibHandle, 'sg_httpsrv_threaded');
+    sg_httpsrv_is_threaded := GetProcAddress(GSgLibHandle, 'sg_httpsrv_is_threaded');
     sg_httpsrv_set_upld_cbs := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_upld_cbs');
     sg_httpsrv_set_upld_dir := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_upld_dir');
     sg_httpsrv_upld_dir := GetProcAddress(GSgLibHandle, 'sg_httpsrv_upld_dir');
@@ -556,7 +556,7 @@ begin
     sg_httpreq_method := nil;
     sg_httpreq_path := nil;
     sg_httpreq_payload := nil;
-    sg_httpreq_uploading := nil;
+    sg_httpreq_is_uploading := nil;
     sg_httpreq_uploads := nil;
     sg_httpreq_tls_session := nil;
     sg_httpreq_set_user_data := nil;
@@ -576,7 +576,7 @@ begin
     sg_httpsrv_listen := nil;
     sg_httpsrv_shutdown := nil;
     sg_httpsrv_port := nil;
-    sg_httpsrv_threaded := nil;
+    sg_httpsrv_is_threaded := nil;
     sg_httpsrv_set_upld_cbs := nil;
     sg_httpsrv_set_upld_dir := nil;
     sg_httpsrv_upld_dir := nil;

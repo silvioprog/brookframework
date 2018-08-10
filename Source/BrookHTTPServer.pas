@@ -623,7 +623,7 @@ begin
   if FActive and not (csDesigning in ComponentState) then
   begin
     SgCheckLibrary;
-    FThreaded := sg_httpsrv_threaded(FHandle);
+    FThreaded := sg_httpsrv_is_threaded(FHandle);
   end;
   Result := FThreaded;
 end;
