@@ -27,9 +27,7 @@ type
     FMethod: string;
     FPath: string;
     FUploading: Boolean;
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
     FTLSSession: Pointer;
-{$ENDIF}
     FHandle: Psg_httpreq;
     function GetPaths: TArray<string>;
   protected
@@ -57,9 +55,7 @@ type
     property Paths: TArray<string> read GetPaths;
     property Uploading: Boolean read FUploading;
     property Uploads: TBrookHTTPUploads read FUploads;
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
     property TLSSession: Pointer read FTLSSession;
-{$ENDIF}
     property UserData: Pointer read GetUserData write SetUserData;
   end;
 
@@ -79,10 +75,8 @@ begin
   FMethod := TMarshal.ToString(sg_httpreq_method(FHandle));
   FPath := TMarshal.ToString(sg_httpreq_path(FHandle));
   FUploading := sg_httpreq_uploading(FHandle);
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
   if Assigned(sg_httpreq_tls_session) then
     FTLSSession := sg_httpreq_tls_session(FHandle);
-{$ENDIF}
 end;
 
 destructor TBrookHTTPRequest.Destroy;

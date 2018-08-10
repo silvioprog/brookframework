@@ -24,6 +24,7 @@ resourcestring
   SBrookOpNotAllowedActiveServer =
     'Operation is not allowed while the server is active.';
   SBrookCannotCreateHTTPServerHandle = 'Cannot create HTTP server handle.';
+  SBrookTLSNotAvailable = 'TLS is not available.';
   SBrookEmptyPrivateKey = 'Private key cannot be empty.';
   SBrookEmptyCertificate = 'Certificate cannot be empty.';
 
@@ -50,8 +51,6 @@ type
 
   EBrookOpNotAllowedActiveServer = class(Exception);
 
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
-
   EBrookHTTPServerSecurity = class(Exception);
 
   TBrookHTTPServerSecurity = class(TPersistent)
@@ -76,8 +75,6 @@ type
     property DHParams: string read FDHParams write FDHParams;
   end;
 
-{$ENDIF}
-
   TBrookHTTPServer = class(TBrookHandledComponent)
   private
     FHandle: Psg_httpsrv;
@@ -95,9 +92,7 @@ type
     FStreamedAuthenticated: Boolean;
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
     FSecurity: TBrookHTTPServerSecurity;
-{$ENDIF}
     FOnAuthenticate: TBrookHTTPAuthenticationEvent;
     FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
     FOnRequest: TBrookHTTPRequestEvent;
@@ -129,9 +124,7 @@ type
     procedure SetConnectionLimit(AValue: Cardinal);
     procedure SetConnectionTimeout(AValue: Cardinal);
     procedure SetPayloadLimit(AValue: NativeUInt);
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
     procedure SetSecurity(AValue: TBrookHTTPServerSecurity);
-{$ENDIF}
     procedure SetUploadsLimit(AValue: UInt64);
     procedure SetPort(AValue: UInt16);
     procedure SetPostBufferSize(AValue: NativeUInt);
@@ -150,9 +143,7 @@ type
       const Aerr: Pcchar); cdecl; static;
     function CreateAuthentication(
       AHandle: Pointer): TBrookHTTPAuthentication; virtual;
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
     function CreateSecurity: TBrookHTTPServerSecurity; virtual;
-{$ENDIF}
     function CreateRequest(AHandle: Pointer): TBrookHTTPRequest; virtual;
     function CreateResponse(AHandle: Pointer): TBrookHTTPResponse; virtual;
     procedure Loaded; override;
@@ -203,9 +194,7 @@ type
       write SetConnectionTimeout stored IsConnectionTimeout default 0;
     property ConnectionLimit: Cardinal read GetConnectionLimit
       write SetConnectionLimit stored IsConnectionLimit default 0;
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
     property Security: TBrookHTTPServerSecurity read FSecurity write SetSecurity;
-{$ENDIF}
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
       write FOnAuthenticate;
     property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
@@ -217,8 +206,6 @@ type
   end;
 
 implementation
-
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
 
 { TBrookHTTPServerSecurity }
 
@@ -257,16 +244,12 @@ begin
   FDHParams := '';
 end;
 
-{$ENDIF}
-
 { TBrookHTTPServer }
 
 constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
   FSecurity := CreateSecurity;
-{$ENDIF}
   FCatchOSErrors := True;
   FPostBufferSize := BROOK_POST_BUFFER_SIZE;
   FPayloadLimit := BROOK_PAYLOAD_LIMIT;
@@ -275,9 +258,7 @@ end;
 
 destructor TBrookHTTPServer.Destroy;
 begin
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
   FSecurity.Free;
-{$ENDIF}
   try
     SetActive(False);
   finally
@@ -322,14 +303,10 @@ begin
   Result := TBrookHTTPAuthentication.Create(AHandle);
 end;
 
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
-
 function TBrookHTTPServer.CreateSecurity: TBrookHTTPServerSecurity;
 begin
   Result := TBrookHTTPServerSecurity.Create;
 end;
-
-{$ENDIF}
 
 function TBrookHTTPServer.CreateRequest(AHandle: Pointer): TBrookHTTPRequest;
 begin
@@ -537,8 +514,6 @@ begin
   FPayloadLimit := AValue;
 end;
 
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
-
 procedure TBrookHTTPServer.SetSecurity(AValue: TBrookHTTPServerSecurity);
 begin
   if FSecurity = AValue then
@@ -548,8 +523,6 @@ begin
   else
     FSecurity.Clear;
 end;
-
-{$ENDIF}
 
 procedure TBrookHTTPServer.SetUploadsLimit(AValue: UInt64);
 begin
@@ -791,10 +764,11 @@ begin
   if FConnectionLimit > 0 then
     InternalCheckServerOption(sg_httpsrv_set_con_limit(FHandle,
       FConnectionLimit));
-{$IFDEF BROOK_HAS_HTTPS_SUPPORT}
   if FSecurity.Active then
   begin
     FSecurity.Validate;
+    if not Assigned(sg_httpsrv_tls_listen2) then
+      raise ENotSupportedException.CreateRes(@SBrookTLSNotAvailable);
     FActive := sg_httpsrv_tls_listen2(FHandle,
       M.ToCNullable(FSecurity.PrivateKey),
       M.ToCNullable(FSecurity.PrivatePassword),
@@ -803,7 +777,6 @@ begin
       M.ToCNullable(FSecurity.DHParams), FPort, FThreaded);
   end
   else
-{$ENDIF}
     FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
   if not FActive then
     InternalFreeServerHandle;

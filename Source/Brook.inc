@@ -26,6 +26,3 @@
  *)
 
 {$I libsagui.inc}
-{$IFDEF SG_HTTPS_SUPPORT}
- {$DEFINE BROOK_HAS_HTTPS_SUPPORT}
-{$ENDIF}
