@@ -24,7 +24,7 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program Test_libbrook;
+program Test_libsagui;
 
 {$I Tests.inc}
 

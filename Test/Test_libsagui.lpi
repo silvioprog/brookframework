@@ -10,7 +10,7 @@
         <MainUnitHasScaledStatement Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <Title Value="Test_libbrook"/>
+      <Title Value="Test_libsagui"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -32,7 +32,7 @@
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
-        <Filename Value="Test_libbrook.dpr"/>
+        <Filename Value="Test_libsagui.dpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
         <UsageCount Value="20"/>
@@ -43,7 +43,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="Test_libbrook"/>
+      <Filename Value="Test_libsagui"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
