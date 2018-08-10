@@ -82,7 +82,6 @@ const
 
 resourcestring
   SSgLibraryNotLoaded = 'Library ''%s'' not loaded.';
-  SSgLibrarySymbolNotFound = 'Symbol ''%s'' not found.';
 {$IFDEF MSWINDOWS}
   SSgInvalidLibrary = 'Invalid library ''%s''.';
 {$ENDIF}
@@ -141,8 +140,6 @@ type
 {$ENDIF}
 
   ESgLibraryNotLoaded = class(EFileNotFoundException);
-
-  ESgLibrarySymbolNotFound = class(EInvalidPointer);
 
 type
   sg_err_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
