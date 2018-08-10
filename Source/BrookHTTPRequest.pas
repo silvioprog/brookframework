@@ -80,7 +80,8 @@ begin
   FPath := TMarshal.ToString(sg_httpreq_path(FHandle));
   FUploading := sg_httpreq_uploading(FHandle);
 {$IFDEF BROOK_HAS_HTTPS_SUPPORT}
-  FTLSSession := sg_httpreq_tls_session(FHandle);
+  if Assigned(sg_httpreq_tls_session) then
+    FTLSSession := sg_httpreq_tls_session(FHandle);
 {$ENDIF}
 end;
 
