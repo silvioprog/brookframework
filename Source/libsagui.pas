@@ -5,9 +5,9 @@
  *  |___/\__,_|\__, |\__,_|_|
  *             |___/
  *
- *   –– a smart C library which helps you write quickly embedded HTTP servers.
+ *   –– an ideal C library to develop cross-platform HTTP servers.
  *
- * Copyright (c) 2012-2018 Silvio Clecio <silvioprog@gmail.com>
+ * Copyright (c) 2016-2018 Silvio Clecio <silvioprog@gmail.com>
  *
  * This file is part of Sagui library.
  *
@@ -286,9 +286,7 @@ var
   sg_httpreq_payload: function(req: Psg_httpreq): Psg_str; cdecl;
   sg_httpreq_uploading: function(req: Psg_httpreq): cbool; cdecl;
   sg_httpreq_uploads: function(req: Psg_httpreq): Psg_httpupld; cdecl;
-{$IFDEF SG_HTTPS_SUPPORT}
   sg_httpreq_tls_session: function(req: Psg_httpreq): Pcvoid; cdecl;
-{$ENDIF}
   sg_httpreq_set_user_data: function(req: Psg_httpreq;
     data: Pcvoid): cint; cdecl;
   sg_httpreq_user_data: function(req: Psg_httpreq): Pcvoid; cdecl;
@@ -311,13 +309,11 @@ var
     err_cls: Pcvoid): Psg_httpsrv; cdecl;
   sg_httpsrv_new: function(cb: sg_httpreq_cb; cls: Pcvoid): Psg_httpsrv; cdecl;
   sg_httpsrv_free: procedure(srv: Psg_httpsrv); cdecl;
-{$IFDEF SG_HTTPS_SUPPORT}
   sg_httpsrv_tls_listen2: function(srv: Psg_httpsrv; const key: Pcchar;
     const pwd: Pcchar; const cert: Pcchar; const trust: Pcchar;
     const dhparams: Pcchar; port: cuint16_t; threaded: cbool): cbool; cdecl;
   sg_httpsrv_tls_listen: function(srv: Psg_httpsrv; const key: Pcchar;
     const cert: Pcchar; port: cuint16_t; threaded: cbool): cbool; cdecl;
-{$ENDIF}
   sg_httpsrv_listen: function(srv: Psg_httpsrv; port: cuint16_t;
     threaded: cbool): cbool; cdecl;
   sg_httpsrv_shutdown: function(srv: Psg_httpsrv): cint; cdecl;
@@ -446,9 +442,7 @@ begin
     sg_httpreq_payload := GetProcAddress(GSgLibHandle, 'sg_httpreq_payload');
     sg_httpreq_uploading := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploading');
     sg_httpreq_uploads := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploads');
-{$IFDEF SG_HTTPS_SUPPORT}
     sg_httpreq_tls_session := GetProcAddress(GSgLibHandle, 'sg_httpreq_tls_session');
-{$ENDIF}
     sg_httpreq_set_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_set_user_data');
     sg_httpreq_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_user_data');
 
@@ -461,10 +455,8 @@ begin
     sg_httpsrv_new2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new2');
     sg_httpsrv_new := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new');
     sg_httpsrv_free := GetProcAddress(GSgLibHandle, 'sg_httpsrv_free');
-{$IFDEF SG_HTTPS_SUPPORT}
     sg_httpsrv_tls_listen2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_tls_listen2');
     sg_httpsrv_tls_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_tls_listen');
-{$ENDIF}
     sg_httpsrv_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_listen');
     sg_httpsrv_shutdown := GetProcAddress(GSgLibHandle, 'sg_httpsrv_shutdown');
     sg_httpsrv_port := GetProcAddress(GSgLibHandle, 'sg_httpsrv_port');
@@ -566,9 +558,7 @@ begin
     sg_httpreq_payload := nil;
     sg_httpreq_uploading := nil;
     sg_httpreq_uploads := nil;
-{$IFDEF SG_HTTPS_SUPPORT}
     sg_httpreq_tls_session := nil;
-{$ENDIF}
     sg_httpreq_set_user_data := nil;
     sg_httpreq_user_data := nil;
 
@@ -581,10 +571,8 @@ begin
     sg_httpsrv_new2 := nil;
     sg_httpsrv_new := nil;
     sg_httpsrv_free := nil;
-{$IFDEF SG_HTTPS_SUPPORT}
     sg_httpsrv_tls_listen2 := nil;
     sg_httpsrv_tls_listen := nil;
-{$ENDIF}
     sg_httpsrv_listen := nil;
     sg_httpsrv_shutdown := nil;
     sg_httpsrv_port := nil;

@@ -5,9 +5,9 @@
  *  |___/\__,_|\__, |\__,_|_|
  *             |___/
  *
- *   –– a smart C library which helps you write quickly REST APIs.
+ *   –– an ideal C library to develop cross-platform HTTP servers.
  *
- * Copyright (c) 2012-2018 Silvio Clecio <silvioprog@gmail.com>
+ * Copyright (c) 2016-2018 Silvio Clecio <silvioprog@gmail.com>
  *
  * This file is part of Sagui library.
  *
@@ -36,4 +36,3 @@
   {$WARN 6058 OFF} // Note: Call to subroutine "%s" marked as inline is not inlined
  {$ENDIF}
 {$ENDIF}
-{$DEFINE SG_HTTPS_SUPPORT}
