@@ -30,20 +30,20 @@ program Test_libbrook;
 
 uses
   SysUtils,
-  libbrook;
+  libsagui;
 
 procedure Test_LoadLibrary;
 begin
-  BkUnloadLibrary;
-  Assert(BkLoadLibrary('') = NilHandle);
-  Assert(BkLoadLibrary('abc') = NilHandle);
-  Assert(BkLoadLibrary(BK_LIB_NAME) <> NilHandle);
+  SgUnloadLibrary;
+  Assert(SgLoadLibrary('') = NilHandle);
+  Assert(SgLoadLibrary('abc') = NilHandle);
+  Assert(SgLoadLibrary(SG_LIB_NAME) <> NilHandle);
 end;
 
 procedure Test_UnloadLibrary;
 begin
-  Assert(BkLoadLibrary(BK_LIB_NAME) <> NilHandle);
-  Assert(BkUnloadLibrary = NilHandle);
+  Assert(SgLoadLibrary(SG_LIB_NAME) <> NilHandle);
+  Assert(SgUnloadLibrary = NilHandle);
 end;
 
 procedure Test_CheckLibrary;
@@ -52,12 +52,12 @@ var
 begin
   OK := False;
   try
-    BkUnloadLibrary;
-    BkCheckLibrary;
+    SgUnloadLibrary;
+    SgCheckLibrary;
   except
     on E: Exception do
-      OK := (E.ClassType = EBkLibraryNotLoaded) and (E.Message =
-        Format(SBkLibraryNotLoaded, [BK_LIB_NAME]));
+      OK := (E.ClassType = ESgLibraryNotLoaded) and (E.Message =
+        Format(SSgLibraryNotLoaded, [SG_LIB_NAME]));
   end;
   Assert(OK);
 end;

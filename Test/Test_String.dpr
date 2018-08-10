@@ -30,7 +30,7 @@ program Test_String;
 
 uses
   SysUtils,
-  libbrook,
+  libsagui,
   BrookString;
 
 type
@@ -42,10 +42,10 @@ type
 procedure TLocalString.LocalDestroy;
 begin
   inherited Destroy;
-  BkCheckLibrary;
+  SgCheckLibrary;
   { checks if the handle was really freed and 'nilified'. }
   Assert(not Assigned(Handle));
-  Assert(bk_str_clear(Handle) <> 0);
+  Assert(sg_str_clear(Handle) <> 0);
 end;
 
 procedure Test_StringHandle(AStr: TBrookString);
@@ -70,11 +70,11 @@ end;
 
 procedure Test_StringOwnsHandle;
 var
-  Vhandle: Pbk_str;
+  Vhandle: Psg_str;
   VStr: TBrookString;
 begin
-  BkCheckLibrary;
-  Vhandle := bk_str_new;
+  SgCheckLibrary;
+  Vhandle := sg_str_new;
   Assert(Assigned(Vhandle));
   VStr := TBrookString.Create(Vhandle);
   try
@@ -82,7 +82,7 @@ begin
     Assert(VStr.Handle = Vhandle);
   finally
     VStr.Destroy;
-    bk_str_free(Vhandle);
+    sg_str_free(Vhandle);
   end;
   VStr := TLocalString.Create(nil);
   try

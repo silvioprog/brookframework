@@ -36,7 +36,7 @@ program Test_StringMap;
 uses
   SysConst,
   SysUtils,
-  libbrook,
+  libsagui,
   Marshalling,
   BrookStringMap;
 
@@ -60,10 +60,10 @@ end;
 procedure TLocalStringMap.LocalDestroy;
 begin
   inherited Destroy;
-  BkCheckLibrary;
+  SgCheckLibrary;
   { checks if the handle was really freed and 'nilified'. }
   Assert(not Assigned(Handle));
-  bk_strmap_cleanup(Handle);
+  sg_strmap_cleanup(Handle);
 end;
 
 procedure Test_StringMapNameValue;
@@ -90,24 +90,24 @@ begin
     VMap.ClearOnDestroy := False;
     VMap.Add('abc', '123');
     VMap.Add('def', '456');
-    BkCheckLibrary;
-    Assert(bk_strmap_count(VMapHandle) = 2);
+    SgCheckLibrary;
+    Assert(sg_strmap_count(VMapHandle) = 2);
   finally
     VMap.Free;
   end;
-  Assert(bk_strmap_count(VMapHandle) = 2);
-  bk_strmap_cleanup(@VMapHandle);
+  Assert(sg_strmap_count(VMapHandle) = 2);
+  sg_strmap_cleanup(@VMapHandle);
   VMapHandle := nil;
   VMap := TLocalStringMap.Create(@VMapHandle);
   try
     VMap.Add('abc', '123');
     VMap.Add('def', '456');
-    BkCheckLibrary;
-    Assert(bk_strmap_count(VMapHandle) = 2);
+    SgCheckLibrary;
+    Assert(sg_strmap_count(VMapHandle) = 2);
   finally
     VMap.Free;
   end;
-  Assert(bk_strmap_count(VMapHandle) = 0);
+  Assert(sg_strmap_count(VMapHandle) = 0);
 end;
 
 procedure Test_StringMapOnChange;
@@ -118,15 +118,15 @@ begin
   VMapHandle := nil;
   VMap := TLocalStringMap.Create(@VMapHandle);
   try
-    Assert(VMap.Operation = bkmoNone);
+    Assert(VMap.Operation = sgmoNone);
     VMap.Add('abc', '123');
-    Assert(VMap.Operation = bkmoAdd);
+    Assert(VMap.Operation = sgmoAdd);
     VMap.AddOrSet('def', '456');
-    Assert(VMap.Operation = bkmoAddOrSet);
+    Assert(VMap.Operation = sgmoAddOrSet);
     VMap.Remove('abc');
-    Assert(VMap.Operation = bkmoRemove);
+    Assert(VMap.Operation = sgmoRemove);
     VMap.Clear;
-    Assert(VMap.Operation = bkmoNone);
+    Assert(VMap.Operation = sgmoNone);
   finally
     VMap.Free;
   end;
