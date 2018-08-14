@@ -2,8 +2,8 @@
 
 * Version number: `4.0`
 * Codename: `Tardigrade`
-* Core (under [libsagui](https://github.com/risoflora/libsagui) and [libcordel](https://github.com/risoflora/libcordel))
-    * shared library - dynamic loading, single external file required
+* Core (under [libsagui](https://github.com/risoflora/libsagui) and [libcordel](https://github.com/risoflora/libcordel) statically linked into libbrook)
+    * shared library - dynamic loading, single external file required (`libbrook.so`/`libbrook.dll`)
 
 # Supported platforms:
 
