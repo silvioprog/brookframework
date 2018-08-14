@@ -2,7 +2,7 @@
 
 * Version number: `4.0`
 * Codename: `Tardigrade`
-* Core (under [libbrook](https://github.com/risoflora/libbrook/tree/new_api))
+* Core (under [libsagui](https://github.com/risoflora/libsagui) and [libcordel](https://github.com/risoflora/libcordel))
     * shared library - dynamic loading, single external file required
 
 # Supported platforms:
