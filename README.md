@@ -7,17 +7,18 @@
 
 # Supported platforms:
 
+It was successfully tested on:
+
 * Windows [32/64 bits]
 * Linux [32/64 bits]
+* Raspbian [i686; `arm-linux-gnueabihf`/`armv6--linux-gnueabihf`]
 * Android [tested on version `7.1.2`; API `24`; ABI `armeabi-v7a`]
-
-(future testings: Orange PI i96 256 MB ARM Cortex-A5 32bit with minimal Linux core)
 
 # Suported compilers
 
 Successfully compiled for Windows 32/64 bit and Linux 64 bit using:
 * Delphi XE family (tested in Delphi Tokyo)
-* Lazarus / Free Pascal (tested in Lazarus 1.8.0 / FPC 3.0.4)
+* Lazarus / Free Pascal (tested in Lazarus 1.8.4 / FPC 3.0.4)
 
 # Dependence
 
@@ -50,7 +51,7 @@ Units:
 * ~~`BrookString` - low-level string handling.~~ (Done!)
 * ~~`BrookStringMap` - mapped strings for fast name-value handling.~~ (Done!)
 * `BrookHTTPServer` - fast event-driven HTTP server. (Documenting/testing ...)
-* `BrookHTTPRouter` - lightweight HTTP request router. (Planning ...)
+* `BrookHTTPRouter` - lightweight HTTP request router. (In progress...)
 
 Classes:
 
@@ -58,7 +59,7 @@ Classes:
 * ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
 * ~~`TBrookStringMap` - used to represent HTML fields, query-string parameters and more.~~ (Done!)
 * `TBrookHTTPServer` - event-driven HTTP server that supports to handle many requests and upload/download large files. (Documenting/testing ...)
-* `TBrookHTTPRouter` - lightweight high performance HTTP request router. (Planning ...)
+* `TBrookHTTPRouter` - lightweight high performance HTTP request router. (In progress...)
 
 Packages:
 
