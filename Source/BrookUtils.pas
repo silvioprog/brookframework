@@ -114,9 +114,9 @@ var
   P: MarshaledAString;
 begin
   SgCheckLibrary;
-  ALength := ALength + 1;
   GetMem(P, ALength);
   try
+    FillChar(P^, ALength, 0);
     sg_strerror(AErrorNum, P, ALength);
     Result := TMarshal.ToString(P, Length(P));
   finally
@@ -126,7 +126,7 @@ end;
 
 function BrookStrError(AErrorNum: Integer): string;
 begin
-  Result := BrookStrError(AErrorNum, 255);
+  Result := BrookStrError(AErrorNum, 256);
 end;
 
 function BrookIsPost(const AMethod: string): Boolean;

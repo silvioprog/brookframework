@@ -619,6 +619,7 @@ begin
     Exit;
   GetMem(P, BUF_LEN);
   try
+    FillChar(P^, BUF_LEN, 0);
     sg_strerror(ALastError, P, BUF_LEN);
     SetString(S, P, Length(P));
     SetCodePage(RawByteString(S), CP_UTF8, False);
