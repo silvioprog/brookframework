@@ -157,7 +157,7 @@ type
     procedure SetThreaded(AValue: Boolean);
     procedure SetThreadPoolSize(AValue: Cardinal);
     procedure SetUploadsDir(const AValue: string);
-    procedure InternalCreateServerHandle; inline;
+    procedure InternalCreateServerHandle;
     procedure InternalFreeServerHandle; inline;
     procedure InternalCheckServerOption(Aopt: cint); inline;
   protected
