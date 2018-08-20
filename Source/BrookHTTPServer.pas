@@ -562,6 +562,8 @@ begin
   if not FStreamedActive then
     CheckInactive;
   FThreaded := AValue;
+  if FThreaded then
+    IsMultiThread := True;
 end;
 
 procedure TBrookHTTPServer.SetThreadPoolSize(AValue: Cardinal);
@@ -569,6 +571,8 @@ begin
   if not FStreamedActive then
     CheckInactive;
   FThreadPoolSize := AValue;
+  if FThreadPoolSize > 0 then
+    IsMultiThread := True;
 end;
 
 procedure TBrookHTTPServer.SetUploadsDir(const AValue: string);
