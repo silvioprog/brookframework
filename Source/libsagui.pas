@@ -161,7 +161,7 @@ var
   sg_version: function: cuint; cdecl;
   sg_version_str: function: Pcchar; cdecl;
   sg_alloc: function(size: csize_t): Pcvoid; cdecl;
-  sg_realloc: procedure(ptr: Pcvoid; size: csize_t); cdecl;
+  sg_realloc: function(ptr: Pcvoid; size: csize_t): Pointer; cdecl;
   sg_free: procedure(ptr: Pcvoid); cdecl;
   sg_strerror: function(errnum: cint; str: Pcchar; len: csize_t): Pcchar; cdecl;
   sg_is_post: function(const method: Pcchar): cbool; cdecl;
