@@ -30,9 +30,7 @@ program HTTPUpload_Example;
 
 uses
 {$IFDEF UNIX}
- {$IFDEF UseCThreads}
   CThreads,
- {$ENDIF}
 {$ENDIF}
   Interfaces,
   Forms,
