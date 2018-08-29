@@ -46,7 +46,7 @@ set(PROJECT_DESCRIPTION "–– wrapper library to integrate Sagui and Cordel li
 set(PROJECT_VENDOR "The Brook Framework Development Team")
 set(PROJECT_URL "https://github.com/silvioprog/brookframework")
 set(PROJECT_ISSUES_URL "${PROJECT_URL}/issues")
-set(CL_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
+set(BK_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
 if ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_COMPILER_IS_CLANG ON)
@@ -67,5 +67,28 @@ endif ()
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
+option(BK_HTTPS_SUPPORT "Enable HTTPS support" OFF)
+
+include(ExternalProject)
 include(BkSagui)
 include(BkCordel)
+
+if (CMAKE_BUILD_TYPE MATCHES "[Rr]elease|RELEASE")
+    set(BUILD_TESTING OFF)
+elseif (BUILD_TESTING)
+    add_definitions(-DBUILD_TESTING=1)
+    enable_testing()
+endif ()
+
+if (UNIX AND ((NOT APPLE) AND (NOT ANDROID)))
+    include(CheckIncludeFiles)
+    check_include_files(errno.h HAVE_ERRNO_H)
+    if (NOT HAVE_ERRNO_H)
+        include_directories(/usr/include/asm-generic)
+    endif ()
+endif ()
+
+include_directories(${BK_INCLUDE_DIR})
+include_directories(${SAGUI_INCLUDE_DIR})
+
+add_subdirectory(src)
