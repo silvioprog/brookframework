@@ -24,4 +24,9 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-{$I libsagui.inc}
+{$IFDEF FPC}
+ {$MODE DELPHI}
+ {$IFNDEF VER3_0} //{$IF FPC_FULLVERSION >= 30101} commented to fix "[dcc32 Error] E2026 Constant expression expected"
+  {$WARN 6058 OFF} // Note: Call to subroutine "%s" marked as inline is not inlined
+ {$ENDIF}
+{$ENDIF}
