@@ -51,7 +51,7 @@ Units:
 * ~~`BrookString` - low-level string handling.~~ (Done!)
 * ~~`BrookStringMap` - mapped strings for fast name-value handling.~~ (Done!)
 * `BrookHTTPServer` - fast event-driven HTTP server. (Documenting/testing ...)
-* `BrookHTTPRouter` - lightweight HTTP request router. (In progress...)
+* `BrookHTTPRouter` - high-performance path routing. (In progress...)
 
 Classes:
 
@@ -59,7 +59,7 @@ Classes:
 * ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
 * ~~`TBrookStringMap` - used to represent HTML fields, query-string parameters and more.~~ (Done!)
 * `TBrookHTTPServer` - event-driven HTTP server that supports to handle many requests and upload/download large files. (Documenting/testing ...)
-* `TBrookHTTPRouter` - lightweight high performance HTTP request router. (In progress...)
+* `TBrookHTTPRouter` - lightweight high-performance request router. (In progress...)
 
 Packages:
 
@@ -80,6 +80,7 @@ Testings:
 * ~~`TestString` - string class tests.~~ (Done!)
 * ~~`TestStringMap` - string map tests.~~ (Done!)
 * `TestHTTPServer` - HTTP server tests. (In progress...)
+* `TestRouter` - Router tests. (In progress...)
 
 Documentation:
 
@@ -88,6 +89,7 @@ Documentation:
 * ~~`BrookString` - string class reference [HTML/PDF].~~ (Done!)
 * ~~`BrookStringMap` - string map reference [HTML/PDF].~~ (Done!)
 * `BrookHTTPServer` - HTTP server reference [HTML/PDF]. (In progress...)
+* `BrookRouter` - Router reference [HTML/PDF]. (In progress...)
 
 Bugs:
 

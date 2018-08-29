@@ -59,6 +59,7 @@ requires
 
 contains
   libsagui in '..\Source\libsagui.pas',
+  libcordel in '..\Source\libcordel.pas',
   Platform in '..\Source\Platform.pas',
   Marshalling in '..\Source\Marshalling.pas',
   BrookLibraryLoader in '..\Source\BrookLibraryLoader.pas',
@@ -72,6 +73,7 @@ contains
   BrookHTTPRequest in '..\Source\BrookHTTPRequest.pas',
   BrookHTTPResponse in '..\Source\BrookHTTPResponse.pas',
   BrookHTTPServer in '..\Source\BrookHTTPServer.pas',
+  BrookRouter in '..\Source\BrookRouter.pas',
   BrookIDEIntegration in 'BrookIDEIntegration.pas';
 
 end.

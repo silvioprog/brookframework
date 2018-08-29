@@ -102,13 +102,15 @@ implementation
 
 uses
   BrookLibraryLoader,
-  BrookHTTPServer;
+  BrookHTTPServer,
+  BrookRouter;
 
 procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-    TBrookHTTPServer
+    TBrookHTTPServer,
+    TBrookRouter
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
