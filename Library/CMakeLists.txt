@@ -69,16 +69,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 option(BK_HTTPS_SUPPORT "Enable HTTPS support" OFF)
 
+include(GNUInstallDirs)
 include(ExternalProject)
+include(BkVersion)
 include(BkSagui)
 include(BkCordel)
-
-if (CMAKE_BUILD_TYPE MATCHES "[Rr]elease|RELEASE")
-    set(BUILD_TESTING OFF)
-elseif (BUILD_TESTING)
-    add_definitions(-DBUILD_TESTING=1)
-    enable_testing()
-endif ()
 
 if (UNIX AND ((NOT APPLE) AND (NOT ANDROID)))
     include(CheckIncludeFiles)
