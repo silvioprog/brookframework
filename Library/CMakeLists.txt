@@ -90,5 +90,6 @@ endif ()
 
 include_directories(${BK_INCLUDE_DIR})
 include_directories(${SAGUI_INCLUDE_DIR})
+include_directories(${CORDEL_INCLUDE_DIR})
 
 add_subdirectory(src)
