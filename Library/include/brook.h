@@ -77,6 +77,9 @@ BK_EXTERN unsigned int bk_version(void);
  */
 BK_EXTERN const char *bk_version_str(void);
 
+/* experimental */
+BK_EXTERN const char *bk_version_full_str(void);
+
 /** \} */
 
 #ifdef __cplusplus

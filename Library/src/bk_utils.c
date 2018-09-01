@@ -26,9 +26,13 @@
  */
 
 #include "bk_macros.h"
+#include "sagui.h"
+#include "cordel.h"
 #include "brook.h"
 
-#define BK_VERSION_STR xstr(SG_VERSION_MAJOR) "." xstr(SG_VERSION_MINOR) "." xstr(SG_VERSION_PATCH)
+#define BK_VERSION_STR xstr(BK_VERSION_MAJOR) "." xstr(BK_VERSION_MINOR) "." xstr(BK_VERSION_PATCH)
+#define SG_VERSION_STR xstr(SG_VERSION_MAJOR) "." xstr(SG_VERSION_MINOR) "." xstr(SG_VERSION_PATCH)
+#define CL_VERSION_STR xstr(CL_VERSION_MAJOR) "." xstr(CL_VERSION_MINOR) "." xstr(CL_VERSION_PATCH)
 
 /* Version. */
 
@@ -38,4 +42,8 @@ unsigned int bk_version(void) {
 
 const char *bk_version_str(void) {
     return BK_VERSION_STR;
+}
+
+const char *bk_version_full_str(void) {
+    return "libbrook-" BK_VERSION_STR ",libsagui-" SG_VERSION_STR ",libcordel-" CL_VERSION_STR;
 }
