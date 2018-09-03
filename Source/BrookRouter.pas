@@ -31,12 +31,54 @@ unit BrookRouter;
 interface
 
 uses
-  BrookHandledClasses;
+  Classes,
+  libsagui,
+  BrookHandledClasses,
+  BrookRoutes;
 
 type
+  TBrookRouter = class;
+
+  TBrookRouterCreatePanelClassEvent = procedure(ASender: TBrookRouter;
+    var ARouteClass: TBrookRouteClass) of object;
+
   TBrookRouter = class(TBrookHandledComponent)
+  private
+    FRoutes: TBrookRoutes;
+    FOnCreateRouteClass: TBrookRouterCreatePanelClassEvent;
+    procedure SetRoutes(AValue: TBrookRoutes);
+  protected
+    function CreateRoutes: TBrookRoutes; virtual;
+    function GetRouteClass: TBrookRouteClass; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property Routes: TBrookRoutes read FRoutes write SetRoutes;
+    property OnCreateRouteClass: TBrookRouterCreatePanelClassEvent read
+      FOnCreateRouteClass write FOnCreateRouteClass;
   end;
 
 implementation
+
+constructor TBrookRouter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FRoutes := CreateRoutes;
+end;
+
+function TBrookRouter.CreateRoutes: TBrookRoutes;
+begin
+  Result := TBrookRoutes.Create(Self);
+end;
+
+function TBrookRouter.GetRouteClass: TBrookRouteClass;
+begin
+  Result := TBrookRoute;
+end;
+
+procedure TBrookRouter.SetRoutes(AValue: TBrookRoutes);
+begin
+  FRoutes.Assign(AValue);
+end;
 
 end.

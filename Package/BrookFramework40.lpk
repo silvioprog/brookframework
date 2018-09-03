@@ -10,8 +10,14 @@
         <OtherUnitFiles Value="../Source"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <CustomOptions Value="-dSG_PATH_ROUTING"/>
+        <OtherDefines Count="1">
+          <Define0 Value="SG_PATH_ROUTING"/>
+        </OtherDefines>
+      </Other>
     </CompilerOptions>
-    <Files Count="17">
+    <Files Count="18">
       <Item1>
         <Filename Value="../Source/libsagui.pas"/>
         <UnitName Value="libsagui"/>
@@ -73,14 +79,18 @@
         <UnitName Value="BrookHTTPServer"/>
       </Item15>
       <Item16>
-        <Filename Value="../Source/BrookRouter.pas"/>
-        <UnitName Value="BrookRouter"/>
+        <Filename Value="../Source/BrookRoutes.pas"/>
+        <UnitName Value="BrookRoutes"/>
       </Item16>
       <Item17>
+        <Filename Value="../Source/BrookRouter.pas"/>
+        <UnitName Value="BrookRouter"/>
+      </Item17>
+      <Item18>
         <Filename Value="BrookIDEIntegration.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookIDEIntegration"/>
-      </Item17>
+      </Item18>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

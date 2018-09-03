@@ -159,6 +159,15 @@ type
   sg_save_as_cb = function(handle: Pcvoid; const path: Pcchar;
     overwritten: cbool): cint; cdecl;
 
+{$IFDEF SG_PATH_ROUTING}
+
+  sg_get_segments_cb = function(cls: Pcvoid; const segment: Pcchar): cint; cdecl;
+
+  sg_get_vars_cb = function(cls: Pcvoid; const name: Pcchar;
+    const val: Pcchar): cint; cdecl;
+
+{$ENDIF}
+
 var
   sg_version: function: cuint; cdecl;
   sg_version_str: function: Pcchar; cdecl;
@@ -348,6 +357,57 @@ var
 
   sg_httpread_end: function(err: cbool): cssize_t; cdecl;
 
+{$IFDEF SG_PATH_ROUTING}
+
+type
+  PPsg_route = ^Psg_route;
+  Psg_route = ^sg_route;
+  sg_route = record
+  end;
+
+  sg_route_cb = procedure(cls: Pcvoid; route: Psg_route); cdecl;
+
+var
+  sg_route_handle: procedure(route: Psg_route); cdecl;
+
+  sg_route_pattern: function(route: Psg_route): Pcchar; cdecl;
+
+  sg_route_path: function(route: Psg_route): Pcchar; cdecl;
+
+  sg_route_get_segments: function(route: Psg_route; cb: sg_get_segments_cb;
+    cls: Pcvoid): cint; cdecl;
+
+  sg_route_get_vars: function(route: Psg_route; cb: sg_get_vars_cb;
+    cls: Pcvoid): cint; cdecl;
+
+  sg_route_user_data: function(route: Psg_route): Pcvoid; cdecl;
+
+  sg_routes_add2: function(routes: PPsg_route; const pattern: Pcchar;
+    errmsg: Pcchar; errlen: csize_t; cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
+
+  sg_routes_add: function(routes: PPsg_route; const pattern: Pcchar;
+    cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
+
+  sg_routes_clear: function(routes: PPsg_route): cint; cdecl;
+
+type
+  Psg_router = ^sg_router;
+  sg_router = record
+  end;
+
+var
+  sg_router_new2: function(routes: Psg_route; err_cb: sg_err_cb;
+    cls: Pcvoid): Psg_router; cdecl;
+
+  sg_router_new: function(routes: Psg_route): Psg_router; cdecl;
+
+  sg_router_free: procedure(router: Psg_router); cdecl;
+
+  sg_router_dispatch: function(router: Psg_router; const path: Pcchar;
+    user_data: Pcvoid): cint; cdecl;
+
+{$ENDIF}
+
 { TODO: procedure SgAddUnloadLibraryProc }
 function SgLoadLibrary(const AFileName: TFileName): TLibHandle;
 function SgUnloadLibrary: TLibHandle;
@@ -481,6 +541,25 @@ begin
 
     sg_httpread_end := GetProcAddress(GSgLibHandle, 'sg_httpread_end');
 
+{$IFDEF SG_PATH_ROUTING}
+
+    sg_route_handle := GetProcAddress(GSgLibHandle, 'sg_route_handle');
+    sg_route_pattern := GetProcAddress(GSgLibHandle, 'sg_route_pattern');
+    sg_route_path := GetProcAddress(GSgLibHandle, 'sg_route_path');
+    sg_route_get_segments := GetProcAddress(GSgLibHandle, 'sg_route_get_segments');
+    sg_route_get_vars := GetProcAddress(GSgLibHandle, 'sg_route_get_vars');
+    sg_route_user_data := GetProcAddress(GSgLibHandle, 'sg_route_user_data');
+    sg_routes_add2 := GetProcAddress(GSgLibHandle, 'sg_routes_add2');
+    sg_routes_add := GetProcAddress(GSgLibHandle, 'sg_routes_add');
+    sg_routes_clear := GetProcAddress(GSgLibHandle, 'sg_routes_clear');
+
+    sg_router_new2 := GetProcAddress(GSgLibHandle, 'sg_router_new2');
+    sg_router_new := GetProcAddress(GSgLibHandle, 'sg_router_new');
+    sg_router_free := GetProcAddress(GSgLibHandle, 'sg_router_free');
+    sg_router_dispatch := GetProcAddress(GSgLibHandle, 'sg_router_dispatch');
+
+{$ENDIF}
+
     Result := GSgLibHandle;
   finally
     GSgLock.Release;
@@ -596,6 +675,25 @@ begin
     sg_httpsrv_con_limit := nil;
 
     sg_httpread_end := nil;
+
+{$IFDEF SG_PATH_ROUTING}
+
+    sg_route_handle := nil;
+    sg_route_pattern := nil;
+    sg_route_path := nil;
+    sg_route_get_segments := nil;
+    sg_route_get_vars := nil;
+    sg_route_user_data := nil;
+    sg_routes_add2 := nil;
+    sg_routes_add := nil;
+    sg_routes_clear := nil;
+
+    sg_router_new2 := nil;
+    sg_router_new := nil;
+    sg_router_free := nil;
+    sg_router_dispatch := nil;
+
+{$ENDIF}
 
     Result := GSgLibHandle;
   finally

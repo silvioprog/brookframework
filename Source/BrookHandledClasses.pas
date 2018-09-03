@@ -45,6 +45,24 @@ type
     property Handle: Pointer read GetHandle;
   end;
 
+  { The base handled collection item. }
+  TBrookHandleCollectionItem = class abstract(TCollectionItem)
+  protected
+    function GetHandle: Pointer; virtual; abstract;
+  public
+    { Handle of a feature from the loaded library. }
+    property Handle: Pointer read GetHandle;
+  end;
+
+  { The base handled collection. }
+  TBrookHandleOwnedCollection = class abstract(TOwnedCollection)
+  protected
+    function GetHandle: Pointer; virtual; abstract;
+  public
+    { Handle of a feature from the loaded library. }
+    property Handle: Pointer read GetHandle;
+  end;
+
   { The base handled component. }
   TBrookHandledComponent = class abstract(TComponent)
   protected

@@ -38,16 +38,22 @@ uses
   Dialogs,
 {$IFDEF LCL}
   PropEdits,
-  ComponentEditors
+  ComponentEditors,
 {$ELSE}
   DesignIntf,
-  DesignEditors
-{$ENDIF},
+  DesignEditors,
+ {$IFDEF SG_PATH_ROUTING}
+  ColnEdit,
+ {$ENDIF}
+{$ENDIF}
   libsagui;
 
 resourcestring
   SBrookSelectLibraryTitle = 'Select library';
   SBrookSharedLibraryFilter = 'Shared libraries (%s)|%s|All files (*.*)|*.*';
+{$IFDEF SG_PATH_ROUTING}
+  SBrookRoutesEditor = 'Routes editor ...';
+{$ENDIF}
 
 type
 
@@ -94,6 +100,19 @@ type
       var AContinue: Boolean); override;
   end;
 
+{$IFDEF SG_PATH_ROUTING}
+
+  { TBrookRouterComponentEditor }
+
+  TBrookRouterComponentEditor = class(TComponentEditor)
+  public
+    procedure ExecuteVerb(AIndex: Integer); override;
+    function GetVerb(AIndex: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
+{$ENDIF}
+
 {$R BrookFramework40Icons.res}
 
 procedure Register;
@@ -102,21 +121,28 @@ implementation
 
 uses
   BrookLibraryLoader,
-  BrookHTTPServer,
-  BrookRouter;
+  BrookHTTPServer
+{$IFDEF SG_PATH_ROUTING}
+  , BrookRouter
+{$ENDIF};
 
 procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-    TBrookHTTPServer,
-    TBrookRouter
+    TBrookHTTPServer
+{$IFDEF SG_PATH_ROUTING}
+    , TBrookRouter
+{$ENDIF}
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
   RegisterComponentEditor(TBrookLibraryLoader,
     TBrookLibraryNameComponentEditor);
   RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
+{$IFDEF SG_PATH_ROUTING}
+  RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
+{$ENDIF}
 end;
 
 {$IFDEF LCL}
@@ -270,5 +296,38 @@ begin
   if SameText(AProperty.GetName, 'OnRequest') then
     inherited EditProperty(AProperty, AContinue);
 end;
+
+{$IFDEF SG_PATH_ROUTING}
+
+{ TBrookRouterComponentEditor }
+
+procedure TBrookRouterComponentEditor.ExecuteVerb(AIndex: Integer);
+var
+  VRouter: TBrookRouter;
+begin
+  if AIndex <> 0 then
+    Exit;
+  VRouter := GetComponent as TBrookRouter;
+{$IFDEF LCL}
+  EditCollection(
+{$ELSE}
+  ShowCollectionEditor(Designer,
+{$ENDIF}
+    VRouter, VRouter.Routes, 'Routes');
+end;
+
+function TBrookRouterComponentEditor.GetVerb(AIndex: Integer): string;
+begin
+  if AIndex = 0 then
+    Exit(LoadResString(@SBrookRoutesEditor));
+  Result := '';
+end;
+
+function TBrookRouterComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+{$ENDIF}
 
 end.
