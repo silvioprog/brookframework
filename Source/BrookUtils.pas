@@ -37,6 +37,10 @@ uses
   libsagui,
   Marshalling;
 
+type
+  TBrookErrorEvent = procedure(ASender: TObject;
+    AException: Exception) of object;
+
 {
   Returns the library version number.
   @return(Library version packed into a single integer.)

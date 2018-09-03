@@ -35,6 +35,7 @@ uses
   Classes,
   Marshalling,
   libsagui,
+  BrookUtils,
   BrookHandledClasses,
   BrookHTTPExtra,
   BrookHTTPAuthentication,
@@ -55,9 +56,6 @@ resourcestring
   SBrookEmptyCertificate = 'Certificate cannot be empty.';
 
 type
-  TBrookHTTPErrorEvent = procedure(ASender: TObject;
-    AException: Exception) of object;
-
   TBrookHTTPAuthenticationEvent = function(ASender: TObject;
     AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse): Boolean of object;
@@ -123,7 +121,7 @@ type
     FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
     FOnRequest: TBrookHTTPRequestEvent;
     FOnRequestError: TBrookHTTPRequestErrorEvent;
-    FOnError: TBrookHTTPErrorEvent;
+    FOnError: TBrookErrorEvent;
     function GetConnectionLimit: Cardinal;
     function GetConnectionTimeout: Cardinal;
     function GetPayloadLimit: NativeUInt;
@@ -228,7 +226,7 @@ type
     property OnRequest: TBrookHTTPRequestEvent read FOnRequest write FOnRequest;
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
       write FOnRequestError;
-    property OnError: TBrookHTTPErrorEvent read FOnError write FOnError;
+    property OnError: TBrookErrorEvent read FOnError write FOnError;
   end;
 
 implementation
@@ -294,13 +292,13 @@ end;
 
 procedure TBrookHTTPServer.InternalCreateServerHandle;
 var
-  ACB: sg_httpauth_cb;
+  VACb: sg_httpauth_cb;
 begin
   if FAuthenticated then
-    ACB := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
+    VACb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
   else
-    ACB := nil;
-  FHandle := sg_httpsrv_new2(ACB, Self,
+    VACb := nil;
+  FHandle := sg_httpsrv_new2(VACb, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(FHandle) then
