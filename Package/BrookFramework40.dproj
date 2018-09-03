@@ -113,6 +113,7 @@
         <DCCReference Include="..\Source\BrookHTTPRequest.pas"/>
         <DCCReference Include="..\Source\BrookHTTPResponse.pas"/>
         <DCCReference Include="..\Source\BrookHTTPServer.pas"/>
+        <DCCReference Include="..\Source\BrookRouter.pas"/>
         <DCCReference Include="BrookIDEIntegration.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

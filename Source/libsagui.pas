@@ -29,7 +29,9 @@
 
 unit libsagui;
 
-{$I libsagui.inc}
+{$IFDEF FPC}
+ {$MODE DELPHI}
+{$ENDIF}
 
 interface
 

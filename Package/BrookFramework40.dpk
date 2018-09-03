@@ -1,4 +1,4 @@
-(*   _                     _
+﻿(*   _                     _
  *  | |__  _ __ ___   ___ | | __
  *  | '_ \| '__/ _ \ / _ \| |/ /
  *  | |_) | | | (_) | (_) |   <
@@ -59,7 +59,6 @@ requires
 
 contains
   libsagui in '..\Source\libsagui.pas',
-  libcordel in '..\Source\libcordel.pas',
   Platform in '..\Source\Platform.pas',
   Marshalling in '..\Source\Marshalling.pas',
   BrookLibraryLoader in '..\Source\BrookLibraryLoader.pas',
