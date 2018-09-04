@@ -66,11 +66,7 @@ type
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetRoutes(AValue: TBrookRoutes);
-    procedure InternalCreateRouterHandle;
-    procedure InternalFreeRouterHandle; inline;
   protected
-    class procedure DoErrorCallback(Acls: Pcvoid;
-      const Aerr: Pcchar); cdecl; static;
     function CreateRoutes: TBrookRoutes; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
@@ -108,34 +104,6 @@ begin
     SetActive(False);
   finally
     inherited Destroy;
-  end;
-end;
-
-procedure TBrookRouter.InternalCreateRouterHandle;
-begin
-  FHandle := sg_router_new2(FRoutes.Handle,
-{$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
-  if not Assigned(FHandle) then
-    raise EInvalidPointer.CreateRes(@SBrookCannotCreateRouterHandle);
-end;
-
-procedure TBrookRouter.InternalFreeRouterHandle;
-begin
-  sg_router_free(FHandle);
-  FHandle := nil;
-end;
-
-class procedure TBrookRouter.DoErrorCallback(Acls: Pcvoid; const Aerr: Pcchar);
-  cdecl;
-var
-  VRouter: TBrookRouter absolute Acls;
-  VException: EBrookRouter;
-begin
-  VException := EBrookRouter.Create(TMarshal.ToString(Aerr));
-  try
-    VRouter.DoError(VRouter, VException);
-  finally
-    VException.Free;
   end;
 end;
 
@@ -215,10 +183,12 @@ procedure TBrookRouter.DoOpen;
 begin
   if Assigned(FHandle) then
     Exit;
+  FRoutes.Prepare;
   SgCheckLibrary;
-  InternalCreateRouterHandle;
+  FHandle := sg_router_new(FRoutes.Handle);
+  FActive := Assigned(FHandle);
   if not FActive then
-    InternalFreeRouterHandle;
+    raise EInvalidPointer.CreateRes(@SBrookCannotCreateRouterHandle);
 end;
 
 procedure TBrookRouter.DoClose;
@@ -226,7 +196,8 @@ begin
   if not Assigned(FHandle) then
     Exit;
   SgCheckLibrary;
-  InternalFreeRouterHandle;
+  sg_router_free(FHandle);
+  FHandle := nil;
   FActive := False;
 end;
 

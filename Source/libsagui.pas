@@ -396,9 +396,6 @@ type
   end;
 
 var
-  sg_router_new2: function(routes: Psg_route; err_cb: sg_err_cb;
-    cls: Pcvoid): Psg_router; cdecl;
-
   sg_router_new: function(routes: Psg_route): Psg_router; cdecl;
 
   sg_router_free: procedure(router: Psg_router); cdecl;
@@ -553,7 +550,6 @@ begin
     sg_routes_add := GetProcAddress(GSgLibHandle, 'sg_routes_add');
     sg_routes_clear := GetProcAddress(GSgLibHandle, 'sg_routes_clear');
 
-    sg_router_new2 := GetProcAddress(GSgLibHandle, 'sg_router_new2');
     sg_router_new := GetProcAddress(GSgLibHandle, 'sg_router_new');
     sg_router_free := GetProcAddress(GSgLibHandle, 'sg_router_free');
     sg_router_dispatch := GetProcAddress(GSgLibHandle, 'sg_router_dispatch');
@@ -688,7 +684,6 @@ begin
     sg_routes_add := nil;
     sg_routes_clear := nil;
 
-    sg_router_new2 := nil;
     sg_router_new := nil;
     sg_router_free := nil;
     sg_router_dispatch := nil;
