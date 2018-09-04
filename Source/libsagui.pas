@@ -369,6 +369,8 @@ type
 var
   sg_route_handle: function(route: Psg_route): Pcvoid; cdecl;
 
+  sg_route_pattern_raw: function(route: Psg_route): Pcchar; cdecl;
+
   sg_route_pattern: function(route: Psg_route): Pcchar; cdecl;
 
   sg_route_path: function(route: Psg_route): Pcchar; cdecl;
@@ -537,6 +539,7 @@ begin
     sg_httpread_end := GetProcAddress(GSgLibHandle, 'sg_httpread_end');
 
     sg_route_handle := GetProcAddress(GSgLibHandle, 'sg_route_handle');
+    sg_route_pattern_raw := GetProcAddress(GSgLibHandle, 'sg_route_pattern_raw');
     sg_route_pattern := GetProcAddress(GSgLibHandle, 'sg_route_pattern');
     sg_route_path := GetProcAddress(GSgLibHandle, 'sg_route_path');
     sg_route_get_segments := GetProcAddress(GSgLibHandle, 'sg_route_get_segments');
@@ -667,6 +670,7 @@ begin
     sg_httpread_end := nil;
 
     sg_route_handle := nil;
+    sg_route_pattern_raw := nil;
     sg_route_pattern := nil;
     sg_route_path := nil;
     sg_route_get_segments := nil;
