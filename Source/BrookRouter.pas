@@ -74,18 +74,22 @@ type
     function GetPattern: string;
     function GetPath: string;
     function GetPatternRaw: string;
+    function GetSegments: TArray<string>;
     function GetRegexHandle: Pointer;
     function GetUserData: Pointer;
     procedure SetPattern(const AValue: string);
   protected
     class procedure DoRouteCallback(Acls: Pcvoid;
       Aroute: Psg_route); cdecl; static;
+    class function DoGetSegmentsCallback(Acls: Pcvoid;
+      const Asegment: Pcchar): cint; cdecl; static;
     function GetHandle: Pointer; override;
     procedure DoMatch(ARoute: TBrookRoute); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     procedure Validate; inline;
     property PatternRaw: string read GetPatternRaw;
+    property Segments: TArray<string> read GetSegments;
     property RegexHandle: Pointer read GetRegexHandle;
     property UserData: Pointer read GetUserData;
   published
@@ -166,9 +170,28 @@ begin
   RT.DoMatch(RT);
 end;
 
+class function TBrookRoute.DoGetSegmentsCallback(Acls: Pcvoid;
+  const Asegment: Pcchar): cint;
+var
+  VSegments: ^TArray<string> absolute Acls;
+begin
+  VSegments^ := VSegments^ + [TMarshal.ToString(Asegment)];
+  Result := 0;
+end;
+
 function TBrookRoute.GetHandle: Pointer;
 begin
   Result := FHandle;
+end;
+
+function TBrookRoute.GetSegments: TArray<string>;
+begin
+  Result := nil;
+  if not Assigned(FHandle) then
+    Exit;
+  SgCheckLibrary;
+  sg_route_get_segments(FHandle,
+{$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @Result);
 end;
 
 function TBrookRoute.GetRegexHandle: Pointer;
