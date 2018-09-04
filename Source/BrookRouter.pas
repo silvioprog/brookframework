@@ -68,6 +68,7 @@ type
 
   TBrookRoute = class(TBrookHandleCollectionItem)
   private
+    FSegments: TArray<string>;
     FOnMath: TBrookRouteMatchEvent;
     FPattern: string;
     FHandle: Psg_route;
@@ -186,12 +187,12 @@ end;
 
 function TBrookRoute.GetSegments: TArray<string>;
 begin
-  Result := nil;
-  if not Assigned(FHandle) then
-    Exit;
+  if (not Assigned(FHandle)) or (Length(FSegments) > 0) then
+    Exit(FSegments);
   SgCheckLibrary;
   sg_route_get_segments(FHandle,
-{$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @Result);
+{$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @FSegments);
+  Result := FSegments;
 end;
 
 function TBrookRoute.GetRegexHandle: Pointer;
@@ -300,9 +301,9 @@ const
   BUF_LEN = 256;
 var
   RT: TBrookRoute;
+  H: Psg_route;
   M: TMarshaller;
   P: MarshaledAString;
-  H: Psg_route;
   R: cint;
 begin
   SgCheckLibrary;
