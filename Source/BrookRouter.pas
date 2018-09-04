@@ -70,11 +70,11 @@ type
   private
     FOnMath: TBrookRouteMatchEvent;
     FPattern: string;
-    FUserData: Pointer;
     FHandle: Psg_route;
     function GetPattern: string;
     function GetPath: string;
     function GetRegexHandle: Pointer;
+    function GetUserData: Pointer;
   protected
     class procedure DoRouteCallback(Acls: Pcvoid;
       Aroute: Psg_route); cdecl; static;
@@ -83,7 +83,7 @@ type
   public
     procedure Validate; inline;
     property RegexHandle: Pointer read GetRegexHandle;
-    property UserData: Pointer read FUserData write FUserData;
+    property UserData: Pointer read GetUserData;
   published
     property Pattern: string read GetPattern write FPattern;
     property Path: string read GetPath;
@@ -104,9 +104,8 @@ type
   protected
     function GetHandle: Pointer; override;
   public
-    constructor Create(AOwner: TPersistent;
-      ARouteClass: TBrookRouteClass); overload; virtual;
-    constructor Create(AOwner: TPersistent); overload; virtual;
+    constructor Create(AOwner: TPersistent); virtual;
+    class function GetRouterClass: TBrookRouteClass; virtual;
     function GetEnumerator: TBrookRoutesEnumerator;
     procedure Prepare; virtual;
     function Add: TBrookRoute; virtual;
@@ -129,7 +128,6 @@ type
     function CreateRoutes: TBrookRoutes; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
-    function GetRouteClass: TBrookRouteClass; virtual;
     procedure DoOpen; virtual;
     procedure DoClose; virtual;
     procedure CheckActive; inline;
@@ -187,6 +185,14 @@ begin
   Result := TMarshal.ToString(sg_route_path(FHandle));
 end;
 
+function TBrookRoute.GetUserData: Pointer;
+begin
+  if not Assigned(FHandle) then
+    Exit(nil);
+  SgCheckLibrary;
+  Result := sg_route_user_data(FHandle);
+end;
+
 procedure TBrookRoute.DoMatch(ARoute: TBrookRoute);
 begin
   if Assigned(FOnMath) then
@@ -208,25 +214,24 @@ end;
 
 { TBrookRoutes }
 
-constructor TBrookRoutes.Create(AOwner: TPersistent;
-  ARouteClass: TBrookRouteClass);
-begin
-  inherited Create(AOwner, ARouteClass);
-end;
-
 constructor TBrookRoutes.Create(AOwner: TPersistent);
 begin
-  inherited Create(AOwner, TBrookRoute);
+  inherited Create(AOwner, GetRouterClass);
 end;
 
-function TBrookRoutes.GetEnumerator: TBrookRoutesEnumerator;
+class function TBrookRoutes.GetRouterClass: TBrookRouteClass;
 begin
-  Result := TBrookRoutesEnumerator.Create(Self);
+  Result := TBrookRoute;
 end;
 
 function TBrookRoutes.GetHandle: Pointer;
 begin
   Result := FHandle;
+end;
+
+function TBrookRoutes.GetEnumerator: TBrookRoutesEnumerator;
+begin
+  Result := TBrookRoutesEnumerator.Create(Self);
 end;
 
 procedure TBrookRoutes.Prepare;
@@ -327,11 +332,6 @@ end;
 function TBrookRouter.GetHandle: Pointer;
 begin
   Result := FHandle;
-end;
-
-function TBrookRouter.GetRouteClass: TBrookRouteClass;
-begin
-  Result := TBrookRoute;
 end;
 
 procedure TBrookRouter.SetRoutes(AValue: TBrookRoutes);
