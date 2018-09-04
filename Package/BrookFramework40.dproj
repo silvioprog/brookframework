@@ -108,7 +108,6 @@
         <DCCReference Include="..\Source\BrookHandledClasses.pas"/>
         <DCCReference Include="..\Source\BrookString.pas"/>
         <DCCReference Include="..\Source\BrookStringMap.pas"/>
-        <DCCReference Include="..\Source\BrookRoutes.pas"/>
         <DCCReference Include="..\Source\BrookRouter.pas"/>
         <DCCReference Include="..\Source\BrookHTTPExtra.pas"/>
         <DCCReference Include="..\Source\BrookHTTPAuthentication.pas"/>

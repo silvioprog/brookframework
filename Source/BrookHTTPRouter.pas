@@ -31,12 +31,109 @@ unit BrookHTTPRouter;
 interface
 
 uses
-  BrookHandledClasses;
+  RTLConsts,
+  SysUtils,
+  Classes,
+  BrookHTTPRequest,
+  BrookHTTPResponse,
+  BrookRouter;
 
 type
-  TBrookHTTPRouter = class(TBrookHandledComponent)
+  TBrookHTTPRoute = class;
+
+  TBrookHTTPRouteRequestEvent = procedure(ASender: TObject;
+    ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
+
+  TBrookHTTPRoute = class(TBrookRoute)
+  private
+    FOnRequest: TBrookHTTPRouteRequestEvent;
+  protected
+    procedure DoMatch(ARoute: TBrookRoute); override;
+  published
+    property OnRequest: TBrookHTTPRouteRequestEvent read FOnRequest
+      write FOnRequest;
+  end;
+
+  TBrookHTTPRoutes = class(TBrookRoutes)
+  private
+    function GetItem(AIndex: Integer): TBrookHTTPRoute;
+    procedure SetItem(AIndex: Integer; AValue: TBrookHTTPRoute);
+  public
+    constructor Create(AOwner: TPersistent); override;
+    function Add: TBrookHTTPRoute; reintroduce; virtual;
+  published
+    property Items[AIndex: Integer]: TBrookHTTPRoute read GetItem
+      write SetItem; default;
+  end;
+
+  TBrookHTTPRouterHolder = record
+    Request: TBrookHTTPRequest;
+    Response: TBrookHTTPResponse;
+  end;
+
+  TBrookHTTPRouter = class(TBrookRouter)
+  protected
+    function CreateRoutes: TBrookRoutes; override;
+  protected
+    function Route(ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse): Boolean; reintroduce; virtual;
   end;
 
 implementation
+
+{ TBrookHTTPRoute }
+
+procedure TBrookHTTPRoute.DoMatch(ARoute: TBrookRoute);
+var
+  VHolder: TBrookHTTPRouterHolder;
+begin
+  VHolder := TBrookHTTPRouterHolder(ARoute.UserData^);
+  inherited DoMatch(ARoute);
+  if Assigned(FOnRequest) then
+    FOnRequest(Self, VHolder.Request, VHolder.Response);
+end;
+
+{ TBrookHTTPRoutes }
+
+constructor TBrookHTTPRoutes.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TBrookHTTPRoute);
+end;
+
+function TBrookHTTPRoutes.Add: TBrookHTTPRoute;
+begin
+  Result := TBrookHTTPRoute(inherited Add);
+end;
+
+function TBrookHTTPRoutes.GetItem(AIndex: Integer): TBrookHTTPRoute;
+begin
+  Result := TBrookHTTPRoute(inherited Items[AIndex]);
+end;
+
+procedure TBrookHTTPRoutes.SetItem(AIndex: Integer; AValue: TBrookHTTPRoute);
+begin
+  inherited SetItem(AIndex, AValue);
+end;
+
+{ TBrookHTTPRouter }
+
+function TBrookHTTPRouter.CreateRoutes: TBrookRoutes;
+begin
+  Result := TBrookHTTPRoutes.Create(Self);
+end;
+
+function TBrookHTTPRouter.Route(ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse): Boolean;
+var
+  VHolder: TBrookHTTPRouterHolder;
+begin
+  if not Assigned(ARequest) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ARequest']);
+  if not Assigned(AResponse) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AResponse']);
+  VHolder.Request := ARequest;
+  VHolder.Response := AResponse;
+  Result := inherited Route(ARequest.Path, @VHolder);
+end;
 
 end.

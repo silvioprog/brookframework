@@ -367,7 +367,7 @@ type
   sg_route_cb = procedure(cls: Pcvoid; route: Psg_route); cdecl;
 
 var
-  sg_route_handle: procedure(route: Psg_route); cdecl;
+  sg_route_handle: function(route: Psg_route): Pcvoid; cdecl;
 
   sg_route_pattern: function(route: Psg_route): Pcchar; cdecl;
 
@@ -381,8 +381,9 @@ var
 
   sg_route_user_data: function(route: Psg_route): Pcvoid; cdecl;
 
-  sg_routes_add2: function(routes: PPsg_route; const pattern: Pcchar;
-    errmsg: Pcchar; errlen: csize_t; cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
+  sg_routes_add2: function(routes: PPsg_route; route: PPsg_route;
+    const pattern: Pcchar; errmsg: Pcchar; errlen: csize_t;
+    cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
 
   sg_routes_add: function(routes: PPsg_route; const pattern: Pcchar;
     cb: sg_route_cb; cls: Pcvoid): cint; cdecl;

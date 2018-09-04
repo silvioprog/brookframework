@@ -36,24 +36,84 @@ uses
   Platform,
   Marshalling,
   libsagui,
-  BrookHandledClasses,
-  BrookRoutes;
+  BrookHandledClasses;
 
 resourcestring
   SBrookOpNotAllowedInactiveRouter =
     'Operation is not allowed while the router is inactive.';
   SBrookCannotCreateRouterHandle = 'Cannot create router handle.';
+  SBrookEmptyPattern = '%s: pattern cannot be empty.';
+  SBrookRouteAlreadyExists = '%s: route ''%s'' already exists.';
   SBrookEmptyPath = 'Path cannot be empty.';
 
 type
+  TBrookRoute = class;
+
+  TBrookRouteClass = class of TBrookRoute;
+
   TBrookRouter = class;
 
   TBrookRouterCreatePanelClassEvent = procedure(ASender: TBrookRouter;
     var ARouteClass: TBrookRouteClass) of object;
 
+  TBrookRouteMatchEvent = procedure(ARoute: TBrookRoute) of object;
+
+  EBrookRoute = class(Exception);
+
+  EBrookRoutes = class(Exception);
+
   EBrookRouter = class(Exception);
 
   EBrookOpNotAllowedInactiveRouter = class(Exception);
+
+  TBrookRoute = class(TBrookHandleCollectionItem)
+  private
+    FOnMath: TBrookRouteMatchEvent;
+    FPattern: string;
+    FUserData: Pointer;
+    FHandle: Psg_route;
+    function GetPattern: string;
+    function GetPath: string;
+    function GetRegexHandle: Pointer;
+  protected
+    class procedure DoRouteCallback(Acls: Pcvoid;
+      Aroute: Psg_route); cdecl; static;
+    function GetHandle: Pointer; override;
+    procedure DoMatch(ARoute: TBrookRoute); virtual;
+  public
+    procedure Validate; inline;
+    property RegexHandle: Pointer read GetRegexHandle;
+    property UserData: Pointer read FUserData write FUserData;
+  published
+    property Pattern: string read GetPattern write FPattern;
+    property Path: string read GetPath;
+    property OnMath: TBrookRouteMatchEvent read FOnMath write FOnMath;
+  end;
+
+  TBrookRoutesEnumerator = class(TCollectionEnumerator)
+  public
+    function GetCurrent: TBrookRoute;
+    property Current: TBrookRoute read GetCurrent;
+  end;
+
+  TBrookRoutes = class(TBrookHandleOwnedCollection)
+  private
+    FHandle: Psg_route;
+    function GetItem(AIndex: Integer): TBrookRoute;
+    procedure SetItem(AIndex: Integer; AValue: TBrookRoute);
+  protected
+    function GetHandle: Pointer; override;
+  public
+    constructor Create(AOwner: TPersistent;
+      ARouteClass: TBrookRouteClass); overload; virtual;
+    constructor Create(AOwner: TPersistent); overload; virtual;
+    function GetEnumerator: TBrookRoutesEnumerator;
+    procedure Prepare; virtual;
+    function Add: TBrookRoute; virtual;
+    property Items[AIndex: Integer]: TBrookRoute read GetItem
+      write SetItem; default;
+    procedure Clear; virtual;
+  end;
 
   TBrookRouter = class(TBrookHandledComponent)
   private
@@ -87,6 +147,142 @@ type
   end;
 
 implementation
+
+{ TBrookRoute }
+
+class procedure TBrookRoute.DoRouteCallback(Acls: Pcvoid; Aroute: Psg_route);
+var
+  RT: TBrookRoute absolute Acls;
+begin
+  RT.FHandle := Aroute;
+  RT.DoMatch(RT);
+end;
+
+function TBrookRoute.GetHandle: Pointer;
+begin
+  Result := FHandle;
+end;
+
+function TBrookRoute.GetRegexHandle: Pointer;
+begin
+  if not Assigned(FHandle) then
+    Exit(nil);
+  SgCheckLibrary;
+  Result := sg_route_handle(FHandle);
+end;
+
+function TBrookRoute.GetPattern: string;
+begin
+  if not Assigned(FHandle) then
+    Exit(FPattern);
+  SgCheckLibrary;
+  Result := TMarshal.ToString(sg_route_pattern(FHandle));
+end;
+
+function TBrookRoute.GetPath: string;
+begin
+  if not Assigned(FHandle) then
+    Exit('');
+  SgCheckLibrary;
+  Result := TMarshal.ToString(sg_route_path(FHandle));
+end;
+
+procedure TBrookRoute.DoMatch(ARoute: TBrookRoute);
+begin
+  if Assigned(FOnMath) then
+    FOnMath(ARoute);
+end;
+
+procedure TBrookRoute.Validate;
+begin
+  if FPattern.IsEmpty then
+    raise EBrookRoute.CreateResFmt(@SBrookEmptyPattern, [GetNamePath]);
+end;
+
+{ TBrookRoutesEnumerator }
+
+function TBrookRoutesEnumerator.GetCurrent: TBrookRoute;
+begin
+  Result := TBrookRoute(inherited GetCurrent);
+end;
+
+{ TBrookRoutes }
+
+constructor TBrookRoutes.Create(AOwner: TPersistent;
+  ARouteClass: TBrookRouteClass);
+begin
+  inherited Create(AOwner, ARouteClass);
+end;
+
+constructor TBrookRoutes.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TBrookRoute);
+end;
+
+function TBrookRoutes.GetEnumerator: TBrookRoutesEnumerator;
+begin
+  Result := TBrookRoutesEnumerator.Create(Self);
+end;
+
+function TBrookRoutes.GetHandle: Pointer;
+begin
+  Result := FHandle;
+end;
+
+procedure TBrookRoutes.Prepare;
+const
+  BUF_LEN = 256;
+var
+  RT: TBrookRoute;
+  M: TMarshaller;
+  P: MarshaledAString;
+  H: Psg_route;
+  R: cint;
+begin
+  SgCheckLibrary;
+  SgCheckLastError(sg_routes_clear(@FHandle));
+  GetMem(P, BUF_LEN);
+  try
+    for RT in Self do
+    begin
+      RT.Validate;
+      FillChar(P^, BUF_LEN, 0);
+      R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), P, BUF_LEN,
+{$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
+      if R = EALREADY then
+        raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
+          [RT.GetNamePath, RT.Pattern]);
+      if R <> 0 then
+        raise EBrookRoutes.Create(TMarshal.ToString(P));
+    end;
+  finally
+    FreeMem(P, BUF_LEN);
+  end;
+end;
+
+function TBrookRoutes.Add: TBrookRoute;
+begin
+  Result := TBrookRoute(inherited Add);
+end;
+
+function TBrookRoutes.GetItem(AIndex: Integer): TBrookRoute;
+begin
+  Result := TBrookRoute(inherited Items[AIndex]);
+end;
+
+procedure TBrookRoutes.SetItem(AIndex: Integer; AValue: TBrookRoute);
+begin
+  inherited SetItem(AIndex, AValue);
+end;
+
+procedure TBrookRoutes.Clear;
+begin
+  inherited Clear;
+  SgCheckLibrary;
+  SgCheckLastError(sg_routes_clear(@FHandle));
+end;
+
+{ TBrookRouter }
 
 constructor TBrookRouter.Create(AOwner: TComponent);
 begin
