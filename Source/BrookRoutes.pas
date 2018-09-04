@@ -31,15 +31,23 @@ unit BrookRoutes;
 interface
 
 uses
+  SysUtils,
   Classes,
+  Platform,
   Marshalling,
   libsagui,
   BrookHandledClasses;
+
+resourcestring
+  SBrookEmptyPattern = '%s: pattern cannot be empty.';
+  SBrookRouteAlreadyExists = '%s: route ''%s'' already exists.';
 
 type
   TBrookRoute = class;
 
   TBrookRouteMatchEvent = procedure(ARoute: TBrookRoute) of object;
+
+  EBrookRoute = class(Exception);
 
   TBrookRoute = class(TBrookHandleCollectionItem)
   private
@@ -48,6 +56,8 @@ type
   protected
     class procedure DoRouteCallback(Acls: Pcvoid;
       Aroute: Psg_route); cdecl; static;
+  public
+    procedure Validate; inline;
   published
     property Pattern: string read FPattern write FPattern;
     property OnMath: TBrookRouteMatchEvent read FOnMath write FOnMath;
@@ -60,6 +70,8 @@ type
     function GetCurrent: TBrookRoute;
     property Current: TBrookRoute read GetCurrent;
   end;
+
+  EBrookRoutes = class(Exception);
 
   TBrookRoutes = class(TBrookHandleOwnedCollection)
   private
@@ -88,6 +100,12 @@ begin
     RT.OnMath(RT);
 end;
 
+procedure TBrookRoute.Validate;
+begin
+  if FPattern.IsEmpty then
+    raise EBrookRoute.CreateResFmt(@SBrookEmptyPattern, [GetNamePath]);
+end;
+
 { TBrookRoutesEnumerator }
 
 function TBrookRoutesEnumerator.GetCurrent: TBrookRoute;
@@ -113,15 +131,33 @@ begin
 end;
 
 procedure TBrookRoutes.Prepare;
+const
+  BUF_LEN = 256;
 var
-  M: TMarshaller;
   RT: TBrookRoute;
+  M: TMarshaller;
+  P: MarshaledAString;
+  R: cint;
 begin
   SgCheckLibrary;
   SgCheckLastError(sg_routes_clear(@FHandle));
-  for RT in Self do
-    SgCheckLastError(sg_routes_add(@FHandle, M.ToCNullable(RT.Pattern),
-{$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT));
+  GetMem(P, BUF_LEN);
+  try
+    FillChar(P^, BUF_LEN, 0);
+    for RT in Self do
+    begin
+      RT.Validate;
+      R := sg_routes_add2(@FHandle, M.ToCNullable(RT.Pattern), P, BUF_LEN,
+{$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
+      if R = EALREADY then
+        raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
+          [RT.GetNamePath, RT.Pattern]);
+      if R <> 0 then
+        raise EBrookRoutes.Create(TMarshal.ToString(P));
+    end;
+  finally
+    FreeMem(P, BUF_LEN);
+  end;
 end;
 
 function TBrookRoutes.Add: TBrookRoute;
