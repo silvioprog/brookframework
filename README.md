@@ -2,7 +2,7 @@
 
 * Version number: `4.0`
 * Codename: `Tardigrade`
-* Core under [Sagui library](https://github.com/risoflora/libsagui)
+* Core under [Sagui library](https://risoflora.github.io/libsagui/)
     * shared library - dynamic loading, single external file required (`libsagui.so`/`libsagui.dll`)
 
 # Supported platforms:
