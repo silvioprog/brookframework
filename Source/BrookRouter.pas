@@ -36,7 +36,8 @@ uses
   Platform,
   Marshalling,
   libsagui,
-  BrookHandledClasses;
+  BrookHandledClasses,
+  BrookStringMap;
 
 resourcestring
   SBrookOpNotAllowedInactiveRouter =
@@ -68,14 +69,17 @@ type
 
   TBrookRoute = class(TBrookHandleCollectionItem)
   private
+    FVariables: TBrookStringMap;
     FSegments: TArray<string>;
     FOnMath: TBrookRouteMatchEvent;
     FPattern: string;
     FHandle: Psg_route;
+    Fvars: Psg_strmap;
     function GetPattern: string;
     function GetPath: string;
     function GetPatternRaw: string;
     function GetSegments: TArray<string>;
+    function GetVariables: TBrookStringMap;
     function GetRegexHandle: Pointer;
     function GetUserData: Pointer;
     procedure SetPattern(const AValue: string);
@@ -84,13 +88,17 @@ type
       Aroute: Psg_route); cdecl; static;
     class function DoGetSegmentsCallback(Acls: Pcvoid;
       const Asegment: Pcchar): cint; cdecl; static;
+    class function DoGetVarsCallback(Acls: Pcvoid;
+      const Aname: Pcchar; const Aval: Pcchar): cint; cdecl; static;
     function GetHandle: Pointer; override;
     procedure DoMatch(ARoute: TBrookRoute); virtual;
   public
     constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
     procedure Validate; inline;
     property PatternRaw: string read GetPatternRaw;
     property Segments: TArray<string> read GetSegments;
+    property Variables: TBrookStringMap read GetVariables;
     property RegexHandle: Pointer read GetRegexHandle;
     property UserData: Pointer read GetUserData;
   published
@@ -160,7 +168,14 @@ implementation
 constructor TBrookRoute.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
+  FVariables := TBrookStringMap.Create(@Fvars);
   FPattern := '/';
+end;
+
+destructor TBrookRoute.Destroy;
+begin
+  FVariables.Free;
+  inherited Destroy;
 end;
 
 class procedure TBrookRoute.DoRouteCallback(Acls: Pcvoid; Aroute: Psg_route);
@@ -180,6 +195,13 @@ begin
   Result := 0;
 end;
 
+class function TBrookRoute.DoGetVarsCallback(Acls: Pcvoid; const Aname: Pcchar;
+  const Aval: Pcchar): cint;
+begin
+  TBrookStringMap(Acls).Add(TMarshal.ToString(Aname), TMarshal.ToString(Aval));
+  Result := 0;
+end;
+
 function TBrookRoute.GetHandle: Pointer;
 begin
   Result := FHandle;
@@ -190,9 +212,18 @@ begin
   if (not Assigned(FHandle)) or (Length(FSegments) > 0) then
     Exit(FSegments);
   SgCheckLibrary;
-  sg_route_get_segments(FHandle,
-{$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @FSegments);
+  SgCheckLastError(sg_route_get_segments(FHandle,
+{$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @FSegments));
   Result := FSegments;
+end;
+
+function TBrookRoute.GetVariables: TBrookStringMap;
+begin
+  Result := FVariables;
+  if (not Assigned(FHandle)) or (not FVariables.IsEmpty) then
+    Exit;
+  SgCheckLastError(sg_route_get_vars(FHandle,
+{$IFNDEF VER3_0}@{$ENDIF}DoGetVarsCallback, FVariables));
 end;
 
 function TBrookRoute.GetRegexHandle: Pointer;
