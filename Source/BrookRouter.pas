@@ -73,19 +73,23 @@ type
     FHandle: Psg_route;
     function GetPattern: string;
     function GetPath: string;
+    function GetPatternRaw: string;
     function GetRegexHandle: Pointer;
     function GetUserData: Pointer;
+    procedure SetPattern(const AValue: string);
   protected
     class procedure DoRouteCallback(Acls: Pcvoid;
       Aroute: Psg_route); cdecl; static;
     function GetHandle: Pointer; override;
     procedure DoMatch(ARoute: TBrookRoute); virtual;
   public
+    constructor Create(ACollection: TCollection); override;
     procedure Validate; inline;
+    property PatternRaw: string read GetPatternRaw;
     property RegexHandle: Pointer read GetRegexHandle;
     property UserData: Pointer read GetUserData;
   published
-    property Pattern: string read GetPattern write FPattern;
+    property Pattern: string read GetPattern write SetPattern;
     property Path: string read GetPath;
     property OnMath: TBrookRouteMatchEvent read FOnMath write FOnMath;
   end;
@@ -148,6 +152,12 @@ implementation
 
 { TBrookRoute }
 
+constructor TBrookRoute.Create(ACollection: TCollection);
+begin
+  inherited Create(ACollection);
+  FPattern := '/';
+end;
+
 class procedure TBrookRoute.DoRouteCallback(Acls: Pcvoid; Aroute: Psg_route);
 var
   RT: TBrookRoute absolute Acls;
@@ -169,12 +179,40 @@ begin
   Result := sg_route_handle(FHandle);
 end;
 
+function TBrookRoute.GetPatternRaw: string;
+begin
+  if not Assigned(FHandle) then
+  begin
+    if FPattern.IsEmpty then
+      Exit('');
+    Exit(Concat('^', FPattern, '$'));
+  end;
+  SgCheckLibrary;
+  Result := TMarshal.ToString(sg_route_pattern_raw(FHandle));
+end;
+
 function TBrookRoute.GetPattern: string;
+var
+  P: Pcchar;
 begin
   if not Assigned(FHandle) then
     Exit(FPattern);
   SgCheckLibrary;
-  Result := TMarshal.ToString(sg_route_pattern(FHandle));
+  P := sg_route_pattern(FHandle);
+  try
+    Result := TMarshal.ToString(P);
+  finally
+    sg_free(P);
+  end;
+end;
+
+procedure TBrookRoute.SetPattern(const AValue: string);
+begin
+  if AValue = FPattern then
+    Exit;
+  FPattern := AValue;
+  if not AValue.StartsWith('/') then
+    FPattern := Concat('/', FPattern);
 end;
 
 function TBrookRoute.GetPath: string;
