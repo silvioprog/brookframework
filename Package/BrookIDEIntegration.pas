@@ -121,28 +121,30 @@ implementation
 
 uses
   BrookLibraryLoader,
-  BrookHTTPServer
 {$IFDEF SG_PATH_ROUTING}
-  , BrookRouter
-{$ENDIF};
+  BrookRouter,
+  BrookHTTPRouter,
+{$ENDIF}
+  BrookHTTPServer;
 
 procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-    TBrookHTTPServer
 {$IFDEF SG_PATH_ROUTING}
-    , TBrookRouter
+    TBrookRouter,
+    TBrookHTTPRouter,
 {$ENDIF}
+    TBrookHTTPServer
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
   RegisterComponentEditor(TBrookLibraryLoader,
     TBrookLibraryNameComponentEditor);
-  RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 {$IFDEF SG_PATH_ROUTING}
   RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
 {$ENDIF}
+  RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
 {$IFDEF LCL}
