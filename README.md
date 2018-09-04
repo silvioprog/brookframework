@@ -98,7 +98,6 @@ Documentation:
 * `BrookRouter` - Path router reference [HTML/PDF]. (In progress...)
 * `BrookHTTPRouter` - URL router reference [HTML/PDF]. (In progress...)
 * `BrookHTTPServer` - HTTP server reference [HTML/PDF]. (In progress...)
-* `BrookRouter` - Router reference [HTML/PDF]. (In progress...)
 
 Bugs:
 
