@@ -42,16 +42,14 @@ type
   TBrookHTTPRoute = class;
 
   TBrookHTTPRouteRequestEvent = procedure(ASender: TObject;
-    ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
+    ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+    AResponse: TBrookHTTPResponse) of object;
 
   TBrookHTTPRoute = class(TBrookRoute)
   private
     FOnRequest: TBrookHTTPRouteRequestEvent;
-    FSender: TObject;
   protected
     procedure DoMatch(ARoute: TBrookRoute); override;
-  public
-    property Sender: TObject read FSender;
   published
     property OnRequest: TBrookHTTPRouteRequestEvent read FOnRequest
       write FOnRequest;
@@ -88,8 +86,8 @@ begin
   inherited DoMatch(ARoute);
   if not Assigned(FOnRequest) then
     Exit;
-  TBrookHTTPRoute(ARoute).FSender := VHolder.Sender;
-  FOnRequest(ARoute, VHolder.Request, VHolder.Response);
+  FOnRequest(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
+    VHolder.Response);
 end;
 
 { TBrookHTTPRoutes }
