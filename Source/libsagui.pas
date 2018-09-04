@@ -164,14 +164,10 @@ type
   sg_save_as_cb = function(handle: Pcvoid; const path: Pcchar;
     overwritten: cbool): cint; cdecl;
 
-{$IFDEF SG_PATH_ROUTING}
-
   sg_get_segments_cb = function(cls: Pcvoid; const segment: Pcchar): cint; cdecl;
 
   sg_get_vars_cb = function(cls: Pcvoid; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
-
-{$ENDIF}
 
 var
   sg_version: function: cuint; cdecl;
@@ -362,8 +358,6 @@ var
 
   sg_httpread_end: function(err: cbool): cssize_t; cdecl;
 
-{$IFDEF SG_PATH_ROUTING}
-
 type
   PPsg_route = ^Psg_route;
   Psg_route = ^sg_route;
@@ -407,8 +401,6 @@ var
 
   sg_router_dispatch: function(router: Psg_router; const path: Pcchar;
     user_data: Pcvoid): cint; cdecl;
-
-{$ENDIF}
 
 { TODO: procedure SgAddUnloadLibraryProc }
 function SgLoadLibrary(const AFileName: TFileName): TLibHandle;
@@ -543,8 +535,6 @@ begin
 
     sg_httpread_end := GetProcAddress(GSgLibHandle, 'sg_httpread_end');
 
-{$IFDEF SG_PATH_ROUTING}
-
     sg_route_handle := GetProcAddress(GSgLibHandle, 'sg_route_handle');
     sg_route_pattern := GetProcAddress(GSgLibHandle, 'sg_route_pattern');
     sg_route_path := GetProcAddress(GSgLibHandle, 'sg_route_path');
@@ -558,8 +548,6 @@ begin
     sg_router_new := GetProcAddress(GSgLibHandle, 'sg_router_new');
     sg_router_free := GetProcAddress(GSgLibHandle, 'sg_router_free');
     sg_router_dispatch := GetProcAddress(GSgLibHandle, 'sg_router_dispatch');
-
-{$ENDIF}
 
     Result := GSgLibHandle;
   finally
@@ -677,8 +665,6 @@ begin
 
     sg_httpread_end := nil;
 
-{$IFDEF SG_PATH_ROUTING}
-
     sg_route_handle := nil;
     sg_route_pattern := nil;
     sg_route_path := nil;
@@ -692,8 +678,6 @@ begin
     sg_router_new := nil;
     sg_router_free := nil;
     sg_router_dispatch := nil;
-
-{$ENDIF}
 
     Result := GSgLibHandle;
   finally

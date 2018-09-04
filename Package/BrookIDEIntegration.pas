@@ -42,18 +42,14 @@ uses
 {$ELSE}
   DesignIntf,
   DesignEditors,
- {$IFDEF SG_PATH_ROUTING}
   ColnEdit,
- {$ENDIF}
 {$ENDIF}
   libsagui;
 
 resourcestring
   SBrookSelectLibraryTitle = 'Select library';
   SBrookSharedLibraryFilter = 'Shared libraries (%s)|%s|All files (*.*)|*.*';
-{$IFDEF SG_PATH_ROUTING}
   SBrookRoutesEditor = 'Routes editor ...';
-{$ENDIF}
 
 type
 
@@ -100,8 +96,6 @@ type
       var AContinue: Boolean); override;
   end;
 
-{$IFDEF SG_PATH_ROUTING}
-
   { TBrookRouterComponentEditor }
 
   TBrookRouterComponentEditor = class(TComponentEditor)
@@ -111,8 +105,6 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-{$ENDIF}
-
 {$R BrookFramework40Icons.res}
 
 procedure Register;
@@ -121,29 +113,23 @@ implementation
 
 uses
   BrookLibraryLoader,
-{$IFDEF SG_PATH_ROUTING}
   BrookRouter,
   BrookHTTPRouter,
-{$ENDIF}
   BrookHTTPServer;
 
 procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-{$IFDEF SG_PATH_ROUTING}
     TBrookRouter,
     TBrookHTTPRouter,
-{$ENDIF}
     TBrookHTTPServer
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
   RegisterComponentEditor(TBrookLibraryLoader,
     TBrookLibraryNameComponentEditor);
-{$IFDEF SG_PATH_ROUTING}
   RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
-{$ENDIF}
   RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
@@ -299,8 +285,6 @@ begin
     inherited EditProperty(AProperty, AContinue);
 end;
 
-{$IFDEF SG_PATH_ROUTING}
-
 { TBrookRouterComponentEditor }
 
 procedure TBrookRouterComponentEditor.ExecuteVerb(AIndex: Integer);
@@ -329,7 +313,5 @@ function TBrookRouterComponentEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-
-{$ENDIF}
 
 end.
