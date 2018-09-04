@@ -143,10 +143,10 @@ begin
   SgCheckLastError(sg_routes_clear(@FHandle));
   GetMem(P, BUF_LEN);
   try
-    FillChar(P^, BUF_LEN, 0);
     for RT in Self do
     begin
       RT.Validate;
+      FillChar(P^, BUF_LEN, 0);
       R := sg_routes_add2(@FHandle, M.ToCNullable(RT.Pattern), P, BUF_LEN,
 {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
       if R = EALREADY then
