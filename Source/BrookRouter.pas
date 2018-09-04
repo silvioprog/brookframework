@@ -36,7 +36,6 @@ uses
   Platform,
   Marshalling,
   libsagui,
-  BrookUtils,
   BrookHandledClasses,
   BrookRoutes;
 
@@ -44,6 +43,7 @@ resourcestring
   SBrookOpNotAllowedInactiveRouter =
     'Operation is not allowed while the router is inactive.';
   SBrookCannotCreateRouterHandle = 'Cannot create router handle.';
+  SBrookEmptyPath = 'Path cannot be empty.';
 
 type
   TBrookRouter = class;
@@ -62,7 +62,6 @@ type
     FActive: Boolean;
     FStreamedActive: Boolean;
     FOnCreateRouteClass: TBrookRouterCreatePanelClassEvent;
-    FOnError: TBrookErrorEvent;
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetRoutes(AValue: TBrookRoutes);
@@ -70,7 +69,6 @@ type
     function CreateRoutes: TBrookRoutes; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
-    procedure DoError(ASender: TObject; AException: Exception); virtual;
     function GetRouteClass: TBrookRouteClass; virtual;
     procedure DoOpen; virtual;
     procedure DoClose; virtual;
@@ -86,7 +84,6 @@ type
     property Routes: TBrookRoutes read FRoutes write SetRoutes;
     property OnCreateRouteClass: TBrookRouterCreatePanelClassEvent read
       FOnCreateRouteClass write FOnCreateRouteClass;
-    property OnError: TBrookErrorEvent read FOnError write FOnError;
   end;
 
 implementation
@@ -134,12 +131,6 @@ end;
 function TBrookRouter.GetHandle: Pointer;
 begin
   Result := FHandle;
-end;
-
-procedure TBrookRouter.DoError(ASender: TObject; AException: Exception);
-begin
-  if Assigned(FOnError) then
-    FOnError(ASender, AException);
 end;
 
 function TBrookRouter.GetRouteClass: TBrookRouteClass;
@@ -223,6 +214,8 @@ var
   M: TMarshaller;
   R: cint;
 begin
+  if APath.IsEmpty then
+    raise EArgumentException.CreateRes(@SBrookEmptyPath);
   CheckActive;
   SgCheckLibrary;
   R := sg_router_dispatch(FHandle, M.ToCNullable(APath), AUserData);
