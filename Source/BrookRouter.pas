@@ -100,7 +100,6 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Validate; inline;
-    property Owner: TPersistent read GetOwner;
     property PatternRaw: string read GetPatternRaw;
     property Segments: TArray<string> read GetSegments;
     property Variables: TBrookStringMap read GetVariables;
@@ -279,15 +278,17 @@ end;
 
 procedure TBrookRoute.SetPattern(const AValue: string);
 var
-  RT: TBrookRoute;
+  VRoute: TBrookRoute;
+  VOwner: TPersistent;
 begin
   if AValue = FPattern then
     Exit;
   FPattern := BrookFixPath(AValue);
-  if (not Assigned(Owner)) or (not (Owner is TBrookRoutes)) then
+  VOwner := GetOwner;
+  if (not Assigned(VOwner)) or (not (VOwner is TBrookRoutes)) then
     Exit;
-  RT := TBrookRoutes(Owner).Find(FPattern);
-  if Assigned(RT) and (RT <> Self) then
+  VRoute := TBrookRoutes(VOwner).Find(FPattern);
+  if Assigned(VRoute) and (VRoute <> Self) then
     raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
       [GetNamePath, FPattern]);
 end;
