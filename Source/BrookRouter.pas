@@ -72,7 +72,6 @@ type
 
   TBrookRoute = class(TBrookHandleCollectionItem)
   private
-    FOwner: TBrookRoutes;
     FVariables: TBrookStringMap;
     FSegments: TArray<string>;
     FOnMath: TBrookRouteMatchEvent;
@@ -96,11 +95,12 @@ type
       const Aname: Pcchar; const Aval: Pcchar): cint; cdecl; static;
     function GetHandle: Pointer; override;
     procedure DoMatch(ARoute: TBrookRoute); virtual;
+    function MakePattern: string; virtual;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Validate; inline;
-    property Owner: TBrookRoutes read FOwner;
+    property Owner: TPersistent read GetOwner;
     property PatternRaw: string read GetPatternRaw;
     property Segments: TArray<string> read GetSegments;
     property Variables: TBrookStringMap read GetVariables;
@@ -177,11 +177,9 @@ implementation
 
 constructor TBrookRoute.Create(ACollection: TCollection);
 begin
-  Assert(ACollection is TBrookRoutes);
   inherited Create(ACollection);
-  FOwner := TBrookRoutes(ACollection);
   FVariables := TBrookStringMap.Create(@Fvars);
-  SetPattern('/');
+  SetPattern(MakePattern);
 end;
 
 destructor TBrookRoute.Destroy;
@@ -286,9 +284,9 @@ begin
   if AValue = FPattern then
     Exit;
   FPattern := BrookFixPath(AValue);
-  if not Assigned(FOwner) then
+  if (not Assigned(Owner)) or (not (Owner is TBrookRoutes)) then
     Exit;
-  RT := FOwner.Find(FPattern);
+  RT := TBrookRoutes(Owner).Find(FPattern);
   if Assigned(RT) and (RT <> Self) then
     raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
       [GetNamePath, FPattern]);
@@ -314,6 +312,11 @@ procedure TBrookRoute.DoMatch(ARoute: TBrookRoute);
 begin
   if Assigned(FOnMath) then
     FOnMath(ARoute);
+end;
+
+function TBrookRoute.MakePattern: string;
+begin
+  Result := Concat('/', string(ClassName).SubString(6).ToLower, Index.ToString);
 end;
 
 procedure TBrookRoute.Validate;
