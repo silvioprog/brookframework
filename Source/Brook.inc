@@ -26,9 +26,7 @@
 
 {$IFDEF FPC}
  {$MODE DELPHI}
- {$IFNDEF VER3_0} // {$IF FPC_FULLVERSION >= 30101} commented to fix "[dcc32 Error] E2026 Constant expression expected"
-  {$WARN 6058 OFF} // Note: Call to subroutine "%s" marked as inline is not inlined
- {$ELSE}
+ {$IFDEF VER3_0} // {$IF FPC_FULLVERSION <= 30101} commented to fix "[dcc32 Error] E2026 Constant expression expected"
   {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
   {$POP}
