@@ -191,7 +191,12 @@ class function TBrookRoute.DoGetSegmentsCallback(Acls: Pcvoid;
 var
   VSegments: ^TArray<string> absolute Acls;
 begin
+{$IFDEF VER3_0}
+  SetLength(VSegments^, Succ(Length(VSegments^)));
+  VSegments^[High(VSegments^)] := TMarshal.ToString(Asegment);
+{$ELSE}
   VSegments^ := VSegments^ + [TMarshal.ToString(Asegment)];
+{$ENDIF}
   Result := 0;
 end;
 
