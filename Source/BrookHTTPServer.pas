@@ -491,7 +491,7 @@ end;
 
 procedure TBrookHTTPServer.CheckInactive;
 begin
-  if not (csLoading in ComponentState) and Active then
+  if (not (csLoading in ComponentState)) and Active then
     raise EBrookOpNotAllowedActiveServer.CreateRes(
       @SBrookOpNotAllowedActiveServer);
 end;

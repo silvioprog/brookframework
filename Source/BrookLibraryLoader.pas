@@ -40,39 +40,39 @@ uses
   BrookUtils;
 
 resourcestring
-  { Indicates not allowed operation when the library is loaded. }
-  SBrookOpNotAllowedLoadedLib =
-    'Operation is not allowed while the library is loaded.';
+  { Indicates not allowed operation when the library loader is loaded. }
+  SBrookOpNotAllowedActiveLibLoader =
+    'Operation is not allowed while the library loader is active.';
 
 type
-  { Raised when an operation is not allowed while the library is loaded. }
-  EBrookOpNotAllowedLoadedLib = class(Exception);
+  { Raised when an operation is not allowed while the library loader is loaded. }
+  EBrookOpNotAllowedActiveLibLoader = class(Exception);
 
   { Class for dynamic library loading. }
   TBrookLibraryLoader = class(TBrookHandledComponent)
   private
-    FEnabled: Boolean;
+    FActive: Boolean;
     FVersion: string;
     FHandle: TLibHandle;
     FLibraryName: TFileName;
-    FStreamedLoad: Boolean;
-    function IsEnabled: Boolean;
-    procedure SetEnabled(AValue: Boolean);
+    FStreamedActive: Boolean;
+    function IsActive: Boolean;
+    procedure SetActive(AValue: Boolean);
     procedure SetLibraryName(const AValue: TFileName);
   protected
     procedure Loaded; override;
-    procedure CheckDisabled; inline;
+    procedure CheckInactive; inline;
     function GetHandle: Pointer; override;
   public
     { Loads the library dynamically. }
-    procedure Load; virtual;
+    procedure Open; virtual;
     { Unloads the library dynamically. }
-    procedure Unload; virtual;
+    procedure Close; virtual;
     { @exclude }
     procedure DefineProperties(AFiler: TFiler); override;
   published
     { Loads/Unloads the library dynamically. }
-    property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabled;
+    property Active: Boolean read FActive write SetActive stored IsActive;
     { Specifies the library to be loaded dynamically. }
     property LibraryName: TFileName read FLibraryName write SetLibraryName;
     { Version of the loaded library. }
@@ -84,17 +84,17 @@ implementation
 procedure TBrookLibraryLoader.Loaded;
 begin
   inherited Loaded;
-  if FEnabled then
-    Load;
+  if FActive then
+    Open;
 end;
 
 procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
 begin
   inherited DefineProperties(AFiler);
-  if FEnabled and not FStreamedLoad then
+  if FActive and not FStreamedActive then
   begin
-    FStreamedLoad := True;
-    Load;
+    FStreamedActive := True;
+    Open;
   end;
 end;
 
@@ -103,53 +103,54 @@ begin
   Result := @FHandle;
 end;
 
-procedure TBrookLibraryLoader.CheckDisabled;
+procedure TBrookLibraryLoader.CheckInactive;
 begin
-  if not (csLoading in ComponentState) and Enabled then
-    raise EBrookOpNotAllowedLoadedLib.CreateRes(@SBrookOpNotAllowedLoadedLib);
+  if not (csLoading in ComponentState) and Active then
+    raise EBrookOpNotAllowedActiveLibLoader.CreateRes(
+      @SBrookOpNotAllowedActiveLibLoader);
 end;
 
-procedure TBrookLibraryLoader.SetEnabled(AValue: Boolean);
+procedure TBrookLibraryLoader.SetActive(AValue: Boolean);
 begin
-  if AValue = FEnabled then
+  if AValue = FActive then
     Exit;
   if csLoading in ComponentState then
-    FEnabled := AValue
+    FActive := AValue
   else
     if AValue then
-      Load
+      Open
     else
-      Unload;
+      Close;
 end;
 
-function TBrookLibraryLoader.IsEnabled: Boolean;
+function TBrookLibraryLoader.IsActive: Boolean;
 begin
-  Result := FEnabled;
+  Result := FActive;
 end;
 
 procedure TBrookLibraryLoader.SetLibraryName(const AValue: TFileName);
 begin
   if AValue = FLibraryName then
     Exit;
-  CheckDisabled;
+  CheckInactive;
   FLibraryName := AValue;
 end;
 
-procedure TBrookLibraryLoader.Load;
+procedure TBrookLibraryLoader.Open;
 begin
   FHandle := SgLoadLibrary(FLibraryName);
-  FEnabled := FHandle <> NilHandle;
-  if FEnabled then
+  FActive := FHandle <> NilHandle;
+  if FActive then
     FVersion := BrookVersionStr
   else
     FVersion := '';
 end;
 
-procedure TBrookLibraryLoader.Unload;
+procedure TBrookLibraryLoader.Close;
 begin
   FHandle := SgUnloadLibrary;
-  FEnabled := FHandle <> NilHandle;
-  if not FEnabled then
+  FActive := FHandle <> NilHandle;
+  if not FActive then
     FVersion := '';
 end;
 
