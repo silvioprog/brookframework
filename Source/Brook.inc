@@ -26,9 +26,12 @@
 
 {$IFDEF FPC}
  {$MODE DELPHI}
- {$IFDEF VER3_0} // {$IF FPC_FULLVERSION <= 30101} commented to fix "[dcc32 Error] E2026 Constant expression expected"
+ {$IFDEF VER3_0} // it should be {$IF FPC_FULLVERSION <= 30101}, but it was commented to fix "[dcc32 Error] E2026 Constant expression expected"
   {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
   {$POP}
  {$ENDIF}
+{$ENDIF}
+{$IFNDEF DEBUG}
+ {$DEFINE INLINE}
 {$ENDIF}
