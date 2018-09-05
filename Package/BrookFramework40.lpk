@@ -10,12 +10,6 @@
         <OtherUnitFiles Value="../Source"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CustomOptions Value="-dSG_PATH_ROUTING"/>
-        <OtherDefines Count="1">
-          <Define0 Value="SG_PATH_ROUTING"/>
-        </OtherDefines>
-      </Other>
     </CompilerOptions>
     <Files Count="18">
       <Item1>
