@@ -159,7 +159,11 @@ end;
 
 function BrookFixPath(const APath: string): string;
 begin
-  Result := Concat('/', APath.Trim('/'));
+  Result := APath;
+  if not APath.StartsWith('/') then
+    Result := Concat('/', Result);
+  if Result.EndsWith('/') then
+    SetLength(Result, Length(Result) - Length('/'));
 end;
 
 end.
