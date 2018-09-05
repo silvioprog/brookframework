@@ -47,7 +47,7 @@ uses
   libsagui;
 
 resourcestring
-  SBrookSelectLibraryTitle = 'Select library';
+  SBrookSelectLibraryTitle = 'Select library ...';
   SBrookSharedLibraryFilter = 'Shared libraries (%s)|%s|All files (*.*)|*.*';
   SBrookRoutesEditor = 'Routes editor ...';
 
