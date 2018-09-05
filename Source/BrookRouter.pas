@@ -156,6 +156,7 @@ type
     function Route(const APath: string; AUserData: Pointer): Boolean; virtual;
   published
     property Active: Boolean read FActive write SetActive stored IsActive;
+    { TODO: EntryPoint }
     property Routes: TBrookRoutes read FRoutes write SetRoutes;
     property OnCreateRouteClass: TBrookRouterCreatePanelClassEvent read
       FOnCreateRouteClass write FOnCreateRouteClass;
