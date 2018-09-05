@@ -124,12 +124,12 @@ type
     function GetValue(const AName: string): string;
     procedure SetValue(const AName, AValue: string);
   protected
+    class function CreatePair(
+      Apair: Psg_strmap): TBrookStringPair; static; inline;
     class function DoIterate(Acls: Pcvoid;
       Apair: Psg_strmap): cint; cdecl; static;
     class function DoSort(Acls: Pcvoid; Apair_a: Psg_strmap;
       Apair_b: Psg_strmap): cint; cdecl; static;
-    class function CreatePair(
-      Apair: Psg_strmap): TBrookStringPair; static; inline;
     function GetHandle: Pointer; override;
     function IsEOF: Boolean; virtual;
     procedure DoChange(AOperation: TBrookStringMapOperation); virtual;
