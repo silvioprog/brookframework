@@ -281,9 +281,11 @@ begin
   end;
 end;
 
-function TBrookStringMap.GetEnumerator: TBrookStringMapEnumerator;
+class function TBrookStringMap.CreatePair(Apair: Psg_strmap): TBrookStringPair;
 begin
-  Result := TBrookStringMapEnumerator.Create(Self);
+  SgCheckLibrary;
+  Result := TBrookStringPair.Create(TMarshal.ToString(sg_strmap_name(Apair)),
+    TMarshal.ToString(sg_strmap_val(Apair)));
 end;
 
 class function TBrookStringMap.DoIterate(Acls: Pcvoid; Apair: Psg_strmap): cint;
@@ -306,11 +308,9 @@ begin
     CreatePair(Apair_b));
 end;
 
-class function TBrookStringMap.CreatePair(Apair: Psg_strmap): TBrookStringPair;
+function TBrookStringMap.GetEnumerator: TBrookStringMapEnumerator;
 begin
-  SgCheckLibrary;
-  Result := TBrookStringPair.Create(TMarshal.ToString(sg_strmap_name(Apair)),
-    TMarshal.ToString(sg_strmap_val(Apair)));
+  Result := TBrookStringMapEnumerator.Create(Self);
 end;
 
 function TBrookStringMap.IsEmpty: Boolean;
