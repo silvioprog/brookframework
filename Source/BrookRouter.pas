@@ -36,6 +36,7 @@ uses
   Platform,
   Marshalling,
   libsagui,
+  BrookUtils,
   BrookHandledClasses,
   BrookStringMap;
 
@@ -133,6 +134,7 @@ type
 
   TBrookRouter = class(TBrookHandledComponent)
   private
+    FEntryPoint: string;
     FRoutes: TBrookRoutes;
     FHandle: Psg_router;
     FActive: Boolean;
@@ -140,6 +142,7 @@ type
     FOnCreateRouteClass: TBrookRouterCreatePanelClassEvent;
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
+    procedure SetEntryPoint(const AValue: string);
     procedure SetRoutes(AValue: TBrookRoutes);
   protected
     function CreateRoutes: TBrookRoutes; virtual;
@@ -156,7 +159,7 @@ type
     function Route(const APath: string; AUserData: Pointer): Boolean; virtual;
   published
     property Active: Boolean read FActive write SetActive stored IsActive;
-    { TODO: EntryPoint }
+    property EntryPoint: string read FEntryPoint write SetEntryPoint;
     property Routes: TBrookRoutes read FRoutes write SetRoutes;
     property OnCreateRouteClass: TBrookRouterCreatePanelClassEvent read
       FOnCreateRouteClass write FOnCreateRouteClass;
@@ -271,9 +274,7 @@ procedure TBrookRoute.SetPattern(const AValue: string);
 begin
   if AValue = FPattern then
     Exit;
-  FPattern := AValue;
-  if not AValue.StartsWith('/') then
-    FPattern := Concat('/', FPattern);
+  FPattern := BrookFixPath(AValue);
 end;
 
 function TBrookRoute.GetPath: string;
@@ -396,7 +397,6 @@ end;
 
 destructor TBrookRouter.Destroy;
 begin
-  FRoutes.Free;
   try
     SetActive(False);
   finally
@@ -465,6 +465,15 @@ begin
       DoClose;
 end;
 
+procedure TBrookRouter.SetEntryPoint(const AValue: string);
+begin
+  if FEntryPoint = AValue then
+    Exit;
+  FEntryPoint := AValue;
+  if not FEntryPoint.IsEmpty then
+    FEntryPoint := BrookFixPath(FEntryPoint);
+end;
+
 procedure TBrookRouter.DoOpen;
 begin
   if Assigned(FHandle) then
@@ -507,13 +516,17 @@ end;
 function TBrookRouter.Route(const APath: string; AUserData: Pointer): Boolean;
 var
   M: TMarshaller;
+  P: string;
   R: cint;
 begin
   if APath.IsEmpty then
     raise EArgumentException.CreateRes(@SBrookEmptyPath);
   CheckActive;
   SgCheckLibrary;
-  R := sg_router_dispatch(FHandle, M.ToCNullable(APath), AUserData);
+  P := BrookFixPath(APath);
+  if not FEntryPoint.IsEmpty then
+    P := Concat(FEntryPoint, P);
+  R := sg_router_dispatch(FHandle, M.ToCNullable(P), AUserData);
   Result := R = 0;
   if (not Result) and (R <> ENOENT) then
     SgCheckLastError(R);

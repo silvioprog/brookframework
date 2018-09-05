@@ -76,16 +76,19 @@ function BrookAlloc(ASize: NativeUInt): Pointer;
 }
 procedure BrookFree(APtr: Pointer);
 
-{ experimental: it will be documented and tested as soon as it is accepted as better API. }
+{ experimental }
 function BrookStrError(AErrorNum: Integer; ALength: Integer): string; overload;
 
 function BrookStrError(AErrorNum: Integer): string; overload;
 
-{ experimental: it will be documented and tested as soon as it is accepted as better API. }
+{ experimental }
 function BrookIsPost(const AMethod: string): Boolean;
 
-{ experimental: it will be documented and tested as soon as it is accepted as better API. }
+{ experimental }
 function BrookTmpDir: string;
+
+{ experimental }
+function BrookFixPath(const APath: string): string; inline;
 
 implementation
 
@@ -152,6 +155,11 @@ begin
   finally
     sg_free(S);
   end;
+end;
+
+function BrookFixPath(const APath: string): string;
+begin
+  Result := Concat('/', APath.Trim('/'));
 end;
 
 end.
