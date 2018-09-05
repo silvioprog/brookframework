@@ -51,6 +51,8 @@ resourcestring
 type
   TBrookRoute = class;
 
+  TBrookRoutes = class;
+
   TBrookRouteClass = class of TBrookRoute;
 
   TBrookRouter = class;
@@ -70,6 +72,7 @@ type
 
   TBrookRoute = class(TBrookHandleCollectionItem)
   private
+    FOwner: TBrookRoutes;
     FVariables: TBrookStringMap;
     FSegments: TArray<string>;
     FOnMath: TBrookRouteMatchEvent;
@@ -97,6 +100,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Validate; inline;
+    property Owner: TBrookRoutes read FOwner;
     property PatternRaw: string read GetPatternRaw;
     property Segments: TArray<string> read GetSegments;
     property Variables: TBrookStringMap read GetVariables;
@@ -127,6 +131,8 @@ type
     function GetEnumerator: TBrookRoutesEnumerator;
     procedure Prepare; virtual;
     function Add: TBrookRoute; virtual;
+    function IndexOf(const APattern: string): Integer; virtual;
+    function Find(const APattern: string): TBrookRoute; virtual;
     property Items[AIndex: Integer]: TBrookRoute read GetItem
       write SetItem; default;
     procedure Clear; virtual;
@@ -171,9 +177,11 @@ implementation
 
 constructor TBrookRoute.Create(ACollection: TCollection);
 begin
+  Assert(ACollection is TBrookRoutes);
   inherited Create(ACollection);
+  FOwner := TBrookRoutes(ACollection);
   FVariables := TBrookStringMap.Create(@Fvars);
-  FPattern := '/';
+  SetPattern('/');
 end;
 
 destructor TBrookRoute.Destroy;
@@ -272,10 +280,18 @@ begin
 end;
 
 procedure TBrookRoute.SetPattern(const AValue: string);
+var
+  RT: TBrookRoute;
 begin
   if AValue = FPattern then
     Exit;
   FPattern := BrookFixPath(AValue);
+  if not Assigned(FOwner) then
+    Exit;
+  RT := FOwner.Find(FPattern);
+  if Assigned(RT) and (RT <> Self) then
+    raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
+      [GetNamePath, FPattern]);
 end;
 
 function TBrookRoute.GetPath: string;
@@ -369,6 +385,24 @@ end;
 function TBrookRoutes.Add: TBrookRoute;
 begin
   Result := TBrookRoute(inherited Add);
+end;
+
+function TBrookRoutes.IndexOf(const APattern: string): Integer;
+begin
+  for Result := 0 to Pred(Count) do
+    if SameText(GetItem(Result).Pattern, APattern) then
+      Exit;
+  Result := -1;
+end;
+
+function TBrookRoutes.Find(const APattern: string): TBrookRoute;
+var
+  RT: TBrookRoute;
+begin
+  for RT in Self do
+    if SameText(RT.Pattern, APattern) then
+      Exit(RT);
+  Result := nil;
 end;
 
 function TBrookRoutes.GetItem(AIndex: Integer): TBrookRoute;
