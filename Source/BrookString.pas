@@ -137,6 +137,12 @@ begin
   Result := FHandle;
 end;
 
+function TBrookString.GetText: string;
+begin
+  Result :=
+{$IFDEF FPC}string({$ENDIF}TEncoding.UTF8.GetString(GetContent){$IFDEF FPC}){$ENDIF};
+end;
+
 function TBrookString.WriteBytes(const ASource: TBytes;
   ALength: NativeUInt): NativeUInt;
 begin
@@ -160,11 +166,6 @@ begin
   Write(ASource, TEncoding.UTF8);
 end;
 
-function TBrookString.ToString: string;
-begin
-  Result := GetText;
-end;
-
 procedure TBrookString.Clear;
 begin
   SgCheckLibrary;
@@ -183,16 +184,15 @@ begin
   Write(AValue);
 end;
 
-function TBrookString.GetText: string;
-begin
-  Result :=
-{$IFDEF FPC}string({$ENDIF}TEncoding.UTF8.GetString(GetContent){$IFDEF FPC}){$ENDIF};
-end;
-
 function TBrookString.GetContent: TBytes;
 begin
   SgCheckLibrary;
   Result := TMarshal.ToBytes(sg_str_content(FHandle), GetLength);
+end;
+
+function TBrookString.ToString: string;
+begin
+  Result := GetText;
 end;
 
 end.
