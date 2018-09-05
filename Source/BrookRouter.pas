@@ -178,6 +178,7 @@ end;
 
 destructor TBrookRoute.Destroy;
 begin
+  FVariables.ClearOnDestroy := False;
   FVariables.Free;
   inherited Destroy;
 end;
@@ -397,6 +398,7 @@ end;
 
 destructor TBrookRouter.Destroy;
 begin
+  FRoutes.Free;
   try
     SetActive(False);
   finally
