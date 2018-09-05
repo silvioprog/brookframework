@@ -162,7 +162,7 @@ begin
   Result := APath;
   if not APath.StartsWith('/') then
     Result := Concat('/', Result);
-  if Result.EndsWith('/') then
+  if (Length('/') > SizeOf(Char)) and Result.EndsWith('/') then
     SetLength(Result, Length(Result) - Length('/'));
 end;
 
