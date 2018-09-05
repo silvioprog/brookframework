@@ -73,6 +73,8 @@ type
     procedure SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
       const AFileName: TFileName; ARendered: Boolean;
       AStatus: Word); overload; virtual;
+    procedure SendFile(const AFileName: TFileName;
+      ARendered: Boolean); overload; virtual;
     procedure SendFile(const AFileName: TFileName); overload; virtual;
     procedure SendStream(AStream: TStream; AStatus: Word);
     property Headers: TBrookStringMap read FHeaders;
@@ -191,6 +193,12 @@ begin
   if R = ENOENT then
     raise EFileNotFoundException.CreateRes(@SFileNotFound);
   SgCheckLastError(R);
+end;
+
+procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName;
+  ARendered: Boolean);
+begin
+  SendFile(BROOK_BLOCK_SIZE, 0, AFileName, ARendered, 200);
 end;
 
 procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName);
