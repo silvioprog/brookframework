@@ -38,20 +38,20 @@ uses
   BrookRouter;
 
 type
-  TBrookHTTPRoute = class;
+  TBrookCustomHTTPRoute = class;
 
   TBrookHTTPRouteRequestEvent = procedure(ASender: TObject;
-    ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+    ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse) of object;
 
-  TBrookHTTPRoute = class(TBrookCustomRoute)
+  TBrookCustomHTTPRoute = class(TBrookCustomRoute)
   private
     FOnRequest: TBrookHTTPRouteRequestEvent;
   protected
     procedure DoMatch(ARoute: TBrookCustomRoute); override;
-    procedure DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+    procedure DoRequest(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
-  published
+  public
     property Pattern;
     property Path;
     property OnMath;
@@ -59,10 +59,18 @@ type
       write FOnRequest;
   end;
 
+  TBrookHTTPRoute = class(TBrookCustomHTTPRoute)
+  published
+    property Pattern;
+    property Path;
+    property OnMath;
+    property OnRequest;
+  end;
+
   TBrookHTTPRoutes = class(TBrookRoutes)
   public
     class function GetRouterClass: TBrookCustomRouteClass; override;
-    function Add: TBrookHTTPRoute; reintroduce; virtual;
+    function Add: TBrookCustomHTTPRoute; reintroduce; virtual;
   end;
 
   TBrookHTTPRouterHolder = record
@@ -71,12 +79,15 @@ type
     Sender: TObject;
   end;
 
-  TBrookHTTPRouter = class(TBrookCustomRouter)
+  TBrookCustomHTTPRouter = class(TBrookCustomRouter)
   protected
     function CreateRoutes: TBrookRoutes; override;
   public
     function Route(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse): Boolean; reintroduce; virtual;
+  end;
+
+  TBrookHTTPRouter = class(TBrookCustomHTTPRouter)
   published
     property Active;
     property EntryPoint;
@@ -86,9 +97,9 @@ type
 
 implementation
 
-{ TBrookHTTPRoute }
+{ TBrookCustomHTTPRoute }
 
-procedure TBrookHTTPRoute.DoMatch(ARoute: TBrookCustomRoute);
+procedure TBrookCustomHTTPRoute.DoMatch(ARoute: TBrookCustomRoute);
 var
   VHolder: TBrookHTTPRouterHolder;
 begin
@@ -96,13 +107,14 @@ begin
   try
     inherited DoMatch(ARoute);
   finally
-    DoRequest(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
+    DoRequest(VHolder.Sender, TBrookCustomHTTPRoute(ARoute), VHolder.Request,
       VHolder.Response);
   end;
 end;
 
-procedure TBrookHTTPRoute.DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+procedure TBrookCustomHTTPRoute.DoRequest(ASender: TObject;
+  ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
 begin
   if Assigned(FOnRequest) then
     FOnRequest(ASender, ARoute, ARequest, AResponse);
@@ -115,20 +127,20 @@ begin
   Result := TBrookHTTPRoute;
 end;
 
-function TBrookHTTPRoutes.Add: TBrookHTTPRoute;
+function TBrookHTTPRoutes.Add: TBrookCustomHTTPRoute;
 begin
   Result := TBrookHTTPRoute(inherited Add);
 end;
 
-{ TBrookHTTPRouter }
+{ TBrookCustomHTTPRouter }
 
-function TBrookHTTPRouter.CreateRoutes: TBrookRoutes;
+function TBrookCustomHTTPRouter.CreateRoutes: TBrookRoutes;
 begin
   Result := TBrookHTTPRoutes.Create(Self);
 end;
 
-function TBrookHTTPRouter.Route(ASender: TObject; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse): Boolean;
+function TBrookCustomHTTPRouter.Route(ASender: TObject;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse): Boolean;
 var
   VHolder: TBrookHTTPRouterHolder;
 begin
