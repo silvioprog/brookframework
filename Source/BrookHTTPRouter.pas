@@ -33,7 +33,6 @@ interface
 uses
   RTLConsts,
   SysUtils,
-  Classes,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookRouter;
@@ -50,6 +49,8 @@ type
     FOnRequest: TBrookHTTPRouteRequestEvent;
   protected
     procedure DoMatch(ARoute: TBrookRoute); override;
+    procedure DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
   published
     property OnRequest: TBrookHTTPRouteRequestEvent read FOnRequest
       write FOnRequest;
@@ -58,6 +59,7 @@ type
   TBrookHTTPRoutes = class(TBrookRoutes)
   public
     class function GetRouterClass: TBrookRouteClass; override;
+    function Add: TBrookHTTPRoute; reintroduce; virtual;
   end;
 
   TBrookHTTPRouterHolder = record
@@ -83,11 +85,19 @@ var
   VHolder: TBrookHTTPRouterHolder;
 begin
   VHolder := TBrookHTTPRouterHolder(ARoute.UserData^);
-  inherited DoMatch(ARoute);
-  if not Assigned(FOnRequest) then
-    Exit;
-  FOnRequest(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
-    VHolder.Response);
+  try
+    inherited DoMatch(ARoute);
+  finally
+    DoRequest(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
+      VHolder.Response);
+  end;
+end;
+
+procedure TBrookHTTPRoute.DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+begin
+  if Assigned(FOnRequest) then
+    FOnRequest(ASender, ARoute, ARequest, AResponse);
 end;
 
 { TBrookHTTPRoutes }
@@ -95,6 +105,11 @@ end;
 class function TBrookHTTPRoutes.GetRouterClass: TBrookRouteClass;
 begin
   Result := TBrookHTTPRoute;
+end;
+
+function TBrookHTTPRoutes.Add: TBrookHTTPRoute;
+begin
+  Result := TBrookHTTPRoute(inherited Add);
 end;
 
 { TBrookHTTPRouter }
