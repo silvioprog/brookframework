@@ -74,7 +74,6 @@ type
   private
     FRoutes: TBrookRoutes;
     FVariables: TBrookStringMap;
-    FSegments: TArray<string>;
     FOnMath: TBrookRouteMatchEvent;
     FPattern: string;
     FHandle: Psg_route;
@@ -247,18 +246,19 @@ end;
 
 function TBrookCustomRoute.GetSegments: TArray<string>;
 begin
-  if (not Assigned(FHandle)) or (Length(FSegments) > 0) then
-    Exit(FSegments);
+  Result := nil;
+  if not Assigned(FHandle) then
+    Exit(nil);
   SgCheckLibrary;
   SgCheckLastError(sg_route_get_segments(FHandle,
-{$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @FSegments));
-  Result := FSegments;
+{$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @Result));
 end;
 
 function TBrookCustomRoute.GetVariables: TBrookStringMap;
 begin
   Result := FVariables;
-  if (not Assigned(FHandle)) or (not FVariables.IsEmpty) then
+  FVariables.Clear;
+  if not Assigned(FHandle) then
     Exit;
   SgCheckLastError(sg_route_get_vars(FHandle,
 {$IFNDEF VER3_0}@{$ENDIF}DoGetVarsCallback, FVariables));
