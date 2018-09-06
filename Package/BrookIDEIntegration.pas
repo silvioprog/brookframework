@@ -131,8 +131,10 @@ begin
     TBrookLibraryNameComponentEditor);
   RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
   RegisterComponentEditor(TBrookHTTPRouter, TBrookRouterComponentEditor);
+{$IFDEF LCL}
   RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServer, 'UploadsDir',
     TDirectoryPropertyEditor);
+{$ENDIF}
   RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
