@@ -132,6 +132,7 @@ type
     function Add: TBrookRoute; virtual;
     function IndexOf(const APattern: string): Integer; virtual;
     function Find(const APattern: string): TBrookRoute; virtual;
+    function Remove(const APattern: string): Boolean; virtual;
     property Items[AIndex: Integer]: TBrookRoute read GetItem
       write SetItem; default;
     procedure Clear; virtual;
@@ -178,7 +179,7 @@ constructor TBrookRoute.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FVariables := TBrookStringMap.Create(@Fvars);
-  SetPattern(MakePattern);
+  FPattern := MakePattern;
 end;
 
 destructor TBrookRoute.Destroy;
@@ -279,15 +280,15 @@ end;
 procedure TBrookRoute.SetPattern(const AValue: string);
 var
   VRoute: TBrookRoute;
-  VOwner: TPersistent;
+  VRoutes: TPersistent;
 begin
   if AValue = FPattern then
     Exit;
   FPattern := BrookFixPath(AValue);
-  VOwner := GetOwner;
-  if (not Assigned(VOwner)) or (not (VOwner is TBrookRoutes)) then
+  VRoutes := GetOwner;
+  if (not Assigned(VRoutes)) or (not (VRoutes is TBrookRoutes)) then
     Exit;
-  VRoute := TBrookRoutes(VOwner).Find(FPattern);
+  VRoute := TBrookRoutes(VRoutes).Find(FPattern);
   if Assigned(VRoute) and (VRoute <> Self) then
     raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
       [GetNamePath, FPattern]);
@@ -316,8 +317,19 @@ begin
 end;
 
 function TBrookRoute.MakePattern: string;
+var
+  VRoutes: TPersistent;
+  VIndex: Integer;
 begin
-  Result := Concat('/', string(ClassName).SubString(6).ToLower, Index.ToString);
+  VRoutes := GetOwner;
+  if (not Assigned(VRoutes)) or (not (VRoutes is TBrookRoutes)) then
+    Exit;
+  VIndex := Index;
+  repeat
+    Inc(VIndex);
+    Result := Concat('/', string(ClassName).SubString(6).ToLower,
+      VIndex.ToString);
+  until TBrookRoutes(VRoutes).IndexOf(Result) < 0;
 end;
 
 procedure TBrookRoute.Validate;
@@ -407,6 +419,16 @@ begin
     if SameText(RT.Pattern, APattern) then
       Exit(RT);
   Result := nil;
+end;
+
+function TBrookRoutes.Remove(const APattern: string): Boolean;
+var
+  I: Integer;
+begin
+  I := IndexOf(APattern);
+  Result := I > -1;
+  if Result then
+    inherited Delete(I);
 end;
 
 function TBrookRoutes.GetItem(AIndex: Integer): TBrookRoute;
