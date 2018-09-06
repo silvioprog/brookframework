@@ -130,6 +130,7 @@ begin
   RegisterComponentEditor(TBrookLibraryLoader,
     TBrookLibraryNameComponentEditor);
   RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
+  RegisterComponentEditor(TBrookHTTPRouter, TBrookRouterComponentEditor);
   RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
@@ -227,11 +228,12 @@ end;
 procedure TBrookLibraryNameComponentEditor.Edit;
 var
   VDialog: TOpenDialog;
-  VLibraryLoader: TBrookLibraryLoader;
+  VLibraryLoader: TBrookCustomLibraryLoader;
   VPropertyEditor: TBrookLibraryNamePropertyEditor;
 begin
-  VLibraryLoader := Component as TBrookLibraryLoader;
-  if not Assigned(VLibraryLoader) then Exit;
+  VLibraryLoader := Component as TBrookCustomLibraryLoader;
+  if not Assigned(VLibraryLoader) then
+    Exit;
   VPropertyEditor := TBrookLibraryNamePropertyEditor.Create(nil, 0);
   VDialog := VPropertyEditor.CreateFileDialog;
   try
@@ -289,11 +291,11 @@ end;
 
 procedure TBrookRouterComponentEditor.ExecuteVerb(AIndex: Integer);
 var
-  VRouter: TBrookRouter;
+  VRouter: TBrookCustomRouter;
 begin
   if AIndex <> 0 then
     Exit;
-  VRouter := GetComponent as TBrookRouter;
+  VRouter := GetComponent as TBrookCustomRouter;
 {$IFDEF LCL}
   EditCollection(
 {$ELSE}
