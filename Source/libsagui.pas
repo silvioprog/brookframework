@@ -366,8 +366,12 @@ type
 
   sg_route_cb = procedure(cls: Pcvoid; route: Psg_route); cdecl;
 
+  sg_routes_iter_cb = function(cls: Pcvoid; route: Psg_route): cint; cdecl;
+
 var
   sg_route_handle: function(route: Psg_route): Pcvoid; cdecl;
+
+  sg_route_match: function(route: Psg_route): Pcvoid; cdecl;
 
   sg_route_pattern_raw: function(route: Psg_route): Pcchar; cdecl;
 
@@ -390,6 +394,13 @@ var
   sg_routes_add: function(routes: PPsg_route; const pattern: Pcchar;
     cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
 
+  sg_routes_iter: function(routes: Psg_route; cb: sg_routes_iter_cb;
+    cls: Pcvoid): cint; cdecl;
+
+  sg_routes_next: function(route: PPsg_route): cint; cdecl;
+
+  sg_routes_count: function(routes: Psg_route): cuint; cdecl;
+
   sg_routes_clear: function(routes: PPsg_route): cint; cdecl;
 
 type
@@ -397,10 +408,19 @@ type
   sg_router = record
   end;
 
+  sg_router_dispatch_cb = function(cls: Pcvoid; const path: Pcchar;
+    route: Psg_route): cint; cdecl;
+
+  sg_router_match_cb = function(cls: Pcvoid; route: Psg_route): cint; cdecl;
+
 var
   sg_router_new: function(routes: Psg_route): Psg_router; cdecl;
 
   sg_router_free: procedure(router: Psg_router); cdecl;
+
+  sg_router_dispatch2: function(router: Psg_router; const path: Pcchar;
+    user_data: Pcvoid; dispatch_cb: sg_router_dispatch_cb; cls: Pcvoid;
+    match_cb: sg_router_match_cb): cint; cdecl;
 
   sg_router_dispatch: function(router: Psg_router; const path: Pcchar;
     user_data: Pcvoid): cint; cdecl;
@@ -539,18 +559,24 @@ begin
     sg_httpread_end := GetProcAddress(GSgLibHandle, 'sg_httpread_end');
 
     sg_route_handle := GetProcAddress(GSgLibHandle, 'sg_route_handle');
+    sg_route_match := GetProcAddress(GSgLibHandle, 'sg_route_match');
     sg_route_pattern_raw := GetProcAddress(GSgLibHandle, 'sg_route_pattern_raw');
     sg_route_pattern := GetProcAddress(GSgLibHandle, 'sg_route_pattern');
     sg_route_path := GetProcAddress(GSgLibHandle, 'sg_route_path');
     sg_route_get_segments := GetProcAddress(GSgLibHandle, 'sg_route_get_segments');
     sg_route_get_vars := GetProcAddress(GSgLibHandle, 'sg_route_get_vars');
     sg_route_user_data := GetProcAddress(GSgLibHandle, 'sg_route_user_data');
+
     sg_routes_add2 := GetProcAddress(GSgLibHandle, 'sg_routes_add2');
     sg_routes_add := GetProcAddress(GSgLibHandle, 'sg_routes_add');
+    sg_routes_iter := GetProcAddress(GSgLibHandle, 'sg_routes_iter');
+    sg_routes_next := GetProcAddress(GSgLibHandle, 'sg_routes_next');
+    sg_routes_count := GetProcAddress(GSgLibHandle, 'sg_routes_count');
     sg_routes_clear := GetProcAddress(GSgLibHandle, 'sg_routes_clear');
 
     sg_router_new := GetProcAddress(GSgLibHandle, 'sg_router_new');
     sg_router_free := GetProcAddress(GSgLibHandle, 'sg_router_free');
+    sg_router_dispatch2 := GetProcAddress(GSgLibHandle, 'sg_router_dispatch2');
     sg_router_dispatch := GetProcAddress(GSgLibHandle, 'sg_router_dispatch');
 
     Result := GSgLibHandle;
@@ -670,6 +696,7 @@ begin
     sg_httpread_end := nil;
 
     sg_route_handle := nil;
+    sg_route_match := nil;
     sg_route_pattern_raw := nil;
     sg_route_pattern := nil;
     sg_route_path := nil;
@@ -678,10 +705,14 @@ begin
     sg_route_user_data := nil;
     sg_routes_add2 := nil;
     sg_routes_add := nil;
+    sg_routes_iter := nil;
+    sg_routes_next := nil;
+    sg_routes_count := nil;
     sg_routes_clear := nil;
 
     sg_router_new := nil;
     sg_router_free := nil;
+    sg_router_dispatch2 := nil;
     sg_router_dispatch := nil;
 
     Result := GSgLibHandle;

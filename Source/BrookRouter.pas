@@ -137,6 +137,8 @@ type
     function MakePattern: string; virtual;
     procedure Prepare; virtual;
     function Add: TBrookCustomRoute; virtual;
+    function First: TBrookCustomRoute; virtual;
+    function Last: TBrookCustomRoute; virtual;
     function IndexOf(const APattern: string): Integer; virtual;
     function Find(const APattern: string): TBrookCustomRoute; virtual;
     function Remove(const APattern: string): Boolean; virtual;
@@ -419,6 +421,20 @@ begin
   Result := TBrookRoute(inherited Add);
 end;
 
+function TBrookRoutes.First: TBrookCustomRoute;
+begin
+  if Count = 0 then
+    Exit(nil);
+  Result := GetItem(0);
+end;
+
+function TBrookRoutes.Last: TBrookCustomRoute;
+begin
+  if Count = 0 then
+    Exit(nil);
+  Result := GetItem(Pred(Count));
+end;
+
 function TBrookRoutes.IndexOf(const APattern: string): Integer;
 begin
   for Result := 0 to Pred(Count) do
@@ -449,7 +465,7 @@ end;
 
 function TBrookRoutes.GetItem(AIndex: Integer): TBrookCustomRoute;
 begin
-  Result := TBrookCustomRoute(inherited Items[AIndex]);
+  Result := TBrookCustomRoute(inherited GetItem(AIndex));
 end;
 
 procedure TBrookRoutes.SetItem(AIndex: Integer; AValue: TBrookCustomRoute);
