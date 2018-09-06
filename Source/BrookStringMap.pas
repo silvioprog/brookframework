@@ -389,6 +389,8 @@ end;
 
 procedure TBrookStringMap.Clear;
 begin
+  if not Assigned(FHandle^) then
+    Exit;
   SgCheckLibrary;
   sg_strmap_cleanup(FHandle);
   DoChange(sgmoNone);
