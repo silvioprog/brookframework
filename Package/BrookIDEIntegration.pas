@@ -131,6 +131,8 @@ begin
     TBrookLibraryNameComponentEditor);
   RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
   RegisterComponentEditor(TBrookHTTPRouter, TBrookRouterComponentEditor);
+  RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServer, 'UploadsDir',
+    TDirectoryPropertyEditor);
   RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
