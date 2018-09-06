@@ -170,13 +170,18 @@ type
       @returns(@True when pair is found, @False otherwise.) }
     function Find(const AName: string;
       out APair: TBrookStringPair): Boolean; virtual;
+    { Checks if map contains a pair by its name.
+
+      @param(AName[in] Name of the pair.)
+
+      @returns(@True when map contains the pair, @False otherwise.) }
+    function Contains(const AName: string): Boolean; virtual;
     { Gets a pair by name and return its value.
 
       @param(AName[in] Name of the pair.)
 
       @returns(Pair value.)}
     function Get(const AName: string): string; virtual;
-
     { Tries to find a pair value by its name.
 
       @param(AName[in] Name of the pair.)
@@ -404,6 +409,14 @@ begin
   else
     if R <> ENOENT then
       SgCheckLastError(R);
+end;
+
+function TBrookStringMap.Contains(const AName: string): Boolean;
+var
+  P: Psg_strmap;
+  M: TMarshaller;
+begin
+  Result := sg_strmap_find(FHandle^, M.ToCString(AName), @P) = 0;
 end;
 
 function TBrookStringMap.Get(const AName: string): string;
