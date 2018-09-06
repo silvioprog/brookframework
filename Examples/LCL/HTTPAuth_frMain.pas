@@ -151,9 +151,9 @@ function TfrMain.BrookHTTPServer1Authenticate(ASender: TObject;
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse): Boolean;
 begin
-  AAuthentication.Realm := 'My realm';
-  Result := AAuthentication.UserName.Equals('abc') and
-    AAuthentication.Password.Equals('123');
+  AAuthentication.Credentials.Realm := 'My realm';
+  Result := AAuthentication.Credentials.UserName.Equals('abc') and
+    AAuthentication.Credentials.Password.Equals('123');
   if not Result then
     AAuthentication.Deny(
       '<html><head><title>Denied</title></head><body><font color="red">Go away</font></body></html>',
