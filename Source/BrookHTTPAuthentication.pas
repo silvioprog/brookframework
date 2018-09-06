@@ -70,6 +70,7 @@ type
       AHandle: Pointer): TBrookCustomHTTPCredentials; virtual;
   public
     constructor Create(AHandle: Pointer); virtual;
+    destructor Destroy; override;
     property Credentials: TBrookCustomHTTPCredentials read FCredentials;
     procedure Deny(const AJustification, AContentType: string); overload; virtual;
     procedure Deny(const AFmt: string; const AArgs: array of const;
@@ -115,6 +116,12 @@ begin
   inherited Create;
   FHandle := AHandle;
   FCredentials := CreateCredentials(FHandle);
+end;
+
+destructor TBrookHTTPAuthentication.Destroy;
+begin
+  FCredentials.Free;
+  inherited Destroy;
 end;
 
 function TBrookHTTPAuthentication.CreateCredentials(
