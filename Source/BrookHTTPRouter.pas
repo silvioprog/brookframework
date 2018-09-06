@@ -52,9 +52,6 @@ type
     procedure DoRequest(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
   public
-    property Pattern;
-    property Path;
-    property OnMath;
     property OnRequest: TBrookHTTPRouteRequestEvent read FOnRequest
       write FOnRequest;
   end;
