@@ -78,10 +78,10 @@ type
     FPattern: string;
     FHandle: Psg_route;
     Fvars: Psg_strmap;
+    function GetSegments: TArray<string>; inline;
     function GetPattern: string;
     function GetPath: string;
     function GetPatternRaw: string;
-    function GetSegments: TArray<string>;
     function GetVariables: TBrookStringMap;
     function GetRegexHandle: Pointer;
     function GetUserData: Pointer;

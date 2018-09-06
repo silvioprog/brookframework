@@ -55,7 +55,7 @@ type
     FIsUploading: Boolean;
     FTLSSession: Pointer;
     FHandle: Psg_httpreq;
-    function GetPaths: TArray<string>;
+    function GetPaths: TArray<string>; inline;
   protected
     function CreateUploads(AHandle: Pointer): TBrookHTTPUploads; virtual;
     function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
