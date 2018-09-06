@@ -81,7 +81,7 @@ type
 
   { Class for dynamic library loading. }
   TBrookLibraryLoader = class(TBrookCustomLibraryLoader)
-  public
+  published
     { Loads/Unloads the library dynamically. }
     property Active;
     { Specifies the library to be loaded dynamically. }
