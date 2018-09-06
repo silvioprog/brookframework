@@ -86,7 +86,7 @@ end;
 
 procedure TfrMain.btRemoveClick(Sender: TObject);
 begin
-  FMap.Remove(Concat('Name', FMap.Count.ToString));
+  FMap.Remove(veMap.Keys[veMap.Row]);
 end;
 
 procedure TfrMain.btClearClick(Sender: TObject);
@@ -98,7 +98,9 @@ procedure TfrMain.DoMapChange(ASender: TObject;
   AOperation: TBrookStringMapOperation);
 var
   P: TBrookStringPair;
+  R: Integer;
 begin
+  R := veMap.Row;
   veMap.Clear;
   for P in FMap do
     veMap.Strings.
@@ -107,6 +109,14 @@ begin
 {$ELSE}
       AddPair(P.Name, P.Value)
 {$ENDIF};
+  case AOperation of
+    sgmoAdd: veMap.Row := Pred(veMap.RowCount);
+    sgmoRemove:
+      if R > 0 then
+        veMap.Row := Pred(R)
+      else
+        veMap.Row := 0;
+  end;
   btRemove.Enabled := FMap.Count > 0;
   btClear.Enabled := btRemove.Enabled;
 end;

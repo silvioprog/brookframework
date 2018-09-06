@@ -19,6 +19,7 @@ object frMain: TfrMain
     TabOrder = 0
     object btAdd: TButton
       Align = Left
+      Cursor = crHandPoint
       Margins.Left = 6.000000000000000000
       Margins.Top = 6.000000000000000000
       Margins.Right = 6.000000000000000000
@@ -34,6 +35,7 @@ object frMain: TfrMain
     end
     object btRemove: TButton
       Align = Left
+      Cursor = crHandPoint
       Enabled = False
       Margins.Top = 6.000000000000000000
       Margins.Right = 6.000000000000000000
@@ -49,6 +51,7 @@ object frMain: TfrMain
     end
     object btClear: TButton
       Align = Left
+      Cursor = crHandPoint
       Enabled = False
       Margins.Top = 6.000000000000000000
       Margins.Right = 6.000000000000000000
@@ -72,7 +75,7 @@ object frMain: TfrMain
     Size.PlatformDefault = False
     TabOrder = 1
     RowCount = 0
-    Options = [AlternatingRowBackground, ColumnResize, ColumnMove, ColLines, RowLines, Tabs, Header, AutoDisplacement]
+    Options = [AlternatingRowBackground, ColumnResize, ColumnMove, ColLines, RowLines, RowSelect, Tabs, Header, AutoDisplacement]
     OnGetValue = grMapGetValue
     Viewport.Width = 316.000000000000000000
     Viewport.Height = 179.000000000000000000

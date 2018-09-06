@@ -96,7 +96,7 @@ end;
 
 procedure TfrMain.btRemoveClick(Sender: TObject);
 begin
-  FMap.Remove(Concat('Name', FMap.Count.ToString));
+  FMap.Remove(TStringGridModel(grMap.Model).Cells[0, grMap.Row]);
 end;
 
 procedure TfrMain.btClearClick(Sender: TObject);
@@ -107,12 +107,23 @@ end;
 procedure TfrMain.DoMapChange(ASender: TObject;
   AOperation: TBrookStringMapOperation);
 var
+  R: Integer;
   P: TBrookStringPair;
 begin
+  R := grMap.Row;
+  grMap.RowCount := 0;
   grMap.RowCount := FMap.Count;
   FList.Clear;
   for P in FMap do
     FList.AddPair(P.Name, P.Value);
+  case AOperation of
+    sgmoAdd: grMap.Row := Pred(grMap.RowCount);
+    sgmoRemove:
+      if R > 0 then
+        grMap.Row := Pred(R)
+      else
+        grMap.Row := 0;
+  end;
   btRemove.Enabled := FMap.Count > 0;
   btClear.Enabled := btRemove.Enabled;
 end;

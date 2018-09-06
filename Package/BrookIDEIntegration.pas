@@ -249,6 +249,7 @@ begin
     if VDialog.Execute then
     begin
       VLibraryLoader.LibraryName := VDialog.FileName;
+      VLibraryLoader.Open;
       Designer.Modified;
     end;
   finally
