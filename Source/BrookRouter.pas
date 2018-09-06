@@ -95,7 +95,6 @@ type
       const Aname: Pcchar; const Aval: Pcchar): cint; cdecl; static;
     function GetHandle: Pointer; override;
     procedure DoMatch(ARoute: TBrookRoute); virtual;
-    function MakePattern: string; virtual;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -128,6 +127,7 @@ type
     constructor Create(AOwner: TPersistent); virtual;
     class function GetRouterClass: TBrookRouteClass; virtual;
     function GetEnumerator: TBrookRoutesEnumerator;
+    function MakePattern: string; virtual;
     procedure Prepare; virtual;
     function Add: TBrookRoute; virtual;
     function IndexOf(const APattern: string): Integer; virtual;
@@ -179,7 +179,10 @@ constructor TBrookRoute.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FVariables := TBrookStringMap.Create(@Fvars);
-  FPattern := MakePattern;
+  if Assigned(ACollection) and (ACollection is TBrookRoutes) then
+    FPattern := TBrookRoutes(ACollection).MakePattern
+  else
+    SetPattern('/');
 end;
 
 destructor TBrookRoute.Destroy;
@@ -316,22 +319,6 @@ begin
     FOnMath(ARoute);
 end;
 
-function TBrookRoute.MakePattern: string;
-var
-  VRoutes: TPersistent;
-  VIndex: Integer;
-begin
-  VRoutes := GetOwner;
-  if (not Assigned(VRoutes)) or (not (VRoutes is TBrookRoutes)) then
-    Exit;
-  VIndex := Index;
-  repeat
-    Inc(VIndex);
-    Result := Concat('/', string(ClassName).SubString(6).ToLower,
-      VIndex.ToString);
-  until TBrookRoutes(VRoutes).IndexOf(Result) < 0;
-end;
-
 procedure TBrookRoute.Validate;
 begin
   if FPattern.IsEmpty then
@@ -365,6 +352,18 @@ end;
 function TBrookRoutes.GetEnumerator: TBrookRoutesEnumerator;
 begin
   Result := TBrookRoutesEnumerator.Create(Self);
+end;
+
+function TBrookRoutes.MakePattern: string;
+var
+  VIndex: Integer;
+begin
+  VIndex := 1;
+  repeat
+    Result := Concat('/', string(ClassName).SubString(6).ToLower,
+      VIndex.ToString);
+    Inc(VIndex);
+  until IndexOf(Result) < 0;
 end;
 
 procedure TBrookRoutes.Prepare;
