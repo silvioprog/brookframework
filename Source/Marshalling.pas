@@ -91,7 +91,7 @@ begin
   SetString(Result, S, Length(S));
   SetCodePage(RawByteString(Result), CP_UTF8, False);
 {$ELSE}
-  Result := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(S), L);
+  Result := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(S));
 {$ENDIF}
 end;
 
