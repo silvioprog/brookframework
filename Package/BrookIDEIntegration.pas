@@ -35,6 +35,7 @@ interface
 uses
   SysUtils,
   Classes,
+  TypInfo,
   Dialogs,
 {$IFDEF LCL}
   PropEdits,
@@ -73,6 +74,13 @@ type
     function GetInitialDirectory: string; virtual;
     procedure SetFileName(const AFileName: string); virtual;
 {$ENDIF}
+  end;
+
+  { TBrookHTTPRouteRequestMethodsPropertyEditor }
+
+  TBrookHTTPRouteRequestMethodsPropertyEditor = class(TSetProperty)
+  public
+    procedure GetProperties(AProc: TGetPropEditProc); override;
   end;
 
   { TBrookLibraryNameComponentEditor }
@@ -127,6 +135,8 @@ begin
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TBrookHTTPRouteRequestMethods),
+    TBrookCustomHTTPRoute, 'Methods', TBrookHTTPRouteRequestMethodsPropertyEditor);
   RegisterComponentEditor(TBrookLibraryLoader,
     TBrookLibraryNameComponentEditor);
   RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
@@ -226,6 +236,18 @@ begin
 end;
 
 {$ENDIF}
+
+{ TBrookHTTPRouteRequestMethodsPropertyEditor }
+
+procedure TBrookHTTPRouteRequestMethodsPropertyEditor.GetProperties(
+  AProc: TGetPropEditProc);
+var
+  M: TBrookHTTPRouteRequestMethod;
+begin
+  for M := Succ(Low(TBrookHTTPRouteRequestMethod)) to
+    High(TBrookHTTPRouteRequestMethod) do
+    AProc(TSetElementPropertyEditor.Create(Self, Ord(M)));
+end;
 
 { TBrookLibraryNameComponentEditor }
 
