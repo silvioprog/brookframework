@@ -126,6 +126,31 @@ uses
   BrookHTTPRouter,
   BrookHTTPServer;
 
+{$IFNDEF LCL}
+
+type
+  TLocalSetElementProperty = class(TSetElementProperty)
+  public
+    constructor Create(AParent: TPropertyEditor; AElement: Integer); reintroduce;
+  end;
+
+constructor TLocalSetElementProperty.Create(AParent: TPropertyEditor;
+  AElement: Integer);
+begin
+  inherited Create(AParent, AElement);
+end;
+
+function BrookHTTPRouteRequestMethodsPropertyMapper(AObj: TPersistent;
+  APropInfo: PPropInfo): TPropertyEditorClass;
+begin
+  if Assigned(AObj) and (AObj is TBrookCustomHTTPRoute) and
+    SameText(APropInfo.NameFld.ToString, 'Methods') then
+    Exit(TBrookHTTPRouteRequestMethodsPropertyEditor);
+  Result := nil;
+end;
+
+{$ENDIF}
+
 procedure Register;
 begin
   RegisterComponents('Brook', [
@@ -136,16 +161,18 @@ begin
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookCustomLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
+{$IFDEF LCL}
   RegisterPropertyEditor(TypeInfo(TBrookHTTPRouteRequestMethods), nil, '',
     TBrookHTTPRouteRequestMethodsPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(string), TBrookCustomHTTPServer, 'UploadsDir',
+    TDirectoryPropertyEditor);
+{$ELSE}
+  RegisterPropertyMapper(BrookHTTPRouteRequestMethodsPropertyMapper);
+{$ENDIF}
   RegisterComponentEditor(TBrookCustomLibraryLoader,
     TBrookLibraryNameComponentEditor);
   RegisterComponentEditor(TBrookCustomRouter, TBrookRouterComponentEditor);
   RegisterComponentEditor(TBrookCustomHTTPRouter, TBrookRouterComponentEditor);
-{$IFDEF LCL}
-  RegisterPropertyEditor(TypeInfo(string), TBrookCustomHTTPServer, 'UploadsDir',
-    TDirectoryPropertyEditor);
-{$ENDIF}
   RegisterComponentEditor(TBrookCustomHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
@@ -244,10 +271,21 @@ procedure TBrookHTTPRouteRequestMethodsPropertyEditor.GetProperties(
   AProc:{$IFDEF LCL}TGetPropEditProc{$ELSE}TGetPropProc{$ENDIF});
 var
   M: TBrookHTTPRouteRequestMethod;
+{$IFNDEF LCL}
+  P: IProperty;
+{$ENDIF}
 begin
   for M := Succ(Low(TBrookHTTPRouteRequestMethod)) to
     High(TBrookHTTPRouteRequestMethod) do
-        AProc(TSetElementProperty.Create(Self{$IFDEF LCL}, Ord(M){$ENDIF}));
+{$IFDEF LCL}
+    AProc(TSetElementProperty.Create(Self, Ord(M)));
+{$ELSE}
+  begin
+    P := TLocalSetElementProperty.Create(Self, Ord(M));
+    AProc(P);
+    P := nil;
+  end;
+{$ENDIF}
 end;
 
 { TBrookLibraryNameComponentEditor }
