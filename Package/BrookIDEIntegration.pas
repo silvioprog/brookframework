@@ -134,19 +134,19 @@ begin
     TBrookHTTPRouter,
     TBrookHTTPServer
   ]);
-  RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
+  RegisterPropertyEditor(TypeInfo(TFileName), TBrookCustomLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TBrookHTTPRouteRequestMethods),
-    TBrookCustomHTTPRoute, 'Methods', TBrookHTTPRouteRequestMethodsPropertyEditor);
-  RegisterComponentEditor(TBrookLibraryLoader,
+  RegisterPropertyEditor(TypeInfo(TBrookHTTPRouteRequestMethods), nil, '',
+    TBrookHTTPRouteRequestMethodsPropertyEditor);
+  RegisterComponentEditor(TBrookCustomLibraryLoader,
     TBrookLibraryNameComponentEditor);
-  RegisterComponentEditor(TBrookRouter, TBrookRouterComponentEditor);
-  RegisterComponentEditor(TBrookHTTPRouter, TBrookRouterComponentEditor);
+  RegisterComponentEditor(TBrookCustomRouter, TBrookRouterComponentEditor);
+  RegisterComponentEditor(TBrookCustomHTTPRouter, TBrookRouterComponentEditor);
 {$IFDEF LCL}
-  RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServer, 'UploadsDir',
+  RegisterPropertyEditor(TypeInfo(string), TBrookCustomHTTPServer, 'UploadsDir',
     TDirectoryPropertyEditor);
 {$ENDIF}
-  RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
+  RegisterComponentEditor(TBrookCustomHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
 {$IFDEF LCL}
