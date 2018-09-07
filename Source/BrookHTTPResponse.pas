@@ -77,6 +77,8 @@ type
       ARendered: Boolean); overload; virtual;
     procedure SendFile(const AFileName: TFileName); overload; virtual;
     procedure SendStream(AStream: TStream; AStatus: Word);
+    procedure SendEmpty(const AContentType: string); overload; virtual;
+    procedure SendEmpty; overload; virtual;
     property Headers: TBrookStringMap read FHeaders;
   end;
 
@@ -214,6 +216,16 @@ begin
   SgCheckLastError(sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus));
+end;
+
+procedure TBrookHTTPResponse.SendEmpty(const AContentType: string);
+begin
+  Send('', AContentType, 204);
+end;
+
+procedure TBrookHTTPResponse.SendEmpty;
+begin
+  Send('', '', 204);
 end;
 
 end.

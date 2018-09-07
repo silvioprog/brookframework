@@ -69,7 +69,8 @@ type
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
-    function IsPost: Boolean; virtual;
+    function IsPost: Boolean; inline;
+    function IsFavicon: Boolean; inline;
     property Headers: TBrookStringMap read FHeaders;
     property Cookies: TBrookStringMap read FCookies;
     property Params: TBrookStringMap read FParams;
@@ -163,6 +164,11 @@ end;
 function TBrookHTTPRequest.IsPost: Boolean;
 begin
   Result := BrookIsPost(FMethod);
+end;
+
+function TBrookHTTPRequest.IsFavicon: Boolean;
+begin
+  Result := SameText(FPath, '/favicon.ico');
 end;
 
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
