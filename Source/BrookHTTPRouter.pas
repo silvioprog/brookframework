@@ -60,6 +60,8 @@ type
   published
     property Pattern;
     property Path;
+    property OnCreate;
+    property OnDestroy;
     property OnMath;
     property OnRequest;
   end;
@@ -89,7 +91,6 @@ type
     property Active;
     property EntryPoint;
     property Routes;
-    property OnCreateRouteClass;
   end;
 
 implementation

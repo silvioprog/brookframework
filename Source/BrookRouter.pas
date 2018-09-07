@@ -58,9 +58,6 @@ type
 
   TBrookCustomRouter = class;
 
-  TBrookRouterCreatePanelClassEvent = procedure(ASender: TBrookCustomRouter;
-    var ARouteClass: TBrookCustomRouteClass) of object;
-
   TBrookRouteMatchEvent = procedure(ARoute: TBrookCustomRoute) of object;
 
   EBrookRoute = class(Exception);
@@ -73,6 +70,8 @@ type
 
   TBrookCustomRoute = class(TBrookHandleCollectionItem)
   private
+    FOnCreate: TNotifyEvent;
+    FOnDestroy: TNotifyEvent;
     FRoutes: TBrookRoutes;
     FVariables: TBrookStringMap;
     FOnMath: TBrookRouteMatchEvent;
@@ -95,11 +94,14 @@ type
     class function DoGetVarsCallback(Acls: Pcvoid;
       const Aname: Pcchar; const Aval: Pcchar): cint; cdecl; static;
     function GetHandle: Pointer; override;
+    procedure DoCreate; virtual;
+    procedure DoDestroy; virtual;
     procedure DoMatch(ARoute: TBrookCustomRoute); virtual;
     property Routes: TBrookRoutes read FRoutes;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
+    procedure AfterConstruction; override;
     procedure Validate; inline;
     property RegexHandle: Pointer read GetRegexHandle;
     property Segments: TArray<string> read GetSegments;
@@ -108,6 +110,8 @@ type
     property PatternRaw: string read GetPatternRaw;
     property Path: string read GetPath;
     property UserData: Pointer read GetUserData;
+    property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
+    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnMath: TBrookRouteMatchEvent read FOnMath write FOnMath;
   end;
 
@@ -115,6 +119,8 @@ type
   published
     property Pattern;
     property Path;
+    property OnCreate;
+    property OnDestroy;
     property OnMath;
   end;
 
@@ -155,7 +161,6 @@ type
     FHandle: Psg_router;
     FActive: Boolean;
     FStreamedActive: Boolean;
-    FOnCreateRouteClass: TBrookRouterCreatePanelClassEvent;
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetEntryPoint(const AValue: string);
@@ -176,8 +181,6 @@ type
     property Active: Boolean read FActive write SetActive stored IsActive;
     property EntryPoint: string read FEntryPoint write SetEntryPoint;
     property Routes: TBrookRoutes read FRoutes write SetRoutes;
-    property OnCreateRouteClass: TBrookRouterCreatePanelClassEvent read
-      FOnCreateRouteClass write FOnCreateRouteClass;
   end;
 
   TBrookRouter = class(TBrookCustomRouter)
@@ -185,7 +188,6 @@ type
     property Active;
     property EntryPoint;
     property Routes;
-    property OnCreateRouteClass;
   end;
 
 implementation
@@ -207,9 +209,19 @@ end;
 
 destructor TBrookCustomRoute.Destroy;
 begin
-  FVariables.ClearOnDestroy := False;
-  FVariables.Free;
-  inherited Destroy;
+  try
+    FVariables.ClearOnDestroy := False;
+    FVariables.Free;
+    inherited Destroy;
+  finally
+    DoDestroy;
+  end;
+end;
+
+procedure TBrookCustomRoute.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  DoCreate;
 end;
 
 class procedure TBrookCustomRoute.DoRouteCallback(Acls: Pcvoid;
@@ -333,6 +345,18 @@ begin
     Exit(nil);
   SgCheckLibrary;
   Result := sg_route_user_data(FHandle);
+end;
+
+procedure TBrookCustomRoute.DoCreate;
+begin
+  if Assigned(FOnCreate) then
+    FOnCreate(Self);
+end;
+
+procedure TBrookCustomRoute.DoDestroy;
+begin
+  if Assigned(FOnDestroy) then
+    FOnDestroy(Self);
 end;
 
 procedure TBrookCustomRoute.DoMatch(ARoute: TBrookCustomRoute);
