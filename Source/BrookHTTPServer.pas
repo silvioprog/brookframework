@@ -383,11 +383,12 @@ end;
 class function TBrookCustomHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;
   Aauth: Psg_httpauth; Areq: Psg_httpreq; Ares: Psg_httpres): cbool;
 var
-  VSrv: TBrookCustomHTTPServer absolute Acls;
+  VSrv: TBrookCustomHTTPServer;
   VAuth: TBrookHTTPAuthentication;
   VReq: TBrookHTTPRequest;
   VRes: TBrookHTTPResponse;
 begin
+  VSrv := Acls;
   VAuth := VSrv.CreateAuthentication(Aauth);
   VReq := VSrv.CreateRequest(Areq);
   VRes := VSrv.CreateResponse(Ares);
@@ -419,10 +420,11 @@ end;
 class procedure TBrookCustomHTTPServer.DoRequestCallback(Acls: Pcvoid;
   Areq: Psg_httpreq; Ares: Psg_httpres);
 var
-  VSrv: TBrookCustomHTTPServer absolute Acls;
+  VSrv: TBrookCustomHTTPServer;
   VReq: TBrookHTTPRequest;
   VRes: TBrookHTTPResponse;
 begin
+  VSrv := Acls;
   VReq := VSrv.CreateRequest(Areq);
   VRes := VSrv.CreateResponse(Ares);
   try
@@ -446,9 +448,10 @@ end;
 class procedure TBrookCustomHTTPServer.DoErrorCallback(Acls: Pcvoid;
   const Aerr: Pcchar);
 var
-  VSrv: TBrookCustomHTTPServer absolute Acls;
+  VSrv: TBrookCustomHTTPServer;
   VExcept: Exception;
 begin
+  VSrv := Acls;
   VExcept := VSrv.CreateError(TMarshal.ToString(Aerr));
   try
     VSrv.DoError(VSrv, VExcept);

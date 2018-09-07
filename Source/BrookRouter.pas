@@ -214,8 +214,9 @@ end;
 class procedure TBrookCustomRoute.DoRouteCallback(Acls: Pcvoid;
   Aroute: Psg_route);
 var
-  RT: TBrookCustomRoute absolute Acls;
+  RT: TBrookCustomRoute;
 begin
+  RT := Acls;
   RT.FHandle := Aroute;
   RT.DoMatch(RT);
 end;
@@ -223,8 +224,9 @@ end;
 class function TBrookCustomRoute.DoGetSegmentsCallback(Acls: Pcvoid;
   const Asegment: Pcchar): cint;
 var
-  VSegments: ^TArray<string> absolute Acls;
+  VSegments: ^TArray<string>;
 begin
+  VSegments := Acls;
 {$IFDEF VER3_0}
   SetLength(VSegments^, Succ(Length(VSegments^)));
   VSegments^[High(VSegments^)] := TMarshal.ToString(Asegment);

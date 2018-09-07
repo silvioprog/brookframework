@@ -294,8 +294,9 @@ end;
 
 class function TBrookStringMap.DoIterate(Acls: Pcvoid; Apair: Psg_strmap): cint;
 var
-  M: PMethod absolute Acls;
+  M: PMethod;
 begin
+  M := Acls;
   if not Assigned(M.Code) then
     Exit(-1);
   Result := TBrookStringMapIterator(M.Code)(M.Data, CreatePair(Apair));
@@ -304,8 +305,9 @@ end;
 class function TBrookStringMap.DoSort(Acls: Pcvoid; Apair_a: Psg_strmap;
   Apair_b: Psg_strmap): cint;
 var
-  M: PMethod absolute Acls;
+  M: PMethod;
 begin
+  M := Acls;
   if not Assigned(M.Code) then
     Exit(0);
   Result := TBrookStringMapComparator(M.Code)(M.Data, CreatePair(Apair_a),
