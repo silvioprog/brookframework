@@ -77,9 +77,7 @@ function BrookAlloc(ASize: NativeUInt): Pointer;
 procedure BrookFree(APtr: Pointer);
 
 { experimental }
-function BrookStrError(AErrorNum: Integer; ALength: Integer): string; overload;
-
-function BrookStrError(AErrorNum: Integer): string; overload;
+function BrookStrError(AErrorNum: Integer): string;
 
 { experimental }
 function BrookIsPost(const AMethod: string): Boolean;
@@ -116,24 +114,13 @@ begin
   sg_free(APtr);
 end;
 
-function BrookStrError(AErrorNum: Integer; ALength: Integer): string;
+function BrookStrError(AErrorNum: Integer): string;
 var
-  P: MarshaledAString;
+  P: array[0..255] of cchar;
 begin
   SgCheckLibrary;
-  GetMem(P, ALength);
-  try
-    FillChar(P^, ALength, 0);
-    sg_strerror(AErrorNum, P, ALength);
-    Result := TMarshal.ToString(P, Length(P));
-  finally
-    FreeMem(P, ALength);
-  end;
-end;
-
-function BrookStrError(AErrorNum: Integer): string;
-begin
-  Result := BrookStrError(AErrorNum, 256);
+  sg_strerror(AErrorNum, @P[0], SizeOf(P));
+  Result := TMarshal.ToString(@P[0]);
 end;
 
 function BrookIsPost(const AMethod: string): Boolean;
