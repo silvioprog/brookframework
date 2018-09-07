@@ -430,7 +430,7 @@ var
 function SgLoadLibrary(const AFileName: TFileName): TLibHandle;
 function SgUnloadLibrary: TLibHandle;
 procedure SgCheckLibrary;
-procedure SgCheckLastError(ALastError: Integer);
+procedure SgCheckLastError(ALastError: Integer); inline;
 
 implementation
 
