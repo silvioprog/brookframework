@@ -54,10 +54,7 @@ type
   public
     class function ToBytes(const S: MarshaledAString;
       L: NativeUInt): TBytes; static; inline;
-    class function ToString(const S: MarshaledAString;
-      L: NativeUInt): string; overload; static; inline;
-    class function ToString(
-      const S: MarshaledAString): string; overload; static; inline;
+    class function ToString(const S: MarshaledAString): string; static; inline;
   end;
 
   { TMarshaller* }
@@ -86,22 +83,16 @@ begin
 end;
 
 class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
-  const S: MarshaledAString; L: NativeUInt): string;
+  const S: MarshaledAString): string;
 begin
-  if (not Assigned(S)) or (L = 0) then
+  if not Assigned(S) then
     Exit('');
 {$IFDEF FPC}
-  SetString(Result, S, L);
+  SetString(Result, S, Length(S));
   SetCodePage(RawByteString(Result), CP_UTF8, False);
 {$ELSE}
   Result := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(S), L);
 {$ENDIF}
-end;
-
-class function {$IFDEF FPC}TMarshal{$ELSE}TMarshalHelper{$ENDIF}.ToString(
-  const S: MarshaledAString): string;
-begin
-  Result := ToString(S, Length(S));
 end;
 
 { TMarshaller* }
