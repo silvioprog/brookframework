@@ -94,6 +94,7 @@ resourcestring
 {$ENDIF}
 
 type
+  cchar = Byte;
   Pcchar = MarshaledAString;
 {$IF DEFINED(MSWINDOWS)}
   cbool = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.BOOL;
