@@ -44,6 +44,7 @@ resourcestring
   SBrookOpNotAllowedInactiveRouter =
     'Operation is not allowed while the router is inactive.';
   SBrookCannotCreateRouterHandle = 'Cannot create router handle.';
+  SBrookNoRoutesDefined = 'No routes defined.';
   SBrookEmptyPattern = '%s: pattern cannot be empty.';
   SBrookRouteAlreadyExists = '%s: route ''%s'' already exists.';
   SBrookEmptyPath = 'Path cannot be empty.';
@@ -388,33 +389,33 @@ begin
 end;
 
 procedure TBrookRoutes.Prepare;
-const
-  BUF_LEN = 256;
 var
   RT: TBrookCustomRoute;
   H: Psg_route;
   M: TMarshaller;
-  P: MarshaledAString;
+  P: array[0..255] of cchar;
+  S: string;
   R: cint;
 begin
+  if Count = 0 then
+    raise EBrookRoutes.CreateRes(@SBrookNoRoutesDefined);
   SgCheckLibrary;
   SgCheckLastError(sg_routes_clear(@FHandle));
-  GetMem(P, BUF_LEN);
-  try
-    for RT in Self do
-    begin
-      RT.Validate;
-      FillChar(P^, BUF_LEN, 0);
-      R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), P, BUF_LEN,
+  for RT in Self do
+  begin
+    RT.Validate;
+    P[0] := 0;
+    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), @P[0], SizeOf(P),
 {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
-      if R = EALREADY then
-        raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
-          [RT.GetNamePath, RT.Pattern]);
-      if R <> 0 then
-        raise EBrookRoutes.Create(TMarshal.ToString(P));
-    end;
-  finally
-    FreeMem(P, BUF_LEN);
+    if R = 0 then
+      Continue;
+    if R = EALREADY then
+      raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
+        [RT.GetNamePath, RT.Pattern]);
+    S := TMarshal.ToString(@P[0]).TrimRight;
+    if S.IsEmpty then
+      S := BrookStrError(R);
+    raise EBrookRoutes.Create(S);
   end;
 end;
 
