@@ -730,24 +730,20 @@ begin
 end;
 
 procedure SgCheckLastError(ALastError: Integer);
-const
-  BUF_LEN = 256;
 var
-  S: RawByteString;
-  P: MarshaledAString;
+  P: array[0..255] of cchar;
+  S: string;
 begin
   if (ALastError = 0) or (not Assigned(sg_strerror)) then
     Exit;
-  GetMem(P, BUF_LEN);
-  try
-    FillChar(P^, BUF_LEN, 0);
-    sg_strerror(ALastError, P, BUF_LEN);
-    SetString(S, P, Length(P));
-    SetCodePage(S, CP_UTF8, False);
-    raise EOSError.Create(string(S));
-  finally
-    FreeMem(P, BUF_LEN);
-  end;
+  sg_strerror(ALastError, @P[0], Length(P));
+{$IFDEF FPC}
+  SetString(S, @P[0], Length(P));
+  SetCodePage(RawByteString(S), CP_UTF8, False);
+{$ELSE}
+  S := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(@P[0]));
+{$ENDIF}
+  raise EOSError.Create(S);
 end;
 
 initialization
