@@ -75,7 +75,7 @@ type
 
   TBrookCustomHTTPRoute = class(TBrookCustomRoute)
   public const
-    DefaultReqMethods = [rmGET .. rmPOST];
+    DefaultReqMethods = [rmGET, rmPOST];
   private
     FMethods: TBrookHTTPRouteRequestMethods;
     FOnRequestMethod: TBrookHTTPRouteRequestMethodEvent;
@@ -106,7 +106,7 @@ type
 
   TBrookHTTPRoute = class(TBrookCustomHTTPRoute)
   published
-    property Methods default DefaultReqMethods;
+    property Methods default TBrookHTTPRoute.DefaultReqMethods;
     property Pattern;
     property Path;
     property OnCreate;
@@ -192,7 +192,7 @@ begin
     Result := FOnRequestMethod(ASender, ARoute, ARequest, AResponse)
   else
     Result := (FMethods = []) or
-      (TBrookHTTPRouteRequestMethod.FromString(ARequest.Method) in FMethods);
+      (rmUnknown.FromString(ARequest.Method) in FMethods);
 end;
 
 procedure TBrookCustomHTTPRoute.DoRequest(ASender: TObject;

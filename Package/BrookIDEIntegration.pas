@@ -80,7 +80,8 @@ type
 
   TBrookHTTPRouteRequestMethodsPropertyEditor = class(TSetProperty)
   public
-    procedure GetProperties(AProc: TGetPropEditProc); override;
+    procedure GetProperties(AProc:
+{$IFDEF LCL}TGetPropEditProc{$ELSE}TGetPropProc{$ENDIF}); override;
   end;
 
   { TBrookLibraryNameComponentEditor }
@@ -240,13 +241,13 @@ end;
 { TBrookHTTPRouteRequestMethodsPropertyEditor }
 
 procedure TBrookHTTPRouteRequestMethodsPropertyEditor.GetProperties(
-  AProc: TGetPropEditProc);
+  AProc:{$IFDEF LCL}TGetPropEditProc{$ELSE}TGetPropProc{$ENDIF});
 var
   M: TBrookHTTPRouteRequestMethod;
 begin
   for M := Succ(Low(TBrookHTTPRouteRequestMethod)) to
     High(TBrookHTTPRouteRequestMethod) do
-    AProc(TSetElementPropertyEditor.Create(Self, Ord(M)));
+        AProc(TSetElementProperty.Create(Self{$IFDEF LCL}, Ord(M){$ENDIF}));
 end;
 
 { TBrookLibraryNameComponentEditor }
