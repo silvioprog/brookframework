@@ -406,7 +406,7 @@ begin
     if VSrv.FNoFavicon and VReq.IsFavicon then
     begin
       VRes.SendEmpty;
-      Exit;
+      Exit(True);
     end;
     VAuth := VSrv.CreateAuthentication(Aauth);
     try

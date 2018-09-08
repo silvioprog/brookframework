@@ -134,6 +134,7 @@ object frMain: TfrMain
   end
   object BrookHTTPServer1: TBrookHTTPServer
     Authenticated = True
+    NoFavicon = True
     OnAuthenticate = BrookHTTPServer1Authenticate
     OnAuthenticateError = BrookHTTPServer1AuthenticateError
     OnRequest = BrookHTTPServer1Request
