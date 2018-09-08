@@ -116,6 +116,7 @@ type
     FCatchOSErrors: Boolean;
     FConnectionLimit: Cardinal;
     FConnectionTimeout: Cardinal;
+    FNoFavicon: Boolean;
     FPayloadLimit: NativeUInt;
     FUploadsLimit: UInt64;
     FActive: Boolean;
@@ -146,6 +147,7 @@ type
     function IsCatchOSErrors: Boolean;
     function IsConnectionLimit: Boolean;
     function IsConnectionTimeout: Boolean;
+    function IsNoFavicon: Boolean;
     function IsPayloadLimit: Boolean;
     function IsUploadsLimit: Boolean;
     function IsPort: Boolean;
@@ -226,6 +228,8 @@ type
       write SetConnectionTimeout stored IsConnectionTimeout;
     property ConnectionLimit: Cardinal read GetConnectionLimit
       write SetConnectionLimit stored IsConnectionLimit;
+    property NoFavicon: Boolean read FNoFavicon write FNoFavicon
+      stored IsNoFavicon;
     property Security: TBrookCustomHTTPServerSecurity read FSecurity
       write SetSecurity;
     property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
@@ -252,6 +256,7 @@ type
     property ThreadPoolSize default 0;
     property ConnectionTimeout default 0;
     property ConnectionLimit default 0;
+    property NoFavicon default False;
     property Security;
     property OnAuthenticate;
     property OnAuthenticateError;
@@ -389,31 +394,39 @@ var
   VRes: TBrookHTTPResponse;
 begin
   VSrv := Acls;
-  VAuth := VSrv.CreateAuthentication(Aauth);
   VReq := VSrv.CreateRequest(Areq);
   VRes := VSrv.CreateResponse(Ares);
   try
+    if VSrv.FNoFavicon and VReq.IsFavicon then
+    begin
+      VRes.SendEmpty;
+      Exit;
+    end;
+    VAuth := VSrv.CreateAuthentication(Aauth);
     try
-      Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
-    except
-      on E: EOSError do
-      begin
-        Result := False;
-        if VSrv.CatchOSErrors then
-          VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E)
-        else
-          VSrv.DoError(VSrv, E);
+      try
+        Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
+      except
+        on E: EOSError do
+        begin
+          Result := False;
+          if VSrv.CatchOSErrors then
+            VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E)
+          else
+            VSrv.DoError(VSrv, E);
+        end;
+        on E: Exception do
+        begin
+          Result := False;
+          VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E);
+        end;
       end;
-      on E: Exception do
-      begin
-        Result := False;
-        VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E);
-      end;
+    finally
+      VAuth.Free;
     end;
   finally
     VRes.Free;
     VReq.Free;
-    VAuth.Free;
   end;
 end;
 
@@ -428,6 +441,11 @@ begin
   VReq := VSrv.CreateRequest(Areq);
   VRes := VSrv.CreateResponse(Ares);
   try
+    if VSrv.FNoFavicon and VReq.IsFavicon then
+    begin
+      VRes.SendEmpty;
+      Exit;
+    end;
     try
       VSrv.DoRequest(VSrv, VReq, VRes);
     except
@@ -518,7 +536,7 @@ begin
   if Assigned(FOnRequest) then
     FOnRequest(ASender, ARequest, AResponse)
   else
-    AResponse.Send('Empty response', BROOK_CONTENT_TYPE, 200);
+    AResponse.SendEmpty;
 end;
 
 procedure TBrookCustomHTTPServer.DoRequestError(ASender: TObject;
@@ -636,6 +654,11 @@ end;
 function TBrookCustomHTTPServer.IsConnectionTimeout: Boolean;
 begin
   Result := FConnectionTimeout > 0;
+end;
+
+function TBrookCustomHTTPServer.IsNoFavicon: Boolean;
+begin
+  Result := FNoFavicon;
 end;
 
 function TBrookCustomHTTPServer.IsPayloadLimit: Boolean;
