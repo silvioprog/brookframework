@@ -85,12 +85,13 @@ type
     FCertificate: string;
     FTrust: string;
     FDHParams: string;
+    function IsActive: Boolean;
   public
     procedure Assign(ASource: TPersistent); override;
     procedure Clear; virtual;
     procedure Validate; inline;
   public
-    property Active: Boolean read FActive write FActive;
+    property Active: Boolean read FActive write FActive stored IsActive;
     property PrivateKey: string read FPrivateKey write FPrivateKey;
     property PrivatePassword: string read FPrivatePassword
       write FPrivatePassword;
@@ -284,6 +285,11 @@ begin
   end
   else
     inherited Assign(ASource);
+end;
+
+function TBrookCustomHTTPServerSecurity.IsActive: Boolean;
+begin
+  Result := FActive;
 end;
 
 procedure TBrookCustomHTTPServerSecurity.Validate;
@@ -622,7 +628,7 @@ begin
     CheckInactive;
   FThreaded := AValue;
   if FThreaded then
-    IsMultiThread := True;
+    System.IsMultiThread := True;
 end;
 
 procedure TBrookCustomHTTPServer.SetThreadPoolSize(AValue: Cardinal);
@@ -631,7 +637,7 @@ begin
     CheckInactive;
   FThreadPoolSize := AValue;
   if FThreadPoolSize > 0 then
-    IsMultiThread := True;
+    System.IsMultiThread := True;
 end;
 
 procedure TBrookCustomHTTPServer.SetUploadsDir(const AValue: string);
@@ -663,12 +669,12 @@ end;
 
 function TBrookCustomHTTPServer.IsPayloadLimit: Boolean;
 begin
-  Result := FPayloadLimit > 0;
+  Result := FPayloadLimit <> BROOK_PAYLOAD_LIMIT;
 end;
 
 function TBrookCustomHTTPServer.IsUploadsLimit: Boolean;
 begin
-  Result := FUploadsLimit > 0;
+  Result := FUploadsLimit <> BROOK_UPLOADS_LIMIT;
 end;
 
 function TBrookCustomHTTPServer.IsActive: Boolean;
@@ -778,7 +784,7 @@ end;
 
 function TBrookCustomHTTPServer.IsPostBufferSize: Boolean;
 begin
-  Result := FPostBufferSize > 0;
+  Result := FPostBufferSize <> BROOK_POST_BUFFER_SIZE;
 end;
 
 function TBrookCustomHTTPServer.IsThreaded: Boolean;
