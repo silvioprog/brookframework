@@ -413,6 +413,7 @@ begin
       try
         Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
       except
+        { TODO: URGENT: fix exception raising overflow to avoid security issues. }
         on E: EOSError do
         begin
           Result := False;
@@ -455,6 +456,7 @@ begin
     try
       VSrv.DoRequest(VSrv, VReq, VRes);
     except
+      { TODO: URGENT: fix exception raising overflow to avoid security issues. }
       on E: EOSError do
         if VSrv.CatchOSErrors then
           VSrv.DoRequestError(VSrv, VReq, VRes, E)
