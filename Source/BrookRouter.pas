@@ -556,7 +556,8 @@ end;
 
 procedure TBrookCustomRouter.SetRoutes(AValue: TBrookRoutes);
 begin
-  FRoutes.Assign(AValue);
+  if AValue <> FRoutes then
+    FRoutes.Assign(AValue);
 end;
 
 function TBrookCustomRouter.IsActive: Boolean;
