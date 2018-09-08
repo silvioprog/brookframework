@@ -76,7 +76,9 @@ type
     procedure SendFile(const AFileName: TFileName;
       ARendered: Boolean); overload; virtual;
     procedure SendFile(const AFileName: TFileName); overload; virtual;
-    procedure SendStream(AStream: TStream; AStatus: Word);
+    procedure SendStream(AStream: TStream; AStatus: Word;
+      AFreed: Boolean); overload; virtual;
+    procedure SendStream(AStream: TStream; AStatus: Word); overload; virtual;
     procedure SendEmpty(const AContentType: string); overload; virtual;
     procedure SendEmpty; overload; virtual;
     property Headers: TBrookStringMap read FHeaders;
@@ -208,14 +210,25 @@ begin
   SendFile(BROOK_BLOCK_SIZE, 0, AFileName, False, 200);
 end;
 
-procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word);
+procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word;
+  AFreed: Boolean);
+var
+  VStreamFree: sg_free_cb;
 begin
   CheckStream(AStream);
   CheckStatus(AStatus);
   SgCheckLibrary;
+  if AFreed then
+    VStreamFree := {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree
+  else
+    VStreamFree := nil;
   SgCheckLastError(sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamFree, AStatus));
+{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream, VStreamFree, AStatus));
+end;
+
+procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word);
+begin
+  SendStream(AStream, AStatus, True);
 end;
 
 procedure TBrookHTTPResponse.SendEmpty(const AContentType: string);
