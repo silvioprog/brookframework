@@ -145,7 +145,7 @@ type
   public
     procedure Route(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); reintroduce; virtual;
-    { TODO: Slave router? }
+    { TODO: Next router? }
     property OnRoute: TBrookHTTPRouterRequestEvent read FOnRoute write FOnRoute;
     property OnNotFound: TBrookHTTPRouterRequestEvent read FOnNotFound
       write FOnNotFound;
