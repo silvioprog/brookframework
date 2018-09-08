@@ -129,12 +129,26 @@ type
     Sender: TObject;
   end;
 
+  TBrookHTTPRouterRequestEvent = procedure(ASender: TObject;
+    ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
+
   TBrookCustomHTTPRouter = class(TBrookCustomRouter)
+  private
+    FOnNotFound: TBrookHTTPRouterRequestEvent;
+    FOnRoute: TBrookHTTPRouterRequestEvent;
   protected
     function CreateRoutes: TBrookRoutes; override;
+    procedure DoRoute(ASender: TObject; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse);
+    procedure DoNotFound(ASender: TObject; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse);
   public
-    function Route(ASender: TObject; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse): Boolean; reintroduce; virtual;
+    procedure Route(ASender: TObject; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse); reintroduce; virtual;
+    { TODO: Slave router? }
+    property OnRoute: TBrookHTTPRouterRequestEvent read FOnRoute write FOnRoute;
+    property OnNotFound: TBrookHTTPRouterRequestEvent read FOnNotFound
+      write FOnNotFound;
   end;
 
   TBrookHTTPRouter = class(TBrookCustomHTTPRouter)
@@ -142,6 +156,8 @@ type
     property Active;
     property EntryPoint;
     property Routes;
+    property OnRoute;
+    property OnNotFound;
   end;
 
   { TODO: TBrookRESTRouter }
@@ -261,8 +277,22 @@ begin
   Result := TBrookHTTPRoutes.Create(Self);
 end;
 
-function TBrookCustomHTTPRouter.Route(ASender: TObject;
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse): Boolean;
+procedure TBrookCustomHTTPRouter.DoRoute(ASender: TObject;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+begin
+  if Assigned(FOnRoute) then
+    FOnRoute(ASender, ARequest, AResponse);
+end;
+
+procedure TBrookCustomHTTPRouter.DoNotFound(ASender: TObject;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+begin
+  if Assigned(FOnNotFound) then
+    FOnNotFound(ASender, ARequest, AResponse);
+end;
+
+procedure TBrookCustomHTTPRouter.Route(ASender: TObject;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
   VHolder: TBrookHTTPRouterHolder;
 begin
@@ -273,7 +303,10 @@ begin
   VHolder.Request := ARequest;
   VHolder.Response := AResponse;
   VHolder.Sender := ASender;
-  Result := inherited Route(ARequest.Path, @VHolder);
+  if inherited Route(ARequest.Path, @VHolder) then
+    DoRoute(ASender, ARequest, AResponse)
+  else
+    DoNotFound(ASender, ARequest, AResponse);
 end;
 
 end.
