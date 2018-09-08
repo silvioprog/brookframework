@@ -119,7 +119,7 @@ var
   P: array[0..255] of cchar;
 begin
   SgCheckLibrary;
-  sg_strerror(AErrorNum, @P[0], SizeOf(P));
+  sg_strerror(AErrorNum, @P[0], Length(P));
   Result := TMarshal.ToString(@P[0]);
 end;
 

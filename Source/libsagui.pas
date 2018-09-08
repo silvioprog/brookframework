@@ -738,7 +738,7 @@ begin
     Exit;
   sg_strerror(ALastError, @P[0], Length(P));
 {$IFDEF FPC}
-  SetString(S, @P[0], Length(P));
+  SetString(S, @P[0], Length(Pcchar(@P[0])));
   SetCodePage(RawByteString(S), CP_UTF8, False);
 {$ELSE}
   S := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(@P[0]));

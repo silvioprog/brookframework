@@ -429,7 +429,7 @@ begin
   begin
     RT.Validate;
     P[0] := 0;
-    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), @P[0], SizeOf(P),
+    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), @P[0], Length(P),
 {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
     if R = 0 then
       Continue;
