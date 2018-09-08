@@ -101,7 +101,7 @@ type
   TBrookOnRequestComponentEditor = class(TDefaultEditor)
   protected
     procedure EditProperty(const AProperty:
-      {$IFDEF LCL}TPropertyEditor{$ELSE}IProperty{$ENDIF};
+{$IFDEF LCL}TPropertyEditor{$ELSE}IProperty{$ENDIF};
       var AContinue: Boolean); override;
   end;
 
