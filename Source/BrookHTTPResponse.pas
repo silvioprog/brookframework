@@ -81,6 +81,7 @@ type
     procedure SendStream(AStream: TStream; AStatus: Word); overload; virtual;
     procedure SendEmpty(const AContentType: string); overload; virtual;
     procedure SendEmpty; overload; virtual;
+    procedure Clear; virtual;
     property Headers: TBrookStringMap read FHeaders;
   end;
 
@@ -239,6 +240,12 @@ end;
 procedure TBrookHTTPResponse.SendEmpty;
 begin
   Send('', '', 204);
+end;
+
+procedure TBrookHTTPResponse.Clear;
+begin
+  SgCheckLibrary;
+  SgCheckLastError(sg_httpres_clear(FHandle));
 end;
 
 end.

@@ -316,6 +316,7 @@ var
   sg_httpres_sendstream: function(res: Psg_httpres; size: cuint64_t;
     block_size: csize_t; read_cb: sg_read_cb; handle: Pcvoid;
     free_cb: sg_free_cb; status: cuint): cint; cdecl;
+  sg_httpres_clear: function(res: Psg_httpres): cint; cdecl;
 
   sg_httpsrv_new2: function(auth_cb: sg_httpauth_cb; auth_cls: Pcvoid;
     req_cb: sg_httpreq_cb; req_cls: Pcvoid; err_cb: sg_err_cb;
@@ -531,6 +532,7 @@ begin
     sg_httpres_sendbinary := GetProcAddress(GSgLibHandle, 'sg_httpres_sendbinary');
     sg_httpres_sendfile := GetProcAddress(GSgLibHandle, 'sg_httpres_sendfile');
     sg_httpres_sendstream := GetProcAddress(GSgLibHandle, 'sg_httpres_sendstream');
+    sg_httpres_clear := GetProcAddress(GSgLibHandle, 'sg_httpres_clear');
 
     sg_httpsrv_new2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new2');
     sg_httpsrv_new := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new');
@@ -668,6 +670,7 @@ begin
     sg_httpres_sendbinary := nil;
     sg_httpres_sendfile := nil;
     sg_httpres_sendstream := nil;
+    sg_httpres_clear := nil;
 
     sg_httpsrv_new2 := nil;
     sg_httpsrv_new := nil;
