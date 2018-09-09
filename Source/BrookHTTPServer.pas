@@ -273,7 +273,7 @@ procedure TBrookCustomHTTPServerSecurity.Assign(ASource: TPersistent);
 var
   VSource: TBrookCustomHTTPServerSecurity;
 begin
-  if ASsigned(ASource) and (ASource is TBrookCustomHTTPServerSecurity) then
+  if ASource is TBrookCustomHTTPServerSecurity then
   begin
     VSource := ASource as TBrookCustomHTTPServerSecurity;
     FPrivateKey := VSource.FPrivateKey;
