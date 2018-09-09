@@ -127,8 +127,8 @@ type
 
   TBrookRoutesEnumerator = class(TCollectionEnumerator)
   public
-    function GetCurrent: TBrookCustomRoute;
-    property Current: TBrookCustomRoute read GetCurrent;
+    function GetCurrent: TBrookRoute;
+    property Current: TBrookRoute read GetCurrent;
   end;
 
   TBrookRoutes = class(TBrookHandleOwnedCollection)
@@ -383,9 +383,9 @@ end;
 
 { TBrookRoutesEnumerator }
 
-function TBrookRoutesEnumerator.GetCurrent: TBrookCustomRoute;
+function TBrookRoutesEnumerator.GetCurrent: TBrookRoute;
 begin
-  Result := TBrookCustomRoute(inherited GetCurrent);
+  Result := TBrookRoute(inherited GetCurrent);
 end;
 
 { TBrookRoutes }
@@ -412,16 +412,13 @@ end;
 
 procedure TBrookRoutes.Assign(ASource: TPersistent);
 var
-  VSrcRoute, VDestRoute: TBrookCustomRoute;
+  R: TBrookCustomRoute;
 begin
   if ASource is TBrookRoutes then
   begin
     Clear;
-    for VSrcRoute in TBrookRoutes(ASource) do
-    begin
-      VDestRoute := Add;
-      VDestRoute.Assign(VSrcRoute);
-    end;
+    for R in (ASource as TBrookRoutes) do
+      Add.Assign(R);
   end
   else
     inherited Assign(ASource);
