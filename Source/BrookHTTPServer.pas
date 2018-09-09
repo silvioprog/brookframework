@@ -194,6 +194,11 @@ type
       AResponse: TBrookHTTPResponse); virtual;
     procedure DoRequestError(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse; AException: Exception); virtual;
+    procedure HandleAuthenticateError(AAuthentication: TBrookHTTPAuthentication;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
+      AException: Exception); virtual;
+    procedure HandleRequestError(ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse; AException: Exception); virtual;
     procedure CheckInactive; inline;
     procedure SetActive(AValue: Boolean); virtual;
     procedure DoOpen; virtual;
@@ -406,11 +411,10 @@ begin
       try
         Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
       except
-        { TODO: URGENT: fix exception raising overflow to avoid security issues. }
         on E: Exception do
         begin
           Result := False;
-          VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E);
+          VSrv.HandleAuthenticateError(VAuth, VReq, VRes, E);
         end;
       end;
     finally
@@ -441,9 +445,8 @@ begin
     try
       VSrv.DoRequest(VSrv, VReq, VRes);
     except
-      { TODO: URGENT: fix exception raising overflow to avoid security issues. }
       on E: Exception do
-        VSrv.DoRequestError(VSrv, VReq, VRes, E);
+        VSrv.HandleRequestError(VReq, VRes, E);
     end;
   finally
     VRes.Free;
@@ -535,6 +538,32 @@ begin
     FOnRequestError(ASender, ARequest, AResponse, AException)
   else
     AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
+end;
+
+procedure TBrookCustomHTTPServer.HandleAuthenticateError(
+  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse; AException: Exception);
+begin
+  AResponse.Clear;
+  try
+    DoAuthenticateError(Self, AAuthentication, ARequest, AResponse, AException);
+  except
+    on E: Exception do
+      AResponse.Send(E.Message, BROOK_CONTENT_TYPE, 500);
+  end;
+end;
+
+procedure TBrookCustomHTTPServer.HandleRequestError(
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
+  AException: Exception);
+begin
+  AResponse.Clear;
+  try
+    DoRequestError(Self, ARequest, AResponse, AException);
+  except
+    on E: Exception do
+      AResponse.Send(E.Message, BROOK_CONTENT_TYPE, 500);
+  end;
 end;
 
 procedure TBrookCustomHTTPServer.CheckInactive;
