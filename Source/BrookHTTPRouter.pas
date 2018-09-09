@@ -95,6 +95,7 @@ type
       AException: Exception);
   public
     constructor Create(ACollection: TCollection); override;
+    procedure Assign(ASource: TPersistent); override;
     property Methods: TBrookHTTPRouteRequestMethods read FMethods write FMethods
       stored IsMethods;
     property OnRequestMethod: TBrookHTTPRouteRequestMethodEvent
@@ -190,6 +191,13 @@ constructor TBrookCustomHTTPRoute.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FMethods := DefaultReqMethods;
+end;
+
+procedure TBrookCustomHTTPRoute.Assign(ASource: TPersistent);
+begin
+  inherited Assign(ASource);
+  if ASource is TBrookCustomHTTPRoute then
+    FMethods := (ASource as TBrookCustomHTTPRoute).FMethods;
 end;
 
 procedure TBrookCustomHTTPRoute.DoMatch(ARoute: TBrookCustomRoute);
