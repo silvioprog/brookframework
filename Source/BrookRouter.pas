@@ -417,7 +417,7 @@ var
   RT: TBrookCustomRoute;
   H: Psg_route;
   M: TMarshaller;
-  P: array[0..255] of cchar;
+  P: array[0..SG_ERR_SIZE-1] of cchar;
   S: string;
   R: cint;
 begin
@@ -429,7 +429,7 @@ begin
   begin
     RT.Validate;
     P[0] := 0;
-    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), @P[0], Length(P),
+    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), @P[0], SG_ERR_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
     if R = 0 then
       Continue;

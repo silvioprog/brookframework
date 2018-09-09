@@ -87,6 +87,8 @@ const
     'libsagui'
 {$ENDIF}, '.', SharedSuffix);
 
+  SG_ERR_SIZE = 256;
+
 resourcestring
   SSgLibraryNotLoaded = 'Library ''%s'' not loaded.';
 {$IFDEF MSWINDOWS}
@@ -734,12 +736,12 @@ end;
 
 procedure SgCheckLastError(ALastError: Integer);
 var
-  P: array[0..255] of cchar;
+  P: array[0..SG_ERR_SIZE-1] of cchar;
   S: string;
 begin
   if (ALastError = 0) or (not Assigned(sg_strerror)) then
     Exit;
-  sg_strerror(ALastError, @P[0], Length(P));
+  sg_strerror(ALastError, @P[0], SG_ERR_SIZE);
 {$IFDEF FPC}
   SetString(S, @P[0], Length(Pcchar(@P[0])));
   SetCodePage(RawByteString(S), CP_UTF8, False);

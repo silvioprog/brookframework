@@ -116,10 +116,10 @@ end;
 
 function BrookStrError(AErrorNum: Integer): string;
 var
-  P: array[0..255] of cchar;
+  P: array[0..SG_ERR_SIZE-1] of cchar;
 begin
   SgCheckLibrary;
-  sg_strerror(AErrorNum, @P[0], Length(P));
+  sg_strerror(AErrorNum, @P[0], SG_ERR_SIZE);
   Result := TMarshal.ToString(@P[0]);
 end;
 
