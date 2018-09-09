@@ -102,6 +102,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure AfterConstruction; override;
+    procedure Assign(ASource: TPersistent); override;
     procedure Validate; inline;
     property RegexHandle: Pointer read GetRegexHandle;
     property Segments: TArray<string> read GetSegments;
@@ -141,6 +142,7 @@ type
     constructor Create(AOwner: TPersistent); virtual;
     class function GetRouterClass: TBrookCustomRouteClass; virtual;
     function GetEnumerator: TBrookRoutesEnumerator;
+    procedure Assign(ASource: TPersistent); override;
     function MakePattern: string; virtual;
     procedure Prepare; virtual;
     function Add: TBrookCustomRoute; virtual;
@@ -222,6 +224,14 @@ procedure TBrookCustomRoute.AfterConstruction;
 begin
   inherited AfterConstruction;
   DoCreate;
+end;
+
+procedure TBrookCustomRoute.Assign(ASource: TPersistent);
+begin
+  if ASource is TBrookCustomRoute then
+    FPattern := (ASource as TBrookCustomRoute).FPattern
+  else
+    inherited Assign(ASource);
 end;
 
 class procedure TBrookCustomRoute.DoRouteCallback(Acls: Pcvoid;
@@ -398,6 +408,23 @@ end;
 function TBrookRoutes.GetEnumerator: TBrookRoutesEnumerator;
 begin
   Result := TBrookRoutesEnumerator.Create(Self);
+end;
+
+procedure TBrookRoutes.Assign(ASource: TPersistent);
+var
+  VSrcRoute, VDestRoute: TBrookCustomRoute;
+begin
+  if ASource is TBrookRoutes then
+  begin
+    Clear;
+    for VSrcRoute in TBrookRoutes(ASource) do
+    begin
+      VDestRoute := Add;
+      VDestRoute.Assign(VSrcRoute);
+    end;
+  end
+  else
+    inherited Assign(ASource);
 end;
 
 function TBrookRoutes.MakePattern: string;
