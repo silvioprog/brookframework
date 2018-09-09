@@ -114,7 +114,6 @@ type
   private
     FHandle: Psg_httpsrv;
     FAuthenticated: Boolean;
-    FCatchOSErrors: Boolean;
     FConnectionLimit: Cardinal;
     FConnectionTimeout: Cardinal;
     FNoFavicon: Boolean;
@@ -145,7 +144,6 @@ type
     function GetUploadsDir: string;
     function IsActive: Boolean;
     function IsAuthenticated: Boolean;
-    function IsCatchOSErrors: Boolean;
     function IsConnectionLimit: Boolean;
     function IsConnectionTimeout: Boolean;
     function IsNoFavicon: Boolean;
@@ -157,7 +155,6 @@ type
     function IsThreadPoolSize: Boolean;
     function IsUploadsDir: Boolean;
     procedure SetAuthenticated(AValue: Boolean);
-    procedure SetCatchOSErrors(AValue: Boolean);
     procedure SetConnectionLimit(AValue: Cardinal);
     procedure SetConnectionTimeout(AValue: Cardinal);
     procedure SetPayloadLimit(AValue: NativeUInt);
@@ -213,8 +210,6 @@ type
     property Port: UInt16 read GetPort write SetPort stored IsPort;
     property Threaded: Boolean read GetThreaded write SetThreaded
       stored IsThreaded;
-    property CatchOSErrors: Boolean read FCatchOSErrors write SetCatchOSErrors
-      stored IsCatchOSErrors;
     property UploadsDir: string read GetUploadsDir write SetUploadsDir
       stored IsUploadsDir;
     property PostBufferSize: NativeUInt read GetPostBufferSize
@@ -249,7 +244,6 @@ type
     property Authenticated;
     property Port default 0;
     property Threaded default False;
-    property CatchOSErrors default True;
     property UploadsDir;
     property PostBufferSize default BROOK_POST_BUFFER_SIZE;
     property PayloadLimit default BROOK_PAYLOAD_LIMIT;
@@ -316,7 +310,6 @@ constructor TBrookCustomHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSecurity := CreateSecurity;
-  FCatchOSErrors := True;
   FPostBufferSize := BROOK_POST_BUFFER_SIZE;
   FPayloadLimit := BROOK_PAYLOAD_LIMIT;
   FUploadsLimit := BROOK_UPLOADS_LIMIT;
@@ -414,14 +407,6 @@ begin
         Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
       except
         { TODO: URGENT: fix exception raising overflow to avoid security issues. }
-        on E: EOSError do
-        begin
-          Result := False;
-          if VSrv.CatchOSErrors then
-            VSrv.DoAuthenticateError(VSrv, VAuth, VReq, VRes, E)
-          else
-            VSrv.DoError(VSrv, E);
-        end;
         on E: Exception do
         begin
           Result := False;
@@ -457,11 +442,6 @@ begin
       VSrv.DoRequest(VSrv, VReq, VRes);
     except
       { TODO: URGENT: fix exception raising overflow to avoid security issues. }
-      on E: EOSError do
-        if VSrv.CatchOSErrors then
-          VSrv.DoRequestError(VSrv, VReq, VRes, E)
-        else
-          VSrv.DoError(VSrv, E);
       on E: Exception do
         VSrv.DoRequestError(VSrv, VReq, VRes, E);
     end;
@@ -578,13 +558,6 @@ begin
   FPostBufferSize := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetCatchOSErrors(AValue: Boolean);
-begin
-  if not FStreamedActive then
-    CheckInactive;
-  FCatchOSErrors := AValue;
-end;
-
 procedure TBrookCustomHTTPServer.SetConnectionLimit(AValue: Cardinal);
 begin
   if not FStreamedActive then
@@ -647,11 +620,6 @@ begin
   if not FStreamedActive then
     CheckInactive;
   FUploadsDir := AValue;
-end;
-
-function TBrookCustomHTTPServer.IsCatchOSErrors: Boolean;
-begin
-  Result := not FCatchOSErrors;
 end;
 
 function TBrookCustomHTTPServer.IsConnectionLimit: Boolean;
