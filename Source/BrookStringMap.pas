@@ -35,6 +35,7 @@ interface
 uses
   RTLConsts,
   SysUtils,
+  Classes,
   Platform,
   Marshalling,
   libsagui,
@@ -140,6 +141,10 @@ type
     constructor Create(AHandle: Pointer); virtual;
     { Frees an instance of @link(TBrookStringMap). }
     destructor Destroy; override;
+    { Copies the properties of the source string map.
+
+      @param(ASource[in] String map source to be copied.) }
+    procedure Assign(ASource: TPersistent); override;
     { Checks if the map is empty.
 
       @returns(@True when map is empty, @False otherwise.) }
@@ -283,6 +288,23 @@ begin
   finally
     inherited Destroy;
   end;
+end;
+
+procedure TBrookStringMap.Assign(ASource: TPersistent);
+var
+  VSource: TBrookStringMap;
+  VPair: TBrookStringPair;
+begin
+  if ASource is TBrookStringMap then
+  begin
+    VSource := ASource as TBrookStringMap;
+    Clear;
+    for VPair in VSource do
+      Add(VPair.Name, VPair.Value);
+    FClearOnDestroy := VSource.FClearOnDestroy;
+  end
+  else
+    inherited Assign(ASource);
 end;
 
 class function TBrookStringMap.CreatePair(Apair: Psg_strmap): TBrookStringPair;
