@@ -105,9 +105,9 @@ type
       var AContinue: Boolean); override;
   end;
 
-  { TBrookRouterComponentEditor }
+  { TBrookPathRouterComponentEditor }
 
-  TBrookRouterComponentEditor = class(TComponentEditor)
+  TBrookPathRouterComponentEditor = class(TComponentEditor)
   public
     procedure ExecuteVerb(AIndex: Integer); override;
     function GetVerb(AIndex: Integer): string; override;
@@ -122,7 +122,7 @@ implementation
 
 uses
   BrookLibraryLoader,
-  BrookRouter,
+  BrookPathRouter,
   BrookHTTPRouter,
   BrookHTTPServer;
 
@@ -155,7 +155,7 @@ procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-    TBrookRouter,
+    TBrookPathRouter,
     TBrookHTTPRouter,
     TBrookHTTPServer
   ]);
@@ -171,8 +171,8 @@ begin
 {$ENDIF}
   RegisterComponentEditor(TBrookCustomLibraryLoader,
     TBrookLibraryNameComponentEditor);
-  RegisterComponentEditor(TBrookCustomRouter, TBrookRouterComponentEditor);
-  RegisterComponentEditor(TBrookCustomHTTPRouter, TBrookRouterComponentEditor);
+  RegisterComponentEditor(TBrookCustomPathRouter, TBrookPathRouterComponentEditor);
+  RegisterComponentEditor(TBrookCustomHTTPRouter, TBrookPathRouterComponentEditor);
   RegisterComponentEditor(TBrookCustomHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
@@ -353,15 +353,15 @@ begin
     inherited EditProperty(AProperty, AContinue);
 end;
 
-{ TBrookRouterComponentEditor }
+{ TBrookPathRouterComponentEditor }
 
-procedure TBrookRouterComponentEditor.ExecuteVerb(AIndex: Integer);
+procedure TBrookPathRouterComponentEditor.ExecuteVerb(AIndex: Integer);
 var
-  VRouter: TBrookCustomRouter;
+  VRouter: TBrookCustomPathRouter;
 begin
   if AIndex <> 0 then
     Exit;
-  VRouter := GetComponent as TBrookCustomRouter;
+  VRouter := GetComponent as TBrookCustomPathRouter;
 {$IFDEF LCL}
   EditCollection(
 {$ELSE}
@@ -370,14 +370,14 @@ begin
     VRouter, VRouter.Routes, 'Routes');
 end;
 
-function TBrookRouterComponentEditor.GetVerb(AIndex: Integer): string;
+function TBrookPathRouterComponentEditor.GetVerb(AIndex: Integer): string;
 begin
   if AIndex = 0 then
     Exit(LoadResString(@SBrookRoutesEditor));
   Result := '';
 end;
 
-function TBrookRouterComponentEditor.GetVerbCount: Integer;
+function TBrookPathRouterComponentEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;

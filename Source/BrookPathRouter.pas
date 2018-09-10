@@ -24,7 +24,7 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit BrookRouter;
+unit BrookPathRouter;
 
 {$I Brook.inc}
 
@@ -46,19 +46,20 @@ resourcestring
   SBrookCannotCreateRouterHandle = 'Cannot create router handle.';
   SBrookNoRoutesDefined = 'No routes defined.';
   SBrookEmptyPattern = '%s: pattern cannot be empty.';
-  SBrookRouteAlreadyExists = '%s: route ''%s'' already exists.';
+  SBrookRouteAlreadyExists = '%s: pattern ''%s'' already exists in ''%s''.';
   SBrookEmptyPath = 'Path cannot be empty.';
 
 type
-  TBrookCustomRoute = class;
+  TBrookCustomPathRoute = class;
 
-  TBrookCustomRouteClass = class of TBrookCustomRoute;
+  TBrookCustomPathRouteClass = class of TBrookCustomPathRoute;
 
-  TBrookRoutes = class;
+  TBrookPathRoutes = class;
 
-  TBrookCustomRouter = class;
+  TBrookCustomPathRouter = class;
 
-  TBrookRouteMatchEvent = procedure(ARoute: TBrookCustomRoute) of object;
+  TBrookPathRouteMatchEvent = procedure(
+    ARoute: TBrookCustomPathRoute) of object;
 
   EBrookRoute = class(Exception);
 
@@ -68,16 +69,16 @@ type
 
   EBrookOpNotAllowedInactiveRouter = class(Exception);
 
-  TBrookCustomRoute = class(TBrookHandleCollectionItem)
+  TBrookCustomPathRoute = class(TBrookHandleCollectionItem)
   private
-    FOnCreate: TNotifyEvent;
-    FOnDestroy: TNotifyEvent;
-    FRoutes: TBrookRoutes;
+    FRoutes: TBrookPathRoutes;
     FVariables: TBrookStringMap;
-    FOnMath: TBrookRouteMatchEvent;
-    FPattern: string;
     FHandle: Psg_route;
     Fvars: Psg_strmap;
+    FPattern: string;
+    FOnCreate: TNotifyEvent;
+    FOnDestroy: TNotifyEvent;
+    FOnMath: TBrookPathRouteMatchEvent;
     function GetSegments: TArray<string>; inline;
     function GetPattern: string;
     function GetPath: string;
@@ -96,8 +97,8 @@ type
     function GetHandle: Pointer; override;
     procedure DoCreate; virtual;
     procedure DoDestroy; virtual;
-    procedure DoMatch(ARoute: TBrookCustomRoute); virtual;
-    property Routes: TBrookRoutes read FRoutes;
+    procedure DoMatch(ARoute: TBrookCustomPathRoute); virtual;
+    property Routes: TBrookPathRoutes read FRoutes;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -113,10 +114,10 @@ type
     property UserData: Pointer read GetUserData;
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
-    property OnMath: TBrookRouteMatchEvent read FOnMath write FOnMath;
+    property OnMath: TBrookPathRouteMatchEvent read FOnMath write FOnMath;
   end;
 
-  TBrookRoute = class(TBrookCustomRoute)
+  TBrookPathRoute = class(TBrookCustomPathRoute)
   published
     property Pattern;
     property Path;
@@ -125,50 +126,50 @@ type
     property OnMath;
   end;
 
-  TBrookRoutesEnumerator = class(TCollectionEnumerator)
+  TBrookPathRoutesEnumerator = class(TCollectionEnumerator)
   public
-    function GetCurrent: TBrookRoute;
-    property Current: TBrookRoute read GetCurrent;
+    function GetCurrent: TBrookPathRoute;
+    property Current: TBrookPathRoute read GetCurrent;
   end;
 
-  TBrookRoutes = class(TBrookHandleOwnedCollection)
+  TBrookPathRoutes = class(TBrookHandleOwnedCollection)
   private
     FHandle: Psg_route;
-    function GetItem(AIndex: Integer): TBrookCustomRoute;
-    procedure SetItem(AIndex: Integer; AValue: TBrookCustomRoute);
+    function GetItem(AIndex: Integer): TBrookCustomPathRoute;
+    procedure SetItem(AIndex: Integer; AValue: TBrookCustomPathRoute);
   protected
     function GetHandle: Pointer; override;
+    class function GetRoutePattern(
+      ARoute: TBrookCustomPathRoute): string; virtual;
   public
     constructor Create(AOwner: TPersistent); virtual;
-    class function GetRouterClass: TBrookCustomRouteClass; virtual;
-    function GetEnumerator: TBrookRoutesEnumerator;
+    class function GetRouterClass: TBrookCustomPathRouteClass; virtual;
+    function GetEnumerator: TBrookPathRoutesEnumerator;
     procedure Assign(ASource: TPersistent); override;
     function MakePattern: string; virtual;
     procedure Prepare; virtual;
-    function Add: TBrookCustomRoute; virtual;
-    function First: TBrookCustomRoute; virtual;
-    function Last: TBrookCustomRoute; virtual;
+    function Add: TBrookCustomPathRoute; virtual;
+    function First: TBrookCustomPathRoute; virtual;
+    function Last: TBrookCustomPathRoute; virtual;
     function IndexOf(const APattern: string): Integer; virtual;
-    function Find(const APattern: string): TBrookCustomRoute; virtual;
+    function Find(const APattern: string): TBrookCustomPathRoute; virtual;
     function Remove(const APattern: string): Boolean; virtual;
     procedure Clear; virtual;
-    property Items[AIndex: Integer]: TBrookCustomRoute read GetItem
+    property Items[AIndex: Integer]: TBrookCustomPathRoute read GetItem
       write SetItem; default;
   end;
 
-  TBrookCustomRouter = class(TBrookHandledComponent)
+  TBrookCustomPathRouter = class(TBrookHandledComponent)
   private
-    FEntryPoint: string;
-    FRoutes: TBrookRoutes;
+    FRoutes: TBrookPathRoutes;
     FHandle: Psg_router;
     FActive: Boolean;
     FStreamedActive: Boolean;
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
-    procedure SetEntryPoint(const AValue: string);
-    procedure SetRoutes(AValue: TBrookRoutes);
+    procedure SetRoutes(AValue: TBrookPathRoutes);
   protected
-    function CreateRoutes: TBrookRoutes; virtual;
+    function CreateRoutes: TBrookPathRoutes; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
     procedure DoOpen; virtual;
@@ -181,70 +182,65 @@ type
     procedure Close;
     function Route(const APath: string; AUserData: Pointer): Boolean; virtual;
     property Active: Boolean read FActive write SetActive stored IsActive;
-    property EntryPoint: string read FEntryPoint write SetEntryPoint;
-    property Routes: TBrookRoutes read FRoutes write SetRoutes;
+    property Routes: TBrookPathRoutes read FRoutes write SetRoutes;
   end;
 
-  TBrookRouter = class(TBrookCustomRouter)
+  TBrookPathRouter = class(TBrookCustomPathRouter)
   published
     property Active;
-    property EntryPoint;
     property Routes;
   end;
 
 implementation
 
-{ TBrookCustomRoute }
+{ TBrookCustomPathRoute }
 
-constructor TBrookCustomRoute.Create(ACollection: TCollection);
+constructor TBrookCustomPathRoute.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FVariables := TBrookStringMap.Create(@Fvars);
-  if Assigned(ACollection) and (ACollection is TBrookRoutes) then
+  if Assigned(ACollection) and (ACollection is TBrookPathRoutes) then
   begin
-    FRoutes := TBrookRoutes(ACollection);
+    FRoutes := TBrookPathRoutes(ACollection);
     FPattern := FRoutes.MakePattern;
   end
   else
     SetPattern('/');
 end;
 
-destructor TBrookCustomRoute.Destroy;
+destructor TBrookCustomPathRoute.Destroy;
 begin
-  try
-    FVariables.ClearOnDestroy := False;
-    FVariables.Free;
-    inherited Destroy;
-  finally
-    DoDestroy;
-  end;
+  FVariables.ClearOnDestroy := False;
+  FVariables.Free;
+  inherited Destroy;
+  DoDestroy;
 end;
 
-procedure TBrookCustomRoute.AfterConstruction;
+procedure TBrookCustomPathRoute.AfterConstruction;
 begin
   inherited AfterConstruction;
   DoCreate;
 end;
 
-procedure TBrookCustomRoute.Assign(ASource: TPersistent);
+procedure TBrookCustomPathRoute.Assign(ASource: TPersistent);
 begin
-  if ASource is TBrookCustomRoute then
-    FPattern := (ASource as TBrookCustomRoute).FPattern
+  if ASource is TBrookCustomPathRoute then
+    FPattern := (ASource as TBrookCustomPathRoute).FPattern
   else
     inherited Assign(ASource);
 end;
 
-class procedure TBrookCustomRoute.DoRouteCallback(Acls: Pcvoid;
+class procedure TBrookCustomPathRoute.DoRouteCallback(Acls: Pcvoid;
   Aroute: Psg_route);
 var
-  RT: TBrookCustomRoute;
+  RT: TBrookCustomPathRoute;
 begin
   RT := Acls;
   RT.FHandle := Aroute;
   RT.DoMatch(RT);
 end;
 
-class function TBrookCustomRoute.DoGetSegmentsCallback(Acls: Pcvoid;
+class function TBrookCustomPathRoute.DoGetSegmentsCallback(Acls: Pcvoid;
   const Asegment: Pcchar): cint;
 var
   VSegments: ^TArray<string>;
@@ -259,19 +255,19 @@ begin
   Result := 0;
 end;
 
-class function TBrookCustomRoute.DoGetVarsCallback(Acls: Pcvoid;
+class function TBrookCustomPathRoute.DoGetVarsCallback(Acls: Pcvoid;
   const Aname: Pcchar; const Aval: Pcchar): cint;
 begin
   TBrookStringMap(Acls).Add(TMarshal.ToString(Aname), TMarshal.ToString(Aval));
   Result := 0;
 end;
 
-function TBrookCustomRoute.GetHandle: Pointer;
+function TBrookCustomPathRoute.GetHandle: Pointer;
 begin
   Result := FHandle;
 end;
 
-function TBrookCustomRoute.GetSegments: TArray<string>;
+function TBrookCustomPathRoute.GetSegments: TArray<string>;
 begin
   Result := nil;
   if not Assigned(FHandle) then
@@ -281,7 +277,7 @@ begin
 {$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @Result));
 end;
 
-function TBrookCustomRoute.GetVariables: TBrookStringMap;
+function TBrookCustomPathRoute.GetVariables: TBrookStringMap;
 begin
   Result := FVariables;
   FVariables.Clear;
@@ -291,7 +287,7 @@ begin
 {$IFNDEF VER3_0}@{$ENDIF}DoGetVarsCallback, FVariables));
 end;
 
-function TBrookCustomRoute.GetRegexHandle: Pointer;
+function TBrookCustomPathRoute.GetRegexHandle: Pointer;
 begin
   if not Assigned(FHandle) then
     Exit(nil);
@@ -299,7 +295,7 @@ begin
   Result := sg_route_handle(FHandle);
 end;
 
-function TBrookCustomRoute.GetPatternRaw: string;
+function TBrookCustomPathRoute.GetPatternRaw: string;
 begin
   if not Assigned(FHandle) then
   begin
@@ -311,7 +307,7 @@ begin
   Result := TMarshal.ToString(sg_route_pattern_raw(FHandle));
 end;
 
-function TBrookCustomRoute.GetPattern: string;
+function TBrookCustomPathRoute.GetPattern: string;
 var
   P: Pcchar;
 begin
@@ -326,9 +322,43 @@ begin
   end;
 end;
 
-procedure TBrookCustomRoute.SetPattern(const AValue: string);
+function TBrookCustomPathRoute.GetPath: string;
+begin
+  if not Assigned(FHandle) then
+    Exit('');
+  SgCheckLibrary;
+  Result := TMarshal.ToString(sg_route_path(FHandle));
+end;
+
+function TBrookCustomPathRoute.GetUserData: Pointer;
+begin
+  if not Assigned(FHandle) then
+    Exit(nil);
+  SgCheckLibrary;
+  Result := sg_route_user_data(FHandle);
+end;
+
+procedure TBrookCustomPathRoute.DoCreate;
+begin
+  if Assigned(FOnCreate) then
+    FOnCreate(Self);
+end;
+
+procedure TBrookCustomPathRoute.DoDestroy;
+begin
+  if Assigned(FOnDestroy) then
+    FOnDestroy(Self);
+end;
+
+procedure TBrookCustomPathRoute.DoMatch(ARoute: TBrookCustomPathRoute);
+begin
+  if Assigned(FOnMath) then
+    FOnMath(ARoute);
+end;
+
+procedure TBrookCustomPathRoute.SetPattern(const AValue: string);
 var
-  RT: TBrookCustomRoute;
+  RT: TBrookCustomPathRoute;
 begin
   if AValue = FPattern then
     Exit;
@@ -338,107 +368,78 @@ begin
   RT := FRoutes.Find(FPattern);
   if Assigned(RT) and (RT <> Self) then
     raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
-      [GetNamePath, FPattern]);
+      [GetNamePath, FPattern, RT.GetNamePath]);
 end;
 
-function TBrookCustomRoute.GetPath: string;
-begin
-  if not Assigned(FHandle) then
-    Exit('');
-  SgCheckLibrary;
-  Result := TMarshal.ToString(sg_route_path(FHandle));
-end;
-
-function TBrookCustomRoute.GetUserData: Pointer;
-begin
-  if not Assigned(FHandle) then
-    Exit(nil);
-  SgCheckLibrary;
-  Result := sg_route_user_data(FHandle);
-end;
-
-procedure TBrookCustomRoute.DoCreate;
-begin
-  if Assigned(FOnCreate) then
-    FOnCreate(Self);
-end;
-
-procedure TBrookCustomRoute.DoDestroy;
-begin
-  if Assigned(FOnDestroy) then
-    FOnDestroy(Self);
-end;
-
-procedure TBrookCustomRoute.DoMatch(ARoute: TBrookCustomRoute);
-begin
-  if Assigned(FOnMath) then
-    FOnMath(ARoute);
-end;
-
-procedure TBrookCustomRoute.Validate;
+procedure TBrookCustomPathRoute.Validate;
 begin
   if FPattern.IsEmpty then
     raise EBrookRoute.CreateResFmt(@SBrookEmptyPattern, [GetNamePath]);
 end;
 
-{ TBrookRoutesEnumerator }
+{ TBrookPathRoutesEnumerator }
 
-function TBrookRoutesEnumerator.GetCurrent: TBrookRoute;
+function TBrookPathRoutesEnumerator.GetCurrent: TBrookPathRoute;
 begin
-  Result := TBrookRoute(inherited GetCurrent);
+  Result := TBrookPathRoute(inherited GetCurrent);
 end;
 
-{ TBrookRoutes }
+{ TBrookPathRoutes }
 
-constructor TBrookRoutes.Create(AOwner: TPersistent);
+constructor TBrookPathRoutes.Create(AOwner: TPersistent);
 begin
   inherited Create(AOwner, GetRouterClass);
 end;
 
-class function TBrookRoutes.GetRouterClass: TBrookCustomRouteClass;
+class function TBrookPathRoutes.GetRouterClass: TBrookCustomPathRouteClass;
 begin
-  Result := TBrookRoute;
+  Result := TBrookPathRoute;
 end;
 
-function TBrookRoutes.GetHandle: Pointer;
+function TBrookPathRoutes.GetHandle: Pointer;
 begin
   Result := FHandle;
 end;
 
-function TBrookRoutes.GetEnumerator: TBrookRoutesEnumerator;
+class function TBrookPathRoutes.GetRoutePattern(
+  ARoute: TBrookCustomPathRoute): string;
 begin
-  Result := TBrookRoutesEnumerator.Create(Self);
+  Result := ARoute.FPattern;
 end;
 
-procedure TBrookRoutes.Assign(ASource: TPersistent);
-var
-  R: TBrookCustomRoute;
+function TBrookPathRoutes.GetEnumerator: TBrookPathRoutesEnumerator;
 begin
-  if ASource is TBrookRoutes then
+  Result := TBrookPathRoutesEnumerator.Create(Self);
+end;
+
+procedure TBrookPathRoutes.Assign(ASource: TPersistent);
+var
+  R: TBrookCustomPathRoute;
+begin
+  if ASource is TBrookPathRoutes then
   begin
     Clear;
-    for R in (ASource as TBrookRoutes) do
+    for R in (ASource as TBrookPathRoutes) do
       Add.Assign(R);
   end
   else
     inherited Assign(ASource);
 end;
 
-function TBrookRoutes.MakePattern: string;
+function TBrookPathRoutes.MakePattern: string;
 var
   VIndex: Integer;
 begin
   VIndex := 1;
   repeat
-    Result := Concat('/', string(ClassName).SubString(6).ToLower,
-      VIndex.ToString);
+    Result := Concat('/path', VIndex.ToString);
     Inc(VIndex);
   until IndexOf(Result) < 0;
 end;
 
-procedure TBrookRoutes.Prepare;
+procedure TBrookPathRoutes.Prepare;
 var
-  RT: TBrookCustomRoute;
+  RT: TBrookCustomPathRoute;
   H: Psg_route;
   M: TMarshaller;
   P: array[0..SG_ERR_SIZE-1] of cchar;
@@ -453,8 +454,8 @@ begin
   begin
     RT.Validate;
     P[0] := 0;
-    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(RT.Pattern), @P[0], SG_ERR_SIZE,
-{$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
+    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(GetRoutePattern(RT)), @P[0],
+      SG_ERR_SIZE, {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
     if R = 0 then
       Continue;
     if R = EALREADY then
@@ -467,26 +468,26 @@ begin
   end;
 end;
 
-function TBrookRoutes.Add: TBrookCustomRoute;
+function TBrookPathRoutes.Add: TBrookCustomPathRoute;
 begin
-  Result := TBrookRoute(inherited Add);
+  Result := TBrookPathRoute(inherited Add);
 end;
 
-function TBrookRoutes.First: TBrookCustomRoute;
+function TBrookPathRoutes.First: TBrookCustomPathRoute;
 begin
   if Count = 0 then
     Exit(nil);
   Result := GetItem(0);
 end;
 
-function TBrookRoutes.Last: TBrookCustomRoute;
+function TBrookPathRoutes.Last: TBrookCustomPathRoute;
 begin
   if Count = 0 then
     Exit(nil);
   Result := GetItem(Pred(Count));
 end;
 
-function TBrookRoutes.IndexOf(const APattern: string): Integer;
+function TBrookPathRoutes.IndexOf(const APattern: string): Integer;
 begin
   for Result := 0 to Pred(Count) do
     if SameText(GetItem(Result).Pattern, APattern) then
@@ -494,9 +495,9 @@ begin
   Result := -1;
 end;
 
-function TBrookRoutes.Find(const APattern: string): TBrookCustomRoute;
+function TBrookPathRoutes.Find(const APattern: string): TBrookCustomPathRoute;
 var
-  RT: TBrookCustomRoute;
+  RT: TBrookCustomPathRoute;
 begin
   for RT in Self do
     if SameText(RT.Pattern, APattern) then
@@ -504,7 +505,7 @@ begin
   Result := nil;
 end;
 
-function TBrookRoutes.Remove(const APattern: string): Boolean;
+function TBrookPathRoutes.Remove(const APattern: string): Boolean;
 var
   I: Integer;
 begin
@@ -514,32 +515,33 @@ begin
     inherited Delete(I);
 end;
 
-function TBrookRoutes.GetItem(AIndex: Integer): TBrookCustomRoute;
+function TBrookPathRoutes.GetItem(AIndex: Integer): TBrookCustomPathRoute;
 begin
-  Result := TBrookCustomRoute(inherited GetItem(AIndex));
+  Result := TBrookCustomPathRoute(inherited GetItem(AIndex));
 end;
 
-procedure TBrookRoutes.SetItem(AIndex: Integer; AValue: TBrookCustomRoute);
+procedure TBrookPathRoutes.SetItem(AIndex: Integer;
+  AValue: TBrookCustomPathRoute);
 begin
   inherited SetItem(AIndex, AValue);
 end;
 
-procedure TBrookRoutes.Clear;
+procedure TBrookPathRoutes.Clear;
 begin
   inherited Clear;
   SgCheckLibrary;
   SgCheckLastError(sg_routes_clear(@FHandle));
 end;
 
-{ TBrookCustomRouter }
+{ TBrookCustomPathRouter }
 
-constructor TBrookCustomRouter.Create(AOwner: TComponent);
+constructor TBrookCustomPathRouter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRoutes := CreateRoutes;
 end;
 
-destructor TBrookCustomRouter.Destroy;
+destructor TBrookCustomPathRouter.Destroy;
 begin
   FRoutes.Free;
   try
@@ -549,12 +551,12 @@ begin
   end;
 end;
 
-function TBrookCustomRouter.CreateRoutes: TBrookRoutes;
+function TBrookCustomPathRouter.CreateRoutes: TBrookPathRoutes;
 begin
-  Result := TBrookRoutes.Create(Self);
+  Result := TBrookPathRoutes.Create(Self);
 end;
 
-procedure TBrookCustomRouter.Loaded;
+procedure TBrookCustomPathRouter.Loaded;
 begin
   inherited Loaded;
   try
@@ -573,12 +575,12 @@ begin
   end;
 end;
 
-function TBrookCustomRouter.GetHandle: Pointer;
+function TBrookCustomPathRouter.GetHandle: Pointer;
 begin
   Result := FHandle;
 end;
 
-procedure TBrookCustomRouter.SetRoutes(AValue: TBrookRoutes);
+procedure TBrookCustomPathRouter.SetRoutes(AValue: TBrookPathRoutes);
 begin
   if AValue = FRoutes then
     Exit;
@@ -588,12 +590,12 @@ begin
     FRoutes.Clear;
 end;
 
-function TBrookCustomRouter.IsActive: Boolean;
+function TBrookCustomPathRouter.IsActive: Boolean;
 begin
   Result := FActive;
 end;
 
-procedure TBrookCustomRouter.SetActive(AValue: Boolean);
+procedure TBrookCustomPathRouter.SetActive(AValue: Boolean);
 begin
   if AValue = FActive then
     Exit;
@@ -615,16 +617,7 @@ begin
       DoClose;
 end;
 
-procedure TBrookCustomRouter.SetEntryPoint(const AValue: string);
-begin
-  if FEntryPoint = AValue then
-    Exit;
-  FEntryPoint := AValue;
-  if not FEntryPoint.IsEmpty then
-    FEntryPoint := BrookFixPath(FEntryPoint);
-end;
-
-procedure TBrookCustomRouter.DoOpen;
+procedure TBrookCustomPathRouter.DoOpen;
 begin
   if Assigned(FHandle) then
     Exit;
@@ -636,7 +629,7 @@ begin
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateRouterHandle);
 end;
 
-procedure TBrookCustomRouter.DoClose;
+procedure TBrookCustomPathRouter.DoClose;
 begin
   if not Assigned(FHandle) then
     Exit;
@@ -646,38 +639,35 @@ begin
   FActive := False;
 end;
 
-procedure TBrookCustomRouter.Open;
+procedure TBrookCustomPathRouter.Open;
 begin
   SetActive(True);
 end;
 
-procedure TBrookCustomRouter.Close;
+procedure TBrookCustomPathRouter.Close;
 begin
   SetActive(False);
 end;
 
-procedure TBrookCustomRouter.CheckActive;
+procedure TBrookCustomPathRouter.CheckActive;
 begin
   if (not (csLoading in ComponentState)) and (not Active) then
     raise EBrookOpNotAllowedInactiveRouter.CreateRes(
       @SBrookOpNotAllowedInactiveRouter);
 end;
 
-function TBrookCustomRouter.Route(const APath: string;
+function TBrookCustomPathRouter.Route(const APath: string;
   AUserData: Pointer): Boolean;
 var
   M: TMarshaller;
-  P: string;
   R: cint;
 begin
   if APath.IsEmpty then
     raise EArgumentException.CreateRes(@SBrookEmptyPath);
   CheckActive;
   SgCheckLibrary;
-  P := BrookFixPath(APath);
-  if not FEntryPoint.IsEmpty then
-    P := Concat(FEntryPoint, P);
-  R := sg_router_dispatch(FHandle, M.ToCNullable(P), AUserData);
+  R := sg_router_dispatch(FHandle, M.ToCNullable(BrookFixPath(APath)),
+    AUserData);
   Result := R = 0;
   if (not Result) and (R <> ENOENT) then
     SgCheckLastError(R);

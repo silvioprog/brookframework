@@ -49,8 +49,8 @@
         <UnitName Value="BrookStringMap"/>
       </Item9>
       <Item10>
-        <Filename Value="../Source/BrookRouter.pas"/>
-        <UnitName Value="BrookRouter"/>
+        <Filename Value="../Source/BrookPathRouter.pas"/>
+        <UnitName Value="BrookPathRouter"/>
       </Item10>
       <Item11>
         <Filename Value="../Source/BrookHTTPExtra.pas"/>
