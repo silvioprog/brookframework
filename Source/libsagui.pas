@@ -377,7 +377,7 @@ var
 
   sg_route_match: function(route: Psg_route): Pcvoid; cdecl;
 
-  sg_route_pattern_raw: function(route: Psg_route): Pcchar; cdecl;
+  sg_route_rawpattern: function(route: Psg_route): Pcchar; cdecl;
 
   sg_route_pattern: function(route: Psg_route): Pcchar; cdecl;
 
@@ -565,7 +565,7 @@ begin
 
     sg_route_handle := GetProcAddress(GSgLibHandle, 'sg_route_handle');
     sg_route_match := GetProcAddress(GSgLibHandle, 'sg_route_match');
-    sg_route_pattern_raw := GetProcAddress(GSgLibHandle, 'sg_route_pattern_raw');
+    sg_route_rawpattern := GetProcAddress(GSgLibHandle, 'sg_route_rawpattern');
     sg_route_pattern := GetProcAddress(GSgLibHandle, 'sg_route_pattern');
     sg_route_path := GetProcAddress(GSgLibHandle, 'sg_route_path');
     sg_route_get_segments := GetProcAddress(GSgLibHandle, 'sg_route_get_segments');
@@ -703,7 +703,7 @@ begin
 
     sg_route_handle := nil;
     sg_route_match := nil;
-    sg_route_pattern_raw := nil;
+    sg_route_rawpattern := nil;
     sg_route_pattern := nil;
     sg_route_path := nil;
     sg_route_get_segments := nil;

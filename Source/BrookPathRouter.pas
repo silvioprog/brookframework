@@ -82,7 +82,7 @@ type
     function GetSegments: TArray<string>; inline;
     function GetPattern: string;
     function GetPath: string;
-    function GetPatternRaw: string;
+    function GetRawPattern: string;
     function GetVariables: TBrookStringMap;
     function GetRegexHandle: Pointer;
     function GetUserData: Pointer;
@@ -109,7 +109,7 @@ type
     property Segments: TArray<string> read GetSegments;
     property Variables: TBrookStringMap read GetVariables;
     property Pattern: string read GetPattern write SetPattern;
-    property PatternRaw: string read GetPatternRaw;
+    property RawPattern: string read GetRawPattern;
     property Path: string read GetPath;
     property UserData: Pointer read GetUserData;
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
@@ -141,6 +141,7 @@ type
     function GetHandle: Pointer; override;
     class function GetRoutePattern(
       ARoute: TBrookCustomPathRoute): string; virtual;
+    class function GetPathLabel: string; virtual;
   public
     constructor Create(AOwner: TPersistent); virtual;
     class function GetRouterClass: TBrookCustomPathRouteClass; virtual;
@@ -295,7 +296,7 @@ begin
   Result := sg_route_handle(FHandle);
 end;
 
-function TBrookCustomPathRoute.GetPatternRaw: string;
+function TBrookCustomPathRoute.GetRawPattern: string;
 begin
   if not Assigned(FHandle) then
   begin
@@ -304,7 +305,7 @@ begin
     Exit(Concat('^', FPattern, '$'));
   end;
   SgCheckLibrary;
-  Result := TMarshal.ToString(sg_route_pattern_raw(FHandle));
+  Result := TMarshal.ToString(sg_route_rawpattern(FHandle));
 end;
 
 function TBrookCustomPathRoute.GetPattern: string;
@@ -407,6 +408,11 @@ begin
   Result := ARoute.FPattern;
 end;
 
+class function TBrookPathRoutes.GetPathLabel: string;
+begin
+  Result := '/path';
+end;
+
 function TBrookPathRoutes.GetEnumerator: TBrookPathRoutesEnumerator;
 begin
   Result := TBrookPathRoutesEnumerator.Create(Self);
@@ -432,7 +438,7 @@ var
 begin
   VIndex := 1;
   repeat
-    Result := Concat('/path', VIndex.ToString);
+    Result := Concat(GetPathLabel, VIndex.ToString);
     Inc(VIndex);
   until IndexOf(Result) < 0;
 end;
