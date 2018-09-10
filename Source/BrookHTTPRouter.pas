@@ -135,14 +135,10 @@ type
 
   TBrookCustomHTTPRouter = class(TBrookCustomPathRouter)
   private
-    FNext: TBrookCustomHTTPRouter;
     FOnNotFound: TBrookHTTPRouterRequestEvent;
     FOnRoute: TBrookHTTPRouterRequestEvent;
-    procedure SetNext(AValue: TBrookCustomHTTPRouter);
   protected
     function CreateRoutes: TBrookPathRoutes; override;
-    procedure Notification(AComponent: TComponent;
-      AOperation: TOperation); override;
     procedure DoRoute(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse);
     procedure DoNotFound(ASender: TObject; ARequest: TBrookHTTPRequest;
@@ -150,7 +146,6 @@ type
   public
     procedure Route(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); reintroduce; virtual;
-    property Next: TBrookCustomHTTPRouter read FNext write SetNext;
     property OnRoute: TBrookHTTPRouterRequestEvent read FOnRoute write FOnRoute;
     property OnNotFound: TBrookHTTPRouterRequestEvent read FOnNotFound
       write FOnNotFound;
@@ -160,7 +155,6 @@ type
   published
     property Active;
     property Routes;
-    property Next;
     property OnRoute;
     property OnNotFound;
   end;
@@ -289,27 +283,6 @@ begin
   Result := TBrookHTTPRoutes.Create(Self);
 end;
 
-procedure TBrookCustomHTTPRouter.Notification(AComponent: TComponent;
-  AOperation: TOperation);
-begin
-  inherited Notification(AComponent, AOperation);
-  if (AOperation = opRemove) and (AComponent = FNext) then
-    FNext := nil;
-end;
-
-procedure TBrookCustomHTTPRouter.SetNext(AValue: TBrookCustomHTTPRouter);
-begin
-  if FNext = AValue then
-    Exit;
-  if AValue = Self then
-    FNext := nil
-  else
-    if Assigned(AValue) and (AValue.Next = Self) then
-      FNext := nil
-    else
-      FNext := AValue;
-end;
-
 procedure TBrookCustomHTTPRouter.DoRoute(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
@@ -328,7 +301,6 @@ procedure TBrookCustomHTTPRouter.Route(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
   VHolder: TBrookHTTPRouterHolder;
-  VRouter: TBrookCustomHTTPRouter;
 begin
   if not Assigned(ARequest) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ARequest']);
@@ -340,15 +312,7 @@ begin
   if inherited Route(ARequest.Path, @VHolder) then
     DoRoute(ASender, ARequest, AResponse)
   else
-  begin
-    VRouter := FNext;
-    while Assigned(VRouter) do
-      if Assigned(VRouter) and VRouter.Active then
-        FNext.Route(ASender, ARequest, AResponse)
-      else
-        VRouter := FNext.FNext;
     DoNotFound(ASender, ARequest, AResponse);
-  end;
 end;
 
 end.
