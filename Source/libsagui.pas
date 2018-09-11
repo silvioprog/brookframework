@@ -174,12 +174,21 @@ type
 
 var
   sg_version: function: cuint; cdecl;
+
   sg_version_str: function: Pcchar; cdecl;
+
   sg_alloc: function(size: csize_t): Pcvoid; cdecl;
+
   sg_realloc: function(ptr: Pcvoid; size: csize_t): Pointer; cdecl;
+
   sg_free: procedure(ptr: Pcvoid); cdecl;
+
   sg_strerror: function(errnum: cint; str: Pcchar; len: csize_t): Pcchar; cdecl;
+
   sg_is_post: function(const method: Pcchar): cbool; cdecl;
+
+  sg_extract_entrypoint: function(const path: Pcchar): Pcchar; cdecl;
+
   sg_tmpdir: function: Pcchar; cdecl;
 
 type
@@ -189,14 +198,21 @@ type
 
 var
   sg_str_new: function: Psg_str; cdecl;
+
   sg_str_free: procedure(str: Psg_str); cdecl;
+
   sg_str_write: function(str: Psg_str; const val: Pcchar;
     len: csize_t): cint; cdecl;
+
   sg_str_printf_va: function(str: Psg_str; const fmt: Pcchar;
     ap: cva_list): cint; cdecl;
+
   sg_str_printf: function(str: Psg_str; const fmt: Pcchar): cint; cdecl varargs;
+
   sg_str_content: function(str: Psg_str): Pcchar; cdecl;
+
   sg_str_length: function(str: Psg_str): csize_t; cdecl;
+
   sg_str_clear: function(str: Psg_str): cint; cdecl;
 
 type
@@ -212,21 +228,32 @@ type
 
 var
   sg_strmap_name: function(pair: Psg_strmap): Pcchar; cdecl;
+
   sg_strmap_val: function(pair: Psg_strmap): Pcchar; cdecl;
+
   sg_strmap_add: function(map: PPsg_strmap; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
+
   sg_strmap_set: function(map: PPsg_strmap; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
+
   sg_strmap_find: function(map: Psg_strmap; const name: Pcchar;
     pair: PPsg_strmap): cint; cdecl;
+
   sg_strmap_get: function(map: Psg_strmap; const name: Pcchar): Pcchar; cdecl;
+
   sg_strmap_rm: function(map: PPsg_strmap; const name: Pcchar): cint; cdecl;
+
   sg_strmap_iter: function(map: Psg_strmap; cb: sg_strmap_iter_cb;
     cls: Pcvoid): cint; cdecl;
+
   sg_strmap_sort: function(map: PPsg_strmap; cb: sg_strmap_sort_cb;
     cls: Pcvoid): cint; cdecl;
+
   sg_strmap_count: function(map: Psg_strmap): cuint; cdecl;
+
   sg_strmap_next: function(next: PPsg_strmap): cint; cdecl;
+
   sg_strmap_cleanup: procedure(map: PPsg_strmap); cdecl;
 
 type
@@ -267,99 +294,161 @@ type
 var
   sg_httpauth_set_realm: function(auth: Psg_httpauth;
     const realm: Pcchar): cint; cdecl;
+
   sg_httpauth_realm: function(auth: Psg_httpauth): pcchar; cdecl;
+
   sg_httpauth_deny: function(auth: Psg_httpauth; const justification: Pcchar;
     const content_type: Pcchar): cint; cdecl;
+
   sg_httpauth_cancel: function(auth: Psg_httpauth): cint; cdecl;
+
   sg_httpauth_usr: function(auth: Psg_httpauth): Pcchar; cdecl;
+
   sg_httpauth_pwd: function(auth: Psg_httpauth): Pcchar; cdecl;
 
+var
   sg_httpuplds_iter: function(uplds: Psg_httpupld; cb: sg_httpuplds_iter_cb;
     cls: Pcvoid): cint; cdecl;
+
   sg_httpuplds_next: function(upld: PPsg_httpupld): cint; cdecl;
+
   sg_httpuplds_count: function(uplds: Psg_httpupld): cuint; cdecl;
 
+var
   sg_httpupld_handle: function(uplds: Psg_httpupld): Pcvoid; cdecl;
+
   sg_httpupld_dir: function(uplds: Psg_httpupld): Pcchar; cdecl;
+
   sg_httpupld_field: function(uplds: Psg_httpupld): Pcchar; cdecl;
+
   sg_httpupld_name: function(uplds: Psg_httpupld): Pcchar; cdecl;
+
   sg_httpupld_mime: function(uplds: Psg_httpupld): Pcchar; cdecl;
+
   sg_httpupld_encoding: function(uplds: Psg_httpupld): Pcchar; cdecl;
+
   sg_httpupld_size: function(uplds: Psg_httpupld): cuint64_t; cdecl;
+
   sg_httpupld_save: function(upld: Psg_httpupld;
     overwritten: cbool): cint; cdecl;
+
   sg_httpupld_save_as: function(upld: Psg_httpupld; const path: Pcchar;
     overwritten: cbool): cint; cdecl;
 
+var
   sg_httpreq_headers: function(req: Psg_httpreq): PPsg_strmap; cdecl;
+
   sg_httpreq_cookies: function(req: Psg_httpreq): PPsg_strmap; cdecl;
+
   sg_httpreq_params: function(req: Psg_httpreq): PPsg_strmap; cdecl;
+
   sg_httpreq_fields: function(req: Psg_httpreq): PPsg_strmap; cdecl;
+
   sg_httpreq_version: function(req: Psg_httpreq): Pcchar; cdecl;
+
   sg_httpreq_method: function(req: Psg_httpreq): Pcchar; cdecl;
+
   sg_httpreq_path: function(req: Psg_httpreq): Pcchar; cdecl;
+
   sg_httpreq_payload: function(req: Psg_httpreq): Psg_str; cdecl;
+
   sg_httpreq_is_uploading: function(req: Psg_httpreq): cbool; cdecl;
+
   sg_httpreq_uploads: function(req: Psg_httpreq): Psg_httpupld; cdecl;
+
   sg_httpreq_tls_session: function(req: Psg_httpreq): Pcvoid; cdecl;
+
   sg_httpreq_set_user_data: function(req: Psg_httpreq;
     data: Pcvoid): cint; cdecl;
+
   sg_httpreq_user_data: function(req: Psg_httpreq): Pcvoid; cdecl;
 
+var
   sg_httpres_headers: function(res: Psg_httpres): PPsg_strmap; cdecl;
+
   sg_httpres_set_cookie: function(res: Psg_httpres; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
+
   { sg_httpres_send }
+
   sg_httpres_sendbinary: function(res: Psg_httpres; buf: Pcvoid; size: size_t;
     const content_type: Pcchar; status: cuint): cint; cdecl;
+
   sg_httpres_sendfile: function(res: Psg_httpres; block_size: csize_t;
     max_size: cuint64_t; const filename: Pcchar; rendered: cbool;
     status: cuint): cint; cdecl;
+
   sg_httpres_sendstream: function(res: Psg_httpres; size: cuint64_t;
     block_size: csize_t; read_cb: sg_read_cb; handle: Pcvoid;
     free_cb: sg_free_cb; status: cuint): cint; cdecl;
+
   sg_httpres_clear: function(res: Psg_httpres): cint; cdecl;
 
+var
   sg_httpsrv_new2: function(auth_cb: sg_httpauth_cb; auth_cls: Pcvoid;
     req_cb: sg_httpreq_cb; req_cls: Pcvoid; err_cb: sg_err_cb;
     err_cls: Pcvoid): Psg_httpsrv; cdecl;
+
   sg_httpsrv_new: function(cb: sg_httpreq_cb; cls: Pcvoid): Psg_httpsrv; cdecl;
+
   sg_httpsrv_free: procedure(srv: Psg_httpsrv); cdecl;
+
   sg_httpsrv_tls_listen2: function(srv: Psg_httpsrv; const key: Pcchar;
     const pwd: Pcchar; const cert: Pcchar; const trust: Pcchar;
     const dhparams: Pcchar; port: cuint16_t; threaded: cbool): cbool; cdecl;
+
   sg_httpsrv_tls_listen: function(srv: Psg_httpsrv; const key: Pcchar;
     const cert: Pcchar; port: cuint16_t; threaded: cbool): cbool; cdecl;
+
   sg_httpsrv_listen: function(srv: Psg_httpsrv; port: cuint16_t;
     threaded: cbool): cbool; cdecl;
+
   sg_httpsrv_shutdown: function(srv: Psg_httpsrv): cint; cdecl;
+
   sg_httpsrv_port: function(srv: Psg_httpsrv): cuint16_t; cdecl;
+
   sg_httpsrv_is_threaded: function(srv: Psg_httpsrv): cbool; cdecl;
+
   sg_httpsrv_set_upld_cbs: function(srv: Psg_httpsrv; cb: sg_httpupld_cb;
     cls: Pcvoid; write_cb: sg_write_cb; free_cb: sg_free_cb;
     save_cb: sg_save_cb; save_as_cb: sg_save_as_cb): cint; cdecl;
+
   sg_httpsrv_set_upld_dir: function(srv: Psg_httpsrv;
     const dir: Pcchar): cint; cdecl;
+
   sg_httpsrv_upld_dir: function(srv: Psg_httpsrv): Pcchar; cdecl;
+
   sg_httpsrv_set_post_buf_size: function(srv: Psg_httpsrv;
     size: csize_t): cint; cdecl;
+
   sg_httpsrv_post_buf_size: function(srv: Psg_httpsrv): csize_t; cdecl;
+
   sg_httpsrv_set_payld_limit: function(srv: Psg_httpsrv;
     limit: csize_t): cint; cdecl;
+
   sg_httpsrv_payld_limit: function(srv: Psg_httpsrv): csize_t; cdecl;
+
   sg_httpsrv_set_uplds_limit: function(srv: Psg_httpsrv;
     limit: cuint64_t): cint; cdecl;
+
   sg_httpsrv_uplds_limit: function(srv: Psg_httpsrv): cuint64_t; cdecl;
+
   sg_httpsrv_set_thr_pool_size: function(srv: Psg_httpsrv;
     size: cuint): cint; cdecl;
+
   sg_httpsrv_thr_pool_size: function(srv: Psg_httpsrv): cuint; cdecl;
+
   sg_httpsrv_set_con_timeout: function(srv: Psg_httpsrv;
     timeout: cuint): cint; cdecl;
+
   sg_httpsrv_con_timeout: function(srv: Psg_httpsrv): cuint; cdecl;
+
   sg_httpsrv_set_con_limit: function(srv: Psg_httpsrv;
     limit: cuint): cint; cdecl;
+
   sg_httpsrv_con_limit: function(srv: Psg_httpsrv): cuint; cdecl;
 
+var
   sg_httpread_end: function(err: cbool): cssize_t; cdecl;
 
 type
@@ -391,6 +480,7 @@ var
 
   sg_route_user_data: function(route: Psg_route): Pcvoid; cdecl;
 
+var
   sg_routes_add2: function(routes: PPsg_route; route: PPsg_route;
     const pattern: Pcchar; errmsg: Pcchar; errlen: csize_t;
     cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
@@ -428,6 +518,35 @@ var
 
   sg_router_dispatch: function(router: Psg_router; const path: Pcchar;
     user_data: Pcvoid): cint; cdecl;
+
+type
+  PPsg_entrypoint = ^Psg_entrypoint;
+  Psg_entrypoint = ^sg_entrypoint;
+  sg_entrypoint = record
+  end;
+
+var
+  sg_entrypoint_name: function(entrypoint: Psg_entrypoint): Pcchar; cdecl;
+
+  sg_entrypoint_user_data: function(entrypoint: Psg_entrypoint): Pcvoid; cdecl;
+
+type
+  Psg_entrypoints = ^sg_entrypoints;
+  sg_entrypoints = record
+  end;
+
+var
+  sg_entrypoints_new: function: Psg_entrypoints; cdecl;
+
+  sg_entrypoints_free: procedure(entrypoints: Psg_entrypoints); cdecl;
+
+  sg_entrypoints_add: function(entrypoints: Psg_entrypoints; const path: Pcchar;
+    user_data: Pcvoid): cint; cdecl;
+
+  sg_entrypoints_clear: function(entrypoints: Psg_entrypoints): cint; cdecl;
+
+  sg_entrypoints_find: function(entrypoints: Psg_entrypoints;
+    entrypoint: PPsg_entrypoint; const path: Pcchar): cint; cdecl;
 
 { TODO: procedure SgAddUnloadLibraryProc }
 function SgLoadLibrary(const AFileName: TFileName): TLibHandle;
@@ -470,6 +589,7 @@ begin
     sg_free := GetProcAddress(GSgLibHandle, 'sg_free');
     sg_strerror := GetProcAddress(GSgLibHandle, 'sg_strerror');
     sg_is_post := GetProcAddress(GSgLibHandle, 'sg_is_post');
+    sg_extract_entrypoint := GetProcAddress(GSgLibHandle, 'sg_extract_entrypoint');
     sg_tmpdir := GetProcAddress(GSgLibHandle, 'sg_tmpdir');
 
     sg_str_new := GetProcAddress(GSgLibHandle, 'sg_str_new');
@@ -584,6 +704,15 @@ begin
     sg_router_dispatch2 := GetProcAddress(GSgLibHandle, 'sg_router_dispatch2');
     sg_router_dispatch := GetProcAddress(GSgLibHandle, 'sg_router_dispatch');
 
+    sg_entrypoint_name := GetProcAddress(GSgLibHandle, 'sg_entrypoint_name');
+    sg_entrypoint_user_data := GetProcAddress(GSgLibHandle, 'sg_entrypoint_user_data');
+
+    sg_entrypoints_new := GetProcAddress(GSgLibHandle, 'sg_entrypoints_new');
+    sg_entrypoints_free := GetProcAddress(GSgLibHandle, 'sg_entrypoints_free');
+    sg_entrypoints_add := GetProcAddress(GSgLibHandle, 'sg_entrypoints_add');
+    sg_entrypoints_clear := GetProcAddress(GSgLibHandle, 'sg_entrypoints_clear');
+    sg_entrypoints_find := GetProcAddress(GSgLibHandle, 'sg_entrypoints_find');
+
     Result := GSgLibHandle;
   finally
     GSgLock.Release;
@@ -608,6 +737,7 @@ begin
     sg_free := nil;
     sg_strerror := nil;
     sg_is_post := nil;
+    sg_extract_entrypoint := nil;
     sg_tmpdir := nil;
 
     sg_str_new := nil;
@@ -720,6 +850,15 @@ begin
     sg_router_free := nil;
     sg_router_dispatch2 := nil;
     sg_router_dispatch := nil;
+
+    sg_entrypoint_name := nil;
+    sg_entrypoint_user_data := nil;
+
+    sg_entrypoints_new := nil;
+    sg_entrypoints_free := nil;
+    sg_entrypoints_add := nil;
+    sg_entrypoints_clear := nil;
+    sg_entrypoints_find := nil;
 
     Result := GSgLibHandle;
   finally
