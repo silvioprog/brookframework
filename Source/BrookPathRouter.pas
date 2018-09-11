@@ -76,8 +76,6 @@ type
     FHandle: Psg_route;
     Fvars: Psg_strmap;
     FPattern: string;
-    FOnCreate: TNotifyEvent;
-    FOnDestroy: TNotifyEvent;
     FOnMath: TBrookPathRouteMatchEvent;
     function GetSegments: TArray<string>; inline;
     function GetPattern: string;
@@ -95,14 +93,11 @@ type
     class function DoGetVarsCallback(Acls: Pcvoid;
       const Aname: Pcchar; const Aval: Pcchar): cint; cdecl; static;
     function GetHandle: Pointer; override;
-    procedure DoCreate; virtual;
-    procedure DoDestroy; virtual;
     procedure DoMatch(ARoute: TBrookCustomPathRoute); virtual;
     property Routes: TBrookPathRoutes read FRoutes;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    procedure AfterConstruction; override;
     procedure Assign(ASource: TPersistent); override;
     procedure Validate; inline;
     property RegexHandle: Pointer read GetRegexHandle;
@@ -112,8 +107,6 @@ type
     property RawPattern: string read GetRawPattern;
     property Path: string read GetPath;
     property UserData: Pointer read GetUserData;
-    property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
-    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnMath: TBrookPathRouteMatchEvent read FOnMath write FOnMath;
   end;
 
@@ -121,8 +114,6 @@ type
   published
     property Pattern;
     property Path;
-    property OnCreate;
-    property OnDestroy;
     property OnMath;
   end;
 
@@ -214,13 +205,6 @@ begin
   FVariables.ClearOnDestroy := False;
   FVariables.Free;
   inherited Destroy;
-  DoDestroy;
-end;
-
-procedure TBrookCustomPathRoute.AfterConstruction;
-begin
-  inherited AfterConstruction;
-  DoCreate;
 end;
 
 procedure TBrookCustomPathRoute.Assign(ASource: TPersistent);
@@ -337,18 +321,6 @@ begin
     Exit(nil);
   SgCheckLibrary;
   Result := sg_route_user_data(FHandle);
-end;
-
-procedure TBrookCustomPathRoute.DoCreate;
-begin
-  if Assigned(FOnCreate) then
-    FOnCreate(Self);
-end;
-
-procedure TBrookCustomPathRoute.DoDestroy;
-begin
-  if Assigned(FOnDestroy) then
-    FOnDestroy(Self);
 end;
 
 procedure TBrookCustomPathRoute.DoMatch(ARoute: TBrookCustomPathRoute);
