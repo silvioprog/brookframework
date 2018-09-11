@@ -110,8 +110,6 @@ type
     property Methods default TBrookHTTPRoute.DefaultReqMethods;
     property Pattern;
     property Path;
-    property OnCreate;
-    property OnDestroy;
     property OnMath;
     property OnRequestMethod;
     property OnRequest;
