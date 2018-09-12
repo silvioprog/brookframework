@@ -526,6 +526,9 @@ type
 var
   sg_entrypoint_name: function(entrypoint: Psg_entrypoint): Pcchar; cdecl;
 
+  sg_entrypoint_set_user_data: function(entrypoint: Psg_entrypoint;
+    user_data: Pcvoid): cint; cdecl;
+
   sg_entrypoint_user_data: function(entrypoint: Psg_entrypoint): Pcvoid; cdecl;
 
 type
@@ -752,6 +755,7 @@ begin
     sg_router_dispatch := GetProcAddress(GHandle, 'sg_router_dispatch');
 
     sg_entrypoint_name := GetProcAddress(GHandle, 'sg_entrypoint_name');
+    sg_entrypoint_set_user_data := GetProcAddress(GHandle, 'sg_entrypoint_set_user_data');
     sg_entrypoint_user_data := GetProcAddress(GHandle, 'sg_entrypoint_user_data');
 
     sg_entrypoints_new := GetProcAddress(GHandle, 'sg_entrypoints_new');
@@ -901,6 +905,7 @@ begin
     sg_router_dispatch := nil;
 
     sg_entrypoint_name := nil;
+    sg_entrypoint_set_user_data := nil;
     sg_entrypoint_user_data := nil;
 
     sg_entrypoints_new := nil;

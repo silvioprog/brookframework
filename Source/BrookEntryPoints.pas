@@ -96,18 +96,19 @@ type
     FHandle: Psg_entrypoints;
     function GetItem(AIndex: Integer): TBrookCustomEntryPoint;
     procedure SetItem(AIndex: Integer; AValue: TBrookCustomEntryPoint);
+    procedure InternalAdd(AEntryPoint: TBrookCustomEntryPoint);
   protected
-    function GetHandle: Pointer; override;
     class function GetNameLabel: string; virtual;
     class function GetEntryPointName(
       AEntryPoint: TBrookCustomEntryPoint): string; virtual;
+    function GetHandle: Pointer; override;
+    procedure Prepare; virtual;
+    procedure Unprepare; virtual;
   public
     constructor Create(AOwner: TPersistent); virtual;
     class function GetEntryPointClass: TBrookCustomEntryPointClass; virtual;
     procedure Assign(ASource: TPersistent); override;
     function GetEnumerator: TBrookEntryPointListEnumerator;
-    procedure Prepare; virtual;
-    procedure Unprepare; virtual;
     function IsPrepared: Boolean; virtual;
     function NewName: string; virtual;
     function Add: TBrookCustomEntryPoint; virtual;
@@ -244,11 +245,27 @@ begin
     raise EBrookEntryPoint.CreateResFmt(@SBrookEntryPointAlreadyExists,
       [GetNamePath, NN, EP.GetNamePath]);
   FName := NN;
+  if Assigned(FList.FHandle) then
+  begin
+    SgLib.Check;
+    FList.InternalAdd(Self);
+  end;
 end;
 
 procedure TBrookCustomEntryPoint.SetTarget(AValue: TComponent);
+var
+  M: TMarshaller;
+  EP: Psg_entrypoint;
+  R: cint;
 begin
   FUserData := AValue;
+  if not Assigned(FList.FHandle) then
+    Exit;
+  SgLib.Check;
+  R := sg_entrypoints_find2(FList.FHandle, @EP, M.ToCString(FName));
+  if R = 0 then
+    R := sg_entrypoint_set_user_data(EP, FUserData);
+  SgLib.CheckLastError(R);
 end;
 
 { TBrookEntryPointListEnumerator }
@@ -268,6 +285,22 @@ end;
 class function TBrookEntryPointList.GetEntryPointClass: TBrookCustomEntryPointClass;
 begin
   Result := TBrookEntryPoint;
+end;
+
+class function TBrookEntryPointList.GetNameLabel: string;
+begin
+  Result := '/api';
+end;
+
+class function TBrookEntryPointList.GetEntryPointName(
+  AEntryPoint: TBrookCustomEntryPoint): string;
+begin
+  Result := AEntryPoint.FName;
+end;
+
+function TBrookEntryPointList.GetHandle: Pointer;
+begin
+  Result := FHandle;
 end;
 
 procedure TBrookEntryPointList.Assign(ASource: TPersistent);
@@ -292,8 +325,6 @@ end;
 procedure TBrookEntryPointList.Prepare;
 var
   EP: TBrookCustomEntryPoint;
-  M: TMarshaller;
-  R: cint;
 begin
   if Assigned(FHandle) then
     Exit;
@@ -307,14 +338,7 @@ begin
   for EP in Self do
   begin
     EP.Validate;
-    R := sg_entrypoints_add(FHandle, M.ToCString(GetEntryPointName(EP)),
-      EP.FUserData);
-    if R = 0 then
-      Continue;
-    if R = EALREADY then
-      raise EBrookEntryPointList.CreateResFmt(@SBrookEntryPointAlreadyExists,
-        [EP.GetNamePath, EP.Name]);
-    SgLib.CheckLastError(R);
+    InternalAdd(EP);
   end;
 end;
 
@@ -325,6 +349,32 @@ begin
   SgLib.Check;
   sg_entrypoints_free(FHandle);
   FHandle := nil;
+end;
+
+procedure TBrookEntryPointList.InternalAdd(AEntryPoint: TBrookCustomEntryPoint);
+var
+  M: TMarshaller;
+  R: cint;
+begin
+  R := sg_entrypoints_add(FHandle, M.ToCString(GetEntryPointName(AEntryPoint)),
+    AEntryPoint.FUserData);
+  if R = 0 then
+    Exit;
+  if R = EALREADY then
+    raise EBrookEntryPointList.CreateResFmt(@SBrookEntryPointAlreadyExists,
+      [AEntryPoint.GetNamePath, AEntryPoint.Name]);
+  SgLib.CheckLastError(R);
+end;
+
+function TBrookEntryPointList.NewName: string;
+var
+  VIndex: Integer;
+begin
+  VIndex := 1;
+  repeat
+    Result := Concat(GetNameLabel, VIndex.ToString);
+    Inc(VIndex);
+  until IndexOf(Result) < 0;
 end;
 
 function TBrookEntryPointList.IsPrepared: Boolean;
@@ -341,33 +391,6 @@ procedure TBrookEntryPointList.SetItem(AIndex: Integer;
   AValue: TBrookCustomEntryPoint);
 begin
   inherited SetItem(AIndex, AValue);
-end;
-
-function TBrookEntryPointList.GetHandle: Pointer;
-begin
-  Result := FHandle;
-end;
-
-class function TBrookEntryPointList.GetNameLabel: string;
-begin
-  Result := '/api';
-end;
-
-class function TBrookEntryPointList.GetEntryPointName(
-  AEntryPoint: TBrookCustomEntryPoint): string;
-begin
-  Result := AEntryPoint.FName;
-end;
-
-function TBrookEntryPointList.NewName: string;
-var
-  VIndex: Integer;
-begin
-  VIndex := 1;
-  repeat
-    Result := Concat(GetNameLabel, VIndex.ToString);
-    Inc(VIndex);
-  until IndexOf(Result) < 0;
 end;
 
 function TBrookEntryPointList.Add: TBrookCustomEntryPoint;
