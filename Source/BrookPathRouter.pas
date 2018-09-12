@@ -138,7 +138,7 @@ type
     class function GetRouterClass: TBrookCustomPathRouteClass; virtual;
     function GetEnumerator: TBrookPathRoutesEnumerator;
     procedure Assign(ASource: TPersistent); override;
-    function MakePattern: string; virtual;
+    function NewPattern: string; virtual;
     procedure Prepare; virtual;
     function Add: TBrookCustomPathRoute; virtual;
     function First: TBrookCustomPathRoute; virtual;
@@ -193,8 +193,8 @@ begin
   FVariables := TBrookStringMap.Create(@Fvars);
   if Assigned(ACollection) and (ACollection is TBrookPathRoutes) then
   begin
-    FRoutes := TBrookPathRoutes(ACollection);
-    FPattern := FRoutes.MakePattern;
+    FRoutes := ACollection as TBrookPathRoutes;
+    FPattern := FRoutes.NewPattern;
   end
   else
     SetPattern('/');
@@ -404,7 +404,7 @@ begin
     inherited Assign(ASource);
 end;
 
-function TBrookPathRoutes.MakePattern: string;
+function TBrookPathRoutes.NewPattern: string;
 var
   VIndex: Integer;
 begin
