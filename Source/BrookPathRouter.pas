@@ -338,7 +338,10 @@ begin
       [GetNamePath, NP, RT.GetNamePath]);
   FPattern := NP;
   if Assigned(FRoutes.FHandle) then
+  begin
+    SgLib.Check;
     FRoutes.InternalAdd(Self);
+  end;
 end;
 
 procedure TBrookCustomPathRoute.Validate;
@@ -366,11 +369,6 @@ begin
   Result := TBrookPathRoute;
 end;
 
-function TBrookPathRoutes.GetHandle: Pointer;
-begin
-  Result := FHandle;
-end;
-
 class function TBrookPathRoutes.GetRoutePattern(
   ARoute: TBrookCustomPathRoute): string;
 begin
@@ -380,6 +378,30 @@ end;
 class function TBrookPathRoutes.GetPathLabel: string;
 begin
   Result := '/path';
+end;
+
+function TBrookPathRoutes.GetHandle: Pointer;
+begin
+  Result := FHandle;
+end;
+
+function TBrookPathRoutes.GetEnumerator: TBrookPathRoutesEnumerator;
+begin
+  Result := TBrookPathRoutesEnumerator.Create(Self);
+end;
+
+procedure TBrookPathRoutes.Assign(ASource: TPersistent);
+var
+  R: TBrookCustomPathRoute;
+begin
+  if ASource is TBrookPathRoutes then
+  begin
+    Clear;
+    for R in (ASource as TBrookPathRoutes) do
+      Add.Assign(R);
+  end
+  else
+    inherited Assign(ASource);
 end;
 
 procedure TBrookPathRoutes.InternalAdd(ARoute: TBrookCustomPathRoute);
@@ -402,25 +424,6 @@ begin
   if S.IsEmpty then
     S := BrookStrError(R);
   raise EBrookRoutes.Create(S);
-end;
-
-function TBrookPathRoutes.GetEnumerator: TBrookPathRoutesEnumerator;
-begin
-  Result := TBrookPathRoutesEnumerator.Create(Self);
-end;
-
-procedure TBrookPathRoutes.Assign(ASource: TPersistent);
-var
-  R: TBrookCustomPathRoute;
-begin
-  if ASource is TBrookPathRoutes then
-  begin
-    Clear;
-    for R in (ASource as TBrookPathRoutes) do
-      Add.Assign(R);
-  end
-  else
-    inherited Assign(ASource);
 end;
 
 function TBrookPathRoutes.NewPattern: string;
