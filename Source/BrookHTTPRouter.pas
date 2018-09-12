@@ -142,7 +142,8 @@ type
     procedure DoNotFound(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse);
   public
-    procedure Route(ASender: TObject; ARequest: TBrookHTTPRequest;
+    procedure Route(ASender: TObject; const APath: string;
+      ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); reintroduce; virtual;
     property OnRoute: TBrookHTTPRouterRequestEvent read FOnRoute write FOnRoute;
     property OnNotFound: TBrookHTTPRouterRequestEvent read FOnNotFound
@@ -295,7 +296,7 @@ begin
     FOnNotFound(ASender, ARequest, AResponse);
 end;
 
-procedure TBrookCustomHTTPRouter.Route(ASender: TObject;
+procedure TBrookCustomHTTPRouter.Route(ASender: TObject; const APath: string;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
   VHolder: TBrookHTTPRouterHolder;
@@ -307,7 +308,7 @@ begin
   VHolder.Request := ARequest;
   VHolder.Response := AResponse;
   VHolder.Sender := ASender;
-  if inherited Route(ARequest.Path, @VHolder) then
+  if inherited Route(APath, @VHolder) then
     DoRoute(ASender, ARequest, AResponse)
   else
     DoNotFound(ASender, ARequest, AResponse);
