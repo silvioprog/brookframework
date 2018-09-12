@@ -44,9 +44,9 @@ resourcestring
   SBrookInactiveRouter = 'Inactive router.';
   SBrookCannotCreateRouterHandle = 'Cannot create router handle.';
   SBrookNoRoutesDefined = 'No routes defined.';
-  SBrookEmptyPattern = '%s: pattern cannot be empty.';
+  SBrookEmptyRoutePattern = '%s: pattern cannot be empty.';
   SBrookRouteAlreadyExists = '%s: pattern ''%s'' already exists in ''%s''.';
-  SBrookEmptyPath = 'Path cannot be empty.';
+  SBrookEmptyRouterPath = 'Router path cannot be empty.';
 
 type
   TBrookCustomPathRoute = class;
@@ -341,7 +341,7 @@ end;
 procedure TBrookCustomPathRoute.Validate;
 begin
   if FPattern.IsEmpty then
-    raise EBrookRoute.CreateResFmt(@SBrookEmptyPattern, [GetNamePath]);
+    raise EBrookRoute.CreateResFmt(@SBrookEmptyRoutePattern, [GetNamePath]);
 end;
 
 { TBrookPathRoutesEnumerator }
@@ -426,8 +426,8 @@ begin
   begin
     RT.Validate;
     P[0] := 0;
-    R := sg_routes_add2(@FHandle, @H, M.ToCNullable(GetRoutePattern(RT)), @P[0],
-      SG_ERR_SIZE, {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
+    R := sg_routes_add2(@FHandle, @H, M.ToCNullableString(GetRoutePattern(RT)),
+      @P[0], SG_ERR_SIZE, {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
     if R = 0 then
       Continue;
     if R = EALREADY then
@@ -634,10 +634,10 @@ var
   R: cint;
 begin
   if APath.IsEmpty then
-    raise EArgumentException.CreateRes(@SBrookEmptyPath);
+    raise EArgumentException.CreateRes(@SBrookEmptyRouterPath);
   CheckActive;
   SgCheckLibrary;
-  R := sg_router_dispatch(FHandle, M.ToCNullable(BrookFixPath(APath)),
+  R := sg_router_dispatch(FHandle, M.ToCNullableString(BrookFixPath(APath)),
     AUserData);
   Result := R = 0;
   if (not Result) and (R <> ENOENT) then

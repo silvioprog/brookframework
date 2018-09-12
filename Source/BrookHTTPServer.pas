@@ -866,11 +866,11 @@ begin
     if not Assigned(sg_httpsrv_tls_listen2) then
       raise ENotSupportedException.CreateRes(@SBrookTLSNotAvailable);
     FActive := sg_httpsrv_tls_listen2(FHandle,
-      M.ToCNullable(FSecurity.PrivateKey),
-      M.ToCNullable(FSecurity.PrivatePassword),
-      M.ToCNullable(FSecurity.Certificate),
-      M.ToCNullable(FSecurity.Trust),
-      M.ToCNullable(FSecurity.DHParams), FPort, FThreaded);
+      M.ToCNullableString(FSecurity.PrivateKey),
+      M.ToCNullableString(FSecurity.PrivatePassword),
+      M.ToCNullableString(FSecurity.Certificate),
+      M.ToCNullableString(FSecurity.Trust),
+      M.ToCNullableString(FSecurity.DHParams), FPort, FThreaded);
   end
   else
     FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);

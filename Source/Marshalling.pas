@@ -66,7 +66,7 @@ type
 {$ENDIF}
   public
     function ToCString(const S: string): MarshaledAString; inline;
-    function ToCNullable(const S: string): MarshaledAString; inline;
+    function ToCNullableString(const S: string): MarshaledAString; inline;
   end;
 
 implementation
@@ -108,7 +108,7 @@ begin
 {$ENDIF};
 end;
 
-function {$IFDEF FPC}TMarshaller{$ELSE}TMarshallerHelper{$ENDIF}.ToCNullable(
+function {$IFDEF FPC}TMarshaller{$ELSE}TMarshallerHelper{$ENDIF}.ToCNullableString(
   const S: string): MarshaledAString;
 begin
   if S.IsEmpty then
