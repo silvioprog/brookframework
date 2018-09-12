@@ -51,6 +51,7 @@ resourcestring
   SBrookSelectLibraryTitle = 'Select library ...';
   SBrookSharedLibraryFilter = 'Shared libraries (%s)|%s|All files (*.*)|*.*';
   SBrookRoutesEditor = 'Routes editor ...';
+  SBrookEntryPointsEditor = 'Entry-points editor ...';
 
 type
 
@@ -114,6 +115,15 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+  { TBrookEntryPointsComponentEditor }
+
+  TBrookEntryPointsComponentEditor = class(TComponentEditor)
+  public
+    procedure ExecuteVerb(AIndex: Integer); override;
+    function GetVerb(AIndex: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
 {$R BrookFramework40Icons.res}
 
 procedure Register;
@@ -123,6 +133,7 @@ implementation
 uses
   BrookLibraryLoader,
   BrookPathRouter,
+  BrookEntryPoints,
   BrookHTTPRouter,
   BrookHTTPServer;
 
@@ -156,24 +167,27 @@ begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
     TBrookPathRouter,
+    TBrookEntryPoints,
     TBrookHTTPRouter,
     TBrookHTTPServer
   ]);
-  RegisterPropertyEditor(TypeInfo(TFileName), TBrookCustomLibraryLoader,
+  RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
 {$IFDEF LCL}
+  RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServerSecurity,
+    'PrivatePassword', TPasswordStringPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TBrookHTTPRouteRequestMethods), nil, '',
     TBrookHTTPRouteRequestMethodsPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(string), TBrookCustomHTTPServer, 'UploadsDir',
+  RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServer, 'UploadsDir',
     TDirectoryPropertyEditor);
 {$ELSE}
   RegisterPropertyMapper(BrookHTTPRouteRequestMethodsPropertyMapper);
 {$ENDIF}
-  RegisterComponentEditor(TBrookCustomLibraryLoader,
-    TBrookLibraryNameComponentEditor);
-  RegisterComponentEditor(TBrookCustomPathRouter, TBrookPathRouterComponentEditor);
-  RegisterComponentEditor(TBrookCustomHTTPRouter, TBrookPathRouterComponentEditor);
-  RegisterComponentEditor(TBrookCustomHTTPServer, TBrookOnRequestComponentEditor);
+  RegisterComponentEditor(TBrookLibraryLoader, TBrookLibraryNameComponentEditor);
+  RegisterComponentEditor(TBrookPathRouter, TBrookPathRouterComponentEditor);
+  RegisterComponentEditor(TBrookEntryPoints, TBrookEntryPointsComponentEditor);
+  RegisterComponentEditor(TBrookHTTPRouter, TBrookPathRouterComponentEditor);
+  RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
 {$IFDEF LCL}
@@ -378,6 +392,35 @@ begin
 end;
 
 function TBrookPathRouterComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+{ TBrookEntryPointsComponentEditor }
+
+procedure TBrookEntryPointsComponentEditor.ExecuteVerb(AIndex: Integer);
+var
+  VEntryPoints: TBrookCustomEntryPoints;
+begin
+  if AIndex <> 0 then
+    Exit;
+  VEntryPoints := GetComponent as TBrookCustomEntryPoints;
+{$IFDEF LCL}
+  EditCollection(
+{$ELSE}
+  ShowCollectionEditor(Designer,
+{$ENDIF}
+    VEntryPoints, VEntryPoints.List, 'List');
+end;
+
+function TBrookEntryPointsComponentEditor.GetVerb(AIndex: Integer): string;
+begin
+  if AIndex = 0 then
+    Exit(LoadResString(@SBrookEntryPointsEditor));
+  Result := '';
+end;
+
+function TBrookEntryPointsComponentEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;

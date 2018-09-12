@@ -67,6 +67,7 @@ contains
   BrookString in '..\Source\BrookString.pas',
   BrookStringMap in '..\Source\BrookStringMap.pas',
   BrookPathRouter in '..\Source\BrookPathRouter.pas',
+  BrookEntryPoints in '..\Source\BrookEntryPoints.pas',
   BrookHTTPExtra in '..\Source\BrookHTTPExtra.pas',
   BrookHTTPAuthentication in '..\Source\BrookHTTPAuthentication.pas',
   BrookHTTPUploads in '..\Source\BrookHTTPUploads.pas',
