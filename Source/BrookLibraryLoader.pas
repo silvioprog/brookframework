@@ -41,8 +41,7 @@ uses
 
 resourcestring
   { Indicates not allowed operation when the library loader is loaded. }
-  SBrookOpNotAllowedActiveLibLoader =
-    'Operation is not allowed while the library loader is active.';
+  SBrookActiveLibLoader = 'Active library loader.';
 
 type
   { Class for dynamic library loading. }
@@ -89,6 +88,12 @@ type
 
 implementation
 
+procedure TBrookCustomLibraryLoader.CheckInactive;
+begin
+  if not (csLoading in ComponentState) and Active then
+    raise EInvalidOpException.CreateRes(@SBrookActiveLibLoader);
+end;
+
 procedure TBrookCustomLibraryLoader.Loaded;
 begin
   inherited Loaded;
@@ -109,12 +114,6 @@ end;
 function TBrookCustomLibraryLoader.GetHandle: Pointer;
 begin
   Result := @FHandle;
-end;
-
-procedure TBrookCustomLibraryLoader.CheckInactive;
-begin
-  if not (csLoading in ComponentState) and Active then
-    raise EInvalidOpException.CreateRes(@SBrookOpNotAllowedActiveLibLoader);
 end;
 
 procedure TBrookCustomLibraryLoader.SetActive(AValue: Boolean);

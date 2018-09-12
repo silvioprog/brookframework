@@ -48,8 +48,7 @@ const
   BROOK_UPLOADS_LIMIT = {$IFDEF CPUARM}16777216{~16MB}{$ELSE}67108864{~64MB}{$ENDIF};
 
 resourcestring
-  SBrookOpNotAllowedActiveServer =
-    'Operation is not allowed while the server is active.';
+  SBrookActiveServer = 'Active server.';
   SBrookCannotCreateServerHandle = 'Cannot create server handle.';
   SBrookTLSNotAvailable = 'TLS is not available.';
   SBrookEmptyPrivateKey = 'Private key cannot be empty.';
@@ -467,6 +466,12 @@ begin
   end;
 end;
 
+procedure TBrookCustomHTTPServer.CheckInactive;
+begin
+  if (not (csLoading in ComponentState)) and Active then
+    raise EInvalidOpException.CreateRes(@SBrookActiveServer);
+end;
+
 procedure TBrookCustomHTTPServer.Loaded;
 begin
   inherited Loaded;
@@ -562,12 +567,6 @@ begin
     on E: Exception do
       AResponse.Send(E.Message, BROOK_CONTENT_TYPE, 500);
   end;
-end;
-
-procedure TBrookCustomHTTPServer.CheckInactive;
-begin
-  if (not (csLoading in ComponentState)) and Active then
-    raise EInvalidOpException.CreateRes(@SBrookOpNotAllowedActiveServer);
 end;
 
 procedure TBrookCustomHTTPServer.SetPort(AValue: UInt16);

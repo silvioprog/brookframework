@@ -330,6 +330,7 @@ var
 begin
   if (AValue = FPattern) or (not Assigned(FRoutes)) then
     Exit;
+  { TODO: check inactive. }
   NP := BrookFixPath(AValue);
   RT := FRoutes.Find(NP);
   if Assigned(RT) and (RT <> Self) then
@@ -528,6 +529,12 @@ begin
   Result := TBrookPathRoutes.Create(Self);
 end;
 
+procedure TBrookCustomPathRouter.CheckActive;
+begin
+  if (not (csLoading in ComponentState)) and (not Active) then
+    raise EInvalidOpException.CreateRes(@SBrookInactiveRouter);
+end;
+
 procedure TBrookCustomPathRouter.Loaded;
 begin
   inherited Loaded;
@@ -619,12 +626,6 @@ end;
 procedure TBrookCustomPathRouter.Close;
 begin
   SetActive(False);
-end;
-
-procedure TBrookCustomPathRouter.CheckActive;
-begin
-  if (not (csLoading in ComponentState)) and (not Active) then
-    raise EInvalidOpException.CreateRes(@SBrookInactiveRouter);
 end;
 
 function TBrookCustomPathRouter.Route(const APath: string;
