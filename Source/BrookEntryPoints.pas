@@ -196,7 +196,7 @@ var
 begin
   if not Assigned(FHandle) then
     Exit(FName);
-  SgCheckLibrary;
+  SgLib.Check;
   P := sg_entrypoint_name(FHandle);
   try
     Result := TMarshal.ToString(P);
@@ -214,7 +214,7 @@ function TBrookCustomEntryPoint.GetUserData: Pointer;
 begin
   if not Assigned(FHandle) then
     Exit(FUserData);
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_entrypoint_user_data(FHandle);
 end;
 
@@ -290,11 +290,11 @@ begin
     Exit;
   if Count = 0 then
     raise EBrookEntryPointList.CreateRes(@SBrookNoEntryPointsDefined);
-  SgCheckLibrary;
+  SgLib.Check;
   FHandle := sg_entrypoints_new;
   if not Assigned(FHandle) then
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateEntryPointsHandle);
-  SgCheckLastError(sg_entrypoints_clear(FHandle));
+  SgLib.CheckLastError(sg_entrypoints_clear(FHandle));
   for EP in Self do
   begin
     EP.Validate;
@@ -305,7 +305,7 @@ begin
     if R = EALREADY then
       raise EBrookEntryPointList.CreateResFmt(@SBrookEntryPointAlreadyExists,
         [EP.GetNamePath, EP.Name]);
-    SgCheckLastError(R);
+    SgLib.CheckLastError(R);
   end;
 end;
 
@@ -313,7 +313,7 @@ procedure TBrookEntryPointList.Unprepare;
 begin
   if not Assigned(FHandle) then
     Exit;
-  SgCheckLibrary;
+  SgLib.Check;
   sg_entrypoints_free(FHandle);
   FHandle := nil;
 end;
@@ -387,8 +387,8 @@ end;
 procedure TBrookEntryPointList.Clear;
 begin
   inherited Clear;
-  SgCheckLibrary;
-  SgCheckLastError(sg_entrypoints_clear(FHandle));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_entrypoints_clear(FHandle));
 end;
 
 { TBrookCustomEntryPoints }
@@ -478,7 +478,7 @@ begin
   if csDesigning in ComponentState then
   begin
     if not (csLoading in ComponentState) then
-      SgCheckLibrary;
+      SgLib.Check;
     FActive := AValue;
   end
   else
@@ -513,14 +513,14 @@ begin
   if APath.IsEmpty then
     raise EArgumentException.CreateRes(@SBrookEmptyEntryPointsPath);
   CheckActive;
-  SgCheckLibrary;
+  SgLib.Check;
   R := sg_entrypoints_find(FList.FHandle, @EP, M.ToCString(APath));
   Result := R = 0;
   if Result then
     AUserData := sg_entrypoint_user_data(EP)
   else
     if (R <> ENOENT) then
-      SgCheckLastError(R);
+      SgLib.CheckLastError(R);
 end;
 
 function TBrookCustomEntryPoints.FindTarget<T>(const APath: string;

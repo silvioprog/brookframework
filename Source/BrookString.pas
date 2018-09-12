@@ -105,7 +105,7 @@ begin
   FOwnsHandle := not Assigned(AHandle);
   if FOwnsHandle then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FHandle := sg_str_new;
   end
   else
@@ -117,7 +117,7 @@ begin
   try
     if FOwnsHandle then
     begin
-      SgCheckLibrary;
+      SgLib.Check;
       sg_str_free(FHandle);
       FHandle := nil;
     end;
@@ -146,9 +146,9 @@ end;
 function TBrookString.WriteBytes(const ASource: TBytes;
   ALength: NativeUInt): NativeUInt;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := ALength;
-  SgCheckLastError(sg_str_write(FHandle, @ASource[0], Result));
+  SgLib.CheckLastError(sg_str_write(FHandle, @ASource[0], Result));
 end;
 
 procedure TBrookString.Write(const ASource: string; AEncoding: TEncoding);
@@ -168,13 +168,13 @@ end;
 
 procedure TBrookString.Clear;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_str_clear(FHandle));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_str_clear(FHandle));
 end;
 
 function TBrookString.GetLength: NativeUInt;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_str_length(FHandle);
 end;
 
@@ -186,7 +186,7 @@ end;
 
 function TBrookString.GetContent: TBytes;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := TMarshal.ToBytes(sg_str_content(FHandle), GetLength);
 end;
 

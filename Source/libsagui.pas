@@ -90,9 +90,10 @@ const
   SG_ERR_SIZE = 256;
 
 resourcestring
-  SSgLibraryNotLoaded = 'Library ''%s'' not loaded.';
+  SSgLibEmptyName = 'Empty library name.';
+  SSgLibNotLoaded = 'Library ''%s'' not loaded.';
 {$IFDEF MSWINDOWS}
-  SSgInvalidLibrary = 'Invalid library ''%s''.';
+  SSgLibInvalid = 'Invalid library ''%s''.';
 {$ENDIF}
 
 type
@@ -149,9 +150,6 @@ type
   TLibHandle = HMODULE;
 {$ENDIF}
 
-  ESgLibraryNotLoaded = class(EFileNotFoundException);
-
-type
   sg_err_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
 
   sg_write_cb = function(handle: Pcvoid; offset: cuint64_t; const buf: Pcchar;
@@ -554,31 +552,84 @@ var
   sg_entrypoints_find: function(entrypoints: Psg_entrypoints;
     entrypoint: PPsg_entrypoint; const path: Pcchar): cint; cdecl;
 
-{ TODO: procedure SgAddUnloadLibraryProc }
-function SgLoadLibrary(const AFileName: TFileName): TLibHandle;
-function SgUnloadLibrary: TLibHandle;
-procedure SgCheckLibrary;
-procedure SgCheckLastError(ALastError: Integer); inline;
+type
+  ESgLibNotLoaded = class(EFileNotFoundException);
+
+  SgLib = record
+  strict private class var
+    GCS: TCriticalSection;
+    GLastName: TFileName;
+    GHandle: TLibHandle;
+  public
+    class constructor Create;
+    class destructor Destroy;
+    class function GetLastName: string; static; inline;
+    class procedure CheckLastError(ALastError: Integer); static; inline;
+    class function Load(const AName: TFileName): TLibHandle; static;
+    { TODO: AddUnloadProc }
+    class function Unload: TLibHandle; static;
+    class procedure Check; static;
+    class property Handle: TLibHandle read GHandle;
+  end;
 
 implementation
 
-var
-  GSgLock: TCriticalSection = nil;
-  GSgLibHandle: TLibHandle = NilHandle;
-  GSgLastLibName: TFileName = SG_LIB_NAME;
-
-function SgLoadLibrary(const AFileName: TFileName): TLibHandle;
+class constructor SgLib.Create;
 begin
-  GSgLock.Acquire;
+  GCS := TCriticalSection.Create;
+  GCS.Acquire;
   try
-    if (GSgLibHandle <> NilHandle) or (AFileName = '') then
-      Exit(GSgLibHandle);
-    GSgLibHandle := SafeLoadLibrary(AFileName);
-    if GSgLibHandle = NilHandle then
+    Load(SG_LIB_NAME);
+  finally
+    GCS.Release;
+  end;
+end;
+
+class destructor SgLib.Destroy;
+begin
+  GCS.Acquire;
+  try
+    Unload;
+  finally
+    GCS.Release;
+    GCS.Free;
+  end;
+end;
+
+class function SgLib.GetLastName: string;
+begin
+  Result := GLastName;
+end;
+
+class procedure SgLib.CheckLastError(ALastError: Integer);
+var
+  P: array[0..SG_ERR_SIZE-1] of cchar;
+  S: string;
+begin
+  if (ALastError = 0) or (not Assigned(sg_strerror)) then
+    Exit;
+  sg_strerror(ALastError, @P[0], SG_ERR_SIZE);
+{$IFDEF FPC}
+  SetString(S, @P[0], Length(Pcchar(@P[0])));
+  SetCodePage(RawByteString(S), CP_UTF8, False);
+{$ELSE}
+  S := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(@P[0]));
+{$ENDIF}
+  raise EOSError.Create(S);
+end;
+
+class function SgLib.Load(const AName: TFileName): TLibHandle;
+begin
+  GCS.Acquire;
+  try
+    if AName = '' then
+      raise EArgumentException.CreateRes(@SSgLibEmptyName);
+    GHandle := SafeLoadLibrary(AName);
+    if GHandle = NilHandle then
 {$IFDEF MSWINDOWS}
       if GetLastError = ERROR_BAD_EXE_FORMAT then
       begin
-        MessageBox(0, PChar(Format(SSgInvalidLibrary, [AFileName])), nil,
+        MessageBox(0, PChar(Format(SSgLibInvalid, [AName])), nil,
           MB_OK or MB_ICONERROR);
         Halt;
       end;
@@ -586,157 +637,157 @@ begin
       Exit(NilHandle);
 {$ENDIF}
     { TODO: check the library version }
-    GSgLastLibName := AFileName;
+    GLastName := AName;
 
-    sg_version := GetProcAddress(GSgLibHandle, 'sg_version');
-    sg_version_str := GetProcAddress(GSgLibHandle, 'sg_version_str');
-    sg_alloc := GetProcAddress(GSgLibHandle, 'sg_alloc');
-    sg_realloc := GetProcAddress(GSgLibHandle, 'sg_realloc');
-    sg_free := GetProcAddress(GSgLibHandle, 'sg_free');
-    sg_strerror := GetProcAddress(GSgLibHandle, 'sg_strerror');
-    sg_is_post := GetProcAddress(GSgLibHandle, 'sg_is_post');
-    sg_extract_entrypoint := GetProcAddress(GSgLibHandle, 'sg_extract_entrypoint');
-    sg_tmpdir := GetProcAddress(GSgLibHandle, 'sg_tmpdir');
+    sg_version := GetProcAddress(GHandle, 'sg_version');
+    sg_version_str := GetProcAddress(GHandle, 'sg_version_str');
+    sg_alloc := GetProcAddress(GHandle, 'sg_alloc');
+    sg_realloc := GetProcAddress(GHandle, 'sg_realloc');
+    sg_free := GetProcAddress(GHandle, 'sg_free');
+    sg_strerror := GetProcAddress(GHandle, 'sg_strerror');
+    sg_is_post := GetProcAddress(GHandle, 'sg_is_post');
+    sg_extract_entrypoint := GetProcAddress(GHandle, 'sg_extract_entrypoint');
+    sg_tmpdir := GetProcAddress(GHandle, 'sg_tmpdir');
 
-    sg_str_new := GetProcAddress(GSgLibHandle, 'sg_str_new');
-    sg_str_free := GetProcAddress(GSgLibHandle, 'sg_str_free');
-    sg_str_write := GetProcAddress(GSgLibHandle, 'sg_str_write');
-    sg_str_printf_va := GetProcAddress(GSgLibHandle, 'sg_str_printf_va');
-    sg_str_printf := GetProcAddress(GSgLibHandle, 'sg_str_printf');
-    sg_str_content := GetProcAddress(GSgLibHandle, 'sg_str_content');
-    sg_str_length := GetProcAddress(GSgLibHandle, 'sg_str_length');
-    sg_str_clear := GetProcAddress(GSgLibHandle, 'sg_str_clear');
+    sg_str_new := GetProcAddress(GHandle, 'sg_str_new');
+    sg_str_free := GetProcAddress(GHandle, 'sg_str_free');
+    sg_str_write := GetProcAddress(GHandle, 'sg_str_write');
+    sg_str_printf_va := GetProcAddress(GHandle, 'sg_str_printf_va');
+    sg_str_printf := GetProcAddress(GHandle, 'sg_str_printf');
+    sg_str_content := GetProcAddress(GHandle, 'sg_str_content');
+    sg_str_length := GetProcAddress(GHandle, 'sg_str_length');
+    sg_str_clear := GetProcAddress(GHandle, 'sg_str_clear');
 
-    sg_strmap_name := GetProcAddress(GSgLibHandle, 'sg_strmap_name');
-    sg_strmap_val := GetProcAddress(GSgLibHandle, 'sg_strmap_val');
-    sg_strmap_add := GetProcAddress(GSgLibHandle, 'sg_strmap_add');
-    sg_strmap_set := GetProcAddress(GSgLibHandle, 'sg_strmap_set');
-    sg_strmap_find := GetProcAddress(GSgLibHandle, 'sg_strmap_find');
-    sg_strmap_get := GetProcAddress(GSgLibHandle, 'sg_strmap_get');
-    sg_strmap_rm := GetProcAddress(GSgLibHandle, 'sg_strmap_rm');
-    sg_strmap_iter := GetProcAddress(GSgLibHandle, 'sg_strmap_iter');
-    sg_strmap_sort := GetProcAddress(GSgLibHandle, 'sg_strmap_sort');
-    sg_strmap_count := GetProcAddress(GSgLibHandle, 'sg_strmap_count');
-    sg_strmap_next := GetProcAddress(GSgLibHandle, 'sg_strmap_next');
-    sg_strmap_cleanup := GetProcAddress(GSgLibHandle, 'sg_strmap_cleanup');
+    sg_strmap_name := GetProcAddress(GHandle, 'sg_strmap_name');
+    sg_strmap_val := GetProcAddress(GHandle, 'sg_strmap_val');
+    sg_strmap_add := GetProcAddress(GHandle, 'sg_strmap_add');
+    sg_strmap_set := GetProcAddress(GHandle, 'sg_strmap_set');
+    sg_strmap_find := GetProcAddress(GHandle, 'sg_strmap_find');
+    sg_strmap_get := GetProcAddress(GHandle, 'sg_strmap_get');
+    sg_strmap_rm := GetProcAddress(GHandle, 'sg_strmap_rm');
+    sg_strmap_iter := GetProcAddress(GHandle, 'sg_strmap_iter');
+    sg_strmap_sort := GetProcAddress(GHandle, 'sg_strmap_sort');
+    sg_strmap_count := GetProcAddress(GHandle, 'sg_strmap_count');
+    sg_strmap_next := GetProcAddress(GHandle, 'sg_strmap_next');
+    sg_strmap_cleanup := GetProcAddress(GHandle, 'sg_strmap_cleanup');
 
-    sg_httpauth_set_realm := GetProcAddress(GSgLibHandle, 'sg_httpauth_set_realm');
-    sg_httpauth_realm := GetProcAddress(GSgLibHandle, 'sg_httpauth_realm');
-    sg_httpauth_deny := GetProcAddress(GSgLibHandle, 'sg_httpauth_deny');
-    sg_httpauth_cancel := GetProcAddress(GSgLibHandle, 'sg_httpauth_cancel');
-    sg_httpauth_usr := GetProcAddress(GSgLibHandle, 'sg_httpauth_usr');
-    sg_httpauth_pwd := GetProcAddress(GSgLibHandle, 'sg_httpauth_pwd');
+    sg_httpauth_set_realm := GetProcAddress(GHandle, 'sg_httpauth_set_realm');
+    sg_httpauth_realm := GetProcAddress(GHandle, 'sg_httpauth_realm');
+    sg_httpauth_deny := GetProcAddress(GHandle, 'sg_httpauth_deny');
+    sg_httpauth_cancel := GetProcAddress(GHandle, 'sg_httpauth_cancel');
+    sg_httpauth_usr := GetProcAddress(GHandle, 'sg_httpauth_usr');
+    sg_httpauth_pwd := GetProcAddress(GHandle, 'sg_httpauth_pwd');
 
-    sg_httpuplds_iter := GetProcAddress(GSgLibHandle, 'sg_httpuplds_iter');
-    sg_httpuplds_next := GetProcAddress(GSgLibHandle, 'sg_httpuplds_next');
-    sg_httpuplds_count := GetProcAddress(GSgLibHandle, 'sg_httpuplds_count');
+    sg_httpuplds_iter := GetProcAddress(GHandle, 'sg_httpuplds_iter');
+    sg_httpuplds_next := GetProcAddress(GHandle, 'sg_httpuplds_next');
+    sg_httpuplds_count := GetProcAddress(GHandle, 'sg_httpuplds_count');
 
-    sg_httpupld_handle := GetProcAddress(GSgLibHandle, 'sg_httpupld_handle');
-    sg_httpupld_dir := GetProcAddress(GSgLibHandle, 'sg_httpupld_dir');
-    sg_httpupld_field := GetProcAddress(GSgLibHandle, 'sg_httpupld_field');
-    sg_httpupld_name := GetProcAddress(GSgLibHandle, 'sg_httpupld_name');
-    sg_httpupld_mime := GetProcAddress(GSgLibHandle, 'sg_httpupld_mime');
-    sg_httpupld_encoding := GetProcAddress(GSgLibHandle, 'sg_httpupld_encoding');
-    sg_httpupld_size := GetProcAddress(GSgLibHandle, 'sg_httpupld_size');
-    sg_httpupld_save := GetProcAddress(GSgLibHandle, 'sg_httpupld_save');
-    sg_httpupld_save_as := GetProcAddress(GSgLibHandle, 'sg_httpupld_save_as');
+    sg_httpupld_handle := GetProcAddress(GHandle, 'sg_httpupld_handle');
+    sg_httpupld_dir := GetProcAddress(GHandle, 'sg_httpupld_dir');
+    sg_httpupld_field := GetProcAddress(GHandle, 'sg_httpupld_field');
+    sg_httpupld_name := GetProcAddress(GHandle, 'sg_httpupld_name');
+    sg_httpupld_mime := GetProcAddress(GHandle, 'sg_httpupld_mime');
+    sg_httpupld_encoding := GetProcAddress(GHandle, 'sg_httpupld_encoding');
+    sg_httpupld_size := GetProcAddress(GHandle, 'sg_httpupld_size');
+    sg_httpupld_save := GetProcAddress(GHandle, 'sg_httpupld_save');
+    sg_httpupld_save_as := GetProcAddress(GHandle, 'sg_httpupld_save_as');
 
-    sg_httpreq_headers := GetProcAddress(GSgLibHandle, 'sg_httpreq_headers');
-    sg_httpreq_cookies := GetProcAddress(GSgLibHandle, 'sg_httpreq_cookies');
-    sg_httpreq_params := GetProcAddress(GSgLibHandle, 'sg_httpreq_params');
-    sg_httpreq_fields := GetProcAddress(GSgLibHandle, 'sg_httpreq_fields');
-    sg_httpreq_version := GetProcAddress(GSgLibHandle, 'sg_httpreq_version');
-    sg_httpreq_method := GetProcAddress(GSgLibHandle, 'sg_httpreq_method');
-    sg_httpreq_path := GetProcAddress(GSgLibHandle, 'sg_httpreq_path');
-    sg_httpreq_payload := GetProcAddress(GSgLibHandle, 'sg_httpreq_payload');
-    sg_httpreq_is_uploading := GetProcAddress(GSgLibHandle, 'sg_httpreq_is_uploading');
-    sg_httpreq_uploads := GetProcAddress(GSgLibHandle, 'sg_httpreq_uploads');
-    sg_httpreq_tls_session := GetProcAddress(GSgLibHandle, 'sg_httpreq_tls_session');
-    sg_httpreq_set_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_set_user_data');
-    sg_httpreq_user_data := GetProcAddress(GSgLibHandle, 'sg_httpreq_user_data');
+    sg_httpreq_headers := GetProcAddress(GHandle, 'sg_httpreq_headers');
+    sg_httpreq_cookies := GetProcAddress(GHandle, 'sg_httpreq_cookies');
+    sg_httpreq_params := GetProcAddress(GHandle, 'sg_httpreq_params');
+    sg_httpreq_fields := GetProcAddress(GHandle, 'sg_httpreq_fields');
+    sg_httpreq_version := GetProcAddress(GHandle, 'sg_httpreq_version');
+    sg_httpreq_method := GetProcAddress(GHandle, 'sg_httpreq_method');
+    sg_httpreq_path := GetProcAddress(GHandle, 'sg_httpreq_path');
+    sg_httpreq_payload := GetProcAddress(GHandle, 'sg_httpreq_payload');
+    sg_httpreq_is_uploading := GetProcAddress(GHandle, 'sg_httpreq_is_uploading');
+    sg_httpreq_uploads := GetProcAddress(GHandle, 'sg_httpreq_uploads');
+    sg_httpreq_tls_session := GetProcAddress(GHandle, 'sg_httpreq_tls_session');
+    sg_httpreq_set_user_data := GetProcAddress(GHandle, 'sg_httpreq_set_user_data');
+    sg_httpreq_user_data := GetProcAddress(GHandle, 'sg_httpreq_user_data');
 
-    sg_httpres_headers := GetProcAddress(GSgLibHandle, 'sg_httpres_headers');
-    sg_httpres_set_cookie := GetProcAddress(GSgLibHandle, 'sg_httpres_set_cookie');
-    sg_httpres_sendbinary := GetProcAddress(GSgLibHandle, 'sg_httpres_sendbinary');
-    sg_httpres_sendfile := GetProcAddress(GSgLibHandle, 'sg_httpres_sendfile');
-    sg_httpres_sendstream := GetProcAddress(GSgLibHandle, 'sg_httpres_sendstream');
-    sg_httpres_clear := GetProcAddress(GSgLibHandle, 'sg_httpres_clear');
+    sg_httpres_headers := GetProcAddress(GHandle, 'sg_httpres_headers');
+    sg_httpres_set_cookie := GetProcAddress(GHandle, 'sg_httpres_set_cookie');
+    sg_httpres_sendbinary := GetProcAddress(GHandle, 'sg_httpres_sendbinary');
+    sg_httpres_sendfile := GetProcAddress(GHandle, 'sg_httpres_sendfile');
+    sg_httpres_sendstream := GetProcAddress(GHandle, 'sg_httpres_sendstream');
+    sg_httpres_clear := GetProcAddress(GHandle, 'sg_httpres_clear');
 
-    sg_httpsrv_new2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new2');
-    sg_httpsrv_new := GetProcAddress(GSgLibHandle, 'sg_httpsrv_new');
-    sg_httpsrv_free := GetProcAddress(GSgLibHandle, 'sg_httpsrv_free');
-    sg_httpsrv_tls_listen2 := GetProcAddress(GSgLibHandle, 'sg_httpsrv_tls_listen2');
-    sg_httpsrv_tls_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_tls_listen');
-    sg_httpsrv_listen := GetProcAddress(GSgLibHandle, 'sg_httpsrv_listen');
-    sg_httpsrv_shutdown := GetProcAddress(GSgLibHandle, 'sg_httpsrv_shutdown');
-    sg_httpsrv_port := GetProcAddress(GSgLibHandle, 'sg_httpsrv_port');
-    sg_httpsrv_is_threaded := GetProcAddress(GSgLibHandle, 'sg_httpsrv_is_threaded');
-    sg_httpsrv_set_upld_cbs := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_upld_cbs');
-    sg_httpsrv_set_upld_dir := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_upld_dir');
-    sg_httpsrv_upld_dir := GetProcAddress(GSgLibHandle, 'sg_httpsrv_upld_dir');
-    sg_httpsrv_set_post_buf_size := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_post_buf_size');
-    sg_httpsrv_post_buf_size := GetProcAddress(GSgLibHandle, 'sg_httpsrv_post_buf_size');
-    sg_httpsrv_set_payld_limit := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_payld_limit');
-    sg_httpsrv_payld_limit := GetProcAddress(GSgLibHandle, 'sg_httpsrv_payld_limit');
-    sg_httpsrv_set_uplds_limit := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_uplds_limit');
-    sg_httpsrv_uplds_limit := GetProcAddress(GSgLibHandle, 'sg_httpsrv_uplds_limit');
-    sg_httpsrv_set_thr_pool_size := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_thr_pool_size');
-    sg_httpsrv_thr_pool_size := GetProcAddress(GSgLibHandle, 'sg_httpsrv_thr_pool_size');
-    sg_httpsrv_set_con_timeout := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_con_timeout');
-    sg_httpsrv_con_timeout := GetProcAddress(GSgLibHandle, 'sg_httpsrv_con_timeout');
-    sg_httpsrv_set_con_limit := GetProcAddress(GSgLibHandle, 'sg_httpsrv_set_con_limit');
-    sg_httpsrv_con_limit := GetProcAddress(GSgLibHandle, 'sg_httpsrv_con_limit');
+    sg_httpsrv_new2 := GetProcAddress(GHandle, 'sg_httpsrv_new2');
+    sg_httpsrv_new := GetProcAddress(GHandle, 'sg_httpsrv_new');
+    sg_httpsrv_free := GetProcAddress(GHandle, 'sg_httpsrv_free');
+    sg_httpsrv_tls_listen2 := GetProcAddress(GHandle, 'sg_httpsrv_tls_listen2');
+    sg_httpsrv_tls_listen := GetProcAddress(GHandle, 'sg_httpsrv_tls_listen');
+    sg_httpsrv_listen := GetProcAddress(GHandle, 'sg_httpsrv_listen');
+    sg_httpsrv_shutdown := GetProcAddress(GHandle, 'sg_httpsrv_shutdown');
+    sg_httpsrv_port := GetProcAddress(GHandle, 'sg_httpsrv_port');
+    sg_httpsrv_is_threaded := GetProcAddress(GHandle, 'sg_httpsrv_is_threaded');
+    sg_httpsrv_set_upld_cbs := GetProcAddress(GHandle, 'sg_httpsrv_set_upld_cbs');
+    sg_httpsrv_set_upld_dir := GetProcAddress(GHandle, 'sg_httpsrv_set_upld_dir');
+    sg_httpsrv_upld_dir := GetProcAddress(GHandle, 'sg_httpsrv_upld_dir');
+    sg_httpsrv_set_post_buf_size := GetProcAddress(GHandle, 'sg_httpsrv_set_post_buf_size');
+    sg_httpsrv_post_buf_size := GetProcAddress(GHandle, 'sg_httpsrv_post_buf_size');
+    sg_httpsrv_set_payld_limit := GetProcAddress(GHandle, 'sg_httpsrv_set_payld_limit');
+    sg_httpsrv_payld_limit := GetProcAddress(GHandle, 'sg_httpsrv_payld_limit');
+    sg_httpsrv_set_uplds_limit := GetProcAddress(GHandle, 'sg_httpsrv_set_uplds_limit');
+    sg_httpsrv_uplds_limit := GetProcAddress(GHandle, 'sg_httpsrv_uplds_limit');
+    sg_httpsrv_set_thr_pool_size := GetProcAddress(GHandle, 'sg_httpsrv_set_thr_pool_size');
+    sg_httpsrv_thr_pool_size := GetProcAddress(GHandle, 'sg_httpsrv_thr_pool_size');
+    sg_httpsrv_set_con_timeout := GetProcAddress(GHandle, 'sg_httpsrv_set_con_timeout');
+    sg_httpsrv_con_timeout := GetProcAddress(GHandle, 'sg_httpsrv_con_timeout');
+    sg_httpsrv_set_con_limit := GetProcAddress(GHandle, 'sg_httpsrv_set_con_limit');
+    sg_httpsrv_con_limit := GetProcAddress(GHandle, 'sg_httpsrv_con_limit');
 
-    sg_httpread_end := GetProcAddress(GSgLibHandle, 'sg_httpread_end');
+    sg_httpread_end := GetProcAddress(GHandle, 'sg_httpread_end');
 
-    sg_route_handle := GetProcAddress(GSgLibHandle, 'sg_route_handle');
-    sg_route_match := GetProcAddress(GSgLibHandle, 'sg_route_match');
-    sg_route_rawpattern := GetProcAddress(GSgLibHandle, 'sg_route_rawpattern');
-    sg_route_pattern := GetProcAddress(GSgLibHandle, 'sg_route_pattern');
-    sg_route_path := GetProcAddress(GSgLibHandle, 'sg_route_path');
-    sg_route_get_segments := GetProcAddress(GSgLibHandle, 'sg_route_get_segments');
-    sg_route_get_vars := GetProcAddress(GSgLibHandle, 'sg_route_get_vars');
-    sg_route_user_data := GetProcAddress(GSgLibHandle, 'sg_route_user_data');
+    sg_route_handle := GetProcAddress(GHandle, 'sg_route_handle');
+    sg_route_match := GetProcAddress(GHandle, 'sg_route_match');
+    sg_route_rawpattern := GetProcAddress(GHandle, 'sg_route_rawpattern');
+    sg_route_pattern := GetProcAddress(GHandle, 'sg_route_pattern');
+    sg_route_path := GetProcAddress(GHandle, 'sg_route_path');
+    sg_route_get_segments := GetProcAddress(GHandle, 'sg_route_get_segments');
+    sg_route_get_vars := GetProcAddress(GHandle, 'sg_route_get_vars');
+    sg_route_user_data := GetProcAddress(GHandle, 'sg_route_user_data');
 
-    sg_routes_add2 := GetProcAddress(GSgLibHandle, 'sg_routes_add2');
-    sg_routes_add := GetProcAddress(GSgLibHandle, 'sg_routes_add');
-    sg_routes_iter := GetProcAddress(GSgLibHandle, 'sg_routes_iter');
-    sg_routes_next := GetProcAddress(GSgLibHandle, 'sg_routes_next');
-    sg_routes_count := GetProcAddress(GSgLibHandle, 'sg_routes_count');
-    sg_routes_clear := GetProcAddress(GSgLibHandle, 'sg_routes_clear');
+    sg_routes_add2 := GetProcAddress(GHandle, 'sg_routes_add2');
+    sg_routes_add := GetProcAddress(GHandle, 'sg_routes_add');
+    sg_routes_iter := GetProcAddress(GHandle, 'sg_routes_iter');
+    sg_routes_next := GetProcAddress(GHandle, 'sg_routes_next');
+    sg_routes_count := GetProcAddress(GHandle, 'sg_routes_count');
+    sg_routes_clear := GetProcAddress(GHandle, 'sg_routes_clear');
 
-    sg_router_new := GetProcAddress(GSgLibHandle, 'sg_router_new');
-    sg_router_free := GetProcAddress(GSgLibHandle, 'sg_router_free');
-    sg_router_dispatch2 := GetProcAddress(GSgLibHandle, 'sg_router_dispatch2');
-    sg_router_dispatch := GetProcAddress(GSgLibHandle, 'sg_router_dispatch');
+    sg_router_new := GetProcAddress(GHandle, 'sg_router_new');
+    sg_router_free := GetProcAddress(GHandle, 'sg_router_free');
+    sg_router_dispatch2 := GetProcAddress(GHandle, 'sg_router_dispatch2');
+    sg_router_dispatch := GetProcAddress(GHandle, 'sg_router_dispatch');
 
-    sg_entrypoint_name := GetProcAddress(GSgLibHandle, 'sg_entrypoint_name');
-    sg_entrypoint_user_data := GetProcAddress(GSgLibHandle, 'sg_entrypoint_user_data');
+    sg_entrypoint_name := GetProcAddress(GHandle, 'sg_entrypoint_name');
+    sg_entrypoint_user_data := GetProcAddress(GHandle, 'sg_entrypoint_user_data');
 
-    sg_entrypoints_new := GetProcAddress(GSgLibHandle, 'sg_entrypoints_new');
-    sg_entrypoints_free := GetProcAddress(GSgLibHandle, 'sg_entrypoints_free');
-    sg_entrypoints_add2 := GetProcAddress(GSgLibHandle, 'sg_entrypoints_add2');
-    sg_entrypoints_add := GetProcAddress(GSgLibHandle, 'sg_entrypoints_add');
-    sg_entrypoints_clear := GetProcAddress(GSgLibHandle, 'sg_entrypoints_clear');
-    sg_entrypoints_find2 := GetProcAddress(GSgLibHandle, 'sg_entrypoints_find2');
-    sg_entrypoints_find := GetProcAddress(GSgLibHandle, 'sg_entrypoints_find');
+    sg_entrypoints_new := GetProcAddress(GHandle, 'sg_entrypoints_new');
+    sg_entrypoints_free := GetProcAddress(GHandle, 'sg_entrypoints_free');
+    sg_entrypoints_add2 := GetProcAddress(GHandle, 'sg_entrypoints_add2');
+    sg_entrypoints_add := GetProcAddress(GHandle, 'sg_entrypoints_add');
+    sg_entrypoints_clear := GetProcAddress(GHandle, 'sg_entrypoints_clear');
+    sg_entrypoints_find2 := GetProcAddress(GHandle, 'sg_entrypoints_find2');
+    sg_entrypoints_find := GetProcAddress(GHandle, 'sg_entrypoints_find');
 
-    Result := GSgLibHandle;
+    Result := GHandle;
   finally
-    GSgLock.Release;
+    GCS.Release;
   end;
 end;
 
-function SgUnloadLibrary: TLibHandle;
+class function SgLib.Unload: TLibHandle;
 begin
-  GSgLock.Acquire;
+  GCS.Acquire;
   try
-    if GSgLibHandle = NilHandle then
+    if GHandle = NilHandle then
       Exit(NilHandle);
-    if not FreeLibrary(GSgLibHandle) then
-      Exit(GSgLibHandle);
-    GSgLibHandle := NilHandle;
-    GSgLastLibName := '';
+    if not FreeLibrary(GHandle) then
+      Exit(GHandle);
+    GHandle := NilHandle;
+    GLastName := '';
 
     sg_version := nil;
     sg_version_str := nil;
@@ -870,42 +921,17 @@ begin
     sg_entrypoints_find2 := nil;
     sg_entrypoints_find := nil;
 
-    Result := GSgLibHandle;
+    Result := NilHandle;
   finally
-    GSgLock.Release;
+    GCS.Release;
   end;
 end;
 
-procedure SgCheckLibrary;
+class procedure SgLib.Check;
 begin
-  if GSgLibHandle = NilHandle then
-    raise ESgLibraryNotLoaded.CreateResFmt(@SSgLibraryNotLoaded,
-      [IfThen(GSgLastLibName = '', SG_LIB_NAME, GSgLastLibName)]);
+  if GHandle = NilHandle then
+    raise ESgLibNotLoaded.CreateResFmt(@SSgLibNotLoaded,
+      [IfThen(GLastName = '', SG_LIB_NAME, GLastName)]);
 end;
-
-procedure SgCheckLastError(ALastError: Integer);
-var
-  P: array[0..SG_ERR_SIZE-1] of cchar;
-  S: string;
-begin
-  if (ALastError = 0) or (not Assigned(sg_strerror)) then
-    Exit;
-  sg_strerror(ALastError, @P[0], SG_ERR_SIZE);
-{$IFDEF FPC}
-  SetString(S, @P[0], Length(Pcchar(@P[0])));
-  SetCodePage(RawByteString(S), CP_UTF8, False);
-{$ELSE}
-  S := TMarshal.ReadStringAsUtf8(TPtrWrapper.Create(@P[0]));
-{$ENDIF}
-  raise EOSError.Create(S);
-end;
-
-initialization
-  GSgLock := TCriticalSection.Create;
-  SgLoadLibrary(SG_LIB_NAME);
-
-finalization
-  SgUnloadLibrary;
-  FreeAndNil(GSgLock);
 
 end.

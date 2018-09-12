@@ -309,7 +309,7 @@ end;
 
 class function TBrookStringMap.CreatePair(Apair: Psg_strmap): TBrookStringPair;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := TBrookStringPair.Create(TMarshal.ToString(sg_strmap_name(Apair)),
     TMarshal.ToString(sg_strmap_val(Apair)));
 end;
@@ -348,7 +348,7 @@ end;
 
 function TBrookStringMap.GetCount: Integer;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_strmap_count(FHandle^);
 end;
 
@@ -383,8 +383,8 @@ procedure TBrookStringMap.Add(const AName, AValue: string);
 var
   M: TMarshaller;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_strmap_add(FHandle, M.ToCString(AName),
+  SgLib.Check;
+  SgLib.CheckLastError(sg_strmap_add(FHandle, M.ToCString(AName),
     M.ToCString(AValue)));
   DoChange(sgmoAdd);
 end;
@@ -393,8 +393,8 @@ procedure TBrookStringMap.AddOrSet(const AName, AValue: string);
 var
   M: TMarshaller;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_strmap_set(FHandle, M.ToCString(AName),
+  SgLib.Check;
+  SgLib.CheckLastError(sg_strmap_set(FHandle, M.ToCString(AName),
     M.ToCString(AValue)));
   DoChange(sgmoAddOrSet);
 end;
@@ -404,10 +404,10 @@ var
   R: cint;
   M: TMarshaller;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   R := sg_strmap_rm(FHandle, M.ToCString(AName));
   if (R <> 0) and (R <> ENOENT) then
-    SgCheckLastError(R);
+    SgLib.CheckLastError(R);
   DoChange(sgmoRemove);
 end;
 
@@ -415,7 +415,7 @@ procedure TBrookStringMap.Clear;
 begin
   if not Assigned(FHandle^) then
     Exit;
-  SgCheckLibrary;
+  SgLib.Check;
   sg_strmap_cleanup(FHandle);
   DoChange(sgmoNone);
 end;
@@ -427,14 +427,14 @@ var
   P: Psg_strmap;
   M: TMarshaller;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   R := sg_strmap_find(FHandle^, M.ToCString(AName), @P);
   Result := R = 0;
   if Result then
     APair := TBrookStringPair.Create(AName, TMarshal.ToString(sg_strmap_val(P)))
   else
     if R <> ENOENT then
-      SgCheckLastError(R);
+      SgLib.CheckLastError(R);
 end;
 
 function TBrookStringMap.Contains(const AName: string): Boolean;
@@ -449,7 +449,7 @@ function TBrookStringMap.Get(const AName: string): string;
 var
   M: TMarshaller;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := TMarshal.ToString(sg_strmap_get(FHandle^, M.ToCString(AName)));
 end;
 
@@ -459,7 +459,7 @@ var
   P: Pcchar;
   M: TMarshaller;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   P := sg_strmap_get(FHandle^, M.ToCString(AName));
   Result := Assigned(P);
   if Result then
@@ -471,16 +471,13 @@ begin
   FNextHandle := FHandle^;
   Result := Assigned(FNextHandle);
   if Result then
-  begin
-    SgCheckLibrary;
     APair := CreatePair(FNextHandle);
-  end;
 end;
 
 function TBrookStringMap.Next(out APair: TBrookStringPair): Boolean;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_strmap_next(@FNextHandle));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_strmap_next(@FNextHandle));
   Result := Assigned(FNextHandle);
   if Result then
     APair := CreatePair(FNextHandle);
@@ -492,7 +489,7 @@ var
   R: cint;
   M: TMethod;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   if not Assigned(FHandle^) then
     Exit;
   M.Code := @AIterator;
@@ -500,7 +497,7 @@ begin
   R := sg_strmap_iter(FHandle^,
 {$IFNDEF VER3_0}@{$ENDIF}DoIterate, @M);
   if R <> -1 then
-    SgCheckLastError(R);
+    SgLib.CheckLastError(R);
 end;
 
 procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
@@ -508,10 +505,10 @@ procedure TBrookStringMap.Sort(AComparator: TBrookStringMapComparator;
 var
   M: TMethod;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   M.Code := @AComparator;
   M.Data := AData;
-  SgCheckLastError(sg_strmap_sort(FHandle,
+  SgLib.CheckLastError(sg_strmap_sort(FHandle,
 {$IFNDEF VER3_0}@{$ENDIF}DoSort, @M));
 end;
 

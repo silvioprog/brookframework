@@ -145,7 +145,7 @@ end;
 
 procedure TBrookCustomLibraryLoader.Open;
 begin
-  FHandle := SgLoadLibrary(FLibraryName);
+  FHandle := SgLib.Load(FLibraryName);
   FActive := FHandle <> NilHandle;
   if FActive then
     FVersion := BrookVersionStr
@@ -155,7 +155,7 @@ end;
 
 procedure TBrookCustomLibraryLoader.Close;
 begin
-  FHandle := SgUnloadLibrary;
+  FHandle := SgLib.Unload;
   FActive := FHandle <> NilHandle;
   if not FActive then
     FVersion := '';

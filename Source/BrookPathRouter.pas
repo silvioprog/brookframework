@@ -251,8 +251,8 @@ begin
   Result := nil;
   if not Assigned(FHandle) then
     Exit(nil);
-  SgCheckLibrary;
-  SgCheckLastError(sg_route_get_segments(FHandle,
+  SgLib.Check;
+  SgLib.CheckLastError(sg_route_get_segments(FHandle,
 {$IFNDEF VER3_0}@{$ENDIF}DoGetSegmentsCallback, @Result));
 end;
 
@@ -262,7 +262,7 @@ begin
   FVariables.Clear;
   if not Assigned(FHandle) then
     Exit;
-  SgCheckLastError(sg_route_get_vars(FHandle,
+  SgLib.CheckLastError(sg_route_get_vars(FHandle,
 {$IFNDEF VER3_0}@{$ENDIF}DoGetVarsCallback, FVariables));
 end;
 
@@ -270,7 +270,7 @@ function TBrookCustomPathRoute.GetRegexHandle: Pointer;
 begin
   if not Assigned(FHandle) then
     Exit(nil);
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_route_handle(FHandle);
 end;
 
@@ -282,7 +282,7 @@ begin
       Exit('');
     Exit(Concat('^', FPattern, '$'));
   end;
-  SgCheckLibrary;
+  SgLib.Check;
   Result := TMarshal.ToString(sg_route_rawpattern(FHandle));
 end;
 
@@ -292,7 +292,7 @@ var
 begin
   if not Assigned(FHandle) then
     Exit(FPattern);
-  SgCheckLibrary;
+  SgLib.Check;
   P := sg_route_pattern(FHandle);
   try
     Result := TMarshal.ToString(P);
@@ -305,7 +305,7 @@ function TBrookCustomPathRoute.GetPath: string;
 begin
   if not Assigned(FHandle) then
     Exit('');
-  SgCheckLibrary;
+  SgLib.Check;
   Result := TMarshal.ToString(sg_route_path(FHandle));
 end;
 
@@ -313,7 +313,7 @@ function TBrookCustomPathRoute.GetUserData: Pointer;
 begin
   if not Assigned(FHandle) then
     Exit(nil);
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_route_user_data(FHandle);
 end;
 
@@ -420,8 +420,8 @@ var
 begin
   if Count = 0 then
     raise EBrookRoutes.CreateRes(@SBrookNoRoutesDefined);
-  SgCheckLibrary;
-  SgCheckLastError(sg_routes_clear(@FHandle));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_routes_clear(@FHandle));
   for RT in Self do
   begin
     RT.Validate;
@@ -501,8 +501,8 @@ end;
 procedure TBrookPathRoutes.Clear;
 begin
   inherited Clear;
-  SgCheckLibrary;
-  SgCheckLastError(sg_routes_clear(@FHandle));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_routes_clear(@FHandle));
 end;
 
 { TBrookCustomPathRouter }
@@ -574,7 +574,7 @@ begin
   if csDesigning in ComponentState then
   begin
     if not (csLoading in ComponentState) then
-      SgCheckLibrary;
+      SgLib.Check;
     FActive := AValue;
   end
   else
@@ -594,7 +594,7 @@ begin
   if Assigned(FHandle) then
     Exit;
   FRoutes.Prepare;
-  SgCheckLibrary;
+  SgLib.Check;
   FHandle := sg_router_new(FRoutes.Handle);
   FActive := Assigned(FHandle);
   if not FActive then
@@ -605,7 +605,7 @@ procedure TBrookCustomPathRouter.DoClose;
 begin
   if not Assigned(FHandle) then
     Exit;
-  SgCheckLibrary;
+  SgLib.Check;
   sg_router_free(FHandle);
   FHandle := nil;
   FActive := False;
@@ -636,12 +636,12 @@ begin
   if APath.IsEmpty then
     raise EArgumentException.CreateRes(@SBrookEmptyRouterPath);
   CheckActive;
-  SgCheckLibrary;
+  SgLib.Check;
   R := sg_router_dispatch(FHandle, M.ToCNullableString(BrookFixPath(APath)),
     AUserData);
   Result := R = 0;
   if (not Result) and (R <> ENOENT) then
-    SgCheckLastError(R);
+    SgLib.CheckLastError(R);
 end;
 
 end.

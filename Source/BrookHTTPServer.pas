@@ -165,7 +165,7 @@ type
     procedure SetUploadsDir(const AValue: string);
     procedure InternalCreateServerHandle; inline;
     procedure InternalFreeServerHandle; inline;
-    procedure InternalCheckServerOption(Aopt: cint); inline;
+    procedure InternalCheckServerOption(Aret: cint); inline;
   protected
     class function DoAuthenticationCallback(Acls: Pcvoid; Aauth: Psg_httpauth;
       Areq: Psg_httpreq; Ares: Psg_httpres): cbool; cdecl; static;
@@ -350,12 +350,12 @@ begin
   FHandle := nil;
 end;
 
-procedure TBrookCustomHTTPServer.InternalCheckServerOption(Aopt: cint);
+procedure TBrookCustomHTTPServer.InternalCheckServerOption(Aret: cint);
 begin
-  if Aopt <> 0 then
+  if Aret <> 0 then
   begin
     InternalFreeServerHandle;
-    SgCheckLastError(Aopt);
+    SgLib.CheckLastError(Aret);
   end;
 end;
 
@@ -682,7 +682,7 @@ function TBrookCustomHTTPServer.GetPort: UInt16;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FPort := sg_httpsrv_port(FHandle);
   end;
   Result := FPort;
@@ -692,7 +692,7 @@ function TBrookCustomHTTPServer.GetThreaded: Boolean;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FThreaded := sg_httpsrv_is_threaded(FHandle);
   end;
   Result := FThreaded;
@@ -702,7 +702,7 @@ function TBrookCustomHTTPServer.GetUploadsDir: string;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FUploadsDir := TMarshal.ToString(sg_httpsrv_upld_dir(FHandle));
   end;
   Result := FUploadsDir;
@@ -712,7 +712,7 @@ function TBrookCustomHTTPServer.GetPostBufferSize: NativeUInt;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FPostBufferSize := sg_httpsrv_post_buf_size(FHandle);
   end;
   Result := FPostBufferSize;
@@ -722,7 +722,7 @@ function TBrookCustomHTTPServer.GetPayloadLimit: NativeUInt;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FPayloadLimit := sg_httpsrv_payld_limit(FHandle);
   end;
   Result := FPayloadLimit;
@@ -732,7 +732,7 @@ function TBrookCustomHTTPServer.GetUploadsLimit: UInt64;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FUploadsLimit := sg_httpsrv_uplds_limit(FHandle);
   end;
   Result := FUploadsLimit;
@@ -742,7 +742,7 @@ function TBrookCustomHTTPServer.GetThreadPoolSize: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FThreadPoolSize := sg_httpsrv_thr_pool_size(FHandle);
   end;
   Result := FThreadPoolSize;
@@ -752,7 +752,7 @@ function TBrookCustomHTTPServer.GetConnectionTimeout: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FConnectionTimeout := sg_httpsrv_con_timeout(FHandle);
   end;
   Result := FConnectionTimeout;
@@ -762,7 +762,7 @@ function TBrookCustomHTTPServer.GetConnectionLimit: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
-    SgCheckLibrary;
+    SgLib.Check;
     FConnectionLimit := sg_httpsrv_con_limit(FHandle);
   end;
   Result := FConnectionLimit;
@@ -816,7 +816,7 @@ begin
   if csDesigning in ComponentState then
   begin
     if not (csLoading in ComponentState) then
-      SgCheckLibrary;
+      SgLib.Check;
     FActive := AValue;
   end
   else
@@ -837,7 +837,7 @@ var
 begin
   if Assigned(FHandle) then
     Exit;
-  SgCheckLibrary;
+  SgLib.Check;
   InternalCreateServerHandle;
   if not FUploadsDir.IsEmpty then
     InternalCheckServerOption(sg_httpsrv_set_upld_dir(FHandle,
@@ -882,7 +882,7 @@ procedure TBrookCustomHTTPServer.DoClose;
 begin
   if not Assigned(FHandle) then
     Exit;
-  SgCheckLibrary;
+  SgLib.Check;
   InternalFreeServerHandle;
   FActive := False;
 end;

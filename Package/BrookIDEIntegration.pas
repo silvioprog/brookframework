@@ -310,6 +310,7 @@ var
   VLibraryLoader: TBrookCustomLibraryLoader;
   VPropertyEditor: TBrookLibraryNamePropertyEditor;
 begin
+  inherited Edit;
   VLibraryLoader := Component as TBrookCustomLibraryLoader;
   if not Assigned(VLibraryLoader) then
     Exit;
@@ -324,7 +325,6 @@ begin
     if VDialog.Execute then
     begin
       VLibraryLoader.LibraryName := VDialog.FileName;
-      VLibraryLoader.Open;
       Designer.Modified;
     end;
   finally

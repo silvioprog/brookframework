@@ -148,8 +148,8 @@ procedure TBrookHTTPResponse.SetCookie(const AName, AValue: string);
 var
   M: TMarshaller;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_httpres_set_cookie(FHandle, M.ToCString(AName),
+  SgLib.Check;
+  SgLib.CheckLastError(sg_httpres_set_cookie(FHandle, M.ToCString(AName),
     M.ToCString(AValue)));
 end;
 
@@ -158,7 +158,7 @@ procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
 var
   M: TMarshaller;
 begin
-  SgCheckLastError(sg_httpres_sendbinary(FHandle, M.ToCString(AValue),
+  SgLib.CheckLastError(sg_httpres_sendbinary(FHandle, M.ToCString(AValue),
     Length(AValue), M.ToCString(AContentType), AStatus));
 end;
 
@@ -180,8 +180,8 @@ var
   M: TMarshaller;
 begin
   CheckStatus(AStatus);
-  SgCheckLibrary;
-  SgCheckLastError(sg_httpres_sendbinary(FHandle, ABuffer, ASize,
+  SgLib.Check;
+  SgLib.CheckLastError(sg_httpres_sendbinary(FHandle, ABuffer, ASize,
     M.ToCString(AContentType), AStatus));
 end;
 
@@ -192,12 +192,12 @@ var
   R: cint;
 begin
   CheckStatus(AStatus);
-  SgCheckLibrary;
+  SgLib.Check;
   R := sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize,
     M.ToCString(AFileName), ARendered, AStatus);
   if R = ENOENT then
     raise EFileNotFoundException.CreateRes(@SFileNotFound);
-  SgCheckLastError(R);
+  SgLib.CheckLastError(R);
 end;
 
 procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName;
@@ -218,12 +218,12 @@ var
 begin
   CheckStream(AStream);
   CheckStatus(AStatus);
-  SgCheckLibrary;
+  SgLib.Check;
   if AFreed then
     VStreamFree := {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree
   else
     VStreamFree := nil;
-  SgCheckLastError(sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
+  SgLib.CheckLastError(sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
 {$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream, VStreamFree, AStatus));
 end;
 
@@ -244,8 +244,8 @@ end;
 
 procedure TBrookHTTPResponse.Clear;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_httpres_clear(FHandle));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_httpres_clear(FHandle));
 end;
 
 end.

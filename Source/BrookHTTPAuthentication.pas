@@ -97,7 +97,7 @@ end;
 
 function TBrookCustomHTTPCredentials.GetRealm: string;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := TMarshal.ToString(sg_httpauth_realm(FHandle));
 end;
 
@@ -105,8 +105,8 @@ procedure TBrookCustomHTTPCredentials.SetRealm(const AValue: string);
 var
   M: TMarshaller;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_httpauth_set_realm(FHandle, M.ToCString(AValue)));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_httpauth_set_realm(FHandle, M.ToCString(AValue)));
 end;
 
 { TBrookHTTPAuthentication }
@@ -140,8 +140,8 @@ procedure TBrookHTTPAuthentication.Deny(const AJustification,
 var
   M: TMarshaller;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_httpauth_deny(FHandle, M.ToCString(AJustification),
+  SgLib.Check;
+  SgLib.CheckLastError(sg_httpauth_deny(FHandle, M.ToCString(AJustification),
     M.ToCString(AContentType)));
 end;
 
@@ -153,8 +153,8 @@ end;
 
 procedure TBrookHTTPAuthentication.Cancel;
 begin
-  SgCheckLibrary;
-  SgCheckLastError(sg_httpauth_cancel(FHandle));
+  SgLib.Check;
+  SgLib.CheckLastError(sg_httpauth_cancel(FHandle));
 end;
 
 end.

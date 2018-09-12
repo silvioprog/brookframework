@@ -95,25 +95,25 @@ implementation
 
 function BrookVersion: Cardinal;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_version;
 end;
 
 function BrookVersionStr: string;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := TMarshal.ToString(sg_version_str);
 end;
 
 function BrookAlloc(ASize: NativeUInt): Pointer;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_alloc(ASize);
 end;
 
 procedure BrookFree(APtr: Pointer);
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   sg_free(APtr);
 end;
 
@@ -121,7 +121,7 @@ function BrookStrError(AErrorNum: Integer): string;
 var
   P: array[0..SG_ERR_SIZE-1] of cchar;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   sg_strerror(AErrorNum, @P[0], SG_ERR_SIZE);
   Result := TMarshal.ToString(@P[0]);
 end;
@@ -130,7 +130,7 @@ function BrookIsPost(const AMethod: string): Boolean;
 var
   M: TMarshaller;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   Result := sg_is_post(M.ToCString(AMethod));
 end;
 
@@ -139,7 +139,7 @@ var
   M: TMarshaller;
   S: Pcchar;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   S := sg_extract_entrypoint(M.ToCString(APath));
   try
     Result := TMarshal.ToString(S);
@@ -152,7 +152,7 @@ function BrookTmpDir: string;
 var
   S: Pcchar;
 begin
-  SgCheckLibrary;
+  SgLib.Check;
   S := sg_tmpdir;
   try
     Result := TMarshal.ToString(S);
