@@ -83,6 +83,9 @@ function BrookStrError(AErrorNum: Integer): string;
 function BrookIsPost(const AMethod: string): Boolean;
 
 { experimental }
+function BrookExtractEntryPoint(const APath: string): string;
+
+{ experimental }
 function BrookTmpDir: string;
 
 { experimental }
@@ -129,6 +132,20 @@ var
 begin
   SgCheckLibrary;
   Result := sg_is_post(M.ToCString(AMethod));
+end;
+
+function BrookExtractEntryPoint(const APath: string): string;
+var
+  M: TMarshaller;
+  S: Pcchar;
+begin
+  SgCheckLibrary;
+  S := sg_extract_entrypoint(M.ToCString(APath));
+  try
+    Result := TMarshal.ToString(S);
+  finally
+    sg_free(S);
+  end;
 end;
 
 function BrookTmpDir: string;
