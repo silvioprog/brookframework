@@ -493,7 +493,7 @@ var
 
   sg_routes_count: function(routes: Psg_route): cuint; cdecl;
 
-  sg_routes_clear: function(routes: PPsg_route): cint; cdecl;
+  sg_routes_cleanup: function(routes: PPsg_route): cint; cdecl;
 
 type
   Psg_router = ^sg_router;
@@ -744,7 +744,7 @@ begin
     sg_routes_iter := GetProcAddress(GHandle, 'sg_routes_iter');
     sg_routes_next := GetProcAddress(GHandle, 'sg_routes_next');
     sg_routes_count := GetProcAddress(GHandle, 'sg_routes_count');
-    sg_routes_clear := GetProcAddress(GHandle, 'sg_routes_clear');
+    sg_routes_cleanup := GetProcAddress(GHandle, 'sg_routes_cleanup');
 
     sg_router_new := GetProcAddress(GHandle, 'sg_router_new');
     sg_router_free := GetProcAddress(GHandle, 'sg_router_free');
@@ -893,7 +893,7 @@ begin
     sg_routes_iter := nil;
     sg_routes_next := nil;
     sg_routes_count := nil;
-    sg_routes_clear := nil;
+    sg_routes_cleanup := nil;
 
     sg_router_new := nil;
     sg_router_free := nil;

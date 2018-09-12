@@ -122,18 +122,19 @@ type
     FHandle: Psg_route;
     function GetItem(AIndex: Integer): TBrookCustomPathRoute;
     procedure SetItem(AIndex: Integer; AValue: TBrookCustomPathRoute);
+    procedure InternalAdd(ARoute: TBrookCustomPathRoute);
   protected
     function GetHandle: Pointer; override;
     class function GetRoutePattern(
       ARoute: TBrookCustomPathRoute): string; virtual;
     class function GetPathLabel: string; virtual;
+    procedure Prepare; virtual;
   public
     constructor Create(AOwner: TPersistent); virtual;
     class function GetRouterClass: TBrookCustomPathRouteClass; virtual;
     function GetEnumerator: TBrookPathRoutesEnumerator;
     procedure Assign(ASource: TPersistent); override;
     function NewPattern: string; virtual;
-    procedure Prepare; virtual;
     function Add: TBrookCustomPathRoute; virtual;
     function First: TBrookCustomPathRoute; virtual;
     function Last: TBrookCustomPathRoute; virtual;
@@ -330,13 +331,14 @@ var
 begin
   if (AValue = FPattern) or (not Assigned(FRoutes)) then
     Exit;
-  { TODO: check inactive. }
   NP := BrookFixPath(AValue);
   RT := FRoutes.Find(NP);
   if Assigned(RT) and (RT <> Self) then
     raise EBrookRoute.CreateResFmt(@SBrookRouteAlreadyExists,
       [GetNamePath, NP, RT.GetNamePath]);
   FPattern := NP;
+  if Assigned(FRoutes.FHandle) then
+    FRoutes.InternalAdd(Self);
 end;
 
 procedure TBrookCustomPathRoute.Validate;
@@ -380,6 +382,28 @@ begin
   Result := '/path';
 end;
 
+procedure TBrookPathRoutes.InternalAdd(ARoute: TBrookCustomPathRoute);
+var
+  M: TMarshaller;
+  P: array[0..SG_ERR_SIZE-1] of cchar;
+  H: Psg_route;
+  S: string;
+  R: cint;
+begin
+  P[0] := 0;
+  R := sg_routes_add2(@FHandle, @H, M.ToCNullableString(GetRoutePattern(ARoute)),
+    @P[0], SG_ERR_SIZE, {$IFNDEF VER3_0}@{$ENDIF}ARoute.DoRouteCallback, ARoute);
+  if R = 0 then
+    Exit;
+  if R = EALREADY then
+    raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
+      [ARoute.GetNamePath, ARoute.Pattern]);
+  S := TMarshal.ToString(@P[0]).TrimRight;
+  if S.IsEmpty then
+    S := BrookStrError(R);
+  raise EBrookRoutes.Create(S);
+end;
+
 function TBrookPathRoutes.GetEnumerator: TBrookPathRoutesEnumerator;
 begin
   Result := TBrookPathRoutesEnumerator.Create(Self);
@@ -413,31 +437,17 @@ end;
 procedure TBrookPathRoutes.Prepare;
 var
   RT: TBrookCustomPathRoute;
-  H: Psg_route;
-  M: TMarshaller;
-  P: array[0..SG_ERR_SIZE-1] of cchar;
-  S: string;
-  R: cint;
 begin
+  if Assigned(FHandle) then
+    Exit;
   if Count = 0 then
     raise EBrookRoutes.CreateRes(@SBrookNoRoutesDefined);
   SgLib.Check;
-  SgLib.CheckLastError(sg_routes_clear(@FHandle));
+  SgLib.CheckLastError(sg_routes_cleanup(@FHandle));
   for RT in Self do
   begin
     RT.Validate;
-    P[0] := 0;
-    R := sg_routes_add2(@FHandle, @H, M.ToCNullableString(GetRoutePattern(RT)),
-      @P[0], SG_ERR_SIZE, {$IFNDEF VER3_0}@{$ENDIF}RT.DoRouteCallback, RT);
-    if R = 0 then
-      Continue;
-    if R = EALREADY then
-      raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
-        [RT.GetNamePath, RT.Pattern]);
-    S := TMarshal.ToString(@P[0]).TrimRight;
-    if S.IsEmpty then
-      S := BrookStrError(R);
-    raise EBrookRoutes.Create(S);
+    InternalAdd(RT);
   end;
 end;
 
@@ -503,7 +513,7 @@ procedure TBrookPathRoutes.Clear;
 begin
   inherited Clear;
   SgLib.Check;
-  SgLib.CheckLastError(sg_routes_clear(@FHandle));
+  SgLib.CheckLastError(sg_routes_cleanup(@FHandle));
 end;
 
 { TBrookCustomPathRouter }
