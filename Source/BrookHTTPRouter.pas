@@ -135,6 +135,8 @@ type
   private
     FOnNotFound: TBrookHTTPRouterRequestEvent;
     FOnRoute: TBrookHTTPRouterRequestEvent;
+    function GetRoutes: TBrookHTTPRoutes;
+    procedure SetRoutes(AValue: TBrookHTTPRoutes);
   protected
     function CreateRoutes: TBrookPathRoutes; override;
     procedure DoRoute(ASender: TObject; ARequest: TBrookHTTPRequest;
@@ -145,6 +147,7 @@ type
     procedure Route(ASender: TObject; const APath: string;
       ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); reintroduce; virtual;
+    property Routes: TBrookHTTPRoutes read GetRoutes write SetRoutes;
     property OnRoute: TBrookHTTPRouterRequestEvent read FOnRoute write FOnRoute;
     property OnNotFound: TBrookHTTPRouterRequestEvent read FOnNotFound
       write FOnNotFound;
@@ -280,6 +283,16 @@ end;
 function TBrookCustomHTTPRouter.CreateRoutes: TBrookPathRoutes;
 begin
   Result := TBrookHTTPRoutes.Create(Self);
+end;
+
+function TBrookCustomHTTPRouter.GetRoutes: TBrookHTTPRoutes;
+begin
+  Result := TBrookHTTPRoutes(inherited Routes);
+end;
+
+procedure TBrookCustomHTTPRouter.SetRoutes(AValue: TBrookHTTPRoutes);
+begin
+  inherited Routes := AValue;
 end;
 
 procedure TBrookCustomHTTPRouter.DoRoute(ASender: TObject;
