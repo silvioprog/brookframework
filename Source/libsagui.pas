@@ -540,10 +540,16 @@ var
 
   sg_entrypoints_free: procedure(entrypoints: Psg_entrypoints); cdecl;
 
+  sg_entrypoints_add2: function(entrypoints: Psg_entrypoints; const name: Pcchar;
+    user_data: Pcvoid): cint; cdecl;
+
   sg_entrypoints_add: function(entrypoints: Psg_entrypoints; const path: Pcchar;
     user_data: Pcvoid): cint; cdecl;
 
   sg_entrypoints_clear: function(entrypoints: Psg_entrypoints): cint; cdecl;
+
+  sg_entrypoints_find2: function(entrypoints: Psg_entrypoints;
+    entrypoint: PPsg_entrypoint; const name: Pcchar): cint; cdecl;
 
   sg_entrypoints_find: function(entrypoints: Psg_entrypoints;
     entrypoint: PPsg_entrypoint; const path: Pcchar): cint; cdecl;
@@ -709,8 +715,10 @@ begin
 
     sg_entrypoints_new := GetProcAddress(GSgLibHandle, 'sg_entrypoints_new');
     sg_entrypoints_free := GetProcAddress(GSgLibHandle, 'sg_entrypoints_free');
+    sg_entrypoints_add2 := GetProcAddress(GSgLibHandle, 'sg_entrypoints_add2');
     sg_entrypoints_add := GetProcAddress(GSgLibHandle, 'sg_entrypoints_add');
     sg_entrypoints_clear := GetProcAddress(GSgLibHandle, 'sg_entrypoints_clear');
+    sg_entrypoints_find2 := GetProcAddress(GSgLibHandle, 'sg_entrypoints_find2');
     sg_entrypoints_find := GetProcAddress(GSgLibHandle, 'sg_entrypoints_find');
 
     Result := GSgLibHandle;
@@ -856,8 +864,10 @@ begin
 
     sg_entrypoints_new := nil;
     sg_entrypoints_free := nil;
+    sg_entrypoints_add2 := nil;
     sg_entrypoints_add := nil;
     sg_entrypoints_clear := nil;
+    sg_entrypoints_find2 := nil;
     sg_entrypoints_find := nil;
 
     Result := GSgLibHandle;
