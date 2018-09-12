@@ -119,8 +119,8 @@ type
 
   TBrookPathRoutesEnumerator = class(TCollectionEnumerator)
   public
-    function GetCurrent: TBrookPathRoute;
-    property Current: TBrookPathRoute read GetCurrent;
+    function GetCurrent: TBrookCustomPathRoute;
+    property Current: TBrookCustomPathRoute read GetCurrent;
   end;
 
   TBrookPathRoutes = class(TBrookHandleOwnedCollection)
@@ -332,16 +332,16 @@ end;
 procedure TBrookCustomPathRoute.SetPattern(const AValue: string);
 var
   RT: TBrookCustomPathRoute;
+  NP: string;
 begin
-  if AValue = FPattern then
+  if (AValue = FPattern) or (not Assigned(FRoutes)) then
     Exit;
-  FPattern := BrookFixPath(AValue);
-  if not Assigned(FRoutes) then
-    Exit;
-  RT := FRoutes.Find(FPattern);
+  NP := BrookFixPath(AValue);
+  RT := FRoutes.Find(NP);
   if Assigned(RT) and (RT <> Self) then
-    raise EBrookRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
-      [GetNamePath, FPattern, RT.GetNamePath]);
+    raise EBrookRoute.CreateResFmt(@SBrookRouteAlreadyExists,
+      [GetNamePath, NP, RT.GetNamePath]);
+  FPattern := NP;
 end;
 
 procedure TBrookCustomPathRoute.Validate;
@@ -352,9 +352,9 @@ end;
 
 { TBrookPathRoutesEnumerator }
 
-function TBrookPathRoutesEnumerator.GetCurrent: TBrookPathRoute;
+function TBrookPathRoutesEnumerator.GetCurrent: TBrookCustomPathRoute;
 begin
-  Result := TBrookPathRoute(inherited GetCurrent);
+  Result := TBrookCustomPathRoute(inherited GetCurrent);
 end;
 
 { TBrookPathRoutes }
