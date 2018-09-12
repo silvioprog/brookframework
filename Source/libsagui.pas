@@ -486,6 +486,9 @@ var
   sg_routes_add: function(routes: PPsg_route; const pattern: Pcchar;
     cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
 
+  sg_routes_rm: function(routes: PPsg_route;
+    const pattern: Pcchar): cint; cdecl;
+
   sg_routes_iter: function(routes: Psg_route; cb: sg_routes_iter_cb;
     cls: Pcvoid): cint; cdecl;
 
@@ -744,6 +747,7 @@ begin
 
     sg_routes_add2 := GetProcAddress(GHandle, 'sg_routes_add2');
     sg_routes_add := GetProcAddress(GHandle, 'sg_routes_add');
+    sg_routes_rm := GetProcAddress(GHandle, 'sg_routes_rm');
     sg_routes_iter := GetProcAddress(GHandle, 'sg_routes_iter');
     sg_routes_next := GetProcAddress(GHandle, 'sg_routes_next');
     sg_routes_count := GetProcAddress(GHandle, 'sg_routes_count');
@@ -894,6 +898,7 @@ begin
     sg_route_user_data := nil;
     sg_routes_add2 := nil;
     sg_routes_add := nil;
+    sg_routes_rm := nil;
     sg_routes_iter := nil;
     sg_routes_next := nil;
     sg_routes_count := nil;

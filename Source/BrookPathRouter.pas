@@ -493,12 +493,17 @@ end;
 
 function TBrookPathRoutes.Remove(const APattern: string): Boolean;
 var
+  M: TMarshaller;
   I: Integer;
 begin
   I := IndexOf(APattern);
   Result := I > -1;
   if Result then
+  begin
+    if Assigned(FHandle) then
+      SgLib.CheckLastError(sg_routes_rm(@FHandle, M.ToCString(APattern)));
     inherited Delete(I);
+  end;
 end;
 
 function TBrookPathRoutes.GetItem(AIndex: Integer): TBrookCustomPathRoute;
