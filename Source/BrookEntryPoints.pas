@@ -40,6 +40,7 @@ uses
 
 resourcestring
   SBrookCannotCreateEntryPointsHandle = 'Cannot create entry-points handle.';
+  SBrookEntryPointListUnprepared = 'Entry-point list not prepared.';
   SBrookInactiveEntryPoints = 'Inactive entry-points.';
   SBrookNoEntryPointsDefined = 'No entry-points defined.';
   SBrookEntryPointAlreadyExists =
@@ -111,7 +112,8 @@ type
     function NewName: string; virtual;
     function Add: TBrookCustomEntryPoint; virtual;
     function IndexOf(const AName: string): Integer; virtual;
-    function Find(const AName: string): TBrookCustomEntryPoint; virtual;
+    function Find(const AName: string): TBrookCustomEntryPoint; overload; virtual;
+    function Find(const APath: string; out AUserData): Boolean; overload; virtual;
     procedure Clear; virtual;
     property Items[AIndex: Integer]: TBrookCustomEntryPoint read GetItem
       write SetItem; default;
@@ -125,8 +127,10 @@ type
     FActive: Boolean;
     FList: TBrookEntryPointList;
     FStreamedActive: Boolean;
+    function GetItem(AIndex: Integer): TBrookCustomEntryPoint;
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
+    procedure SetItem(AIndex: Integer; AValue: TBrookCustomEntryPoint);
     procedure SetList(AValue: TBrookEntryPointList);
   protected
     function CreateList: TBrookEntryPointList; virtual;
@@ -138,14 +142,18 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Find(const APath: string;
-      out AUserData: Pointer): Boolean; virtual;
-    function FindTarget<T: TComponent>(const APath: string;
+    procedure Assign(ASource: TPersistent); override;
+    function GetEnumerator: TBrookEntryPointListEnumerator;
+    function Add: TBrookCustomEntryPoint; inline;
+    procedure Clear; inline;
+    function Find<T: TComponent>(const APath: string;
       out AUserData: T): Boolean;
     procedure Open;
     procedure Close;
     property Active: Boolean read FActive write SetActive stored IsActive;
     property List: TBrookEntryPointList read FList write SetList;
+    property Items[AIndex: Integer]: TBrookCustomEntryPoint read GetItem
+      write SetItem; default;
   end;
 
   TBrookEntryPoints = class(TBrookCustomEntryPoints)
@@ -226,6 +234,7 @@ var
 begin
   if (AValue = FName) or (not Assigned(FList)) then
     Exit;
+  { TODO: check inactive. }
   PS := AValue.Split(['/'], TStringSplitOptions.ExcludeEmpty);
   NN := '/';
   if Length(PS) > 0 then
@@ -384,6 +393,26 @@ begin
   Result := nil;
 end;
 
+function TBrookEntryPointList.Find(const APath: string; out AUserData): Boolean;
+var
+  M: TMarshaller;
+  R: cint;
+  EP: Psg_entrypoint;
+begin
+  if APath.IsEmpty then
+    raise EArgumentException.CreateRes(@SBrookEmptyEntryPointsPath);
+  if not Assigned(FHandle) then
+    raise EInvalidPointer.CreateRes(@SBrookEntryPointListUnprepared);
+  SgLib.Check;
+  R := sg_entrypoints_find(FHandle, @EP, M.ToCString(APath));
+  Result := R = 0;
+  if Result then
+    Pointer(AUserData) := sg_entrypoint_user_data(EP)
+  else
+    if (R <> ENOENT) then
+      SgLib.CheckLastError(R);
+end;
+
 procedure TBrookEntryPointList.Clear;
 begin
   inherited Clear;
@@ -414,6 +443,12 @@ begin
   Result := TBrookEntryPointList.Create(Self);
 end;
 
+procedure TBrookCustomEntryPoints.CheckActive;
+begin
+  if (not (csLoading in ComponentState)) and (not Active) then
+    raise EInvalidOpException.CreateRes(@SBrookInactiveEntryPoints);
+end;
+
 procedure TBrookCustomEntryPoints.Loaded;
 begin
   inherited Loaded;
@@ -433,6 +468,29 @@ begin
   end;
 end;
 
+procedure TBrookCustomEntryPoints.Assign(ASource: TPersistent);
+begin
+  if ASource is TBrookCustomEntryPoints then
+    FList.Assign((ASource as TBrookCustomEntryPoints).FList)
+  else
+    inherited Assign(ASource);
+end;
+
+function TBrookCustomEntryPoints.GetEnumerator: TBrookEntryPointListEnumerator;
+begin
+  Result := TBrookEntryPointListEnumerator.Create(FList);
+end;
+
+function TBrookCustomEntryPoints.Add: TBrookCustomEntryPoint;
+begin
+  Result := FList.Add;
+end;
+
+procedure TBrookCustomEntryPoints.Clear;
+begin
+  FList.Clear;
+end;
+
 function TBrookCustomEntryPoints.GetHandle: Pointer;
 begin
   Result := FList.FHandle;
@@ -450,12 +508,6 @@ begin
   FActive := False;
 end;
 
-procedure TBrookCustomEntryPoints.CheckActive;
-begin
-  if (not (csLoading in ComponentState)) and (not Active) then
-    raise EInvalidOpException.CreateRes(@SBrookInactiveEntryPoints);
-end;
-
 procedure TBrookCustomEntryPoints.SetList(AValue: TBrookEntryPointList);
 begin
   if AValue = FList then
@@ -469,6 +521,11 @@ end;
 function TBrookCustomEntryPoints.IsActive: Boolean;
 begin
   Result := FActive;
+end;
+
+function TBrookCustomEntryPoints.GetItem(AIndex: Integer): TBrookCustomEntryPoint;
+begin
+  Result := FList.GetItem(AIndex);
 end;
 
 procedure TBrookCustomEntryPoints.SetActive(AValue: Boolean);
@@ -493,6 +550,12 @@ begin
       DoClose;
 end;
 
+procedure TBrookCustomEntryPoints.SetItem(AIndex: Integer;
+  AValue: TBrookCustomEntryPoint);
+begin
+  FList.SetItem(AIndex, AValue);
+end;
+
 procedure TBrookCustomEntryPoints.Open;
 begin
   SetActive(True);
@@ -503,30 +566,11 @@ begin
   SetActive(False);
 end;
 
-function TBrookCustomEntryPoints.Find(const APath: string;
-  out AUserData: Pointer): Boolean;
-var
-  M: TMarshaller;
-  R: cint;
-  EP: Psg_entrypoint;
-begin
-  if APath.IsEmpty then
-    raise EArgumentException.CreateRes(@SBrookEmptyEntryPointsPath);
-  CheckActive;
-  SgLib.Check;
-  R := sg_entrypoints_find(FList.FHandle, @EP, M.ToCString(APath));
-  Result := R = 0;
-  if Result then
-    AUserData := sg_entrypoint_user_data(EP)
-  else
-    if (R <> ENOENT) then
-      SgLib.CheckLastError(R);
-end;
-
-function TBrookCustomEntryPoints.FindTarget<T>(const APath: string;
+function TBrookCustomEntryPoints.Find<T>(const APath: string;
   out AUserData: T): Boolean;
 begin
-  Result := Find(APath, Pointer(AUserData));
+  CheckActive;
+  Result := FList.Find(APath, AUserData);
 end;
 
 end.
