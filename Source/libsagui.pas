@@ -577,23 +577,13 @@ implementation
 class constructor SgLib.Create;
 begin
   GCS := TCriticalSection.Create;
-  GCS.Acquire;
-  try
-    Load(SG_LIB_NAME);
-  finally
-    GCS.Release;
-  end;
+  Load(SG_LIB_NAME);
 end;
 
 class destructor SgLib.Destroy;
 begin
-  GCS.Acquire;
-  try
-    Unload;
-  finally
-    GCS.Release;
-    GCS.Free;
-  end;
+  Unload;
+  GCS.Free;
 end;
 
 class function SgLib.GetLastName: string;
