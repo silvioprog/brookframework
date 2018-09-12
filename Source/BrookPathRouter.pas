@@ -41,8 +41,7 @@ uses
   BrookStringMap;
 
 resourcestring
-  SBrookOpNotAllowedInactiveRouter =
-    'Operation is not allowed while the router is inactive.';
+  SBrookInactiveRouter = 'Inactive router.';
   SBrookCannotCreateRouterHandle = 'Cannot create router handle.';
   SBrookNoRoutesDefined = 'No routes defined.';
   SBrookEmptyPattern = '%s: pattern cannot be empty.';
@@ -58,16 +57,11 @@ type
 
   TBrookCustomPathRouter = class;
 
-  TBrookPathRouteMatchEvent = procedure(
-    ARoute: TBrookCustomPathRoute) of object;
+  TBrookPathRouteMatchEvent = procedure(ARoute: TBrookCustomPathRoute) of object;
 
   EBrookRoute = class(Exception);
 
   EBrookRoutes = class(Exception);
-
-  EBrookRouter = class(Exception);
-
-  EBrookOpNotAllowedInactiveRouter = class(Exception);
 
   TBrookCustomPathRoute = class(TBrookHandleCollectionItem)
   private
@@ -630,8 +624,7 @@ end;
 procedure TBrookCustomPathRouter.CheckActive;
 begin
   if (not (csLoading in ComponentState)) and (not Active) then
-    raise EBrookOpNotAllowedInactiveRouter.CreateRes(
-      @SBrookOpNotAllowedInactiveRouter);
+    raise EInvalidOpException.CreateRes(@SBrookInactiveRouter);
 end;
 
 function TBrookCustomPathRouter.Route(const APath: string;

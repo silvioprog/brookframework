@@ -50,7 +50,7 @@ const
 resourcestring
   SBrookOpNotAllowedActiveServer =
     'Operation is not allowed while the server is active.';
-  SBrookCannotCreateHTTPServerHandle = 'Cannot create HTTP server handle.';
+  SBrookCannotCreateServerHandle = 'Cannot create server handle.';
   SBrookTLSNotAvailable = 'TLS is not available.';
   SBrookEmptyPrivateKey = 'Private key cannot be empty.';
   SBrookEmptyCertificate = 'Certificate cannot be empty.';
@@ -72,8 +72,6 @@ type
     AException: Exception) of object;
 
   EBrookHTTPServer = class(Exception);
-
-  EBrookOpNotAllowedActiveServer = class(Exception);
 
   EBrookHTTPServerSecurity = class(Exception);
 
@@ -342,7 +340,7 @@ begin
 {$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(FHandle) then
-    raise EInvalidPointer.CreateRes(@SBrookCannotCreateHTTPServerHandle);
+    raise EInvalidPointer.CreateRes(@SBrookCannotCreateServerHandle);
 end;
 
 procedure TBrookCustomHTTPServer.InternalFreeServerHandle;
@@ -569,8 +567,7 @@ end;
 procedure TBrookCustomHTTPServer.CheckInactive;
 begin
   if (not (csLoading in ComponentState)) and Active then
-    raise EBrookOpNotAllowedActiveServer.CreateRes(
-      @SBrookOpNotAllowedActiveServer);
+    raise EInvalidOpException.CreateRes(@SBrookOpNotAllowedActiveServer);
 end;
 
 procedure TBrookCustomHTTPServer.SetPort(AValue: UInt16);

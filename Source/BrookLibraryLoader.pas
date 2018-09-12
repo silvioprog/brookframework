@@ -45,9 +45,6 @@ resourcestring
     'Operation is not allowed while the library loader is active.';
 
 type
-  { Raised when an operation is not allowed while the library loader is loaded. }
-  EBrookOpNotAllowedActiveLibLoader = class(Exception);
-
   { Class for dynamic library loading. }
   TBrookCustomLibraryLoader = class(TBrookHandledComponent)
   private
@@ -117,8 +114,7 @@ end;
 procedure TBrookCustomLibraryLoader.CheckInactive;
 begin
   if not (csLoading in ComponentState) and Active then
-    raise EBrookOpNotAllowedActiveLibLoader.CreateRes(
-      @SBrookOpNotAllowedActiveLibLoader);
+    raise EInvalidOpException.CreateRes(@SBrookOpNotAllowedActiveLibLoader);
 end;
 
 procedure TBrookCustomLibraryLoader.SetActive(AValue: Boolean);
