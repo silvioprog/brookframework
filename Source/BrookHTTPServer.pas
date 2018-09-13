@@ -399,10 +399,7 @@ begin
   VRes := VSrv.CreateResponse(Ares);
   try
     if VSrv.FNoFavicon and VReq.IsFavicon then
-    begin
-      VRes.SendEmpty;
       Exit(True);
-    end;
     VAuth := VSrv.CreateAuthentication(Aauth);
     try
       try
