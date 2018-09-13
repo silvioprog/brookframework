@@ -568,13 +568,11 @@ type
   ESgLibNotLoaded = class(EFileNotFoundException);
 
   SgLib = record
-  strict private class var
+  private class var
     GCS: TCriticalSection;
     GLastName: TFileName;
     GHandle: TLibHandle;
   public
-    class constructor Create;
-    class destructor Destroy;
     class function GetLastName: string; static; inline;
     class procedure CheckLastError(ALastError: Integer); static; inline;
     class function Load(const AName: TFileName): TLibHandle; static;
@@ -585,18 +583,6 @@ type
   end;
 
 implementation
-
-class constructor SgLib.Create;
-begin
-  GCS := TCriticalSection.Create;
-  Load(SG_LIB_NAME);
-end;
-
-class destructor SgLib.Destroy;
-begin
-  Unload;
-  GCS.Free;
-end;
 
 class function SgLib.GetLastName: string;
 begin
@@ -943,5 +929,13 @@ begin
     raise ESgLibNotLoaded.CreateResFmt(@SSgLibNotLoaded,
       [IfThen(GLastName = '', SG_LIB_NAME, GLastName)]);
 end;
+
+initialization
+  SgLib.GCS := TCriticalSection.Create;
+  SgLib.Load(SG_LIB_NAME);
+
+finalization
+  SgLib.Unload;
+  SgLib.GCS.Free;
 
 end.
