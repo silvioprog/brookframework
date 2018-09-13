@@ -151,7 +151,11 @@ type
     function Add: TBrookCustomEntryPoint; inline;
     procedure Remove(const AName: string); inline;
     procedure Clear; inline;
+{$IFDEF VER3_0}
+    function Find(const APath: string; out ATarget): Boolean;
+{$ELSE}
     function Find<T: TComponent>(const APath: string; out ATarget: T): Boolean;
+{$ENDIF}
     procedure Open;
     procedure Close;
     property Active: Boolean read FActive write SetActive stored IsActive;
@@ -610,8 +614,13 @@ begin
   SetActive(False);
 end;
 
+{$IFDEF VER3_0}
+function TBrookCustomEntryPoints.Find(const APath: string;
+  out ATarget): Boolean;
+{$ELSE}
 function TBrookCustomEntryPoints.Find<T>(const APath: string;
   out ATarget: T): Boolean;
+{$ENDIF}
 begin
   CheckActive;
   Result := FList.Find(APath, ATarget);
