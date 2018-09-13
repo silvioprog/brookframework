@@ -44,13 +44,15 @@ uses
 
 resourcestring
   SBrookInvalidHTTPStatus = 'Invalid status code: %d.';
+  SBrookResponseAlreadySent = 'Response already sent.';
 
 type
+  EBrookHTTPResponse = class(Exception);
+
   TBrookHTTPResponse = class(TBrookHandledPersistent)
   private
     FHeaders: TBrookStringMap;
     FHandle: Psg_httpres;
-    { TODO: already sent }
   protected
     class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
       Asize: csize_t): cssize_t; cdecl; static;
@@ -59,6 +61,7 @@ type
     class procedure CheckStream(AStream: TStream); static; inline;
     function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
     function GetHandle: Pointer; override;
+    procedure CheckAlreadySent(Aret: cint); inline;
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
@@ -104,6 +107,12 @@ end;
 function TBrookHTTPResponse.GetHandle: Pointer;
 begin
   Result := FHandle;
+end;
+
+procedure TBrookHTTPResponse.CheckAlreadySent(Aret: cint);
+begin
+  if Aret = EALREADY then
+    raise EBrookHTTPResponse.CreateRes(@SBrookResponseAlreadySent);
 end;
 
 class procedure TBrookHTTPResponse.CheckStatus(AStatus: Word);
@@ -158,9 +167,12 @@ procedure TBrookHTTPResponse.Send(const AValue, AContentType: string;
   AStatus: Word);
 var
   M: TMarshaller;
+  R: cint;
 begin
-  SgLib.CheckLastError(sg_httpres_sendbinary(FHandle, M.ToCString(AValue),
-    Length(AValue), M.ToCString(AContentType), AStatus));
+  R := sg_httpres_sendbinary(FHandle, M.ToCString(AValue), Length(AValue),
+    M.ToCString(AContentType), AStatus);
+  CheckAlreadySent(R);
+  SgLib.CheckLastError(R);
 end;
 
 procedure TBrookHTTPResponse.Send(const AFmt: string;
@@ -179,11 +191,14 @@ procedure TBrookHTTPResponse.SendBinary(ABuffer: Pointer; ASize: NativeUInt;
   const AContentType: string; AStatus: Word);
 var
   M: TMarshaller;
+  R: cint;
 begin
   CheckStatus(AStatus);
   SgLib.Check;
-  SgLib.CheckLastError(sg_httpres_sendbinary(FHandle, ABuffer, ASize,
-    M.ToCString(AContentType), AStatus));
+  R := sg_httpres_sendbinary(FHandle, ABuffer, ASize,
+    M.ToCString(AContentType), AStatus);
+  CheckAlreadySent(R);
+  SgLib.CheckLastError(R);
 end;
 
 procedure TBrookHTTPResponse.SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
@@ -196,6 +211,7 @@ begin
   SgLib.Check;
   R := sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize,
     M.ToCString(AFileName), ARendered, AStatus);
+  CheckAlreadySent(R);
   if R = ENOENT then
     raise EFileNotFoundException.CreateRes(@SFileNotFound);
   SgLib.CheckLastError(R);
@@ -215,17 +231,20 @@ end;
 procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word;
   AFreed: Boolean);
 var
-  VStreamFree: sg_free_cb;
+  FCb: sg_free_cb;
+  R: cint;
 begin
   CheckStream(AStream);
   CheckStatus(AStatus);
   SgLib.Check;
   if AFreed then
-    VStreamFree := {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree
+    FCb := {$IFNDEF VER3_0}@{$ENDIF}DoStreamFree
   else
-    VStreamFree := nil;
-  SgLib.CheckLastError(sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
-{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream, VStreamFree, AStatus));
+    FCb := nil;
+  R := sg_httpres_sendstream(FHandle, AStream.Size, BROOK_BLOCK_SIZE,
+{$IFNDEF VER3_0}@{$ENDIF}DoStreamRead, AStream, FCb, AStatus);
+  CheckAlreadySent(R);
+  SgLib.CheckLastError(R);
 end;
 
 procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word);
