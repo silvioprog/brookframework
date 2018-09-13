@@ -428,12 +428,12 @@ end;
 
 function TBrookPathRoutes.NewPattern: string;
 var
-  VIndex: Integer;
+  I: Integer;
 begin
-  VIndex := 1;
+  I := 1;
   repeat
-    Result := Concat(GetPathLabel, VIndex.ToString);
-    Inc(VIndex);
+    Result := Concat(GetPathLabel, I.ToString);
+    Inc(I);
   until IndexOf(Result) < 0;
 end;
 

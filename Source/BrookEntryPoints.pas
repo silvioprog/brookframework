@@ -123,9 +123,6 @@ type
       write SetItem; default;
   end;
 
-  TBrookEntryPointsFoundEvent = procedure(
-    AEntryPoint: TBrookCustomEntryPoint) of object;
-
   TBrookCustomEntryPoints = class(TBrookHandledComponent)
   private
     FActive: Boolean;
@@ -373,12 +370,12 @@ end;
 
 function TBrookEntryPointList.NewName: string;
 var
-  VIndex: Integer;
+  I: Integer;
 begin
-  VIndex := 1;
+  I := 1;
   repeat
-    Result := Concat(GetEntryPointLabel, VIndex.ToString);
-    Inc(VIndex);
+    Result := Concat(GetEntryPointLabel, I.ToString);
+    Inc(I);
   until IndexOf(Result) < 0;
 end;
 

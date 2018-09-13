@@ -56,6 +56,8 @@ type
     FTLSSession: Pointer;
     FHandle: Psg_httpreq;
     function GetPaths: TArray<string>; inline;
+    function GetReferer: string; inline;
+    function GetUserAgent: string; inline;
   protected
     function CreateUploads(AHandle: Pointer): TBrookHTTPUploads; virtual;
     function CreateHeaders(AHandle: Pointer): TBrookStringMap; virtual;
@@ -71,14 +73,21 @@ type
     destructor Destroy; override;
     function IsPost: Boolean; inline;
     function IsFavicon: Boolean; inline;
+    function IsSecure: Boolean; inline;
+    function IsCachable: Boolean; inline;
+    function IsXhr: Boolean; inline;
     property Headers: TBrookStringMap read FHeaders;
     property Cookies: TBrookStringMap read FCookies;
+    { TODO: signed cookies }
     property Params: TBrookStringMap read FParams;
     property Fields: TBrookStringMap read FFields;
     property Payload: TBrookString read FPayload;
     property Version: string read FVersion;
     property Method: string read FMethod;
     property Path: string read FPath;
+    { TODO: client IP }
+    property UserAgent: string read GetUserAgent;
+    property Referer: string read GetReferer;
     property Paths: TArray<string> read GetPaths;
     property IsUploading: Boolean read FIsUploading;
     property Uploads: TBrookHTTPUploads read FUploads;
@@ -161,6 +170,17 @@ begin
   Result := Path.Split(['/'], TStringSplitOptions.ExcludeEmpty);
 end;
 
+function TBrookHTTPRequest.GetReferer: string;
+begin
+  if not FHeaders.TryValue('Referer', Result) then
+    Result := FHeaders.Get('Referrer');
+end;
+
+function TBrookHTTPRequest.GetUserAgent: string;
+begin
+  Result := FHeaders.Get('User-Agent');
+end;
+
 function TBrookHTTPRequest.IsPost: Boolean;
 begin
   Result := BrookIsPost(FMethod);
@@ -169,6 +189,21 @@ end;
 function TBrookHTTPRequest.IsFavicon: Boolean;
 begin
   Result := SameText(FPath, '/favicon.ico');
+end;
+
+function TBrookHTTPRequest.IsSecure: Boolean;
+begin
+  Result := Assigned(FTLSSession);
+end;
+
+function TBrookHTTPRequest.IsCachable: Boolean;
+begin
+  Result := (FMethod = 'HEAD') or (FMethod = 'GET');
+end;
+
+function TBrookHTTPRequest.IsXhr: Boolean;
+begin
+  Result := SameText(FHeaders.Get('X-Requested-With'), 'xmlhttprequest');
 end;
 
 procedure TBrookHTTPRequest.SetUserData(AValue: Pointer);
