@@ -50,6 +50,7 @@ type
   private
     FHeaders: TBrookStringMap;
     FHandle: Psg_httpres;
+    { TODO: already sent }
   protected
     class function DoStreamRead(Acls: Pcvoid; Aoffset: cuint64_t; Abuf: Pcchar;
       Asize: csize_t): cssize_t; cdecl; static;

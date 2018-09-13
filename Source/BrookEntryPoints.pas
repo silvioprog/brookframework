@@ -36,6 +36,7 @@ uses
   Platform,
   Marshalling,
   libsagui,
+  BrookUtils,
   BrookHandledClasses;
 
 resourcestring
@@ -46,7 +47,7 @@ resourcestring
   SBrookEntryPointAlreadyExists =
     '%s: entry-point ''%s'' already exists in ''%s''.';
   SBrookEmptyEntryPointName = '%s: entry-point cannot be empty.';
-  SBrookEmptyEntryPointsPath = 'Entry-points path cannot be empty.';
+  SBrookEmptyEntryPointPath = 'Entry-point path cannot be empty.';
 
 type
   TBrookEntryPointList = class;
@@ -98,12 +99,13 @@ type
     procedure SetItem(AIndex: Integer; AValue: TBrookCustomEntryPoint);
     procedure InternalAdd(AEntryPoint: TBrookCustomEntryPoint);
   protected
-    class function GetNameLabel: string; virtual;
+    class function GetEntryPointLabel: string; virtual;
     class function GetEntryPointName(
       AEntryPoint: TBrookCustomEntryPoint): string; virtual;
     function GetHandle: Pointer; override;
     procedure Prepare; virtual;
     procedure Unprepare; virtual;
+    procedure CheckPrepared; inline;
   public
     constructor Create(AOwner: TPersistent); virtual;
     class function GetEntryPointClass: TBrookCustomEntryPointClass; virtual;
@@ -112,9 +114,10 @@ type
     function IsPrepared: Boolean; virtual;
     function NewName: string; virtual;
     function Add: TBrookCustomEntryPoint; virtual;
+    function Remove(const AName: string): Boolean; virtual;
     function IndexOf(const AName: string): Integer; virtual;
-    function Find(const AName: string): TBrookCustomEntryPoint; overload; virtual;
-    function Find(const APath: string; out AUserData): Boolean; overload; virtual;
+    function FindInList(const AName: string): TBrookCustomEntryPoint; virtual;
+    function Find(const APath: string; out AUserData): Boolean; virtual;
     procedure Clear; virtual;
     property Items[AIndex: Integer]: TBrookCustomEntryPoint read GetItem
       write SetItem; default;
@@ -146,9 +149,9 @@ type
     procedure Assign(ASource: TPersistent); override;
     function GetEnumerator: TBrookEntryPointListEnumerator;
     function Add: TBrookCustomEntryPoint; inline;
+    procedure Remove(const AName: string); inline;
     procedure Clear; inline;
-    function Find<T: TComponent>(const APath: string;
-      out AUserData: T): Boolean;
+    function Find<T: TComponent>(const APath: string; out ATarget: T): Boolean;
     procedure Open;
     procedure Close;
     property Active: Boolean read FActive write SetActive stored IsActive;
@@ -230,17 +233,12 @@ end;
 procedure TBrookCustomEntryPoint.SetName(const AValue: string);
 var
   EP: TBrookCustomEntryPoint;
-  PS: TArray<string>;
   NN: string;
 begin
   if (AValue = FName) or (not Assigned(FList)) then
     Exit;
-  { TODO: check inactive. }
-  PS := AValue.Split(['/'], TStringSplitOptions.ExcludeEmpty);
-  NN := '/';
-  if Length(PS) > 0 then
-    NN := Concat(NN, PS[0]);
-  EP := FList.Find(NN);
+  NN := BrookFixEntryPoint(AValue);
+  EP := FList.FindInList(NN);
   if Assigned(EP) and (EP <> Self) then
     raise EBrookEntryPoint.CreateResFmt(@SBrookEntryPointAlreadyExists,
       [GetNamePath, NN, EP.GetNamePath]);
@@ -256,16 +254,13 @@ procedure TBrookCustomEntryPoint.SetTarget(AValue: TComponent);
 var
   M: TMarshaller;
   EP: Psg_entrypoint;
-  R: cint;
 begin
   FUserData := AValue;
   if not Assigned(FList.FHandle) then
     Exit;
   SgLib.Check;
-  R := sg_entrypoints_find2(FList.FHandle, @EP, M.ToCString(FName));
-  if R = 0 then
-    R := sg_entrypoint_set_user_data(EP, FUserData);
-  SgLib.CheckLastError(R);
+  if sg_entrypoints_find2(FList.FHandle, @EP, M.ToCString(FName)) = 0 then
+    SgLib.CheckLastError(sg_entrypoint_set_user_data(EP, FUserData));
 end;
 
 { TBrookEntryPointListEnumerator }
@@ -287,7 +282,7 @@ begin
   Result := TBrookEntryPoint;
 end;
 
-class function TBrookEntryPointList.GetNameLabel: string;
+class function TBrookEntryPointList.GetEntryPointLabel: string;
 begin
   Result := '/api';
 end;
@@ -351,6 +346,12 @@ begin
   FHandle := nil;
 end;
 
+procedure TBrookEntryPointList.CheckPrepared;
+begin
+  if not Assigned(FHandle) then
+    raise EInvalidPointer.CreateRes(@SBrookEntryPointListUnprepared);
+end;
+
 procedure TBrookEntryPointList.InternalAdd(AEntryPoint: TBrookCustomEntryPoint);
 var
   M: TMarshaller;
@@ -372,7 +373,7 @@ var
 begin
   VIndex := 1;
   repeat
-    Result := Concat(GetNameLabel, VIndex.ToString);
+    Result := Concat(GetEntryPointLabel, VIndex.ToString);
     Inc(VIndex);
   until IndexOf(Result) < 0;
 end;
@@ -398,6 +399,21 @@ begin
   Result := TBrookEntryPoint(inherited Add);
 end;
 
+function TBrookEntryPointList.Remove(const AName: string): Boolean;
+var
+  M: TMarshaller;
+  I: Integer;
+begin
+  I := IndexOf(AName);
+  Result := I > -1;
+  if Result then
+  begin
+    if Assigned(FHandle) then
+      SgLib.CheckLastError(sg_entrypoints_rm2(FHandle, M.ToCString(AName)));
+    inherited Delete(I);
+  end;
+end;
+
 function TBrookEntryPointList.IndexOf(const AName: string): Integer;
 begin
   for Result := 0 to Pred(Count) do
@@ -406,7 +422,8 @@ begin
   Result := -1;
 end;
 
-function TBrookEntryPointList.Find(const AName: string): TBrookCustomEntryPoint;
+function TBrookEntryPointList.FindInList(
+  const AName: string): TBrookCustomEntryPoint;
 var
   EP: TBrookCustomEntryPoint;
 begin
@@ -423,9 +440,8 @@ var
   EP: Psg_entrypoint;
 begin
   if APath.IsEmpty then
-    raise EArgumentException.CreateRes(@SBrookEmptyEntryPointsPath);
-  if not Assigned(FHandle) then
-    raise EInvalidPointer.CreateRes(@SBrookEntryPointListUnprepared);
+    raise EArgumentException.CreateRes(@SBrookEmptyEntryPointPath);
+  CheckPrepared;
   SgLib.Check;
   R := sg_entrypoints_find(FHandle, @EP, M.ToCString(APath));
   Result := R = 0;
@@ -509,6 +525,11 @@ begin
   Result := FList.Add;
 end;
 
+procedure TBrookCustomEntryPoints.Remove(const AName: string);
+begin
+  FList.Remove(AName);
+end;
+
 procedure TBrookCustomEntryPoints.Clear;
 begin
   FList.Clear;
@@ -590,10 +611,10 @@ begin
 end;
 
 function TBrookCustomEntryPoints.Find<T>(const APath: string;
-  out AUserData: T): Boolean;
+  out ATarget: T): Boolean;
 begin
   CheckActive;
-  Result := FList.Find(APath, AUserData);
+  Result := FList.Find(APath, ATarget);
 end;
 
 end.

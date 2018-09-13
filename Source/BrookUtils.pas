@@ -91,6 +91,9 @@ function BrookTmpDir: string;
 { experimental }
 function BrookFixPath(const APath: string): string; inline;
 
+{ experimental }
+function BrookFixEntryPoint(const APath: string): string;
+
 implementation
 
 function BrookVersion: Cardinal;
@@ -168,6 +171,16 @@ begin
     Result := Concat('/', Result);
   if (Length('/') > SizeOf(Char)) and Result.EndsWith('/') then
     SetLength(Result, Length(Result) - Length('/'));
+end;
+
+function BrookFixEntryPoint(const APath: string): string;
+var
+  PS: TArray<string>;
+begin
+  PS := APath.Split(['/'], TStringSplitOptions.ExcludeEmpty);
+  Result := '/';
+  if Length(PS) > 0 then
+    Result := Concat(Result, PS[0]);
 end;
 
 end.
