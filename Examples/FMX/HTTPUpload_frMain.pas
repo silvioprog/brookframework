@@ -180,7 +180,7 @@ var
   VUpload: TBrookHTTPUpload;
   VFile, VList, VError: string;
 begin
-  if ARequest.Uploading then
+  if ARequest.IsUploading then
   begin
     VList := '<ol>';
     for VUpload in ARequest.Uploads do
