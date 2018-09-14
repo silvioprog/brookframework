@@ -31,6 +31,7 @@ program httpuploads;
 
 uses
   SysUtils,
+  BrookUtils,
   BrookHTTPUploads,
   BrookHTTPRequest,
   BrookHTTPResponse,
@@ -102,7 +103,7 @@ end;
 begin
   with THTTPServer.Create(nil) do
   try
-    UploadsDir := 'uploads';
+    UploadsDir := Concat(IncludeTrailingPathDelimiter(BrookTmpDir), 'uploads');
     NoFavicon := True;
     Open;
     if not Active then

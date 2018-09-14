@@ -26,8 +26,14 @@
 
 program httpuploads;
 
+{$IFDEF MSWINDOWS}
+ {$APPTYPE CONSOLE}
+{$ENDIF}
+
 uses
   SysUtils,
+  IOUtils,
+  BrookUtils,
   BrookHTTPUploads,
   BrookHTTPRequest,
   BrookHTTPResponse,
@@ -99,7 +105,7 @@ end;
 begin
   with THTTPServer.Create(nil) do
   try
-    UploadsDir := 'uploads';
+    UploadsDir := TPath.Combine(BrookTmpDir, 'uploads');
     NoFavicon := True;
     Open;
     if not Active then

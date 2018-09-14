@@ -68,6 +68,9 @@ begin
     WriteLn('Chatters:');
     map.Sort(map_sort, nil);
     map.Iterate(map_iter, nil);
+{$IFDEF MSWINDOWS}
+    ReadLn;
+{$ENDIF}
   finally
     map.Free;
   end;

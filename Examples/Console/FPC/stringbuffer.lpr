@@ -52,6 +52,9 @@ begin
     finally
       f.Free;
     end;
+{$IFDEF MSWINDOWS}
+    ReadLn;
+{$ENDIF}
   finally
     sb.Free;
   end;

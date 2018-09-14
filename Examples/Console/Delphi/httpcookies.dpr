@@ -26,6 +26,10 @@
 
 program httpcookies;
 
+{$IFDEF MSWINDOWS}
+ {$APPTYPE CONSOLE}
+{$ENDIF}
+
 uses
   SysUtils,
   BrookHTTPRequest,

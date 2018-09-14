@@ -26,6 +26,10 @@
 
 program hellohttpsrv;
 
+{$IFDEF MSWINDOWS}
+ {$APPTYPE CONSOLE}
+{$ENDIF}
+
 uses
   BrookHTTPRequest,
   BrookHTTPResponse,

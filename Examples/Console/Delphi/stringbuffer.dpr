@@ -26,6 +26,10 @@
 
 program stringbuffer;
 
+{$IFDEF MSWINDOWS}
+ {$APPTYPE CONSOLE}
+{$ENDIF}
+
 uses
   SysUtils,
   Classes,
@@ -49,6 +53,9 @@ begin
     finally
       f.Free;
     end;
+{$IFDEF MSWINDOWS}
+    ReadLn;
+{$ENDIF}
   finally
     sb.Free;
   end;

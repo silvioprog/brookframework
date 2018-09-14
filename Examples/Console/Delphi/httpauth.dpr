@@ -32,6 +32,10 @@ program httpauth;
   curl -u abc:123 http://localhost:<PORT>
 }
 
+{$IFDEF MSWINDOWS}
+ {$APPTYPE CONSOLE}
+{$ENDIF}
+
 uses
   SysUtils,
   BrookHTTPAuthentication,
