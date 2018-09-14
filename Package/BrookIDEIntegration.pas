@@ -174,7 +174,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
 {$IFDEF LCL}
- {$IFNDEF VER3_0}
+ {$IFNDEF VER3_0_0}
   RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServerSecurity,
     'PrivatePassword', TPasswordStringPropertyEditor);
  {$ENDIF}

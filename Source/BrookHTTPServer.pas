@@ -34,6 +34,9 @@ uses
   SysUtils,
   Classes,
   Marshalling,
+{$IFDEF VER3_0_0}
+  FPC300Fixes,
+{$ENDIF}
   libsagui,
   BrookUtils,
   BrookHandledClasses,
@@ -285,9 +288,9 @@ end;
 
 procedure TBrookCustomHTTPServerSecurity.Validate;
 begin
-  if FPrivateKey = '' then
+  if FPrivateKey.IsEmpty then
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyPrivateKey);
-  if FCertificate = '' then
+  if FCertificate.IsEmpty then
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyCertificate);
 end;
 
@@ -791,7 +794,7 @@ end;
 
 function TBrookCustomHTTPServer.IsUploadsDir: Boolean;
 begin
-  Result := FUploadsDir <> '';
+  Result := not FUploadsDir.IsEmpty;
 end;
 
 procedure TBrookCustomHTTPServer.SetAuthenticated(AValue: Boolean);
@@ -835,7 +838,7 @@ begin
     Exit;
   SgLib.Check;
   InternalCreateServerHandle;
-  if FUploadsDir <> '' then
+  if not FUploadsDir.IsEmpty then
     InternalCheckServerOption(sg_httpsrv_set_upld_dir(FHandle,
       M.ToCString(FUploadsDir)));
   if FPostBufferSize > 0 then

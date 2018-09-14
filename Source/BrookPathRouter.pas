@@ -35,6 +35,9 @@ uses
   Classes,
   Platform,
   Marshalling,
+{$IFDEF VER3_0_0}
+  FPC300Fixes,
+{$ENDIF}
   libsagui,
   BrookUtils,
   BrookHandledClasses,
@@ -432,7 +435,7 @@ var
 begin
   I := 1;
   repeat
-    Result := Concat(GetPathLabel, IntToStr(I));
+    Result := Concat(GetPathLabel, I.ToString);
     Inc(I);
   until IndexOf(Result) < 0;
 end;

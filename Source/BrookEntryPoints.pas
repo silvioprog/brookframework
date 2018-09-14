@@ -35,6 +35,9 @@ uses
   Classes,
   Platform,
   Marshalling,
+{$IFDEF VER3_0_0}
+  FPC300Fixes,
+{$ENDIF}
   libsagui,
   BrookUtils,
   BrookHandledClasses;
@@ -198,7 +201,7 @@ end;
 
 procedure TBrookCustomEntryPoint.Validate;
 begin
-  if FName = '' then
+  if FName.IsEmpty then
     raise EBrookEntryPoint.CreateResFmt(@SBrookEmptyEntryPointName,
       [GetNamePath]);
 end;
@@ -374,7 +377,7 @@ var
 begin
   I := 1;
   repeat
-    Result := Concat(GetEntryPointLabel, IntToStr(I));
+    Result := Concat(GetEntryPointLabel, I.ToString);
     Inc(I);
   until IndexOf(Result) < 0;
 end;
@@ -440,7 +443,7 @@ var
   R: cint;
   EP: Psg_entrypoint;
 begin
-  if APath = '' then
+  if APath.IsEmpty then
     raise EArgumentException.CreateRes(@SBrookEmptyEntryPointPath);
   CheckPrepared;
   SgLib.Check;

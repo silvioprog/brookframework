@@ -28,11 +28,13 @@
  {$MODE DELPHI}
  {$IFDEF VER3_0} // it should be {$IF FPC_FULLVERSION <= 30101}, but it was commented to fix "[dcc32 Error] E2026 Constant expression expected"
   {$PUSH}{$MACRO ON}
-  {$DEFINE PMethod := ^TMethod}
-  {$DEFINE MarshaledAString := PAnsiChar}
-  {$DEFINE EArgumentNilException := Exception}
   {$DEFINE EInvalidOpException := Exception}
-  {$DEFINE EFileNotFoundException := Exception}
+  {$IFDEF VER3_0_0}
+   {$DEFINE FPC300}
+   {$DEFINE PMethod := ^TMethod}
+   {$DEFINE EArgumentNilException := Exception}
+   {$DEFINE EFileNotFoundException := Exception}
+  {$ENDIF}
   {$POP}
  {$ENDIF}
 {$ENDIF}
