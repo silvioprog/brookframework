@@ -44,19 +44,14 @@ uses
   SysUtils,
   StrUtils,
 {$IFDEF FPC}
- {$IF DEFINED(UNIX)}
-  UnixType,
- {$ELSEIF DEFINED(MSWINDOWS)}
+ {$IFDEF MSWINDOWS}
   Windows,
  {$ENDIF}
   DynLibs,
 {$ELSE}
- {$IF DEFINED(MSWINDOWS)}
-  Winapi.Windows
- {$ELSEIF DEFINED(POSIX)}
-  Posix.Dlfcn,
-  Posix.SysTypes
- {$ENDIF},
+ {$IFDEF MSWINDOWS}
+  Winapi.Windows,
+ {$ENDIF}
 {$ENDIF}
   SyncObjs;
 
@@ -99,43 +94,14 @@ resourcestring
 type
   cchar = Byte;
   Pcchar = MarshaledAString;
-{$IF DEFINED(MSWINDOWS)}
-  cbool = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.BOOL;
+  cbool = Boolean;
   cuint16_t = UInt16;
-  cint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.LONG;
-  cuint = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.UINT;
-  cuint64_t = {$IFNDEF FPC}Winapi.{$ENDIF}Windows.ULONG64;
-  csize_t = {$IFDEF FPC}System{$ELSE}Winapi.Windows{$ENDIF}.SIZE_T;
-  cssize_t = {$IFDEF FPC}NativeInt{$ELSE}Winapi.Windows.SSIZE_T{$ENDIF};
-  ctime_t = NativeUInt;
-{$ELSEIF DEFINED(POSIX)}
-  cbool = LongBool;
-  cuint16_t = UInt16;
-  cint = Integer;
-  cuint = Cardinal;
-  cuint64_t = UInt64;
-  csize_t = Posix.SysTypes.size_t;
-  cssize_t = Posix.SysTypes.ssize_t;
-  ctime_t = Posix.SysTypes.time_t;
-{$ELSEIF DEFINED(UNIX)}
-  cbool = UnixType.cbool;
-  cuint16_t = UnixType.cuint16;
-  cint = UnixType.cint;
-  cuint = UnixType.cuint;
-  cuint64_t = UnixType.cuint64;
-  csize_t = UnixType.size_t;
-  cssize_t = UnixType.ssize_t;
-  ctime_t = UnixType.time_t;
-{$ELSE}
-  cbool = LongBool;
-  cuint16_t = UInt16;
-  cint = Integer;
-  cuint = Cardinal;
+  cint = Int32;
+  cuint = UInt32;
   cuint64_t = UInt64;
   csize_t = NativeUInt;
   cssize_t = NativeInt;
-  ctime_t = NativeUInt;
-{$ENDIF}
+  ctime_t = NativeInt;
   Pcvoid = Pointer;
   PPcvoid = PPointer;
   cenum = cint;
@@ -369,7 +335,7 @@ var
 
   { sg_httpres_send }
 
-  sg_httpres_sendbinary: function(res: Psg_httpres; buf: Pcvoid; size: size_t;
+  sg_httpres_sendbinary: function(res: Psg_httpres; buf: Pcvoid; size: csize_t;
     const content_type: Pcchar; status: cuint): cint; cdecl;
 
   sg_httpres_sendfile: function(res: Psg_httpres; block_size: csize_t;
