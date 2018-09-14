@@ -285,9 +285,9 @@ end;
 
 procedure TBrookCustomHTTPServerSecurity.Validate;
 begin
-  if FPrivateKey.IsEmpty then
+  if FPrivateKey = '' then
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyPrivateKey);
-  if FCertificate.IsEmpty then
+  if FCertificate = '' then
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyCertificate);
 end;
 
@@ -791,7 +791,7 @@ end;
 
 function TBrookCustomHTTPServer.IsUploadsDir: Boolean;
 begin
-  Result := not FUploadsDir.IsEmpty;
+  Result := FUploadsDir <> '';
 end;
 
 procedure TBrookCustomHTTPServer.SetAuthenticated(AValue: Boolean);
@@ -835,7 +835,7 @@ begin
     Exit;
   SgLib.Check;
   InternalCreateServerHandle;
-  if not FUploadsDir.IsEmpty then
+  if FUploadsDir <> '' then
     InternalCheckServerOption(sg_httpsrv_set_upld_dir(FHandle,
       M.ToCString(FUploadsDir)));
   if FPostBufferSize > 0 then

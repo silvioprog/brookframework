@@ -198,7 +198,7 @@ end;
 
 procedure TBrookCustomEntryPoint.Validate;
 begin
-  if FName.IsEmpty then
+  if FName = '' then
     raise EBrookEntryPoint.CreateResFmt(@SBrookEmptyEntryPointName,
       [GetNamePath]);
 end;
@@ -374,7 +374,7 @@ var
 begin
   I := 1;
   repeat
-    Result := Concat(GetEntryPointLabel, I.ToString);
+    Result := Concat(GetEntryPointLabel, IntToStr(I));
     Inc(I);
   until IndexOf(Result) < 0;
 end;
@@ -440,7 +440,7 @@ var
   R: cint;
   EP: Psg_entrypoint;
 begin
-  if APath.IsEmpty then
+  if APath = '' then
     raise EArgumentException.CreateRes(@SBrookEmptyEntryPointPath);
   CheckPrepared;
   SgLib.Check;

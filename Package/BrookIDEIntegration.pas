@@ -174,8 +174,10 @@ begin
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
     'LibraryName', TBrookLibraryNamePropertyEditor);
 {$IFDEF LCL}
+ {$IFNDEF VER3_0}
   RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServerSecurity,
     'PrivatePassword', TPasswordStringPropertyEditor);
+ {$ENDIF}
   RegisterPropertyEditor(TypeInfo(TBrookHTTPRouteRequestMethods), nil, '',
     TBrookHTTPRouteRequestMethodsPropertyEditor);
   RegisterPropertyEditor(TypeInfo(string), TBrookHTTPServer, 'UploadsDir',

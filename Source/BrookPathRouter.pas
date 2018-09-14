@@ -432,7 +432,7 @@ var
 begin
   I := 1;
   repeat
-    Result := Concat(GetPathLabel, I.ToString);
+    Result := Concat(GetPathLabel, IntToStr(I));
     Inc(I);
   until IndexOf(Result) < 0;
 end;
