@@ -85,6 +85,10 @@ type
     procedure SendStream(AStream: TStream; AStatus: Word); overload; virtual;
     procedure SendEmpty(const AContentType: string); overload; virtual;
     procedure SendEmpty; overload; virtual;
+    procedure SendAndRedirect(const AValue, ADestination, AContentType: string;
+      AStatus: Word); overload; virtual;
+    procedure SendAndRedirect(const AValue, ADestination,
+      AContentType: string); overload; virtual;
     procedure Clear; virtual;
     property Headers: TBrookStringMap read FHeaders;
   end;
@@ -262,6 +266,21 @@ procedure TBrookHTTPResponse.SendEmpty;
 begin
   Clear;
   Send('', '', 204);
+end;
+
+procedure TBrookHTTPResponse.SendAndRedirect(const AValue, ADestination,
+  AContentType: string; AStatus: Word);
+begin
+  if (AStatus < 300) or (AStatus > 307) then
+    raise EBrookHTTPResponse.CreateResFmt(@SBrookInvalidHTTPStatus, [AStatus]);
+  FHeaders.AddOrSet('Location', ADestination);
+  Send(AValue, AContentType, AStatus);
+end;
+
+procedure TBrookHTTPResponse.SendAndRedirect(const AValue, ADestination,
+  AContentType: string);
+begin
+  SendAndRedirect(AValue, ADestination, AContentType, 302);
 end;
 
 procedure TBrookHTTPResponse.Clear;
