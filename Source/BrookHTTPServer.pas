@@ -42,11 +42,6 @@ uses
   BrookHTTPRequest,
   BrookHTTPResponse;
 
-const
-  BROOK_POST_BUFFER_SIZE = {$IFDEF CPUARM}1024{~1Kb}{$ELSE}4096{~4kB}{$ENDIF};
-  BROOK_PAYLOAD_LIMIT = {$IFDEF CPUARM}1048576{~1MB}{$ELSE}4194304{~4MB}{$ENDIF};
-  BROOK_UPLOADS_LIMIT = {$IFDEF CPUARM}16777216{~16MB}{$ELSE}67108864{~64MB}{$ENDIF};
-
 resourcestring
   SBrookActiveServer = 'Active server.';
   SBrookCannotCreateServerHandle = 'Cannot create server handle.';
@@ -499,7 +494,12 @@ procedure TBrookCustomHTTPServer.DoError(ASender: TObject;
   AException: Exception);
 begin
   if Assigned(FOnError) then
-    FOnError(ASender, AException);
+    FOnError(ASender, AException)
+  else
+    if Assigned(ApplicationHandleException) then
+      ApplicationHandleException(AException)
+    else
+      ShowException(AException, Pointer(AException));
 end;
 
 function TBrookCustomHTTPServer.DoAuthenticate(ASender: TObject;
