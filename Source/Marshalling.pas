@@ -111,7 +111,7 @@ end;
 function {$IFDEF FPC}TMarshaller{$ELSE}TMarshallerHelper{$ENDIF}.ToCNullableString(
   const S: string): MarshaledAString;
 begin
-  if S.IsEmpty then
+  if S = '' then
     Exit(nil);
   Result := ToCString(S);
 end;

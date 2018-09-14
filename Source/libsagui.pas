@@ -34,6 +34,7 @@ unit libsagui;
  {$IFDEF VER3_0}
   {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
+  {$DEFINE EFileNotFoundException := Exception}
   {$POP}
  {$ENDIF}
 {$ENDIF}
