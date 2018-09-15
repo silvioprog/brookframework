@@ -30,10 +30,10 @@
   {$PUSH}{$MACRO ON}
   {$DEFINE EInvalidOpException := Exception}
   {$IFDEF VER3_0_0}
-   {$DEFINE FPC300}
    {$DEFINE PMethod := ^TMethod}
    {$DEFINE EArgumentNilException := Exception}
    {$DEFINE EFileNotFoundException := Exception}
+   {$DEFINE ENotSupportedException := Exception}
   {$ENDIF}
   {$POP}
  {$ENDIF}
