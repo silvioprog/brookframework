@@ -59,12 +59,14 @@ type
 
   TBrookHTTPRouteRequestMethodEvent = procedure(ASender: TObject;
     ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse; var AAllowed, AHandled: Boolean) of object;
+    AResponse: TBrookHTTPResponse; var AAllowed: Boolean) of object;
 
   TBrookHTTPRouteRequestMethod = (rmUnknown, rmGET, rmPOST, rmPUT, rmDELETE,
     rmPATCH, rmOPTIONS, rmHEAD);
 
   TBrookHTTPRouteRequestMethods = set of TBrookHTTPRouteRequestMethod;
+
+  EBrookHTTPRoute = class(Exception);
 
   TBrookHTTPRouteRequestMethodHelper = record helper for TBrookHTTPRouteRequestMethod
   public const
@@ -89,14 +91,18 @@ type
     procedure DoMatch(ARoute: TBrookCustomPathRoute); override;
     procedure DoRequestMethod(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
-      var AAllowed, AHandled: Boolean); virtual;
+      var AAllowed: Boolean); virtual;
     procedure DoRequest(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
-      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
-    procedure DoRoute(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
     procedure DoRequestError(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
       AException: Exception);
+    function IsReqMethodAllowed(const AMethod: string): Boolean; virtual;
+    procedure HandleReqMethodNotAllowed(const AMethod: string;
+      AResponse: TBrookHTTPResponse); virtual;
+    procedure HandleRoute(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
+    procedure CheckMethods; inline;
   public
     constructor Create(ACollection: TCollection); override;
     procedure Assign(ASource: TPersistent); override;
@@ -200,6 +206,12 @@ begin
   FMethods := DefaultReqMethods;
 end;
 
+procedure TBrookCustomHTTPRoute.CheckMethods;
+begin
+  if FMethods = [rmUnknown] then
+    raise EBrookHTTPRoute.CreateRes(@SBrookRequestNoMethodDefined);
+end;
+
 procedure TBrookCustomHTTPRoute.Assign(ASource: TPersistent);
 begin
   inherited Assign(ASource);
@@ -213,16 +225,16 @@ var
 begin
   inherited DoMatch(ARoute);
   VHolder := TBrookHTTPRouterHolder(ARoute.UserData^);
-  DoRoute(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
+  HandleRoute(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
     VHolder.Response);
 end;
 
 procedure TBrookCustomHTTPRoute.DoRequestMethod(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse; var AAllowed, AHandled: Boolean);
+  AResponse: TBrookHTTPResponse; var AAllowed: Boolean);
 begin
   if Assigned(FOnRequestMethod) then
-    FOnRequestMethod(ASender, ARoute, ARequest, AResponse, AAllowed, AHandled);
+    FOnRequestMethod(ASender, ARoute, ARequest, AResponse, AAllowed);
 end;
 
 procedure TBrookCustomHTTPRoute.DoRequest(ASender: TObject;
@@ -235,35 +247,6 @@ begin
     AResponse.SendEmpty;
 end;
 
-procedure TBrookCustomHTTPRoute.DoRoute(ASender: TObject;
-  ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse);
-var
-  VAllowed, VHandled: Boolean;
-begin
-  try
-    if not (FMethods = [rmUnknown]) then
-    begin
-      VAllowed := (FMethods = []) or
-        (rmUnknown.FromString(ARequest.Method) in FMethods);
-      VHandled := False;
-      DoRequestMethod(ASender, ARoute, ARequest, AResponse, VAllowed, VHandled);
-      if VAllowed then
-        DoRequest(ASender, ARoute, ARequest, AResponse)
-      else
-        if not VHandled then
-          AResponse.Send(LoadResString(@SBrookRequestMethodNotAllowed),
-            [ARequest.Method], BROOK_CONTENT_TYPE, 405);
-    end
-    else
-      AResponse.Send(LoadResString(@SBrookRequestNoMethodDefined),
-        BROOK_CONTENT_TYPE, 500);
-  except
-    on E: Exception do
-      DoRequestError(ASender, ARoute, ARequest, AResponse, E);
-  end;
-end;
-
 procedure TBrookCustomHTTPRoute.DoRequestError(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse; AException: Exception);
@@ -272,6 +255,39 @@ begin
     FOnRequestError(ASender, ARoute, ARequest, AResponse, AException)
   else
     AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
+end;
+
+function TBrookCustomHTTPRoute.IsReqMethodAllowed(const AMethod: string
+  ): Boolean;
+begin
+  Result := (FMethods = []) or (rmUnknown.FromString(AMethod) in FMethods);
+end;
+
+procedure TBrookCustomHTTPRoute.HandleReqMethodNotAllowed(
+  const AMethod: string; AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send(LoadResString(@SBrookRequestMethodNotAllowed), [AMethod],
+    BROOK_CONTENT_TYPE, 405);
+end;
+
+procedure TBrookCustomHTTPRoute.HandleRoute(ASender: TObject;
+  ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
+var
+  VAllowed: Boolean;
+begin
+  try
+    CheckMethods;
+    VAllowed := IsReqMethodAllowed(ARequest.Method);
+    DoRequestMethod(ASender, ARoute, ARequest, AResponse, VAllowed);
+    if VAllowed then
+      DoRequest(ASender, ARoute, ARequest, AResponse)
+    else
+      HandleReqMethodNotAllowed(ARequest.Method, AResponse);
+  except
+    on E: Exception do
+      DoRequestError(ASender, ARoute, ARequest, AResponse, E);
+  end;
 end;
 
 function TBrookCustomHTTPRoute.IsMethods: Boolean;
