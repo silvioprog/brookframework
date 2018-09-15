@@ -141,8 +141,8 @@ type
     class function GetRouterClass: TBrookCustomPathRouteClass; override;
     function GetEnumerator: TBrookHTTPRoutesEnumerator;
     function Add: TBrookCustomHTTPRoute; reintroduce; virtual;
-    function First: TBrookCustomHTTPRoute; override;
-    function Last: TBrookCustomHTTPRoute; override;
+    function First: TBrookCustomHTTPRoute; reintroduce; virtual;
+    function Last: TBrookCustomHTTPRoute; reintroduce; virtual;
     property Items[AIndex: Integer]: TBrookCustomHTTPRoute read GetItem
       write SetItem; default;
   end;
@@ -173,7 +173,7 @@ type
       ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); reintroduce; overload; virtual;
     procedure Route(ASender: TObject; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse); overload; virtual;
+      AResponse: TBrookHTTPResponse); reintroduce; overload; virtual;
     property Routes: TBrookHTTPRoutes read GetRoutes write SetRoutes;
     property OnRoute: TBrookHTTPRouterRouteEvent read FOnRoute write FOnRoute;
     property OnNotFound: TBrookHTTPRouterRouteEvent read FOnNotFound
@@ -288,13 +288,13 @@ procedure TBrookCustomHTTPRoute.HandleRoute(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
 var
-  VAllowed: Boolean;
+  VIsReqMethodAllowed: Boolean;
 begin
   try
     CheckMethods;
-    VAllowed := IsReqMethodAllowed(ARequest.Method);
-    DoRequestMethod(ASender, ARoute, ARequest, AResponse, VAllowed);
-    if VAllowed then
+    VIsReqMethodAllowed := IsReqMethodAllowed(ARequest.Method);
+    DoRequestMethod(ASender, ARoute, ARequest, AResponse, VIsReqMethodAllowed);
+    if VIsReqMethodAllowed then
       DoRequest(ASender, ARoute, ARequest, AResponse)
     else
       HandleReqMethodNotAllowed(ARequest.Method, AResponse);
