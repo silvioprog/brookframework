@@ -37,6 +37,9 @@ uses
   ExtCtrls,
   ValEdit,
   Forms,
+{$IFDEF VER3_0_0}
+  FPC300Fixes,
+{$ENDIF}
   BrookStringMap;
 
 type

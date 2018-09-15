@@ -37,6 +37,9 @@ program httpauth;
 
 uses
   SysUtils,
+{$IFDEF VER3_0_0}
+  FPC300Fixes,
+{$ENDIF}
   BrookHTTPAuthentication,
   BrookHTTPRequest,
   BrookHTTPResponse,

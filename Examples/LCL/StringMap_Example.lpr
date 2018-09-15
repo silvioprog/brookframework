@@ -41,6 +41,9 @@ uses
 {$R *.res}
 
 begin
+{$IFNDEF VER3_0_0}
+  Application.Scaled := True;
+{$ENDIF}
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TfrMain, frMain);
