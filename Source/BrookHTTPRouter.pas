@@ -57,9 +57,9 @@ type
     ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse; AException: Exception) of object;
 
-  TBrookHTTPRouteRequestMethodEvent = function(ASender: TObject;
+  TBrookHTTPRouteRequestMethodEvent = procedure(ASender: TObject;
     ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse): Boolean of object;
+    AResponse: TBrookHTTPResponse; var AContinue: Boolean) of object;
 
   TBrookHTTPRouteRequestMethod = (rmUnknown, rmGET, rmPOST, rmPUT, rmDELETE,
     rmPATCH, rmOPTIONS, rmHEAD);
@@ -87,8 +87,9 @@ type
     function IsMethods: Boolean;
   protected
     procedure DoMatch(ARoute: TBrookCustomPathRoute); override;
-    function DoRequestMethod(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
-      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse): Boolean; virtual;
+    procedure DoRequestMethod(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
+      var AContinue: Boolean); virtual;
     procedure DoRequest(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
     procedure DoRoute(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
@@ -216,15 +217,12 @@ begin
     VHolder.Response);
 end;
 
-function TBrookCustomHTTPRoute.DoRequestMethod(ASender: TObject;
+procedure TBrookCustomHTTPRoute.DoRequestMethod(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse): Boolean;
+  AResponse: TBrookHTTPResponse; var AContinue: Boolean);
 begin
   if Assigned(FOnRequestMethod) then
-    Result := FOnRequestMethod(ASender, ARoute, ARequest, AResponse)
-  else
-    Result := (FMethods = []) or
-      (rmUnknown.FromString(ARequest.Method) in FMethods);
+    FOnRequestMethod(ASender, ARoute, ARequest, AResponse, AContinue);
 end;
 
 procedure TBrookCustomHTTPRoute.DoRequest(ASender: TObject;
@@ -240,14 +238,21 @@ end;
 procedure TBrookCustomHTTPRoute.DoRoute(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
+var
+  VContinue: Boolean;
 begin
   try
     if not (FMethods = [rmUnknown]) then
-      if DoRequestMethod(ASender, ARoute, ARequest, AResponse) then
+    begin
+      VContinue := (FMethods = []) or
+        (rmUnknown.FromString(ARequest.Method) in FMethods);
+      DoRequestMethod(ASender, ARoute, ARequest, AResponse, VContinue);
+      if VContinue then
         DoRequest(ASender, ARoute, ARequest, AResponse)
       else
         AResponse.Send(LoadResString(@SBrookRequestMethodNotAllowed),
-          [ARequest.Method], BROOK_CONTENT_TYPE, 405)
+          [ARequest.Method], BROOK_CONTENT_TYPE, 405);
+    end
     else
       AResponse.Send(LoadResString(@SBrookRequestNoMethodDefined),
         BROOK_CONTENT_TYPE, 500);
