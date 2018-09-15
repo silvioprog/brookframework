@@ -127,10 +127,24 @@ type
     property OnRequestError;
   end;
 
+  TBrookHTTPRoutesEnumerator = class(TCollectionEnumerator)
+  public
+    function GetCurrent: TBrookCustomHTTPRoute;
+    property Current: TBrookCustomHTTPRoute read GetCurrent;
+  end;
+
   TBrookHTTPRoutes = class(TBrookPathRoutes)
+  private
+    function GetItem(AIndex: Integer): TBrookCustomHTTPRoute;
+    procedure SetItem(AIndex: Integer; AValue: TBrookCustomHTTPRoute);
   public
     class function GetRouterClass: TBrookCustomPathRouteClass; override;
+    function GetEnumerator: TBrookHTTPRoutesEnumerator;
     function Add: TBrookCustomHTTPRoute; reintroduce; virtual;
+    function First: TBrookCustomHTTPRoute; override;
+    function Last: TBrookCustomHTTPRoute; override;
+    property Items[AIndex: Integer]: TBrookCustomHTTPRoute read GetItem
+      write SetItem; default;
   end;
 
   TBrookHTTPRouterHolder = record
@@ -295,6 +309,13 @@ begin
   Result := FMethods <> DefaultReqMethods;
 end;
 
+{ TBrookHTTPRoutesEnumerator }
+
+function TBrookHTTPRoutesEnumerator.GetCurrent: TBrookCustomHTTPRoute;
+begin
+  Result := TBrookCustomHTTPRoute(inherited GetCurrent);
+end;
+
 { TBrookHTTPRoutes }
 
 class function TBrookHTTPRoutes.GetRouterClass: TBrookCustomPathRouteClass;
@@ -302,9 +323,35 @@ begin
   Result := TBrookHTTPRoute;
 end;
 
+function TBrookHTTPRoutes.GetEnumerator: TBrookHTTPRoutesEnumerator;
+begin
+  Result := TBrookHTTPRoutesEnumerator.Create(Self);
+end;
+
 function TBrookHTTPRoutes.Add: TBrookCustomHTTPRoute;
 begin
   Result := TBrookHTTPRoute(inherited Add);
+end;
+
+function TBrookHTTPRoutes.First: TBrookCustomHTTPRoute;
+begin
+  Result := TBrookCustomHTTPRoute(inherited First);
+end;
+
+function TBrookHTTPRoutes.Last: TBrookCustomHTTPRoute;
+begin
+  Result := TBrookCustomHTTPRoute(inherited Last);
+end;
+
+function TBrookHTTPRoutes.GetItem(AIndex: Integer): TBrookCustomHTTPRoute;
+begin
+  Result := TBrookCustomHTTPRoute(inherited GetItem(AIndex));
+end;
+
+procedure TBrookHTTPRoutes.SetItem(AIndex: Integer;
+  AValue: TBrookCustomHTTPRoute);
+begin
+  inherited SetItem(AIndex, AValue);
 end;
 
 { TBrookCustomHTTPRouter }
