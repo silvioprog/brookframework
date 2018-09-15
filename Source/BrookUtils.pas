@@ -34,8 +34,11 @@ interface
 
 uses
   SysUtils,
-  libsagui,
-  Marshalling;
+  Marshalling,
+{$IFDEF VER3_0_0}
+  FPC300Fixes,
+{$ENDIF}
+  libsagui;
 
 type
   TBrookErrorEvent = procedure(ASender: TObject;
