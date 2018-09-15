@@ -59,7 +59,7 @@ type
 
   TBrookHTTPRouteRequestMethodEvent = procedure(ASender: TObject;
     ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse; var AContinue: Boolean) of object;
+    AResponse: TBrookHTTPResponse; var AAllowed, AHandled: Boolean) of object;
 
   TBrookHTTPRouteRequestMethod = (rmUnknown, rmGET, rmPOST, rmPUT, rmDELETE,
     rmPATCH, rmOPTIONS, rmHEAD);
@@ -89,7 +89,7 @@ type
     procedure DoMatch(ARoute: TBrookCustomPathRoute); override;
     procedure DoRequestMethod(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
-      var AContinue: Boolean); virtual;
+      var AAllowed, AHandled: Boolean); virtual;
     procedure DoRequest(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
     procedure DoRoute(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
@@ -219,10 +219,10 @@ end;
 
 procedure TBrookCustomHTTPRoute.DoRequestMethod(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse; var AContinue: Boolean);
+  AResponse: TBrookHTTPResponse; var AAllowed, AHandled: Boolean);
 begin
   if Assigned(FOnRequestMethod) then
-    FOnRequestMethod(ASender, ARoute, ARequest, AResponse, AContinue);
+    FOnRequestMethod(ASender, ARoute, ARequest, AResponse, AAllowed, AHandled);
 end;
 
 procedure TBrookCustomHTTPRoute.DoRequest(ASender: TObject;
@@ -239,19 +239,21 @@ procedure TBrookCustomHTTPRoute.DoRoute(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
 var
-  VContinue: Boolean;
+  VAllowed, VHandled: Boolean;
 begin
   try
     if not (FMethods = [rmUnknown]) then
     begin
-      VContinue := (FMethods = []) or
+      VAllowed := (FMethods = []) or
         (rmUnknown.FromString(ARequest.Method) in FMethods);
-      DoRequestMethod(ASender, ARoute, ARequest, AResponse, VContinue);
-      if VContinue then
+      VHandled := False;
+      DoRequestMethod(ASender, ARoute, ARequest, AResponse, VAllowed, VHandled);
+      if VAllowed then
         DoRequest(ASender, ARoute, ARequest, AResponse)
       else
-        AResponse.Send(LoadResString(@SBrookRequestMethodNotAllowed),
-          [ARequest.Method], BROOK_CONTENT_TYPE, 405);
+        if not VHandled then
+          AResponse.Send(LoadResString(@SBrookRequestMethodNotAllowed),
+            [ARequest.Method], BROOK_CONTENT_TYPE, 405);
     end
     else
       AResponse.Send(LoadResString(@SBrookRequestNoMethodDefined),
