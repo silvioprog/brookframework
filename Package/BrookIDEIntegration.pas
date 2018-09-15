@@ -24,11 +24,15 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-{ Integrates Brook in Delphi or Lazarus IDE. }
+{ Integrates Brook to Delphi or Lazarus IDE. }
 
 unit BrookIDEIntegration;
 
 {$I Brook.inc}
+
+{$IFDEF FPC}
+ {$WARN 5024 OFF}
+{$ENDIF}
 
 interface
 
@@ -198,24 +202,18 @@ end;
 
 function TBrookLibraryNamePropertyEditor.GetVerbCount: Integer;
 begin
-  Result := Succ(inherited GetVerbCount);
+  Result := 1;
 end;
 
 function TBrookLibraryNamePropertyEditor.GetVerb(
   AIndex: Integer): string;
 begin
-  if AIndex = 0 then
-    Result := LoadResString(@SBrookSelectLibraryTitle)
-  else
-    Result := inherited GetVerb(AIndex);
+  Result := LoadResString(@SBrookSelectLibraryTitle);
 end;
 
 procedure TBrookLibraryNamePropertyEditor.ExecuteVerb(AIndex: Integer);
 begin
-  if AIndex = 0 then
-    Edit
-  else
-    inherited ExecuteVerb(AIndex);
+  Edit;
 end;
 
 {$ENDIF}
@@ -312,7 +310,6 @@ var
   VLibraryLoader: TBrookCustomLibraryLoader;
   VPropertyEditor: TBrookLibraryNamePropertyEditor;
 begin
-  inherited Edit;
   VLibraryLoader := Component as TBrookCustomLibraryLoader;
   if not Assigned(VLibraryLoader) then
     Exit;
@@ -337,27 +334,21 @@ end;
 function TBrookLibraryNameComponentEditor.GetVerb(
   AIndex: Integer): string;
 begin
-  if AIndex = 0 then
-    Result := LoadResString(@SBrookSelectLibraryTitle)
-  else
-    Result := inherited GetVerb(AIndex);
+  Result := LoadResString(@SBrookSelectLibraryTitle);
 end;
 
 {$IFNDEF LCL}
 
 function TBrookLibraryNameComponentEditor.GetVerbCount: Integer;
 begin
-  Result := Succ(inherited GetVerbCount);
+  Result := 1;
 end;
 
 {$ENDIF}
 
 procedure TBrookLibraryNameComponentEditor.ExecuteVerb(AIndex: Integer);
 begin
-  if AIndex = 0 then
-    Edit
-  else
-    inherited ExecuteVerb(AIndex);
+  Edit;
 end;
 
 { TBrookOnRequestComponentEditor }
@@ -375,8 +366,6 @@ procedure TBrookPathRouterComponentEditor.ExecuteVerb(AIndex: Integer);
 var
   VRouter: TBrookCustomPathRouter;
 begin
-  if AIndex <> 0 then
-    Exit;
   VRouter := GetComponent as TBrookCustomPathRouter;
 {$IFDEF LCL}
   EditCollection(
@@ -388,9 +377,7 @@ end;
 
 function TBrookPathRouterComponentEditor.GetVerb(AIndex: Integer): string;
 begin
-  if AIndex = 0 then
-    Exit(LoadResString(@SBrookRoutesEditor));
-  Result := '';
+  Result := LoadResString(@SBrookRoutesEditor);
 end;
 
 function TBrookPathRouterComponentEditor.GetVerbCount: Integer;
@@ -404,8 +391,6 @@ procedure TBrookEntryPointsComponentEditor.ExecuteVerb(AIndex: Integer);
 var
   VEntryPoints: TBrookCustomEntryPoints;
 begin
-  if AIndex <> 0 then
-    Exit;
   VEntryPoints := GetComponent as TBrookCustomEntryPoints;
 {$IFDEF LCL}
   EditCollection(
@@ -417,9 +402,7 @@ end;
 
 function TBrookEntryPointsComponentEditor.GetVerb(AIndex: Integer): string;
 begin
-  if AIndex = 0 then
-    Exit(LoadResString(@SBrookEntryPointsEditor));
-  Result := '';
+  Result := LoadResString(@SBrookEntryPointsEditor);
 end;
 
 function TBrookEntryPointsComponentEditor.GetVerbCount: Integer;
