@@ -53,7 +53,7 @@ type
     ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse) of object;
 
-  TBrookHTTPRouteErrorEvent = procedure(ASender: TObject;
+  TBrookHTTPRouteRequestErrorEvent = procedure(ASender: TObject;
     ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse; AException: Exception) of object;
 
@@ -83,7 +83,7 @@ type
     FMethods: TBrookHTTPRouteRequestMethods;
     FOnRequestMethod: TBrookHTTPRouteRequestMethodEvent;
     FOnRequest: TBrookHTTPRouteRequestEvent;
-    FOnError: TBrookHTTPRouteErrorEvent;
+    FOnRequestError: TBrookHTTPRouteRequestErrorEvent;
     function IsMethods: Boolean;
   protected
     procedure DoMatch(ARoute: TBrookCustomPathRoute); override;
@@ -93,7 +93,7 @@ type
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
     procedure DoRoute(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
-    procedure DoError(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
+    procedure DoRequestError(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
       AException: Exception);
   public
@@ -105,7 +105,8 @@ type
       read FOnRequestMethod write FOnRequestMethod;
     property OnRequest: TBrookHTTPRouteRequestEvent read FOnRequest
       write FOnRequest;
-    property OnError: TBrookHTTPRouteErrorEvent read FOnError write FOnError;
+    property OnRequestError: TBrookHTTPRouteRequestErrorEvent
+      read FOnRequestError write FOnRequestError;
   end;
 
   TBrookHTTPRoute = class(TBrookCustomHTTPRoute)
@@ -116,7 +117,7 @@ type
     property OnMath;
     property OnRequestMethod;
     property OnRequest;
-    property OnError;
+    property OnRequestError;
   end;
 
   TBrookHTTPRoutes = class(TBrookPathRoutes)
@@ -131,13 +132,13 @@ type
     Sender: TObject;
   end;
 
-  TBrookHTTPRouterRequestEvent = procedure(ASender: TObject;
+  TBrookHTTPRouterRouteEvent = procedure(ASender: TObject;
     ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
 
   TBrookCustomHTTPRouter = class(TBrookCustomPathRouter)
   private
-    FOnNotFound: TBrookHTTPRouterRequestEvent;
-    FOnRoute: TBrookHTTPRouterRequestEvent;
+    FOnNotFound: TBrookHTTPRouterRouteEvent;
+    FOnRoute: TBrookHTTPRouterRouteEvent;
     function GetRoutes: TBrookHTTPRoutes;
     procedure SetRoutes(AValue: TBrookHTTPRoutes);
   protected
@@ -149,10 +150,12 @@ type
   public
     procedure Route(ASender: TObject; const APath: string;
       ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse); reintroduce; virtual;
+      AResponse: TBrookHTTPResponse); reintroduce; overload; virtual;
+    procedure Route(ASender: TObject; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse); overload; virtual;
     property Routes: TBrookHTTPRoutes read GetRoutes write SetRoutes;
-    property OnRoute: TBrookHTTPRouterRequestEvent read FOnRoute write FOnRoute;
-    property OnNotFound: TBrookHTTPRouterRequestEvent read FOnNotFound
+    property OnRoute: TBrookHTTPRouterRouteEvent read FOnRoute write FOnRoute;
+    property OnNotFound: TBrookHTTPRouterRouteEvent read FOnNotFound
       write FOnNotFound;
   end;
 
@@ -250,16 +253,16 @@ begin
         BROOK_CONTENT_TYPE, 500);
   except
     on E: Exception do
-      DoError(ASender, ARoute, ARequest, AResponse, E);
+      DoRequestError(ASender, ARoute, ARequest, AResponse, E);
   end;
 end;
 
-procedure TBrookCustomHTTPRoute.DoError(ASender: TObject;
+procedure TBrookCustomHTTPRoute.DoRequestError(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse; AException: Exception);
 begin
-  if Assigned(FOnError) then
-    FOnError(ASender, ARoute, ARequest, AResponse, AException)
+  if Assigned(FOnRequestError) then
+    FOnRequestError(ASender, ARoute, ARequest, AResponse, AException)
   else
     AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
 end;
@@ -328,6 +331,12 @@ begin
     DoRoute(ASender, ARequest, AResponse)
   else
     DoNotFound(ASender, ARequest, AResponse);
+end;
+
+procedure TBrookCustomHTTPRouter.Route(ASender: TObject;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+begin
+  Route(ASender, ARequest.Path, ARequest, AResponse);
 end;
 
 end.
