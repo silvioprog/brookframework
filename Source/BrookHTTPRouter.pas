@@ -168,6 +168,8 @@ type
       AResponse: TBrookHTTPResponse);
     procedure DoNotFound(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse);
+    procedure CheckParams(ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse); inline;
   public
     procedure Route(ASender: TObject; const APath: string;
       ARequest: TBrookHTTPRequest;
@@ -271,8 +273,8 @@ begin
     AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
 end;
 
-function TBrookCustomHTTPRoute.IsReqMethodAllowed(const AMethod: string
-  ): Boolean;
+function TBrookCustomHTTPRoute.IsReqMethodAllowed(
+  const AMethod: string): Boolean;
 begin
   Result := (FMethods = []) or (rmUnknown.FromString(AMethod) in FMethods);
 end;
@@ -385,15 +387,21 @@ begin
     FOnNotFound(ASender, ARequest, AResponse);
 end;
 
-procedure TBrookCustomHTTPRouter.Route(ASender: TObject; const APath: string;
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-var
-  VHolder: TBrookHTTPRouterHolder;
+procedure TBrookCustomHTTPRouter.CheckParams(ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
 begin
   if not Assigned(ARequest) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ARequest']);
   if not Assigned(AResponse) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AResponse']);
+end;
+
+procedure TBrookCustomHTTPRouter.Route(ASender: TObject; const APath: string;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+var
+  VHolder: TBrookHTTPRouterHolder;
+begin
+  CheckParams(ARequest, AResponse);
   VHolder.Request := ARequest;
   VHolder.Response := AResponse;
   VHolder.Sender := ASender;
@@ -405,8 +413,17 @@ end;
 
 procedure TBrookCustomHTTPRouter.Route(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+var
+  VHolder: TBrookHTTPRouterHolder;
 begin
-  Route(ASender, ARequest.Path, ARequest, AResponse);
+  CheckParams(ARequest, AResponse);
+  VHolder.Request := ARequest;
+  VHolder.Response := AResponse;
+  VHolder.Sender := ASender;
+  if inherited Route(ARequest.Path, @VHolder) then
+    DoRoute(ASender, ARequest, AResponse)
+  else
+    DoNotFound(ASender, ARequest, AResponse);
 end;
 
 end.
