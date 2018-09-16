@@ -168,8 +168,6 @@ type
       AResponse: TBrookHTTPResponse);
     procedure DoNotFound(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse);
-    procedure CheckParams(ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse); inline;
   public
     procedure Route(ASender: TObject; const APath: string;
       ARequest: TBrookHTTPRequest;
@@ -387,21 +385,11 @@ begin
     FOnNotFound(ASender, ARequest, AResponse);
 end;
 
-procedure TBrookCustomHTTPRouter.CheckParams(ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse);
-begin
-  if not Assigned(ARequest) then
-    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ARequest']);
-  if not Assigned(AResponse) then
-    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AResponse']);
-end;
-
 procedure TBrookCustomHTTPRouter.Route(ASender: TObject; const APath: string;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
   VHolder: TBrookHTTPRouterHolder;
 begin
-  CheckParams(ARequest, AResponse);
   VHolder.Request := ARequest;
   VHolder.Response := AResponse;
   VHolder.Sender := ASender;
@@ -413,17 +401,10 @@ end;
 
 procedure TBrookCustomHTTPRouter.Route(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-var
-  VHolder: TBrookHTTPRouterHolder;
 begin
-  CheckParams(ARequest, AResponse);
-  VHolder.Request := ARequest;
-  VHolder.Response := AResponse;
-  VHolder.Sender := ASender;
-  if inherited Route(ARequest.Path, @VHolder) then
-    DoRoute(ASender, ARequest, AResponse)
-  else
-    DoNotFound(ASender, ARequest, AResponse);
+  if not Assigned(ARequest) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ARequest']);
+  Route(ASender, ARequest.Path, ARequest, AResponse);
 end;
 
 end.
