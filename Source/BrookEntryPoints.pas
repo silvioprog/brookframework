@@ -43,14 +43,12 @@ uses
   BrookHandledClasses;
 
 resourcestring
-  SBrookCannotCreateEntryPointsHandle = 'Cannot create entry-points handle.';
   SBrookEntryPointListUnprepared = 'Entry-point list not prepared.';
   SBrookInactiveEntryPoints = 'Inactive entry-points.';
   SBrookNoEntryPointsDefined = 'No entry-points defined.';
   SBrookEntryPointAlreadyExists =
     '%s: entry-point ''%s'' already exists in ''%s''.';
   SBrookEmptyEntryPointName = '%s: entry-point cannot be empty.';
-  SBrookEmptyEntryPointPath = 'Entry-point path cannot be empty.';
 
 type
   TBrookEntryPointList = class;
@@ -142,6 +140,7 @@ type
     function GetHandle: Pointer; override;
     procedure DoOpen; virtual;
     procedure DoClose; virtual;
+    procedure CheckItems; inline;
     procedure CheckActive; inline;
   public
     constructor Create(AOwner: TComponent); override;
@@ -321,14 +320,10 @@ procedure TBrookEntryPointList.Prepare;
 var
   EP: TBrookCustomEntryPoint;
 begin
-  if Assigned(FHandle) then
+  if Assigned(FHandle) or (Count = 0) then
     Exit;
-  if Count = 0 then
-    raise EBrookEntryPointList.CreateRes(@SBrookNoEntryPointsDefined);
   SgLib.Check;
   FHandle := sg_entrypoints_new;
-  if not Assigned(FHandle) then
-    raise EInvalidPointer.CreateRes(@SBrookCannotCreateEntryPointsHandle);
   SgLib.CheckLastError(sg_entrypoints_clear(FHandle));
   for EP in Self do
   begin
@@ -439,8 +434,6 @@ var
   R: cint;
   EP: Psg_entrypoint;
 begin
-  if APath.IsEmpty then
-    raise EArgumentException.CreateRes(@SBrookEmptyEntryPointPath);
   CheckPrepared;
   SgLib.Check;
   R := sg_entrypoints_find(FHandle, @EP, M.ToCString(APath));
@@ -480,6 +473,12 @@ end;
 function TBrookCustomEntryPoints.CreateList: TBrookEntryPointList;
 begin
   Result := TBrookEntryPointList.Create(Self);
+end;
+
+procedure TBrookCustomEntryPoints.CheckItems;
+begin
+  if FList.Count = 0 then
+    raise EBrookEntryPointList.CreateRes(@SBrookNoEntryPointsDefined);
 end;
 
 procedure TBrookCustomEntryPoints.CheckActive;
@@ -612,6 +611,7 @@ end;
 
 function TBrookCustomEntryPoints.Find(const APath: string; out ATarget): Boolean;
 begin
+  CheckItems;
   CheckActive;
   Result := FList.Find(APath, ATarget);
 end;

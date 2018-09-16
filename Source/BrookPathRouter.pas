@@ -162,8 +162,8 @@ type
     function GetHandle: Pointer; override;
     procedure DoOpen; virtual;
     procedure DoClose; virtual;
-    procedure CheckActive; inline;
     procedure CheckItems; inline;
+    procedure CheckActive; inline;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -547,16 +547,16 @@ begin
   Result := TBrookPathRoutes.Create(Self);
 end;
 
-procedure TBrookCustomPathRouter.CheckActive;
-begin
-  if (not (csLoading in ComponentState)) and (not Active) then
-    raise EInvalidOpException.CreateRes(@SBrookInactiveRouter);
-end;
-
 procedure TBrookCustomPathRouter.CheckItems;
 begin
   if FRoutes.Count = 0 then
     raise EBrookRoutes.CreateRes(@SBrookNoRoutesDefined);
+end;
+
+procedure TBrookCustomPathRouter.CheckActive;
+begin
+  if (not (csLoading in ComponentState)) and (not Active) then
+    raise EInvalidOpException.CreateRes(@SBrookInactiveRouter);
 end;
 
 procedure TBrookCustomPathRouter.Loaded;
