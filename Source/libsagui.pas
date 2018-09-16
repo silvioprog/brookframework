@@ -31,6 +31,7 @@ unit libsagui;
 
 {$IFDEF FPC}
  {$MODE DELPHI}
+ {$PACKRECORDS C}
  {$IFDEF VER3_0}
   {$PUSH}{$MACRO ON}
   {$DEFINE MarshaledAString := PAnsiChar}
@@ -46,15 +47,11 @@ interface
 uses
   SysUtils,
   StrUtils,
+{$IFDEF MSWINDOWS}
+ {$IFNDEF FPC}Winapi.{$ENDIF}Windows,
+{$ENDIF}
 {$IFDEF FPC}
- {$IFDEF MSWINDOWS}
-  Windows,
- {$ENDIF}
   DynLibs,
-{$ELSE}
- {$IFDEF MSWINDOWS}
-  Winapi.Windows,
- {$ENDIF}
 {$ENDIF}
   SyncObjs;
 
@@ -62,9 +59,11 @@ const
 {$IFDEF FPC}
  {$IFDEF VER3_0}
   NilHandle = DynLibs.NilHandle;
+  TLibHandle = DynLibs.TLibHandle;
  {$ENDIF}
 {$ELSE}
   NilHandle = HMODULE(0);
+  TLibHandle = HMODULE;
 {$ENDIF}
 
 {$IF (NOT DEFINED(FPC)) OR DEFINED(VER3_0)}
@@ -109,15 +108,6 @@ type
   PPcvoid = PPointer;
   cenum = cint;
   cva_list = Pointer;
-
-{$IFDEF FPC}
- {$PACKRECORDS C}
- {$IFDEF VER3_0}
-  TLibHandle = DynLibs.TLibHandle;
- {$ENDIF}
-{$ELSE}
-  TLibHandle = HMODULE;
-{$ENDIF}
 
   sg_err_cb = procedure(cls: Pcvoid; const err: Pcchar); cdecl;
 
