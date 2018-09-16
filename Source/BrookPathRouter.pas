@@ -45,11 +45,9 @@ uses
 
 resourcestring
   SBrookInactiveRouter = 'Inactive router.';
-  SBrookCannotCreateRouterHandle = 'Cannot create router handle.';
   SBrookNoRoutesDefined = 'No routes defined.';
   SBrookEmptyRoutePattern = '%s: pattern cannot be empty.';
   SBrookRouteAlreadyExists = '%s: pattern ''%s'' already exists in ''%s''.';
-  SBrookEmptyRouterPath = 'Router path cannot be empty.';
 
 type
   TBrookCustomPathRoute = class;
@@ -165,6 +163,7 @@ type
     procedure DoOpen; virtual;
     procedure DoClose; virtual;
     procedure CheckActive; inline;
+    procedure CheckItems; inline;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -444,10 +443,8 @@ procedure TBrookPathRoutes.Prepare;
 var
   RT: TBrookCustomPathRoute;
 begin
-  if Assigned(FHandle) then
+  if Assigned(FHandle) or (Count = 0) then
     Exit;
-  if Count = 0 then
-    raise EBrookRoutes.CreateRes(@SBrookNoRoutesDefined);
   SgLib.Check;
   SgLib.CheckLastError(sg_routes_cleanup(@FHandle));
   for RT in Self do
@@ -556,6 +553,12 @@ begin
     raise EInvalidOpException.CreateRes(@SBrookInactiveRouter);
 end;
 
+procedure TBrookCustomPathRouter.CheckItems;
+begin
+  if FRoutes.Count = 0 then
+    raise EBrookRoutes.CreateRes(@SBrookNoRoutesDefined);
+end;
+
 procedure TBrookCustomPathRouter.Loaded;
 begin
   inherited Loaded;
@@ -625,8 +628,6 @@ begin
   SgLib.Check;
   FHandle := sg_router_new(FRoutes.Handle);
   FActive := Assigned(FHandle);
-  if not FActive then
-    raise EInvalidPointer.CreateRes(@SBrookCannotCreateRouterHandle);
 end;
 
 procedure TBrookCustomPathRouter.DoClose;
@@ -655,8 +656,7 @@ var
   M: TMarshaller;
   R: cint;
 begin
-  if APath.IsEmpty then
-    raise EArgumentException.CreateRes(@SBrookEmptyRouterPath);
+  CheckItems;
   CheckActive;
   SgLib.Check;
   R := sg_router_dispatch(FHandle, M.ToCNullableString(BrookFixPath(APath)),
