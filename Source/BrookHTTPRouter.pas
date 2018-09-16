@@ -376,9 +376,7 @@ procedure TBrookCustomHTTPRouter.DoRoute(ASender: TObject; const APath: string;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
   if Assigned(FOnRoute) then
-    FOnRoute(ASender, APath, ARequest, AResponse)
-  else
-    AResponse.SendEmpty;
+    FOnRoute(ASender, APath, ARequest, AResponse);
 end;
 
 procedure TBrookCustomHTTPRouter.DoNotFound(ASender: TObject;
