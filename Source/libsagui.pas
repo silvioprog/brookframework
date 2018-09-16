@@ -48,24 +48,28 @@ uses
   SysUtils,
   StrUtils,
 {$IFDEF MSWINDOWS}
- {$IFNDEF FPC}Winapi.{$ENDIF}Windows,
+  Windows,
 {$ENDIF}
 {$IFDEF FPC}
   DynLibs,
 {$ENDIF}
   SyncObjs;
 
-const
 {$IFDEF FPC}
  {$IFDEF VER3_0}
+const
   NilHandle = DynLibs.NilHandle;
+type
   TLibHandle = DynLibs.TLibHandle;
  {$ENDIF}
 {$ELSE}
+const
   NilHandle = HMODULE(0);
+type
   TLibHandle = HMODULE;
 {$ENDIF}
 
+const
 {$IF (NOT DEFINED(FPC)) OR DEFINED(VER3_0)}
   SharedSuffix =
  {$IF DEFINED(MSWINDOWS)}
