@@ -64,12 +64,12 @@ type
     FName: string;
     FUserData: Pointer;
     function GetName: string;
-    function GetTarget: TComponent;
     function GetUserData: Pointer;
     procedure SetName(const AValue: string);
-    procedure SetTarget(AValue: TComponent);
   protected
     function GetHandle: Pointer; override;
+    function GetTarget: TComponent; virtual;
+    procedure SetTarget(AValue: TComponent); virtual;
   public
     constructor Create(ACollection: TCollection); override;
     procedure Assign(ASource: TPersistent); override;

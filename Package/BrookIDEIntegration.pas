@@ -139,6 +139,7 @@ uses
   BrookPathRouter,
   BrookEntryPoints,
   BrookHTTPRouter,
+  BrookHTTPEntryPoints,
   BrookHTTPServer;
 
 {$IFNDEF LCL}
@@ -173,6 +174,7 @@ begin
     TBrookPathRouter,
     TBrookEntryPoints,
     TBrookHTTPRouter,
+    TBrookHTTPEntryPoints,
     TBrookHTTPServer
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,
