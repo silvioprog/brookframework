@@ -60,8 +60,7 @@ type
     property Password;
   end;
 
-  TBrookHTTPAuthenticationStatus = (asNone, asError, asAuthenticating,
-    asAuthenticated);
+  TBrookHTTPAuthenticationStatus = (asNone, asDenied, asAllowed);
 
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private

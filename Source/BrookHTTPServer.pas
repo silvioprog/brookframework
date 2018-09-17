@@ -510,7 +510,7 @@ begin
     FOnAuthenticateError(ASender, AAuthentication, ARequest, AResponse,
       AException)
   else
-    AAuthentication.Deny(AException.Message, BROOK_CONTENT_TYPE);
+    HandleRequestError(ARequest, AResponse, AException);
 end;
 
 procedure TBrookCustomHTTPServer.DoRequest(ASender: TObject;
@@ -536,10 +536,9 @@ function TBrookCustomHTTPServer.HandleAuthenticate(
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse): Boolean;
 begin
-  AAuthentication.Status := asAuthenticating;
   try
     DoAuthenticate(Self, AAuthentication, ARequest, AResponse);
-    Result := AAuthentication.Status = asAuthenticated;
+    Result := AAuthentication.Status = asAllowed;
   except
     on E: Exception do
       HandleAuthenticateError(AAuthentication, ARequest, AResponse, E);
@@ -550,7 +549,6 @@ procedure TBrookCustomHTTPServer.HandleAuthenticateError(
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse; AException: Exception);
 begin
-  AAuthentication.Status := asError;
   AResponse.Clear;
   try
     DoAuthenticateError(Self, AAuthentication, ARequest, AResponse, AException);
