@@ -53,11 +53,11 @@ resourcestring
   SBrookEmptyCertificate = 'Certificate cannot be empty.';
 
 type
-  TBrookHTTPAuthenticationEvent = function(ASender: TObject;
+  TBrookHTTPAuthenticateEvent = function(ASender: TObject;
     AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse): Boolean of object;
 
-  TBrookHTTPAuthenticationErrorEvent = procedure(ASender: TObject;
+  TBrookHTTPAuthenticateErrorEvent = procedure(ASender: TObject;
     AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse; AException: Exception) of object;
 
@@ -123,8 +123,8 @@ type
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
     FSecurity: TBrookCustomHTTPServerSecurity;
-    FOnAuthenticate: TBrookHTTPAuthenticationEvent;
-    FOnAuthenticateError: TBrookHTTPAuthenticationErrorEvent;
+    FOnAuthenticate: TBrookHTTPAuthenticateEvent;
+    FOnAuthenticateError: TBrookHTTPAuthenticateErrorEvent;
     FOnRequest: TBrookHTTPRequestEvent;
     FOnRequestError: TBrookHTTPRequestErrorEvent;
     FOnError: TBrookErrorEvent;
@@ -228,9 +228,9 @@ type
       stored IsNoFavicon;
     property Security: TBrookCustomHTTPServerSecurity read FSecurity
       write SetSecurity;
-    property OnAuthenticate: TBrookHTTPAuthenticationEvent read FOnAuthenticate
+    property OnAuthenticate: TBrookHTTPAuthenticateEvent read FOnAuthenticate
       write FOnAuthenticate;
-    property OnAuthenticateError: TBrookHTTPAuthenticationErrorEvent
+    property OnAuthenticateError: TBrookHTTPAuthenticateErrorEvent
       read FOnAuthenticateError write FOnAuthenticateError;
     property OnRequest: TBrookHTTPRequestEvent read FOnRequest write FOnRequest;
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
