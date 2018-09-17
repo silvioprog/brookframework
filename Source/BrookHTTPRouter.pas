@@ -101,7 +101,7 @@ type
     function IsReqMethodAllowed(const AMethod: string): Boolean; virtual;
     procedure HandleReqMethodNotAllowed(const AMethod: string;
       AResponse: TBrookHTTPResponse); virtual;
-    procedure HandleRoute(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
+    procedure HandleRequest(ASender: TObject; ARoute: TBrookCustomHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
     procedure CheckMethods; inline;
   public
@@ -241,7 +241,7 @@ var
 begin
   inherited DoMatch(ARoute);
   VHolder := TBrookHTTPRouterHolder(ARoute.UserData^);
-  HandleRoute(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
+  HandleRequest(VHolder.Sender, TBrookHTTPRoute(ARoute), VHolder.Request,
     VHolder.Response);
 end;
 
@@ -286,7 +286,7 @@ begin
     BROOK_CONTENT_TYPE, 405);
 end;
 
-procedure TBrookCustomHTTPRoute.HandleRoute(ASender: TObject;
+procedure TBrookCustomHTTPRoute.HandleRequest(ASender: TObject;
   ARoute: TBrookCustomHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
 begin
