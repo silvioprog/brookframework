@@ -164,17 +164,19 @@ type
     procedure DoClose; virtual;
     procedure CheckItems; inline;
     procedure CheckActive; inline;
+    function Route(const APath: string; AUserData: Pointer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Open;
     procedure Close;
-    function Route(const APath: string; AUserData: Pointer): Boolean; virtual;
     property Active: Boolean read FActive write SetActive stored IsActive;
     property Routes: TBrookPathRoutes read FRoutes write SetRoutes;
   end;
 
   TBrookPathRouter = class(TBrookCustomPathRouter)
+  public
+    function Route(const APath: string; AUserData: Pointer): Boolean; override;
   published
     property Active;
     property Routes;
@@ -664,6 +666,14 @@ begin
   Result := R = 0;
   if (not Result) and (R <> ENOENT) then
     SgLib.CheckLastError(R);
+end;
+
+{ TBrookPathRouter }
+
+function TBrookPathRouter.Route(const APath: string;
+  AUserData: Pointer): Boolean;
+begin
+  Result := inherited Route(APath, AUserData);
 end;
 
 end.
