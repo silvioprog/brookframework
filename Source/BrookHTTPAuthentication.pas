@@ -60,10 +60,14 @@ type
     property Password;
   end;
 
+  TBrookHTTPAuthenticationStatus = (asNone, asError, asAuthenticating,
+    asAuthenticated);
+
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
     FCredentials: TBrookCustomHTTPCredentials;
     FHandle: Psg_httpauth;
+    FStatus: TBrookHTTPAuthenticationStatus;
   protected
     function GetHandle: Pointer; override;
     function CreateCredentials(
@@ -71,11 +75,12 @@ type
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
-    property Credentials: TBrookCustomHTTPCredentials read FCredentials;
     procedure Deny(const AJustification, AContentType: string); overload; virtual;
     procedure Deny(const AFmt: string; const AArgs: array of const;
       const AContentType: string); overload; virtual;
     procedure Cancel; virtual;
+    property Credentials: TBrookCustomHTTPCredentials read FCredentials;
+    property Status: TBrookHTTPAuthenticationStatus read FStatus write FStatus;
   end;
 
 implementation

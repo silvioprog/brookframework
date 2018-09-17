@@ -53,9 +53,9 @@ resourcestring
   SBrookEmptyCertificate = 'Certificate cannot be empty.';
 
 type
-  TBrookHTTPAuthenticateEvent = function(ASender: TObject;
+  TBrookHTTPAuthenticateEvent = procedure(ASender: TObject;
     AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse): Boolean of object;
+    AResponse: TBrookHTTPResponse) of object;
 
   TBrookHTTPAuthenticateErrorEvent = procedure(ASender: TObject;
     AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
@@ -179,9 +179,9 @@ type
     procedure Loaded; override;
     function GetHandle: Pointer; override;
     procedure DoError(ASender: TObject; AException: Exception); virtual;
-    function DoAuthenticate(ASender: TObject;
+    procedure DoAuthenticate(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse): Boolean; virtual;
+      AResponse: TBrookHTTPResponse); virtual;
     procedure DoAuthenticateError(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse; AException: Exception); virtual;
@@ -189,9 +189,13 @@ type
       AResponse: TBrookHTTPResponse); virtual;
     procedure DoRequestError(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse; AException: Exception); virtual;
+    function HandleAuthenticate(AAuthentication: TBrookHTTPAuthentication;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse): Boolean; virtual;
     procedure HandleAuthenticateError(AAuthentication: TBrookHTTPAuthentication;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
       AException: Exception); virtual;
+    procedure HandleRequest(ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse); virtual;
     procedure HandleRequestError(ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse; AException: Exception); virtual;
     procedure CheckInactive; inline;
@@ -400,15 +404,7 @@ begin
       Exit(True);
     VAuth := VSrv.CreateAuthentication(Aauth);
     try
-      try
-        Result := VSrv.DoAuthenticate(VSrv, VAuth, VReq, VRes);
-      except
-        on E: Exception do
-        begin
-          Result := False;
-          VSrv.HandleAuthenticateError(VAuth, VReq, VRes, E);
-        end;
-      end;
+      Result := VSrv.HandleAuthenticate(VAuth, VReq, VRes);
     finally
       VAuth.Free;
     end;
@@ -430,16 +426,9 @@ begin
   VRes := VSrv.CreateResponse(Ares);
   try
     if VSrv.FNoFavicon and VReq.IsFavicon then
-    begin
-      VRes.SendEmpty;
-      Exit;
-    end;
-    try
-      VSrv.DoRequest(VSrv, VReq, VRes);
-    except
-      on E: Exception do
-        VSrv.HandleRequestError(VReq, VRes, E);
-    end;
+      VRes.SendEmpty
+    else
+      VSrv.HandleRequest(VReq, VRes);
   finally
     VRes.Free;
     VReq.Free;
@@ -505,11 +494,11 @@ begin
       ShowException(AException, Pointer(AException));
 end;
 
-function TBrookCustomHTTPServer.DoAuthenticate(ASender: TObject;
+procedure TBrookCustomHTTPServer.DoAuthenticate(ASender: TObject;
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse): Boolean;
+  AResponse: TBrookHTTPResponse);
 begin
-  Result := Assigned(FOnAuthenticate) and
+  if Assigned(FOnAuthenticate) then
     FOnAuthenticate(ASender, AAuthentication, ARequest, AResponse);
 end;
 
@@ -543,16 +532,42 @@ begin
     AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
 end;
 
+function TBrookCustomHTTPServer.HandleAuthenticate(
+  AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse): Boolean;
+begin
+  AAuthentication.Status := asAuthenticating;
+  try
+    DoAuthenticate(Self, AAuthentication, ARequest, AResponse);
+    Result := AAuthentication.Status = asAuthenticated;
+  except
+    on E: Exception do
+      HandleAuthenticateError(AAuthentication, ARequest, AResponse, E);
+  end;
+end;
+
 procedure TBrookCustomHTTPServer.HandleAuthenticateError(
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse; AException: Exception);
 begin
+  AAuthentication.Status := asError;
   AResponse.Clear;
   try
     DoAuthenticateError(Self, AAuthentication, ARequest, AResponse, AException);
   except
     on E: Exception do
       AResponse.Send(E.Message, BROOK_CONTENT_TYPE, 500);
+  end;
+end;
+
+procedure TBrookCustomHTTPServer.HandleRequest(ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
+begin
+  try
+    DoRequest(Self, ARequest, AResponse);
+  except
+    on E: Exception do
+      HandleRequestError(ARequest, AResponse, E);
   end;
 end;
 
