@@ -53,9 +53,9 @@ resourcestring
   SBrookEmptyCertificate = 'Certificate cannot be empty.';
 
 type
-  TBrookHTTPAuthenticateEvent = procedure(ASender: TObject;
+  TBrookHTTPAuthenticateEvent = function(ASender: TObject;
     AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse) of object;
+    AResponse: TBrookHTTPResponse): Boolean of object;
 
   TBrookHTTPAuthenticateErrorEvent = procedure(ASender: TObject;
     AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
@@ -179,9 +179,9 @@ type
     procedure Loaded; override;
     function GetHandle: Pointer; override;
     procedure DoError(ASender: TObject; AException: Exception); virtual;
-    procedure DoAuthenticate(ASender: TObject;
+    function DoAuthenticate(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse); virtual;
+      AResponse: TBrookHTTPResponse): Boolean; virtual;
     procedure DoAuthenticateError(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse; AException: Exception); virtual;
@@ -494,11 +494,11 @@ begin
       ShowException(AException, Pointer(AException));
 end;
 
-procedure TBrookCustomHTTPServer.DoAuthenticate(ASender: TObject;
+function TBrookCustomHTTPServer.DoAuthenticate(ASender: TObject;
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse);
+  AResponse: TBrookHTTPResponse): Boolean;
 begin
-  if Assigned(FOnAuthenticate) then
+  Result := Assigned(FOnAuthenticate) and
     FOnAuthenticate(ASender, AAuthentication, ARequest, AResponse);
 end;
 
@@ -537,11 +537,13 @@ function TBrookCustomHTTPServer.HandleAuthenticate(
   AResponse: TBrookHTTPResponse): Boolean;
 begin
   try
-    DoAuthenticate(Self, AAuthentication, ARequest, AResponse);
-    Result := AAuthentication.Status = asAllowed;
+    Result := DoAuthenticate(Self, AAuthentication, ARequest, AResponse);
   except
     on E: Exception do
+    begin
+      Result := False;
       HandleAuthenticateError(AAuthentication, ARequest, AResponse, E);
+    end;
   end;
 end;
 

@@ -60,13 +60,10 @@ type
     property Password;
   end;
 
-  TBrookHTTPAuthenticationStatus = (asNone, asDenied, asAllowed);
-
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
     FCredentials: TBrookCustomHTTPCredentials;
     FHandle: Psg_httpauth;
-    FStatus: TBrookHTTPAuthenticationStatus;
   protected
     function GetHandle: Pointer; override;
     function CreateCredentials(
@@ -79,7 +76,6 @@ type
       const AContentType: string); overload; virtual;
     procedure Cancel; virtual;
     property Credentials: TBrookCustomHTTPCredentials read FCredentials;
-    property Status: TBrookHTTPAuthenticationStatus read FStatus write FStatus;
   end;
 
 implementation
