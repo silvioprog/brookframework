@@ -159,6 +159,7 @@ begin
   AAuthentication.Deny(
     '<html><head><title>Error</title></head><body><font color="red">%s</font></body></html>',
     [AException.Message], 'text/html; charset=utf-8');
+  AAuthentication.Cancel;
 end;
 
 procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
