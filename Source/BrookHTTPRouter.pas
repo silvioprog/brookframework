@@ -173,9 +173,9 @@ type
   public
     procedure Route(ASender: TObject;
       const ARoute: string; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse); overload; virtual;
+      AResponse: TBrookHTTPResponse); reintroduce; overload; virtual;
     procedure Route(ASender: TObject; ARequest: TBrookHTTPRequest;
-      AResponse: TBrookHTTPResponse); overload; virtual;
+      AResponse: TBrookHTTPResponse); reintroduce; overload; virtual;
     property Routes: TBrookHTTPRoutes read GetRoutes write SetRoutes;
     property OnRoute: TBrookHTTPRouterRouteEvent read FOnRoute write FOnRoute;
     property OnNotFound: TBrookHTTPRouterRouteEvent read FOnNotFound

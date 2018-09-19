@@ -43,12 +43,13 @@ uses
   Dialogs,
 {$IFDEF LCL}
   PropEdits,
-  ComponentEditors
+  ComponentEditors,
 {$ELSE}
   DesignIntf,
   DesignEditors,
-  ColnEdit
-{$ENDIF};
+  ColnEdit,
+{$ENDIF}
+  libsagui;
 
 resourcestring
   SBrookSelectLibraryTitle = 'Select library ...';
