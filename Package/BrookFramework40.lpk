@@ -57,32 +57,32 @@
         <UnitName Value="BrookEntryPoints"/>
       </Item11>
       <Item12>
-        <Filename Value="../Source/BrookPathRouter.pas"/>
-        <UnitName Value="BrookPathRouter"/>
-      </Item12>
-      <Item13>
         <Filename Value="../Source/BrookHTTPExtra.pas"/>
         <UnitName Value="BrookHTTPExtra"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="../Source/BrookHTTPAuthentication.pas"/>
         <UnitName Value="BrookHTTPAuthentication"/>
-      </Item14>
-      <Item15>
+      </Item13>
+      <Item14>
         <Filename Value="../Source/BrookHTTPUploads.pas"/>
         <UnitName Value="BrookHTTPUploads"/>
-      </Item15>
-      <Item16>
+      </Item14>
+      <Item15>
         <Filename Value="../Source/BrookHTTPRequest.pas"/>
         <UnitName Value="BrookHTTPRequest"/>
-      </Item16>
-      <Item17>
+      </Item15>
+      <Item16>
         <Filename Value="../Source/BrookHTTPResponse.pas"/>
         <UnitName Value="BrookHTTPResponse"/>
-      </Item17>
-      <Item18>
+      </Item16>
+      <Item17>
         <Filename Value="../Source/BrookHTTPEntryPoints.pas"/>
         <UnitName Value="BrookHTTPEntryPoints"/>
+      </Item17>
+      <Item18>
+        <Filename Value="../Source/BrookHTTPRouter.pas"/>
+        <UnitName Value="BrookHTTPRouter"/>
       </Item18>
       <Item19>
         <Filename Value="../Source/BrookHTTPRouter.pas"/>

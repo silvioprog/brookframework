@@ -53,23 +53,6 @@ resourcestring
   SBrookEmptyCertificate = 'Certificate cannot be empty.';
 
 type
-  TBrookHTTPAuthenticateEvent = function(ASender: TObject;
-    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse): Boolean of object;
-
-  TBrookHTTPAuthenticateErrorEvent = procedure(ASender: TObject;
-    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse; AException: Exception) of object;
-
-  TBrookHTTPRequestEvent = procedure(ASender: TObject;
-    ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
-
-  TBrookHTTPRequestErrorEvent = procedure(ASender: TObject;
-    ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
-    AException: Exception) of object;
-
-  EBrookHTTPServer = class(Exception);
-
   EBrookHTTPServerSecurity = class(Exception);
 
   TBrookCustomHTTPServerSecurity = class(TPersistent)
@@ -104,6 +87,23 @@ type
     property Trust;
     property DHParams;
   end;
+
+  TBrookHTTPAuthenticateEvent = function(ASender: TObject;
+    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+    AResponse: TBrookHTTPResponse): Boolean of object;
+
+  TBrookHTTPAuthenticateErrorEvent = procedure(ASender: TObject;
+    AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
+    AResponse: TBrookHTTPResponse; AException: Exception) of object;
+
+  TBrookHTTPRequestEvent = procedure(ASender: TObject;
+    ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse) of object;
+
+  TBrookHTTPRequestErrorEvent = procedure(ASender: TObject;
+    ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
+    AException: Exception) of object;
+
+  EBrookHTTPServer = class(Exception);
 
   TBrookCustomHTTPServer = class(TBrookHandledComponent)
   private
