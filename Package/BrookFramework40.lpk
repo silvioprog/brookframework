@@ -53,12 +53,12 @@
         <UnitName Value="BrookStringMap"/>
       </Item10>
       <Item11>
-        <Filename Value="../Source/BrookPathRouter.pas"/>
-        <UnitName Value="BrookPathRouter"/>
-      </Item11>
-      <Item12>
         <Filename Value="../Source/BrookEntryPoints.pas"/>
         <UnitName Value="BrookEntryPoints"/>
+      </Item11>
+      <Item12>
+        <Filename Value="../Source/BrookPathRouter.pas"/>
+        <UnitName Value="BrookPathRouter"/>
       </Item12>
       <Item13>
         <Filename Value="../Source/BrookHTTPExtra.pas"/>
@@ -81,12 +81,12 @@
         <UnitName Value="BrookHTTPResponse"/>
       </Item17>
       <Item18>
-        <Filename Value="../Source/BrookHTTPRouter.pas"/>
-        <UnitName Value="BrookHTTPRouter"/>
-      </Item18>
-      <Item19>
         <Filename Value="../Source/BrookHTTPEntryPoints.pas"/>
         <UnitName Value="BrookHTTPEntryPoints"/>
+      </Item18>
+      <Item19>
+        <Filename Value="../Source/BrookHTTPRouter.pas"/>
+        <UnitName Value="BrookHTTPRouter"/>
       </Item19>
       <Item20>
         <Filename Value="../Source/BrookHTTPServer.pas"/>

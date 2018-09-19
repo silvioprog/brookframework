@@ -43,13 +43,12 @@ uses
   Dialogs,
 {$IFDEF LCL}
   PropEdits,
-  ComponentEditors,
+  ComponentEditors
 {$ELSE}
   DesignIntf,
   DesignEditors,
-  ColnEdit,
-{$ENDIF}
-  libsagui;
+  ColnEdit
+{$ENDIF};
 
 resourcestring
   SBrookSelectLibraryTitle = 'Select library ...';
@@ -110,24 +109,6 @@ type
       var AContinue: Boolean); override;
   end;
 
-  { TBrookPathRouterComponentEditor }
-
-  TBrookPathRouterComponentEditor = class(TComponentEditor)
-  public
-    procedure ExecuteVerb(AIndex: Integer); override;
-    function GetVerb(AIndex: Integer): string; override;
-    function GetVerbCount: Integer; override;
-  end;
-
-  { TBrookEntryPointsComponentEditor }
-
-  TBrookEntryPointsComponentEditor = class(TComponentEditor)
-  public
-    procedure ExecuteVerb(AIndex: Integer); override;
-    function GetVerb(AIndex: Integer): string; override;
-    function GetVerbCount: Integer; override;
-  end;
-
 {$R BrookFramework40Icons.res}
 
 procedure Register;
@@ -136,8 +117,6 @@ implementation
 
 uses
   BrookLibraryLoader,
-  BrookPathRouter,
-  BrookEntryPoints,
   BrookHTTPRouter,
   BrookHTTPEntryPoints,
   BrookHTTPServer;
@@ -171,8 +150,6 @@ procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-    TBrookPathRouter,
-    TBrookEntryPoints,
     TBrookHTTPRouter,
     TBrookHTTPEntryPoints,
     TBrookHTTPServer
@@ -192,9 +169,6 @@ begin
   RegisterPropertyMapper(BrookHTTPRouteRequestMethodsPropertyMapper);
 {$ENDIF}
   RegisterComponentEditor(TBrookLibraryLoader, TBrookLibraryNameComponentEditor);
-  RegisterComponentEditor(TBrookPathRouter, TBrookPathRouterComponentEditor);
-  RegisterComponentEditor(TBrookEntryPoints, TBrookEntryPointsComponentEditor);
-  RegisterComponentEditor(TBrookHTTPRouter, TBrookPathRouterComponentEditor);
   RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
@@ -360,56 +334,6 @@ procedure TBrookOnRequestComponentEditor.EditProperty(const AProperty:
 begin
   if SameText(AProperty.GetName, 'OnRequest') then
     inherited EditProperty(AProperty, AContinue);
-end;
-
-{ TBrookPathRouterComponentEditor }
-
-procedure TBrookPathRouterComponentEditor.ExecuteVerb(AIndex: Integer);
-var
-  VRouter: TBrookCustomPathRouter;
-begin
-  VRouter := GetComponent as TBrookCustomPathRouter;
-{$IFDEF LCL}
-  EditCollection(
-{$ELSE}
-  ShowCollectionEditor(Designer,
-{$ENDIF}
-    VRouter, VRouter.Routes, 'Routes');
-end;
-
-function TBrookPathRouterComponentEditor.GetVerb(AIndex: Integer): string;
-begin
-  Result := LoadResString(@SBrookRoutesEditor);
-end;
-
-function TBrookPathRouterComponentEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
-end;
-
-{ TBrookEntryPointsComponentEditor }
-
-procedure TBrookEntryPointsComponentEditor.ExecuteVerb(AIndex: Integer);
-var
-  VEntryPoints: TBrookCustomEntryPoints;
-begin
-  VEntryPoints := GetComponent as TBrookCustomEntryPoints;
-{$IFDEF LCL}
-  EditCollection(
-{$ELSE}
-  ShowCollectionEditor(Designer,
-{$ENDIF}
-    VEntryPoints, VEntryPoints.List, 'List');
-end;
-
-function TBrookEntryPointsComponentEditor.GetVerb(AIndex: Integer): string;
-begin
-  Result := LoadResString(@SBrookEntryPointsEditor);
-end;
-
-function TBrookEntryPointsComponentEditor.GetVerbCount: Integer;
-begin
-  Result := 1;
 end;
 
 end.
