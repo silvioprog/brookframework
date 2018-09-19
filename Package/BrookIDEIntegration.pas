@@ -54,8 +54,6 @@ uses
 resourcestring
   SBrookSelectLibraryTitle = 'Select library ...';
   SBrookSharedLibraryFilter = 'Shared libraries (%s)|%s|All files (*.*)|*.*';
-  SBrookRoutesEditor = 'Routes editor ...';
-  SBrookEntryPointsEditor = 'Entry-points editor ...';
 
 type
 
@@ -118,8 +116,8 @@ implementation
 
 uses
   BrookLibraryLoader,
-  BrookHTTPRouter,
   BrookHTTPEntryPoints,
+  BrookHTTPRouter,
   BrookHTTPServer;
 
 {$IFNDEF LCL}
@@ -151,8 +149,8 @@ procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-    TBrookHTTPRouter,
     TBrookHTTPEntryPoints,
+    TBrookHTTPRouter,
     TBrookHTTPServer
   ]);
   RegisterPropertyEditor(TypeInfo(TFileName), TBrookLibraryLoader,

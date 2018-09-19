@@ -66,15 +66,15 @@ contains
   BrookHandledClasses in '..\Source\BrookHandledClasses.pas',
   BrookString in '..\Source\BrookString.pas',
   BrookStringMap in '..\Source\BrookStringMap.pas',
-  BrookPathRouter in '..\Source\BrookPathRouter.pas',
   BrookEntryPoints in '..\Source\BrookEntryPoints.pas',
+  BrookPathRouter in '..\Source\BrookPathRouter.pas',
   BrookHTTPExtra in '..\Source\BrookHTTPExtra.pas',
   BrookHTTPAuthentication in '..\Source\BrookHTTPAuthentication.pas',
   BrookHTTPUploads in '..\Source\BrookHTTPUploads.pas',
   BrookHTTPRequest in '..\Source\BrookHTTPRequest.pas',
   BrookHTTPResponse in '..\Source\BrookHTTPResponse.pas',
-  BrookHTTPRouter in '..\Source\BrookHTTPRouter.pas',
   BrookHTTPEntryPoints in '..\Source\BrookHTTPEntryPoints.pas',
+  BrookHTTPRouter in '..\Source\BrookHTTPRouter.pas',
   BrookHTTPServer in '..\Source\BrookHTTPServer.pas',
   BrookIDEIntegration in 'BrookIDEIntegration.pas';
 
