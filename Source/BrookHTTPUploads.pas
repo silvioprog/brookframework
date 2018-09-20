@@ -173,8 +173,8 @@ begin
   Save(True);
 end;
 
-function TBrookHTTPUpload.SaveAs(const APath: TFileName;
-  AOverwritten: Boolean; out AError: string): Boolean;
+function TBrookHTTPUpload.SaveAs(const APath: TFileName; AOverwritten: Boolean;
+  out AError: string): Boolean;
 var
   R: cint;
   M: TMarshaller;

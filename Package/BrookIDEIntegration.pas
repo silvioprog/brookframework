@@ -116,7 +116,6 @@ implementation
 
 uses
   BrookLibraryLoader,
-  BrookHTTPEntryPoints,
   BrookHTTPRouter,
   BrookHTTPServer;
 
@@ -137,7 +136,7 @@ end;
 function BrookHTTPRouteRequestMethodsPropertyMapper(AObj: TPersistent;
   APropInfo: PPropInfo): TPropertyEditorClass;
 begin
-  if Assigned(AObj) and (AObj is TBrookCustomHTTPRoute) and
+  if Assigned(AObj) and (AObj is TBrookHTTPRoute) and
     SameText(APropInfo.NameFld.ToString, 'Methods') then
     Exit(TBrookHTTPRouteRequestMethodsPropertyEditor);
   Result := nil;
@@ -149,7 +148,6 @@ procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
-    TBrookHTTPEntryPoints,
     TBrookHTTPRouter,
     TBrookHTTPServer
   ]);
@@ -282,10 +280,10 @@ end;
 procedure TBrookLibraryNameComponentEditor.Edit;
 var
   VDialog: TOpenDialog;
-  VLibraryLoader: TBrookCustomLibraryLoader;
+  VLibraryLoader: TBrookLibraryLoader;
   VPropertyEditor: TBrookLibraryNamePropertyEditor;
 begin
-  VLibraryLoader := Component as TBrookCustomLibraryLoader;
+  VLibraryLoader := Component as TBrookLibraryLoader;
   if not Assigned(VLibraryLoader) then
     Exit;
   VPropertyEditor := TBrookLibraryNamePropertyEditor.Create(nil, 0);

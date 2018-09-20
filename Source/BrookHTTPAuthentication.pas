@@ -37,7 +37,7 @@ uses
   BrookHandledClasses;
 
 type
-  TBrookCustomHTTPCredentials = class(TBrookHandledPersistent)
+  TBrookHTTPCredentials = class(TBrookHandledPersistent)
   private
     FUserName: string;
     FPassword: string;
@@ -46,28 +46,21 @@ type
     procedure SetRealm(const AValue: string);
   protected
     function GetHandle: Pointer; override;
-  public
+  published
     constructor Create(AHandle: Pointer); virtual;
     property Realm: string read GetRealm write SetRealm;
     property UserName: string read FUserName;
     property Password: string read FPassword;
   end;
 
-  TBrookHTTPCredentials = class(TBrookCustomHTTPCredentials)
-  published
-    property Realm;
-    property UserName;
-    property Password;
-  end;
-
   TBrookHTTPAuthentication = class(TBrookHandledPersistent)
   private
-    FCredentials: TBrookCustomHTTPCredentials;
+    FCredentials: TBrookHTTPCredentials;
     FHandle: Psg_httpauth;
   protected
     function GetHandle: Pointer; override;
     function CreateCredentials(
-      AHandle: Pointer): TBrookCustomHTTPCredentials; virtual;
+      AHandle: Pointer): TBrookHTTPCredentials; virtual;
   public
     constructor Create(AHandle: Pointer); virtual;
     destructor Destroy; override;
@@ -75,14 +68,14 @@ type
     procedure Deny(const AFmt: string; const AArgs: array of const;
       const AContentType: string); overload; virtual;
     procedure Cancel; virtual;
-    property Credentials: TBrookCustomHTTPCredentials read FCredentials;
+    property Credentials: TBrookHTTPCredentials read FCredentials;
   end;
 
 implementation
 
-{ TBrookCustomHTTPCredentials }
+{ TBrookHTTPCredentials }
 
-constructor TBrookCustomHTTPCredentials.Create(AHandle: Pointer);
+constructor TBrookHTTPCredentials.Create(AHandle: Pointer);
 begin
   inherited Create;
   FHandle := AHandle;
@@ -90,18 +83,18 @@ begin
   FPassword := TMarshal.ToString(sg_httpauth_pwd(AHandle));
 end;
 
-function TBrookCustomHTTPCredentials.GetHandle: Pointer;
+function TBrookHTTPCredentials.GetHandle: Pointer;
 begin
   Result := FHandle;
 end;
 
-function TBrookCustomHTTPCredentials.GetRealm: string;
+function TBrookHTTPCredentials.GetRealm: string;
 begin
   SgLib.Check;
   Result := TMarshal.ToString(sg_httpauth_realm(FHandle));
 end;
 
-procedure TBrookCustomHTTPCredentials.SetRealm(const AValue: string);
+procedure TBrookHTTPCredentials.SetRealm(const AValue: string);
 var
   M: TMarshaller;
 begin
@@ -125,7 +118,7 @@ begin
 end;
 
 function TBrookHTTPAuthentication.CreateCredentials(
-  AHandle: Pointer): TBrookCustomHTTPCredentials;
+  AHandle: Pointer): TBrookHTTPCredentials;
 begin
   Result := TBrookHTTPCredentials.Create(AHandle);
 end;

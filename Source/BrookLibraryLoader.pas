@@ -45,7 +45,7 @@ resourcestring
 
 type
   { Class for dynamic library loading. }
-  TBrookCustomLibraryLoader = class(TBrookHandledComponent)
+  TBrookLibraryLoader = class(TBrookHandledComponent)
   private
     FActive: Boolean;
     FVersion: string;
@@ -66,7 +66,7 @@ type
     procedure Close; virtual;
     { @exclude }
     procedure DefineProperties(AFiler: TFiler); override;
-  public
+  published
     { Loads/Unloads the library dynamically. }
     property Active: Boolean read FActive write SetActive stored IsActive;
     { Specifies the library to be loaded dynamically. }
@@ -75,33 +75,22 @@ type
     property Version: string read FVersion stored False;
   end;
 
-  { Class for dynamic library loading. }
-  TBrookLibraryLoader = class(TBrookCustomLibraryLoader)
-  published
-    { Loads/Unloads the library dynamically. }
-    property Active;
-    { Specifies the library to be loaded dynamically. }
-    property LibraryName;
-    { Version of the loaded library. }
-    property Version;
-  end;
-
 implementation
 
-procedure TBrookCustomLibraryLoader.CheckInactive;
+procedure TBrookLibraryLoader.CheckInactive;
 begin
   if not (csLoading in ComponentState) and Active then
     raise EInvalidOpException.CreateRes(@SBrookActiveLibLoader);
 end;
 
-procedure TBrookCustomLibraryLoader.Loaded;
+procedure TBrookLibraryLoader.Loaded;
 begin
   inherited Loaded;
   if FActive then
     Open;
 end;
 
-procedure TBrookCustomLibraryLoader.DefineProperties(AFiler: TFiler);
+procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
 begin
   inherited DefineProperties(AFiler);
   if FActive and not FStreamedActive then
@@ -111,12 +100,12 @@ begin
   end;
 end;
 
-function TBrookCustomLibraryLoader.GetHandle: Pointer;
+function TBrookLibraryLoader.GetHandle: Pointer;
 begin
   Result := @FHandle;
 end;
 
-procedure TBrookCustomLibraryLoader.SetActive(AValue: Boolean);
+procedure TBrookLibraryLoader.SetActive(AValue: Boolean);
 begin
   if AValue = FActive then
     Exit;
@@ -129,12 +118,12 @@ begin
       Close;
 end;
 
-function TBrookCustomLibraryLoader.IsActive: Boolean;
+function TBrookLibraryLoader.IsActive: Boolean;
 begin
   Result := FActive;
 end;
 
-procedure TBrookCustomLibraryLoader.SetLibraryName(const AValue: TFileName);
+procedure TBrookLibraryLoader.SetLibraryName(const AValue: TFileName);
 begin
   if AValue = FLibraryName then
     Exit;
@@ -142,7 +131,7 @@ begin
   FLibraryName := AValue;
 end;
 
-procedure TBrookCustomLibraryLoader.Open;
+procedure TBrookLibraryLoader.Open;
 begin
   FHandle := SgLib.Load(FLibraryName);
   FActive := FHandle <> NilHandle;
@@ -152,7 +141,7 @@ begin
     FVersion := '';
 end;
 
-procedure TBrookCustomLibraryLoader.Close;
+procedure TBrookLibraryLoader.Close;
 begin
   FHandle := SgLib.Unload;
   FActive := FHandle <> NilHandle;

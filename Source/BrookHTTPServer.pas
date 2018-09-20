@@ -55,7 +55,7 @@ resourcestring
 type
   EBrookHTTPServerSecurity = class(Exception);
 
-  TBrookCustomHTTPServerSecurity = class(TPersistent)
+  TBrookHTTPServerSecurity = class(TPersistent)
   private
     FActive: Boolean;
     FPrivateKey: string;
@@ -68,7 +68,7 @@ type
     procedure Assign(ASource: TPersistent); override;
     procedure Clear; virtual;
     procedure Validate; inline;
-  public
+  published
     property Active: Boolean read FActive write FActive stored IsActive;
     property PrivateKey: string read FPrivateKey write FPrivateKey;
     property PrivatePassword: string read FPrivatePassword
@@ -76,16 +76,6 @@ type
     property Certificate: string read FCertificate write FCertificate;
     property Trust: string read FTrust write FTrust;
     property DHParams: string read FDHParams write FDHParams;
-  end;
-
-  TBrookHTTPServerSecurity = class(TBrookCustomHTTPServerSecurity)
-  published
-    property Active;
-    property PrivateKey;
-    property PrivatePassword;
-    property Certificate;
-    property Trust;
-    property DHParams;
   end;
 
   TBrookHTTPAuthenticateEvent = function(ASender: TObject;
@@ -105,7 +95,7 @@ type
 
   EBrookHTTPServer = class(Exception);
 
-  TBrookCustomHTTPServer = class(TBrookHandledComponent)
+  TBrookHTTPServer = class(TBrookHandledComponent)
   private
     FHandle: Psg_httpsrv;
     FAuthenticated: Boolean;
@@ -122,7 +112,7 @@ type
     FStreamedAuthenticated: Boolean;
     FThreadPoolSize: Cardinal;
     FUploadsDir: string;
-    FSecurity: TBrookCustomHTTPServerSecurity;
+    FSecurity: TBrookHTTPServerSecurity;
     FOnAuthenticate: TBrookHTTPAuthenticateEvent;
     FOnAuthenticateError: TBrookHTTPAuthenticateErrorEvent;
     FOnRequest: TBrookHTTPRequestEvent;
@@ -153,7 +143,7 @@ type
     procedure SetConnectionLimit(AValue: Cardinal);
     procedure SetConnectionTimeout(AValue: Cardinal);
     procedure SetPayloadLimit(AValue: NativeUInt);
-    procedure SetSecurity(AValue: TBrookCustomHTTPServerSecurity);
+    procedure SetSecurity(AValue: TBrookHTTPServerSecurity);
     procedure SetUploadsLimit(AValue: UInt64);
     procedure SetPort(AValue: UInt16);
     procedure SetPostBufferSize(AValue: NativeUInt);
@@ -172,7 +162,7 @@ type
       const Aerr: Pcchar); cdecl; static;
     function CreateAuthentication(
       AHandle: Pointer): TBrookHTTPAuthentication; virtual;
-    function CreateSecurity: TBrookCustomHTTPServerSecurity; virtual;
+    function CreateSecurity: TBrookHTTPServerSecurity; virtual;
     function CreateRequest(AHandle: Pointer): TBrookHTTPRequest; virtual;
     function CreateResponse(AHandle: Pointer): TBrookHTTPResponse; virtual;
     function CreateError(const AMessage: string): Exception; virtual;
@@ -207,30 +197,31 @@ type
     destructor Destroy; override;
     procedure Open;
     procedure Close;
-  public
+  published
     property Active: Boolean read FActive write SetActive stored IsActive;
     property Authenticated: Boolean read FAuthenticated write SetAuthenticated
       stored IsAuthenticated;
-    property Port: UInt16 read GetPort write SetPort stored IsPort;
+    property Port: UInt16 read GetPort write SetPort stored IsPort default 0;
     property Threaded: Boolean read GetThreaded write SetThreaded
-      stored IsThreaded;
+      stored IsThreaded default False;
     property UploadsDir: string read GetUploadsDir write SetUploadsDir
       stored IsUploadsDir;
     property PostBufferSize: NativeUInt read GetPostBufferSize
-      write SetPostBufferSize stored IsPostBufferSize;
+      write SetPostBufferSize stored IsPostBufferSize
+      default BROOK_POST_BUFFER_SIZE;
     property PayloadLimit: NativeUInt read GetPayloadLimit
-      write SetPayloadLimit stored IsPayloadLimit;
+      write SetPayloadLimit stored IsPayloadLimit default BROOK_PAYLOAD_LIMIT;
     property UploadsLimit: UInt64 read GetUploadsLimit write SetUploadsLimit
-      stored IsUploadsLimit;
+      stored IsUploadsLimit default BROOK_UPLOADS_LIMIT;
     property ThreadPoolSize: Cardinal read GetThreadPoolSize
-      write SetThreadPoolSize stored IsThreadPoolSize;
+      write SetThreadPoolSize stored IsThreadPoolSize default 0;
     property ConnectionTimeout: Cardinal read GetConnectionTimeout
-      write SetConnectionTimeout stored IsConnectionTimeout;
+      write SetConnectionTimeout stored IsConnectionTimeout default 0;
     property ConnectionLimit: Cardinal read GetConnectionLimit
-      write SetConnectionLimit stored IsConnectionLimit;
+      write SetConnectionLimit stored IsConnectionLimit default 0;
     property NoFavicon: Boolean read FNoFavicon write FNoFavicon
-      stored IsNoFavicon;
-    property Security: TBrookCustomHTTPServerSecurity read FSecurity
+      stored IsNoFavicon default False;
+    property Security: TBrookHTTPServerSecurity read FSecurity
       write SetSecurity;
     property OnAuthenticate: TBrookHTTPAuthenticateEvent read FOnAuthenticate
       write FOnAuthenticate;
@@ -242,39 +233,17 @@ type
     property OnError: TBrookErrorEvent read FOnError write FOnError;
   end;
 
-  TBrookHTTPServer = class(TBrookCustomHTTPServer)
-  published
-    property Active;
-    property Authenticated;
-    property Port default 0;
-    property Threaded default False;
-    property UploadsDir;
-    property PostBufferSize default BROOK_POST_BUFFER_SIZE;
-    property PayloadLimit default BROOK_PAYLOAD_LIMIT;
-    property UploadsLimit default BROOK_UPLOADS_LIMIT;
-    property ThreadPoolSize default 0;
-    property ConnectionTimeout default 0;
-    property ConnectionLimit default 0;
-    property NoFavicon default False;
-    property Security;
-    property OnAuthenticate;
-    property OnAuthenticateError;
-    property OnRequest;
-    property OnRequestError;
-    property OnError;
-  end;
-
 implementation
 
-{ TBrookCustomHTTPServerSecurity }
+{ TBrookHTTPServerSecurity }
 
-procedure TBrookCustomHTTPServerSecurity.Assign(ASource: TPersistent);
+procedure TBrookHTTPServerSecurity.Assign(ASource: TPersistent);
 var
-  VSource: TBrookCustomHTTPServerSecurity;
+  VSource: TBrookHTTPServerSecurity;
 begin
-  if ASource is TBrookCustomHTTPServerSecurity then
+  if ASource is TBrookHTTPServerSecurity then
   begin
-    VSource := ASource as TBrookCustomHTTPServerSecurity;
+    VSource := ASource as TBrookHTTPServerSecurity;
     FPrivateKey := VSource.FPrivateKey;
     FPrivatePassword := VSource.FPrivatePassword;
     FCertificate := VSource.FCertificate;
@@ -285,12 +254,12 @@ begin
     inherited Assign(ASource);
 end;
 
-function TBrookCustomHTTPServerSecurity.IsActive: Boolean;
+function TBrookHTTPServerSecurity.IsActive: Boolean;
 begin
   Result := FActive;
 end;
 
-procedure TBrookCustomHTTPServerSecurity.Validate;
+procedure TBrookHTTPServerSecurity.Validate;
 begin
   if FPrivateKey.IsEmpty then
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyPrivateKey);
@@ -298,7 +267,7 @@ begin
     raise EBrookHTTPServerSecurity.CreateRes(@SBrookEmptyCertificate);
 end;
 
-procedure TBrookCustomHTTPServerSecurity.Clear;
+procedure TBrookHTTPServerSecurity.Clear;
 begin
   FActive := False;
   FPrivateKey := '';
@@ -308,9 +277,9 @@ begin
   FDHParams := '';
 end;
 
-{ TBrookCustomHTTPServer }
+{ TBrookHTTPServer }
 
-constructor TBrookCustomHTTPServer.Create(AOwner: TComponent);
+constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSecurity := CreateSecurity;
@@ -319,7 +288,7 @@ begin
   FUploadsLimit := BROOK_UPLOADS_LIMIT;
 end;
 
-destructor TBrookCustomHTTPServer.Destroy;
+destructor TBrookHTTPServer.Destroy;
 begin
   FSecurity.Free;
   try
@@ -329,7 +298,7 @@ begin
   end;
 end;
 
-procedure TBrookCustomHTTPServer.InternalCreateServerHandle;
+procedure TBrookHTTPServer.InternalCreateServerHandle;
 var
   VACb: sg_httpauth_cb;
 begin
@@ -344,14 +313,14 @@ begin
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateServerHandle);
 end;
 
-procedure TBrookCustomHTTPServer.InternalFreeServerHandle;
+procedure TBrookHTTPServer.InternalFreeServerHandle;
 begin
   { sg_httpsrv_shutdown() is called internally by sg_httpsrv_free(). }
   sg_httpsrv_free(FHandle);
   FHandle := nil;
 end;
 
-procedure TBrookCustomHTTPServer.InternalCheckServerOption(Aret: cint);
+procedure TBrookHTTPServer.InternalCheckServerOption(Aret: cint);
 begin
   if Aret <> 0 then
   begin
@@ -360,38 +329,36 @@ begin
   end;
 end;
 
-function TBrookCustomHTTPServer.CreateAuthentication(
+function TBrookHTTPServer.CreateAuthentication(
   AHandle: Pointer): TBrookHTTPAuthentication;
 begin
   Result := TBrookHTTPAuthentication.Create(AHandle);
 end;
 
-function TBrookCustomHTTPServer.CreateSecurity: TBrookCustomHTTPServerSecurity;
+function TBrookHTTPServer.CreateSecurity: TBrookHTTPServerSecurity;
 begin
   Result := TBrookHTTPServerSecurity.Create;
 end;
 
-function TBrookCustomHTTPServer.CreateRequest(
-  AHandle: Pointer): TBrookHTTPRequest;
+function TBrookHTTPServer.CreateRequest(AHandle: Pointer): TBrookHTTPRequest;
 begin
   Result := TBrookHTTPRequest.Create(AHandle);
 end;
 
-function TBrookCustomHTTPServer.CreateResponse(
-  AHandle: Pointer): TBrookHTTPResponse;
+function TBrookHTTPServer.CreateResponse(AHandle: Pointer): TBrookHTTPResponse;
 begin
   Result := TBrookHTTPResponse.Create(AHandle);
 end;
 
-function TBrookCustomHTTPServer.CreateError(const AMessage: string): Exception;
+function TBrookHTTPServer.CreateError(const AMessage: string): Exception;
 begin
   Result := EBrookHTTPServer.Create(AMessage);
 end;
 
-class function TBrookCustomHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;
+class function TBrookHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;
   Aauth: Psg_httpauth; Areq: Psg_httpreq; Ares: Psg_httpres): cbool;
 var
-  VSrv: TBrookCustomHTTPServer;
+  VSrv: TBrookHTTPServer;
   VAuth: TBrookHTTPAuthentication;
   VReq: TBrookHTTPRequest;
   VRes: TBrookHTTPResponse;
@@ -414,10 +381,10 @@ begin
   end;
 end;
 
-class procedure TBrookCustomHTTPServer.DoRequestCallback(Acls: Pcvoid;
+class procedure TBrookHTTPServer.DoRequestCallback(Acls: Pcvoid;
   Areq: Psg_httpreq; Ares: Psg_httpres);
 var
-  VSrv: TBrookCustomHTTPServer;
+  VSrv: TBrookHTTPServer;
   VReq: TBrookHTTPRequest;
   VRes: TBrookHTTPResponse;
 begin
@@ -435,10 +402,10 @@ begin
   end;
 end;
 
-class procedure TBrookCustomHTTPServer.DoErrorCallback(Acls: Pcvoid;
+class procedure TBrookHTTPServer.DoErrorCallback(Acls: Pcvoid;
   const Aerr: Pcchar);
 var
-  VSrv: TBrookCustomHTTPServer;
+  VSrv: TBrookHTTPServer;
   VExcept: Exception;
 begin
   VSrv := Acls;
@@ -450,13 +417,13 @@ begin
   end;
 end;
 
-procedure TBrookCustomHTTPServer.CheckInactive;
+procedure TBrookHTTPServer.CheckInactive;
 begin
   if (not (csLoading in ComponentState)) and Active then
     raise EInvalidOpException.CreateRes(@SBrookActiveServer);
 end;
 
-procedure TBrookCustomHTTPServer.Loaded;
+procedure TBrookHTTPServer.Loaded;
 begin
   inherited Loaded;
   try
@@ -477,12 +444,12 @@ begin
   end;
 end;
 
-function TBrookCustomHTTPServer.GetHandle: Pointer;
+function TBrookHTTPServer.GetHandle: Pointer;
 begin
   Result := FHandle;
 end;
 
-procedure TBrookCustomHTTPServer.DoError(ASender: TObject;
+procedure TBrookHTTPServer.DoError(ASender: TObject;
   AException: Exception);
 begin
   if Assigned(FOnError) then
@@ -494,7 +461,7 @@ begin
       ShowException(AException, Pointer(AException));
 end;
 
-function TBrookCustomHTTPServer.DoAuthenticate(ASender: TObject;
+function TBrookHTTPServer.DoAuthenticate(ASender: TObject;
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse): Boolean;
 begin
@@ -502,7 +469,7 @@ begin
     FOnAuthenticate(ASender, AAuthentication, ARequest, AResponse);
 end;
 
-procedure TBrookCustomHTTPServer.DoAuthenticateError(ASender: TObject;
+procedure TBrookHTTPServer.DoAuthenticateError(ASender: TObject;
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse; AException: Exception);
 begin
@@ -513,7 +480,7 @@ begin
     HandleRequestError(ARequest, AResponse, AException);
 end;
 
-procedure TBrookCustomHTTPServer.DoRequest(ASender: TObject;
+procedure TBrookHTTPServer.DoRequest(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
   if Assigned(FOnRequest) then
@@ -522,7 +489,7 @@ begin
     AResponse.SendEmpty;
 end;
 
-procedure TBrookCustomHTTPServer.DoRequestError(ASender: TObject;
+procedure TBrookHTTPServer.DoRequestError(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
   AException: Exception);
 begin
@@ -532,7 +499,7 @@ begin
     AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
 end;
 
-function TBrookCustomHTTPServer.HandleAuthenticate(
+function TBrookHTTPServer.HandleAuthenticate(
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse): Boolean;
 begin
@@ -547,7 +514,7 @@ begin
   end;
 end;
 
-procedure TBrookCustomHTTPServer.HandleAuthenticateError(
+procedure TBrookHTTPServer.HandleAuthenticateError(
   AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse; AException: Exception);
 begin
@@ -560,7 +527,7 @@ begin
   end;
 end;
 
-procedure TBrookCustomHTTPServer.HandleRequest(ARequest: TBrookHTTPRequest;
+procedure TBrookHTTPServer.HandleRequest(ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
 begin
   try
@@ -571,9 +538,8 @@ begin
   end;
 end;
 
-procedure TBrookCustomHTTPServer.HandleRequestError(
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
-  AException: Exception);
+procedure TBrookHTTPServer.HandleRequestError(ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse; AException: Exception);
 begin
   AResponse.Clear;
   try
@@ -584,43 +550,42 @@ begin
   end;
 end;
 
-procedure TBrookCustomHTTPServer.SetPort(AValue: UInt16);
+procedure TBrookHTTPServer.SetPort(AValue: UInt16);
 begin
   if not FStreamedActive then
     CheckInactive;
   FPort := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetPostBufferSize(AValue: NativeUInt);
+procedure TBrookHTTPServer.SetPostBufferSize(AValue: NativeUInt);
 begin
   if not FStreamedActive then
     CheckInactive;
   FPostBufferSize := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetConnectionLimit(AValue: Cardinal);
+procedure TBrookHTTPServer.SetConnectionLimit(AValue: Cardinal);
 begin
   if not FStreamedActive then
     CheckInactive;
   FConnectionLimit := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetConnectionTimeout(AValue: Cardinal);
+procedure TBrookHTTPServer.SetConnectionTimeout(AValue: Cardinal);
 begin
   if not FStreamedActive then
     CheckInactive;
   FConnectionTimeout := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetPayloadLimit(AValue: NativeUInt);
+procedure TBrookHTTPServer.SetPayloadLimit(AValue: NativeUInt);
 begin
   if not FStreamedActive then
     CheckInactive;
   FPayloadLimit := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetSecurity(
-  AValue: TBrookCustomHTTPServerSecurity);
+procedure TBrookHTTPServer.SetSecurity(AValue: TBrookHTTPServerSecurity);
 begin
   if FSecurity = AValue then
     Exit;
@@ -630,14 +595,14 @@ begin
     FSecurity.Clear;
 end;
 
-procedure TBrookCustomHTTPServer.SetUploadsLimit(AValue: UInt64);
+procedure TBrookHTTPServer.SetUploadsLimit(AValue: UInt64);
 begin
   if not FStreamedActive then
     CheckInactive;
   FUploadsLimit := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetThreaded(AValue: Boolean);
+procedure TBrookHTTPServer.SetThreaded(AValue: Boolean);
 begin
   if not FStreamedActive then
     CheckInactive;
@@ -646,7 +611,7 @@ begin
     System.IsMultiThread := True;
 end;
 
-procedure TBrookCustomHTTPServer.SetThreadPoolSize(AValue: Cardinal);
+procedure TBrookHTTPServer.SetThreadPoolSize(AValue: Cardinal);
 begin
   if not FStreamedActive then
     CheckInactive;
@@ -655,44 +620,44 @@ begin
     System.IsMultiThread := True;
 end;
 
-procedure TBrookCustomHTTPServer.SetUploadsDir(const AValue: string);
+procedure TBrookHTTPServer.SetUploadsDir(const AValue: string);
 begin
   if not FStreamedActive then
     CheckInactive;
   FUploadsDir := AValue;
 end;
 
-function TBrookCustomHTTPServer.IsConnectionLimit: Boolean;
+function TBrookHTTPServer.IsConnectionLimit: Boolean;
 begin
   Result := FConnectionLimit > 0;
 end;
 
-function TBrookCustomHTTPServer.IsConnectionTimeout: Boolean;
+function TBrookHTTPServer.IsConnectionTimeout: Boolean;
 begin
   Result := FConnectionTimeout > 0;
 end;
 
-function TBrookCustomHTTPServer.IsNoFavicon: Boolean;
+function TBrookHTTPServer.IsNoFavicon: Boolean;
 begin
   Result := FNoFavicon;
 end;
 
-function TBrookCustomHTTPServer.IsPayloadLimit: Boolean;
+function TBrookHTTPServer.IsPayloadLimit: Boolean;
 begin
   Result := FPayloadLimit <> BROOK_PAYLOAD_LIMIT;
 end;
 
-function TBrookCustomHTTPServer.IsUploadsLimit: Boolean;
+function TBrookHTTPServer.IsUploadsLimit: Boolean;
 begin
   Result := FUploadsLimit <> BROOK_UPLOADS_LIMIT;
 end;
 
-function TBrookCustomHTTPServer.IsActive: Boolean;
+function TBrookHTTPServer.IsActive: Boolean;
 begin
   Result := FActive;
 end;
 
-function TBrookCustomHTTPServer.GetPort: UInt16;
+function TBrookHTTPServer.GetPort: UInt16;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -702,7 +667,7 @@ begin
   Result := FPort;
 end;
 
-function TBrookCustomHTTPServer.GetThreaded: Boolean;
+function TBrookHTTPServer.GetThreaded: Boolean;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -712,7 +677,7 @@ begin
   Result := FThreaded;
 end;
 
-function TBrookCustomHTTPServer.GetUploadsDir: string;
+function TBrookHTTPServer.GetUploadsDir: string;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -722,7 +687,7 @@ begin
   Result := FUploadsDir;
 end;
 
-function TBrookCustomHTTPServer.GetPostBufferSize: NativeUInt;
+function TBrookHTTPServer.GetPostBufferSize: NativeUInt;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -732,7 +697,7 @@ begin
   Result := FPostBufferSize;
 end;
 
-function TBrookCustomHTTPServer.GetPayloadLimit: NativeUInt;
+function TBrookHTTPServer.GetPayloadLimit: NativeUInt;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -742,7 +707,7 @@ begin
   Result := FPayloadLimit;
 end;
 
-function TBrookCustomHTTPServer.GetUploadsLimit: UInt64;
+function TBrookHTTPServer.GetUploadsLimit: UInt64;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -752,7 +717,7 @@ begin
   Result := FUploadsLimit;
 end;
 
-function TBrookCustomHTTPServer.GetThreadPoolSize: Cardinal;
+function TBrookHTTPServer.GetThreadPoolSize: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -762,7 +727,7 @@ begin
   Result := FThreadPoolSize;
 end;
 
-function TBrookCustomHTTPServer.GetConnectionTimeout: Cardinal;
+function TBrookHTTPServer.GetConnectionTimeout: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -772,7 +737,7 @@ begin
   Result := FConnectionTimeout;
 end;
 
-function TBrookCustomHTTPServer.GetConnectionLimit: Cardinal;
+function TBrookHTTPServer.GetConnectionLimit: Cardinal;
 begin
   if FActive and not (csDesigning in ComponentState) then
   begin
@@ -782,37 +747,37 @@ begin
   Result := FConnectionLimit;
 end;
 
-function TBrookCustomHTTPServer.IsAuthenticated: Boolean;
+function TBrookHTTPServer.IsAuthenticated: Boolean;
 begin
   Result := FAuthenticated;
 end;
 
-function TBrookCustomHTTPServer.IsPort: Boolean;
+function TBrookHTTPServer.IsPort: Boolean;
 begin
   Result := FPort <> 0;
 end;
 
-function TBrookCustomHTTPServer.IsPostBufferSize: Boolean;
+function TBrookHTTPServer.IsPostBufferSize: Boolean;
 begin
   Result := FPostBufferSize <> BROOK_POST_BUFFER_SIZE;
 end;
 
-function TBrookCustomHTTPServer.IsThreaded: Boolean;
+function TBrookHTTPServer.IsThreaded: Boolean;
 begin
   Result := FThreaded;
 end;
 
-function TBrookCustomHTTPServer.IsThreadPoolSize: Boolean;
+function TBrookHTTPServer.IsThreadPoolSize: Boolean;
 begin
   Result := FThreadPoolSize > 0;
 end;
 
-function TBrookCustomHTTPServer.IsUploadsDir: Boolean;
+function TBrookHTTPServer.IsUploadsDir: Boolean;
 begin
   Result := not FUploadsDir.IsEmpty;
 end;
 
-procedure TBrookCustomHTTPServer.SetAuthenticated(AValue: Boolean);
+procedure TBrookHTTPServer.SetAuthenticated(AValue: Boolean);
 begin
   if not FStreamedActive then
     CheckInactive;
@@ -823,7 +788,7 @@ begin
   FAuthenticated := AValue;
 end;
 
-procedure TBrookCustomHTTPServer.SetActive(AValue: Boolean);
+procedure TBrookHTTPServer.SetActive(AValue: Boolean);
 begin
   if AValue = FActive then
     Exit;
@@ -845,7 +810,7 @@ begin
       DoClose;
 end;
 
-procedure TBrookCustomHTTPServer.DoOpen;
+procedure TBrookHTTPServer.DoOpen;
 var
   M: TMarshaller;
 begin
@@ -892,7 +857,7 @@ begin
     InternalFreeServerHandle;
 end;
 
-procedure TBrookCustomHTTPServer.DoClose;
+procedure TBrookHTTPServer.DoClose;
 begin
   if not Assigned(FHandle) then
     Exit;
@@ -901,12 +866,12 @@ begin
   FActive := False;
 end;
 
-procedure TBrookCustomHTTPServer.Open;
+procedure TBrookHTTPServer.Open;
 begin
   SetActive(True);
 end;
 
-procedure TBrookCustomHTTPServer.Close;
+procedure TBrookHTTPServer.Close;
 begin
   SetActive(False);
 end;
