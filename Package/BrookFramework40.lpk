@@ -11,7 +11,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="18">
+    <Files Count="19">
       <Item1>
         <Filename Value="../Source/libsagui.pas"/>
         <UnitName Value="libsagui"/>
@@ -73,18 +73,22 @@
         <UnitName Value="BrookHTTPResponse"/>
       </Item15>
       <Item16>
-        <Filename Value="../Source/BrookHTTPRouter.pas"/>
-        <UnitName Value="BrookHTTPRouter"/>
+        <Filename Value="../Source/BrookHTTPEntryPoints.pas"/>
+        <UnitName Value="BrookHTTPEntryPoints"/>
       </Item16>
       <Item17>
-        <Filename Value="../Source/BrookHTTPServer.pas"/>
-        <UnitName Value="BrookHTTPServer"/>
+        <Filename Value="../Source/BrookHTTPRouter.pas"/>
+        <UnitName Value="BrookHTTPRouter"/>
       </Item17>
       <Item18>
+        <Filename Value="../Source/BrookHTTPServer.pas"/>
+        <UnitName Value="BrookHTTPServer"/>
+      </Item18>
+      <Item19>
         <Filename Value="BrookIDEIntegration.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="BrookIDEIntegration"/>
-      </Item18>
+      </Item19>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

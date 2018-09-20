@@ -116,6 +116,7 @@ implementation
 
 uses
   BrookLibraryLoader,
+  BrookHTTPEntryPoints,
   BrookHTTPRouter,
   BrookHTTPServer;
 
@@ -148,6 +149,7 @@ procedure Register;
 begin
   RegisterComponents('Brook', [
     TBrookLibraryLoader,
+    TBrookHTTPEntryPoints,
     TBrookHTTPRouter,
     TBrookHTTPServer
   ]);

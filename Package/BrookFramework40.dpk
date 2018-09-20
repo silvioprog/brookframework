@@ -71,6 +71,7 @@ contains
   BrookHTTPUploads in '..\Source\BrookHTTPUploads.pas',
   BrookHTTPRequest in '..\Source\BrookHTTPRequest.pas',
   BrookHTTPResponse in '..\Source\BrookHTTPResponse.pas',
+  BrookHTTPEntryPoints in '..\Source\BrookHTTPEntryPoints.pas',
   BrookHTTPRouter in '..\Source\BrookHTTPRouter.pas',
   BrookHTTPServer in '..\Source\BrookHTTPServer.pas',
   BrookIDEIntegration in 'BrookIDEIntegration.pas';

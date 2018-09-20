@@ -183,13 +183,13 @@ type
   TBrookHTTPRoutes = class(TBrookHandleOwnedCollection)
   private
     FHandle: Psg_route;
-    function GetItem(AIndex: Integer): TBrookHTTPRoute;
-    procedure SetItem(AIndex: Integer; AValue: TBrookHTTPRoute);
-    procedure InternalAdd(ARoute: TBrookHTTPRoute);
   protected
     function GetHandle: Pointer; override;
     class function GetRoutePattern(ARoute: TBrookHTTPRoute): string; virtual;
     class function GetRouteLabel: string; virtual;
+    function GetItem(AIndex: Integer): TBrookHTTPRoute; virtual;
+    procedure SetItem(AIndex: Integer; AValue: TBrookHTTPRoute); virtual;
+    procedure InternalAdd(ARoute: TBrookHTTPRoute); virtual;
     procedure Prepare; virtual;
   public
     constructor Create(AOwner: TPersistent); virtual;
@@ -234,13 +234,13 @@ type
     procedure DoClose; virtual;
     procedure CheckItems; inline;
     procedure CheckActive; inline;
-    function DispatchRoute(const APath: string;
-      AUserData: Pointer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Open;
     procedure Close;
+    function DispatchRoute(const APath: string;
+      AUserData: Pointer): Boolean; virtual;
     procedure Route(ASender: TObject;
       const ARoute: string; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); overload; virtual;
@@ -712,11 +712,11 @@ end;
 
 destructor TBrookHTTPRouter.Destroy;
 begin
-  FRoutes.Free;
   try
     SetActive(False);
   finally
     inherited Destroy;
+    FRoutes.Free;
   end;
 end;
 
