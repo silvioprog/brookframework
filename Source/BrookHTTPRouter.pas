@@ -299,8 +299,7 @@ begin
   inherited Destroy;
 end;
 
-class procedure TBrookHTTPRoute.DoRouteCallback(Acls: Pcvoid; Aroute: Psg_route
-  ); cdecl;
+class procedure TBrookHTTPRoute.DoRouteCallback(Acls: Pcvoid; Aroute: Psg_route);
 var
   VRoute: TBrookHTTPRoute;
 begin
@@ -310,7 +309,7 @@ begin
 end;
 
 class function TBrookHTTPRoute.DoGetSegmentsCallback(Acls: Pcvoid;
-  const Asegment: Pcchar): cint; cdecl;
+  const Asegment: Pcchar): cint;
 var
   VSegments: ^TArray<string>;
 begin
@@ -325,7 +324,7 @@ begin
 end;
 
 class function TBrookHTTPRoute.DoGetVarsCallback(Acls: Pcvoid;
-  const Aname: Pcchar; const Aval: Pcchar): cint; cdecl;
+  const Aname: Pcchar; const Aval: Pcchar): cint;
 begin
   TBrookStringMap(Acls).Add(TMarshal.ToString(Aname), TMarshal.ToString(Aval));
   Result := 0;
