@@ -120,7 +120,7 @@ type
     function GetUserData: Pointer;
     procedure SetPattern(const AValue: string);
     function IsMethods: Boolean;
-    function GetSegments: TArray<string>; inline;
+    function GetSegments: TArray<string>;{$IFNDEF FPC}inline;{$ENDIF}
   protected
     class procedure DoRouteCallback(Acls: Pcvoid;
       Aroute: Psg_route); cdecl; static;
@@ -510,13 +510,13 @@ procedure TBrookHTTPRoute.HandleRequest(ASender: TObject;
   ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
 var
-  VAllowed: Boolean;
+  A: Boolean;
 begin
   try
     CheckMethods;
-    VAllowed := IsReqMethodAllowed(ARequest.Method);
-    DoRequestMethod(ASender, ARoute, ARequest, AResponse, VAllowed);
-    if VAllowed then
+    A := IsReqMethodAllowed(ARequest.Method);
+    DoRequestMethod(ASender, ARoute, ARequest, AResponse, A);
+    if A then
       DoRequest(ASender, ARoute, ARequest, AResponse)
     else
       HandleReqMethodNotAllowed(ARequest.Method, AResponse);
@@ -782,7 +782,11 @@ begin
   if csDesigning in ComponentState then
   begin
     if not (csLoading in ComponentState) then
+    begin
       SgLib.Check;
+      if AValue then
+        CheckItems;
+    end;
     FActive := AValue;
   end
   else
