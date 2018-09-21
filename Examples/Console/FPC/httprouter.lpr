@@ -32,13 +32,42 @@ program httprouter;
 uses
   SysUtils,
   Classes,
-  BrookLibraryLoader,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPRouter,
   BrookHTTPServer;
 
 type
+
+  { TRouteHome }
+
+  TRouteHome = class(TBrookHTTPRoute)
+  protected
+    procedure DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); override;
+  public
+    procedure AfterConstruction; override;
+  end;
+
+  { TRouteDownload }
+
+  TRouteDownload = class(TBrookHTTPRoute)
+  protected
+    procedure DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); override;
+  public
+    procedure AfterConstruction; override;
+  end;
+
+  { TRoutePage }
+
+  TRoutePage = class(TBrookHTTPRoute)
+  protected
+    procedure DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); override;
+  public
+    procedure AfterConstruction; override;
+  end;
 
   { TRouter }
 
@@ -53,21 +82,54 @@ type
   THTTPServer = class(TBrookHTTPServer)
   private
     FRouter: TRouter;
-    procedure RouteDownloads(ASender: TObject; ARoute: TBrookHTTPRoute;
-      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-    procedure RouteHome(ASender: TObject; ARoute: TBrookHTTPRoute;
-      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-    procedure RoutePage(ASender: TObject; ARoute: TBrookHTTPRoute;
-      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
   protected
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure AddRoute(const APattern: string;
-      ARequestEvent: TBrookHTTPRouteRequestEvent);
     property Router: TRouter read FRouter;
   end;
+
+{ TRouteHome }
+
+procedure TRouteHome.AfterConstruction;
+begin
+  Pattern := '/home';
+end;
+
+procedure TRouteHome.DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send('Home page', 'text/plain', 200);
+end;
+
+{ TRouteDownload }
+
+procedure TRouteDownload.AfterConstruction;
+begin
+  Pattern := '/download/(?P<file>[a-z]+)';
+end;
+
+procedure TRouteDownload.DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send('Downloaded file: %s',
+    [ARoute.Variables['file']], 'text/plain', 200);
+end;
+
+{ TRoutePage }
+
+procedure TRoutePage.AfterConstruction;
+begin
+  Pattern := '/page/([0-9]+)';
+end;
+
+procedure TRoutePage.DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
+  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send('Page number: %d', [ARoute.Segments[0].ToInteger],
+    'text/plain', 200);
+end;
 
 { TRouter }
 
@@ -83,40 +145,10 @@ constructor THTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRouter := TRouter.Create(Self);
-  AddRoute('/home', RouteHome);
-  AddRoute('/download/(?P<file>[a-z]+)', RouteDownloads);
-  AddRoute('/page/([0-9]+)', RoutePage);
+  TRouteHome.Create(FRouter.Routes);
+  TRouteDownload.Create(FRouter.Routes);
+  TRoutePage.Create(FRouter.Routes);
   FRouter.Active := True;
-end;
-
-procedure THTTPServer.AddRoute(const APattern: string;
-  ARequestEvent: TBrookHTTPRouteRequestEvent);
-var
-  RT: TBrookHTTPRoute;
-begin
-  RT := Router.Routes.Add;
-  RT.Pattern := APattern;
-  RT.OnRequest := ARequestEvent;
-end;
-
-procedure THTTPServer.RouteHome(ASender: TObject; ARoute: TBrookHTTPRoute;
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-begin
-  AResponse.Send('Home page', 'text/plain', 200);
-end;
-
-procedure THTTPServer.RouteDownloads(ASender: TObject; ARoute: TBrookHTTPRoute;
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-begin
-  AResponse.Send('Downloaded file: %s',
-    [ARoute.Variables['file']], 'text/plain', 200);
-end;
-
-procedure THTTPServer.RoutePage(ASender: TObject; ARoute: TBrookHTTPRoute;
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-begin
-  AResponse.Send('Page number: %d', [ARoute.Segments[0].ToInteger],
-    'text/plain', 200);
 end;
 
 procedure THTTPServer.DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
