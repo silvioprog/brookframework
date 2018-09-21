@@ -191,8 +191,10 @@ type
     procedure SetItem(AIndex: Integer; AValue: TBrookHTTPRoute); virtual;
     procedure InternalAdd(ARoute: TBrookHTTPRoute); virtual;
     procedure Prepare; virtual;
+    procedure Unprepare; virtual;
   public
     constructor Create(AOwner: TPersistent); virtual;
+    destructor Destroy; override;
     class function GetRouterClass: TBrookHTTPRouteClass; virtual;
     function GetEnumerator: TBrookHTTPRoutesEnumerator;
     procedure Assign(ASource: TPersistent); override;
@@ -545,6 +547,12 @@ begin
   inherited Create(AOwner, GetRouterClass);
 end;
 
+destructor TBrookHTTPRoutes.Destroy;
+begin
+  Unprepare;
+  inherited Destroy;
+end;
+
 class function TBrookHTTPRoutes.GetRouterClass: TBrookHTTPRouteClass;
 begin
   Result := TBrookHTTPRoute;
@@ -632,6 +640,12 @@ begin
   end;
 end;
 
+procedure TBrookHTTPRoutes.Unprepare;
+begin
+  SgLib.Check;
+  SgLib.CheckLastError(sg_routes_cleanup(@FHandle));
+end;
+
 function TBrookHTTPRoutes.Add: TBrookHTTPRoute;
 begin
   Result := TBrookHTTPRoute(inherited Add);
@@ -697,8 +711,7 @@ end;
 procedure TBrookHTTPRoutes.Clear;
 begin
   inherited Clear;
-  SgLib.Check;
-  SgLib.CheckLastError(sg_routes_cleanup(@FHandle));
+  Unprepare;
 end;
 
 { TBrookHTTPRouter }
