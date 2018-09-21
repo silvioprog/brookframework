@@ -60,6 +60,9 @@ type
     procedure CheckInactive; inline;
     function GetHandle: Pointer; override;
   public
+    { Loads the library dynamically.
+      @return(@True if the library is succesfully loaded.) }
+    class function Load(const ALibraryName: TFileName): Boolean;
     { Loads the library dynamically. }
     procedure Open; virtual;
     { Unloads the library dynamically. }
@@ -103,6 +106,11 @@ end;
 function TBrookLibraryLoader.GetHandle: Pointer;
 begin
   Result := @FHandle;
+end;
+
+class function TBrookLibraryLoader.Load(const ALibraryName: TFileName): Boolean;
+begin
+  Result := SgLib.Load(ALibraryName) <> NilHandle;
 end;
 
 procedure TBrookLibraryLoader.SetActive(AValue: Boolean);
