@@ -28,10 +28,14 @@ program httprouter;
 
 {$MODE DELPHI}
 {$WARN 5024 OFF}
+//{$DEFINE CUSTOM_LIBRARY_PATH} Uncomment to customize the full library path ...
 
 uses
   SysUtils,
   Classes,
+{$IFDEF CUSTOM_LIBRARY_PATH}
+  BrookLibraryLoader,
+{$ENDIF}
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPRouter,
@@ -157,6 +161,13 @@ begin
 end;
 
 begin
+{$IFDEF CUSTOM_LIBRARY_PATH}
+  if not TBrookLibraryLoader.Load('/full/path/to/the/libsagui.<dll|so|dylib>') then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt;
+  end;
+{$ENDIF}
   with TServer.Create(nil) do
   try
     Open;
