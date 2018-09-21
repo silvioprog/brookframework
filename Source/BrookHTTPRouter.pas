@@ -642,6 +642,8 @@ end;
 
 procedure TBrookHTTPRoutes.Unprepare;
 begin
+  if not Assigned(FHandle) then
+    Exit;
   SgLib.Check;
   SgLib.CheckLastError(sg_routes_cleanup(@FHandle));
 end;
