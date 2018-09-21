@@ -77,9 +77,9 @@ type
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); override;
   end;
 
-  { THTTPServer }
+  { TServer }
 
-  THTTPServer = class(TBrookHTTPServer)
+  TServer = class(TBrookHTTPServer)
   private
     FRouter: TRouter;
   protected
@@ -87,7 +87,6 @@ type
       AResponse: TBrookHTTPResponse); override;
   public
     constructor Create(AOwner: TComponent); override;
-    property Router: TRouter read FRouter;
   end;
 
 { TRouteHome }
@@ -139,9 +138,9 @@ begin
   AResponse.Send('Page not found', 'text/plain', 404);
 end;
 
-{ THTTPServer }
+{ TServer }
 
-constructor THTTPServer.Create(AOwner: TComponent);
+constructor TServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRouter := TRouter.Create(Self);
@@ -151,14 +150,14 @@ begin
   FRouter.Active := True;
 end;
 
-procedure THTTPServer.DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
+procedure TServer.DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
 begin
-  Router.Route(ASender, ARequest, AResponse);
+  FRouter.Route(ASender, ARequest, AResponse);
 end;
 
 begin
-  with THTTPServer.Create(nil) do
+  with TServer.Create(nil) do
   try
     Open;
     if not Active then
