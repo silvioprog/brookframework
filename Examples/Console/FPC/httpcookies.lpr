@@ -45,7 +45,7 @@ const
   COOKIE_NAME = 'refresh_count';
 
 type
-  THTTPServer = class(TBrookCustomHTTPServer)
+  THTTPServer = class(TBrookHTTPServer)
   protected
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); override;

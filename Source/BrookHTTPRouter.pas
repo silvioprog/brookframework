@@ -487,12 +487,11 @@ end;
 
 procedure TBrookHTTPRoute.HandleMatch(ARoute: TBrookHTTPRoute);
 var
-  VClosure: TBrookHTTPRouteClosure;
+  CLS: TBrookHTTPRouteClosure;
 begin
   DoMatch(ARoute);
-  VClosure := TBrookHTTPRouteClosure(ARoute.UserData^);
-  HandleRequest(VClosure.Sender, TBrookHTTPRoute(ARoute), VClosure.Request,
-    VClosure.Response);
+  CLS := TBrookHTTPRouteClosure(ARoute.UserData^);
+  HandleRequest(CLS.Sender, TBrookHTTPRoute(ARoute), CLS.Request, CLS.Response);
 end;
 
 function TBrookHTTPRoute.IsReqMethodAllowed(const AMethod: string): Boolean;
@@ -864,12 +863,12 @@ end;
 procedure TBrookHTTPRouter.Route(ASender: TObject; const ARoute: string;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
-  VClosure: TBrookHTTPRouteClosure;
+  CLS: TBrookHTTPRouteClosure;
 begin
-  VClosure.Request := ARequest;
-  VClosure.Response := AResponse;
-  VClosure.Sender := ASender;
-  if DispatchRoute(ARoute, @VClosure) then
+  CLS.Request := ARequest;
+  CLS.Response := AResponse;
+  CLS.Sender := ASender;
+  if DispatchRoute(ARoute, @CLS) then
     DoRoute(ASender, ARoute, ARequest, AResponse)
   else
     DoNotFound(ASender, ARoute, ARequest, AResponse);

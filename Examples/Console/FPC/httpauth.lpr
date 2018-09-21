@@ -46,7 +46,7 @@ uses
   BrookHTTPServer;
 
 type
-  THTTPServer = class(TBrookCustomHTTPServer)
+  THTTPServer = class(TBrookHTTPServer)
   protected
     function DoAuthenticate(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;

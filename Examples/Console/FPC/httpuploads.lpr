@@ -66,7 +66,7 @@ const
   CONTENT_TYPE = 'text/html; charset=utf-8';
 
 type
-  THTTPServer = class(TBrookCustomHTTPServer)
+  THTTPServer = class(TBrookHTTPServer)
   protected
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); override;

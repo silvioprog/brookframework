@@ -648,17 +648,17 @@ end;
 procedure TBrookHTTPEntryPoints.Go(ASender: TObject; const APath: string;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
-  VRouter: TBrookHTTPRouter;
-  VEntryPoint, VPath: string;
+  RT: TBrookHTTPRouter;
+  EP, P: string;
 begin
   CheckItems;
   CheckActive;
-  VEntryPoint := BrookFixEntryPoint(APath);
-  VPath := APath.SubString(VEntryPoint.Length);
-  if FList.Find(VEntryPoint, VRouter) then
-    HandleRoute(ASender, VEntryPoint, VPath, VRouter, ARequest, AResponse)
+  EP := BrookFixEntryPoint(APath);
+  P := APath.SubString(EP.Length);
+  if FList.Find(EP, RT) then
+    HandleRoute(ASender, EP, P, RT, ARequest, AResponse)
   else
-    DoNotFound(ASender, VEntryPoint, VPath, ARequest, AResponse);
+    DoNotFound(ASender, EP, P, ARequest, AResponse);
 end;
 
 procedure TBrookHTTPEntryPoints.Go(ASender: TObject;
