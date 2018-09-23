@@ -54,6 +54,8 @@ uses
 resourcestring
   SBrookSelectLibraryTitle = 'Select library ...';
   SBrookSharedLibraryFilter = 'Shared libraries (%s)|%s|All files (*.*)|*.*';
+  SBrookHTTPRoutesEditor = 'HTTP routes editor ...';
+  SBrookHTTPEntryPointsEditor = 'HTTP entry-points editor ...';
 
 type
 
@@ -106,6 +108,24 @@ type
     procedure EditProperty(const AProperty:
 {$IFDEF LCL}TPropertyEditor{$ELSE}IProperty{$ENDIF};
       var AContinue: Boolean); override;
+  end;
+
+  { TBrookHTTPRouterComponentEditor }
+
+  TBrookHTTPRouterComponentEditor = class(TComponentEditor)
+  public
+    procedure ExecuteVerb(AIndex: Integer); override;
+    function GetVerb(AIndex: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
+  { TBrookHTTPEntryPointsComponentEditor }
+
+  TBrookHTTPEntryPointsComponentEditor = class(TComponentEditor)
+  public
+    procedure ExecuteVerb(AIndex: Integer); override;
+    function GetVerb(AIndex: Integer): string; override;
+    function GetVerbCount: Integer; override;
   end;
 
 {$R BrookFramework40Icons.res}
@@ -168,6 +188,8 @@ begin
   RegisterPropertyMapper(BrookHTTPRouteRequestMethodsPropertyMapper);
 {$ENDIF}
   RegisterComponentEditor(TBrookLibraryLoader, TBrookLibraryNameComponentEditor);
+  RegisterComponentEditor(TBrookHTTPEntryPoints, TBrookHTTPEntryPointsComponentEditor);
+  RegisterComponentEditor(TBrookHTTPRouter, TBrookHTTPRouterComponentEditor);
   RegisterComponentEditor(TBrookHTTPServer, TBrookOnRequestComponentEditor);
 end;
 
@@ -333,6 +355,56 @@ procedure TBrookOnRequestComponentEditor.EditProperty(const AProperty:
 begin
   if SameText(AProperty.GetName, 'OnRequest') then
     inherited EditProperty(AProperty, AContinue);
+end;
+
+{ TBrookHTTPRouterComponentEditor }
+
+procedure TBrookHTTPRouterComponentEditor.ExecuteVerb(AIndex: Integer);
+var
+  VRouter: TBrookHTTPRouter;
+begin
+  VRouter := GetComponent as TBrookHTTPRouter;
+{$IFDEF LCL}
+  EditCollection(
+{$ELSE}
+  ShowCollectionEditor(Designer,
+{$ENDIF}
+    VRouter, VRouter.Routes, 'Routes');
+end;
+
+function TBrookHTTPRouterComponentEditor.GetVerb(AIndex: Integer): string;
+begin
+  Result := LoadResString(@SBrookHTTPRoutesEditor);
+end;
+
+function TBrookHTTPRouterComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+{ TBrookHTTPEntryPointsComponentEditor }
+
+procedure TBrookHTTPEntryPointsComponentEditor.ExecuteVerb(AIndex: Integer);
+var
+  VEntryPoints: TBrookHTTPEntryPoints;
+begin
+  VEntryPoints := GetComponent as TBrookHTTPEntryPoints;
+{$IFDEF LCL}
+  EditCollection(
+{$ELSE}
+  ShowCollectionEditor(Designer,
+{$ENDIF}
+    VEntryPoints, VEntryPoints.List, 'List');
+end;
+
+function TBrookHTTPEntryPointsComponentEditor.GetVerb(AIndex: Integer): string;
+begin
+  Result := LoadResString(@SBrookHTTPEntryPointsEditor);
+end;
+
+function TBrookHTTPEntryPointsComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
 end;
 
 end.
