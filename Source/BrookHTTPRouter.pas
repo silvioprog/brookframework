@@ -120,7 +120,7 @@ type
     function GetUserData: Pointer;
     procedure SetPattern(const AValue: string);
     function IsMethods: Boolean;
-    function GetSegments: TArray<string>;{$IFNDEF FPC}inline;{$ENDIF}
+    function GetSegments: TArray<string>;
   protected
     class procedure DoRouteCallback(Acls: Pcvoid;
       Aroute: Psg_route); cdecl; static;
