@@ -121,6 +121,7 @@ type
     function IndexOf(const AName: string): Integer; virtual;
     function FindInList(const AName: string): TBrookHTTPEntryPoint; virtual;
     function Find(const APath: string; out AUserData): Boolean; virtual;
+    { TODO: Iterate::sg_entrypoints_iter() }
     procedure Clear; virtual;
     property Items[AIndex: Integer]: TBrookHTTPEntryPoint read GetItem
       write SetItem; default;
