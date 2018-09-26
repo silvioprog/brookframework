@@ -271,7 +271,7 @@ begin
   if not Assigned(FList.FHandle) then
     Exit;
   SgLib.Check;
-  if sg_entrypoints_find2(FList.FHandle, @EP, M.ToCString(FName)) = 0 then
+  if sg_entrypoints_find(FList.FHandle, @EP, M.ToCString(FName)) = 0 then
     SgLib.CheckLastError(sg_entrypoint_set_user_data(EP, FUserData));
 end;
 
@@ -417,7 +417,7 @@ begin
   if Result then
   begin
     if Assigned(FHandle) then
-      SgLib.CheckLastError(sg_entrypoints_rm2(FHandle, M.ToCString(AName)));
+      SgLib.CheckLastError(sg_entrypoints_rm(FHandle, M.ToCString(AName)));
     inherited Delete(I);
   end;
 end;
