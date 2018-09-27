@@ -608,9 +608,10 @@ begin
   if R = EALREADY then
     raise EBrookHTTPRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
       [ARoute.GetNamePath, ARoute.Pattern]);
-  S := TMarshal.ToString(@P[0]).TrimRight;
-  if S.IsEmpty then
-    S := BrookStrError(R);
+  if R = EINVAL then
+    S := BrookStrError(R)
+  else
+    S := TMarshal.ToString(@P[0]).TrimRight;
   raise EBrookHTTPRoutes.Create(S);
 end;
 

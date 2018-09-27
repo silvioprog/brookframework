@@ -447,7 +447,7 @@ var
     cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
 
   sg_routes_add: function(routes: PPsg_route; const pattern: Pcchar;
-    cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
+    errmsg: Pcchar; errlen: csize_t; cb: sg_route_cb; cls: Pcvoid): cint; cdecl;
 
   sg_routes_rm: function(routes: PPsg_route;
     const pattern: Pcchar): cint; cdecl;
