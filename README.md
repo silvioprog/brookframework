@@ -31,6 +31,8 @@ Planning library distribution:
 * APT (Ubuntu repositories)
 * Pacman (MinGW-w64 repositories)
 
+The shared library (DLL) for Windows [here](https://github.com/risoflora/libsagui/releases).
+
 # Distribution / installation
 
 * Github branch
@@ -42,64 +44,12 @@ Planning package distribution/installation:
 * OPM (Lazarus)
 * From sources
 
-# Currently available
+# Current development
 
-Units:
+* BrookHTTPCookies (in progress...)
+* BrookRESTRouter (planning)
 
-* ~~`BrookLibraryLoader` - allows to customize the path for library loading.~~ (Done!)
-* ~~`BrookUtils` - useful routines and structures.~~ (Done!)
-* ~~`BrookString` - low-level string handling.~~ (Done!)
-* ~~`BrookStringMap` - mapped strings for fast name-value handling.~~ (Done!)
-* `BrookRouter` - high-performance path routing. (In progress...)
-* `BrookHTTPRouter` - high-performance URL routing. (In progress...)
-* `BrookHTTPServer` - fast event-driven HTTP server. (Documenting/testing ...)
-
-Classes:
-
-* ~~`TBrookLibraryLoader` - used to customize the path for library loading.~~ (Done!)
-* ~~`TBrookString` - used to represent a HTML body, POST payload and more.~~ (Done!)
-* ~~`TBrookStringMap` - used to represent HTML fields, query-string parameters and more.~~ (Done!)
-* `TBrookRouter` - lightweight high-performance path router. (In progress...)
-* `TBrookHTTPRouter` - lightweight high-performance URL router. (In progress...)
-* `TBrookHTTPServer` - event-driven HTTP server that supports to handle many requests and upload/download large files. (Documenting/testing ...)
-
-Packages:
-
-* `BrookFramework40.dpk` - Delphi package. (In progress...)
-* `BrookFramework40.lpk` - Lazarus package. (In progress...)
-
-Examples:
-
-* ~~`BrookUtils_Example` - utility functions example.~~ (Done!)
-* ~~`BrookString_Example` - string class example.~~ (Done!)
-* ~~`BrookStringMap_Example` - string map example.~~ (Done!)
-* `BrookRouter_Example` - path routing example. (In progress!)
-* `BrookHTTPRouter_Example` - URL routing example. (In progress!)
-* ~~`BrookHTTPServer_Example` - HTTP server example.~~ (Done!)
-* `BrookHTTPSServer_Example` - HTTPS server example. (In progress!)
-
-Testings:
-
-* ~~`TestLibraryLoader` - library loader tests.~~ (Done!)
-* ~~`TestUtils` - utility tests.~~ (Done!)
-* ~~`TestString` - string class tests.~~ (Done!)
-* ~~`TestStringMap` - string map tests.~~ (Done!)
-* `TestRouter` - Path router tests. (In progress...)
-* `TestHTTPRouter` - URL router tests. (In progress...)
-* `TestHTTPServer` - HTTP server tests. (In progress...)
-* `TestRouter` - Router tests. (In progress...)
-
-Documentation:
-
-* ~~`BrookLibraryLoader` - library loader reference [HTML/PDF].~~ (Done!)
-* ~~`BrookUtils` - utility functions reference [HTML/PDF].~~ (Done!)
-* ~~`BrookString` - string class reference [HTML/PDF].~~ (Done!)
-* ~~`BrookStringMap` - string map reference [HTML/PDF].~~ (Done!)
-* `BrookRouter` - Path router reference [HTML/PDF]. (In progress...)
-* `BrookHTTPRouter` - URL router reference [HTML/PDF]. (In progress...)
-* `BrookHTTPServer` - HTTP server reference [HTML/PDF]. (In progress...)
-
-Bugs:
+# Bugs
 
 * Free Pascal common missing routines/types - all issued at its bugtracker.
 * Delphi unit encoding - unwanted UTF8 BOM when saving unit files.
