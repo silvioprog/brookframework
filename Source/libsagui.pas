@@ -94,6 +94,9 @@ const
 
   SG_VERSION_PATCH = 0;
 
+  SG_VERSION_HEX = (SG_VERSION_MAJOR shl 16) or (SG_VERSION_MINOR shl  8) or
+    SG_VERSION_PATCH;
+
   SG_ERR_SIZE = 256;
 
 resourcestring
@@ -556,22 +559,16 @@ begin
 end;
 
 class procedure SgLib.CheckVersion;
-var
-  V: cuint;
 begin
-  if not Assigned(sg_version) then
-  begin
+  try
+    if not Assigned(sg_version) then
+      raise EInvalidOpException.CreateResFmt(@SSgLibInvalid, [GetLastName]);
+    if sg_version < SG_VERSION_HEX then
+      raise EInvalidOpException.CreateResFmt(@SSgLibMinVersion, [
+        SG_VERSION_MAJOR, SG_VERSION_MINOR, SG_VERSION_PATCH]);
+  except
     Unload;
-    raise EInvalidOpException.CreateResFmt(@SSgLibInvalid, [GetLastName]);
-  end;
-  V := sg_version;
-  if (((V shr 16) and $FF) < SG_VERSION_MAJOR) or { major }
-    (((V shr 8) and $FF) < SG_VERSION_MINOR) or { minor }
-    (SmallInt(V and $FF) < SG_VERSION_PATCH) { patch } then
-  begin
-    Unload;
-    raise EInvalidOpException.CreateResFmt(@SSgLibMinVersion, [SG_VERSION_MAJOR,
-      SG_VERSION_MINOR, SG_VERSION_PATCH]);
+    raise;
   end;
 end;
 
