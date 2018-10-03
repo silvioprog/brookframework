@@ -88,14 +88,19 @@ const
     'libsagui'
 {$ENDIF}, '.', SharedSuffix);
 
+  SG_VERSION_MAJOR = 1;
+
+  SG_VERSION_MINOR = 2;
+
+  SG_VERSION_PATCH = 0;
+
   SG_ERR_SIZE = 256;
 
 resourcestring
   SSgLibEmptyName = 'Empty library name.';
   SSgLibNotLoaded = 'Library ''%s'' not loaded.';
-{$IFDEF MSWINDOWS}
   SSgLibInvalid = 'Invalid library ''%s''.';
-{$ENDIF}
+  SSgLibMinVersion = 'Application requires Sagui library ''%d.%d.%d'' or higher.';
 
 type
   cchar = Byte;
@@ -534,6 +539,7 @@ type
     GHandle: TLibHandle;
   public
     class function GetLastName: string; static; inline;
+    class procedure CheckVersion; static; inline;
     class procedure CheckLastError(ALastError: Integer); static; inline;
     class function Load(const AName: TFileName): TLibHandle; static;
     { TODO: AddUnloadProc }
@@ -547,6 +553,26 @@ implementation
 class function SgLib.GetLastName: string;
 begin
   Result := GLastName;
+end;
+
+class procedure SgLib.CheckVersion;
+var
+  V: cuint;
+begin
+  if not Assigned(sg_version) then
+  begin
+    Unload;
+    raise EInvalidOpException.CreateResFmt(@SSgLibInvalid, [GetLastName]);
+  end;
+  V := sg_version;
+  if (((V shr 16) and $FF) < SG_VERSION_MAJOR) or { major }
+    (((V shr 8) and $FF) < SG_VERSION_MINOR) or { minor }
+    (SmallInt(V and $FF) < SG_VERSION_PATCH) { patch } then
+  begin
+    Unload;
+    raise EInvalidOpException.CreateResFmt(@SSgLibMinVersion, [SG_VERSION_MAJOR,
+      SG_VERSION_MINOR, SG_VERSION_PATCH]);
+  end;
 end;
 
 class procedure SgLib.CheckLastError(ALastError: Integer);
@@ -584,11 +610,13 @@ begin
 {$ELSE}
       Exit(NilHandle);
 {$ENDIF}
-    { TODO: check the library version }
     GLastName := AName;
 
     sg_version := GetProcAddress(GHandle, 'sg_version');
     sg_version_str := GetProcAddress(GHandle, 'sg_version_str');
+
+    CheckVersion;
+
     sg_alloc := GetProcAddress(GHandle, 'sg_alloc');
     sg_realloc := GetProcAddress(GHandle, 'sg_realloc');
     sg_free := GetProcAddress(GHandle, 'sg_free');
