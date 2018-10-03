@@ -48,7 +48,11 @@ type
   Returns the library version number.
   @return(Library version packed into a single integer.)
 }
-function BrookVersion: Cardinal;
+function BrookVersion: Cardinal; overload;
+
+{ experimental }
+function BrookVersion(out AMajor, AMinor: Byte;
+  out APatch: SmallInt): Cardinal; overload;
 
 {
   Returns the library version number as string.
@@ -103,6 +107,15 @@ function BrookVersion: Cardinal;
 begin
   SgLib.Check;
   Result := sg_version;
+end;
+
+function BrookVersion(out AMajor, AMinor: Byte; out APatch: SmallInt): Cardinal;
+begin
+  SgLib.Check;
+  Result := sg_version;
+  AMajor := (Result shr 16) and $FF;
+  AMinor := (Result shr 8) and $FF;
+  APatch := Result and $FF;
 end;
 
 function BrookVersionStr: string;
