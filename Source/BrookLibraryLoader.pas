@@ -42,6 +42,8 @@ uses
 resourcestring
   { Indicates not allowed operation when the library loader is loaded. }
   SBrookActiveLibLoader = 'Active library loader.';
+  { Indicates library already loaded by other loader. }
+  SBrookLibraryAlreadyLoaded = 'Library already loaded by other loader.';
 
 type
   { Class for dynamic library loading. }
@@ -56,13 +58,17 @@ type
     function IsLibraryName: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetLibraryName(const AValue: TFileName);
+    procedure InternalOpen; inline;
   protected
     procedure Loaded; override;
     procedure CheckInactive; inline;
+    procedure CheckUnloaded; inline;
     function GetHandle: Pointer; override;
   public
     { Creates an instance of a @link(TBrookLibraryLoader) class. }
     constructor Create(AOwner: TComponent); override;
+    { Destroys an instance of @link(TBrookLibraryLoader) class. }
+    destructor Destroy; override;
     { Loads the library dynamically.
       @return(@True if the library is succesfully loaded.) }
     class function Load(const ALibraryName: TFileName): Boolean;
@@ -90,17 +96,39 @@ begin
   FLibraryName := SG_LIB_NAME;
 end;
 
+destructor TBrookLibraryLoader.Destroy;
+begin
+  Close;
+  inherited Destroy;
+end;
+
 procedure TBrookLibraryLoader.CheckInactive;
 begin
   if not (csLoading in ComponentState) and Active then
     raise EInvalidOpException.CreateRes(@SBrookActiveLibLoader);
 end;
 
+procedure TBrookLibraryLoader.CheckUnloaded;
+begin
+  if not (csLoading in ComponentState) and SgLib.IsLoaded then
+    raise EInvalidOpException.CreateRes(@SBrookLibraryAlreadyLoaded);
+end;
+
+procedure TBrookLibraryLoader.InternalOpen;
+begin
+  FHandle := SgLib.Load(FLibraryName);
+  FActive := FHandle <> NilHandle;
+  if FActive then
+    FVersion := BrookVersionStr
+  else
+    FVersion := '';
+end;
+
 procedure TBrookLibraryLoader.Loaded;
 begin
   inherited Loaded;
   if FActive then
-    Open;
+    InternalOpen;
 end;
 
 procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
@@ -128,7 +156,11 @@ begin
   if AValue = FActive then
     Exit;
   if csLoading in ComponentState then
-    FActive := AValue
+  begin
+    if AValue then
+      CheckUnloaded;
+    FActive := AValue;
+  end
   else
     if AValue then
       Open
@@ -158,16 +190,17 @@ end;
 
 procedure TBrookLibraryLoader.Open;
 begin
-  FHandle := SgLib.Load(FLibraryName);
-  FActive := FHandle <> NilHandle;
   if FActive then
-    FVersion := BrookVersionStr
-  else
-    FVersion := '';
+    Exit;
+  if not FStreamedActive then
+    CheckUnloaded;
+  InternalOpen;
 end;
 
 procedure TBrookLibraryLoader.Close;
 begin
+  if not FActive then
+    Exit;
   FHandle := SgLib.Unload;
   FActive := FHandle <> NilHandle;
   if not FActive then
