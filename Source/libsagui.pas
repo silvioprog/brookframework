@@ -70,6 +70,17 @@ type
 {$ENDIF}
 
 const
+  SG_VERSION_MAJOR = 1;
+
+  SG_VERSION_MINOR = 2;
+
+  SG_VERSION_PATCH = 0;
+
+  SG_VERSION_HEX = (SG_VERSION_MAJOR shl 16) or (SG_VERSION_MINOR shl 8) or
+    SG_VERSION_PATCH;
+
+  SG_ERR_SIZE = 256;
+
 {$IF (NOT DEFINED(FPC)) OR DEFINED(VER3_0)}
   SharedSuffix =
  {$IF DEFINED(MSWINDOWS)}
@@ -83,21 +94,14 @@ const
 
   SG_LIB_NAME = Concat(
 {$IFDEF MSWINDOWS}
-    'libsagui-1'
+    'libsagui-1' // SG_VERSION_MAJOR
 {$ELSE}
     'libsagui'
-{$ENDIF}, '.', SharedSuffix);
-
-  SG_VERSION_MAJOR = 1;
-
-  SG_VERSION_MINOR = 2;
-
-  SG_VERSION_PATCH = 0;
-
-  SG_VERSION_HEX = (SG_VERSION_MAJOR shl 16) or (SG_VERSION_MINOR shl 8) or
-    SG_VERSION_PATCH;
-
-  SG_ERR_SIZE = 256;
+{$ENDIF}, '.', SharedSuffix
+{$IFDEF FPC}
+    , '.1' // SG_VERSION_MAJOR
+{$ENDIF}
+  );
 
 resourcestring
   SSgLibEmptyName = 'Empty library name.';
@@ -545,8 +549,8 @@ type
     class procedure CheckVersion; static; inline;
     class procedure CheckLastError(ALastError: Integer); static; inline;
     class function Load(const AName: TFileName): TLibHandle; static;
-    { TODO: AddUnloadProc }
     class function Unload: TLibHandle; static;
+    class function IsLoaded: Boolean; static;
     class procedure Check; static;
     class property Handle: TLibHandle read GHandle;
   end;
@@ -904,6 +908,16 @@ begin
   end;
 end;
 
+class function SgLib.IsLoaded: Boolean;
+begin
+  GCS.Acquire;
+  try
+    Result := GHandle <> NilHandle;
+  finally
+    GCS.Release;
+  end;
+end;
+
 class procedure SgLib.Check;
 begin
   if GHandle = NilHandle then
@@ -913,10 +927,8 @@ end;
 
 initialization
   SgLib.GCS := TCriticalSection.Create;
-  SgLib.Load(SG_LIB_NAME);
 
 finalization
-  SgLib.Unload;
   SgLib.GCS.Free;
 
 end.
