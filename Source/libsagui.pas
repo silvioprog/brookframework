@@ -554,12 +554,26 @@ var
 type
   ESgLibNotLoaded = class(EFileNotFoundException);
 
+  TSgLibUnloadProc = procedure;
+
+  PSgLibUnloadProcItem = ^TSgLibUnloadProcItem;
+  TSgLibUnloadProcItem = record
+    Next: PSgLibUnloadProcItem;
+    Proc: TSgLibUnloadProc;
+  end;
+
   SgLib = record
   private class var
     GCS: TCriticalSection;
+    GUnloadProcList: PSgLibUnloadProcItem;
     GLastName: TFileName;
     GHandle: TLibHandle;
+  private
+    class procedure FreeUnloadProcs; static; inline;
+    class procedure CallUnloadProcs; static; inline;
   public
+    class procedure Init; static; inline;
+    class procedure Done; static; inline;
     class function GetLastName: string; static; inline;
     class procedure CheckVersion; static; inline;
     class procedure CheckLastError(ALastError: Integer); static; inline;
@@ -567,10 +581,52 @@ type
     class function Unload: TLibHandle; static;
     class function IsLoaded: Boolean; static;
     class procedure Check; static;
+    class procedure AddUnloadProc(AProc: TSgLibUnloadProc); static;
     class property Handle: TLibHandle read GHandle;
   end;
 
 implementation
+
+class procedure SgLib.Init;
+begin
+  GCS := TCriticalSection.Create;
+  GUnloadProcList := nil;
+end;
+
+class procedure SgLib.FreeUnloadProcs;
+var
+  P: PSgLibUnloadProcItem;
+begin
+  while Assigned(GUnloadProcList) do
+  begin
+    P := GUnloadProcList;
+    GUnloadProcList := P^.Next;
+    Dispose(P);
+  end;
+end;
+
+class procedure SgLib.Done;
+begin
+  GCS.Acquire;
+  try
+    FreeUnloadProcs;
+  finally
+    GCS.Release;
+    GCS.Free;
+  end;
+end;
+
+class procedure SgLib.CallUnloadProcs;
+var
+  P: PSgLibUnloadProcItem;
+begin
+  P := GUnloadProcList;
+  while Assigned(P) do
+  begin
+    P^.Proc;
+    P := P^.Next;
+  end;
+end;
 
 class function SgLib.GetLastName: string;
 begin
@@ -782,6 +838,7 @@ begin
   try
     if GHandle = NilHandle then
       Exit(NilHandle);
+    CallUnloadProcs;
     if not FreeLibrary(GHandle) then
       Exit(GHandle);
     GHandle := NilHandle;
@@ -948,10 +1005,25 @@ begin
       [IfThen(GLastName = '', SG_LIB_NAME, GLastName)]);
 end;
 
+class procedure SgLib.AddUnloadProc(AProc: TSgLibUnloadProc);
+var
+  P: PSgLibUnloadProcItem;
+begin
+  GCS.Acquire;
+  try
+    New(P);
+    P^.Next := GUnloadProcList;
+    P^.Proc := AProc;
+    GUnloadProcList := P;
+  finally
+    GCS.Release;
+  end;
+end;
+
 initialization
-  SgLib.GCS := TCriticalSection.Create;
+  SgLib.Init;
 
 finalization
-  SgLib.GCS.Free;
+  SgLib.Done;
 
 end.
