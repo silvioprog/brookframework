@@ -1025,26 +1025,19 @@ end;
 
 class procedure SgLib.RmUnloadCb(ACb: TSgLibUnloadCb);
 var
-  T, P: PSgLibUnloadCbItem;
+  D: PSgLibUnloadCbItem;
+  P: ^PSgLibUnloadCbItem;
 begin
   GCS.Acquire;
   try
-    if not Assigned(GUnloadCbs) then
-      Exit;
-    T := GUnloadCbs;
-    P := nil;
-    while (@T.Cb <> @ACb) and Assigned(T^.Next) do
+    P := @GUnloadCbs;
+    while Assigned(P^) and (@P^^.Cb <> @ACb) do
+      P := @P^.Next;
+    if Assigned(P^) then
     begin
-      P := T;
-      T := T^.Next;
-    end;
-    if @T.Cb = @ACb then
-    begin
-      if Assigned(P) then
-        P^.Next := T^.Next
-      else
-        GUnloadCbs := T^.Next;
-      Dispose(T);
+      D := P^;
+      P^ := D^.Next;
+      Dispose(D);
     end;
   finally
     GCS.Release;
