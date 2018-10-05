@@ -290,10 +290,10 @@ end;
 
 destructor TBrookHTTPServer.Destroy;
 begin
-  FSecurity.Free;
   try
     SetActive(False);
   finally
+    FSecurity.Free;
     inherited Destroy;
   end;
 end;
