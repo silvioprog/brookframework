@@ -53,6 +53,7 @@ type
     FLibraryName: TFileName;
     FStreamedActive: Boolean;
     function IsActive: Boolean;
+    function IsLibraryName: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetLibraryName(const AValue: TFileName);
   protected
@@ -60,6 +61,8 @@ type
     procedure CheckInactive; inline;
     function GetHandle: Pointer; override;
   public
+    { Creates an instance of a @link(TBrookLibraryLoader) class. }
+    constructor Create(AOwner: TComponent); override;
     { Loads the library dynamically.
       @return(@True if the library is succesfully loaded.) }
     class function Load(const ALibraryName: TFileName): Boolean;
@@ -73,12 +76,19 @@ type
     { Loads/Unloads the library dynamically. }
     property Active: Boolean read FActive write SetActive stored IsActive;
     { Specifies the library to be loaded dynamically. }
-    property LibraryName: TFileName read FLibraryName write SetLibraryName;
+    property LibraryName: TFileName read FLibraryName write SetLibraryName
+      stored IsLibraryName;
     { Version of the loaded library. }
     property Version: string read FVersion stored False;
   end;
 
 implementation
+
+constructor TBrookLibraryLoader.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLibraryName := SG_LIB_NAME;
+end;
 
 procedure TBrookLibraryLoader.CheckInactive;
 begin
@@ -131,12 +141,19 @@ begin
   Result := FActive;
 end;
 
+function TBrookLibraryLoader.IsLibraryName: Boolean;
+begin
+  Result := CompareText(FLibraryName, SG_LIB_NAME) <> 0;
+end;
+
 procedure TBrookLibraryLoader.SetLibraryName(const AValue: TFileName);
 begin
   if AValue = FLibraryName then
     Exit;
   CheckInactive;
   FLibraryName := AValue;
+  if FLibraryName = '' then
+    FLibraryName := SG_LIB_NAME;
 end;
 
 procedure TBrookLibraryLoader.Open;
