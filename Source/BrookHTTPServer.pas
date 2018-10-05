@@ -154,6 +154,7 @@ type
     procedure InternalFreeServerHandle; inline;
     procedure InternalCheckServerOption(Aret: cint); inline;
   protected
+    class procedure UnloadLibCb(ACls: Pointer); static; cdecl;
     class function DoAuthenticationCallback(Acls: Pcvoid; Aauth: Psg_httpauth;
       Areq: Psg_httpreq; Ares: Psg_httpres): cbool; cdecl; static;
     class procedure DoRequestCallback(Acls: Pcvoid; Areq: Psg_httpreq;
@@ -283,6 +284,7 @@ constructor TBrookHTTPServer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSecurity := CreateSecurity;
+  SgLib.AddUnloadCb({$IFNDEF VER3_0}@{$ENDIF}UnloadLibCb, Self);
   FPostBufferSize := BROOK_POST_BUFFER_SIZE;
   FPayloadLimit := BROOK_PAYLOAD_LIMIT;
   FUploadsLimit := BROOK_UPLOADS_LIMIT;
@@ -353,6 +355,11 @@ end;
 function TBrookHTTPServer.CreateError(const AMessage: string): Exception;
 begin
   Result := EBrookHTTPServer.Create(AMessage);
+end;
+
+class procedure TBrookHTTPServer.UnloadLibCb(ACls: Pointer);
+begin
+  TBrookHTTPServer(ACls).Close;
 end;
 
 class function TBrookHTTPServer.DoAuthenticationCallback(Acls: Pcvoid;

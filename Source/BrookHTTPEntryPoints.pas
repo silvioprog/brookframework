@@ -143,6 +143,7 @@ type
     procedure SetItem(AIndex: Integer; AValue: TBrookHTTPEntryPoint);
     procedure SetList(AValue: TBrookHTTPEntryPointList);
   protected
+    class procedure UnloadLibCb(ACls: Pointer); static; cdecl;
     function CreateList: TBrookHTTPEntryPointList; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
@@ -473,6 +474,7 @@ constructor TBrookHTTPEntryPoints.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FList := CreateList;
+  SgLib.AddUnloadCb({$IFNDEF VER3_0}@{$ENDIF}UnloadLibCb, Self);
 end;
 
 destructor TBrookHTTPEntryPoints.Destroy;
@@ -488,6 +490,11 @@ end;
 function TBrookHTTPEntryPoints.CreateList: TBrookHTTPEntryPointList;
 begin
   Result := TBrookHTTPEntryPointList.Create(Self);
+end;
+
+class procedure TBrookHTTPEntryPoints.UnloadLibCb(ACls: Pointer);
+begin
+  TBrookHTTPEntryPoints(ACls).Close;
 end;
 
 procedure TBrookHTTPEntryPoints.CheckItems;

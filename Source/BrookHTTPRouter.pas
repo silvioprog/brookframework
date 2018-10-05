@@ -225,6 +225,7 @@ type
     procedure SetActive(AValue: Boolean);
     procedure SetRoutes(AValue: TBrookHTTPRoutes);
   protected
+    class procedure UnloadLibCb(ACls: Pointer); static; cdecl;
     function CreateRoutes: TBrookHTTPRoutes; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
@@ -723,6 +724,7 @@ constructor TBrookHTTPRouter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FRoutes := CreateRoutes;
+  SgLib.AddUnloadCb({$IFNDEF VER3_0}@{$ENDIF}UnloadLibCb, Self);
 end;
 
 destructor TBrookHTTPRouter.Destroy;
@@ -738,6 +740,11 @@ end;
 function TBrookHTTPRouter.CreateRoutes: TBrookHTTPRoutes;
 begin
   Result := TBrookHTTPRoutes.Create(Self);
+end;
+
+class procedure TBrookHTTPRouter.UnloadLibCb(ACls: Pointer);
+begin
+  TBrookHTTPRouter(ACls).Close;
 end;
 
 procedure TBrookHTTPRouter.CheckItems;
