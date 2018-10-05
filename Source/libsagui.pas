@@ -559,7 +559,7 @@ type
   PSgLibUnloadCbItem = ^TSgLibUnloadCbItem;
   TSgLibUnloadCbItem = record
     Next: PSgLibUnloadCbItem;
-    Proc: TSgLibUnloadCb;
+    Cb: TSgLibUnloadCb;
     Cls: Pointer;
   end;
 
@@ -570,8 +570,8 @@ type
     GLastName: TFileName;
     GHandle: TLibHandle;
   private
-    class procedure FreeUnloadProcs; static; inline;
-    class procedure CallUnloadProcs; static; inline;
+    class procedure FreeUnloadCbs; static; inline;
+    class procedure CallUnloadCbs; static; inline;
   public
     class procedure Init; static; inline;
     class procedure Done; static; inline;
@@ -582,7 +582,8 @@ type
     class function Unload: TLibHandle; static;
     class function IsLoaded: Boolean; static;
     class procedure Check; static;
-    class procedure AddUnloadCb(AProc: TSgLibUnloadCb; ACls: Pointer); static;
+    class procedure AddUnloadCb(ACb: TSgLibUnloadCb; ACls: Pointer); static;
+    class procedure RmUnloadCb(ACb: TSgLibUnloadCb); static;
     class property Handle: TLibHandle read GHandle;
   end;
 
@@ -594,7 +595,7 @@ begin
   GUnloadCbs := nil;
 end;
 
-class procedure SgLib.FreeUnloadProcs;
+class procedure SgLib.FreeUnloadCbs;
 var
   P: PSgLibUnloadCbItem;
 begin
@@ -610,21 +611,21 @@ class procedure SgLib.Done;
 begin
   GCS.Acquire;
   try
-    FreeUnloadProcs;
+    FreeUnloadCbs;
   finally
     GCS.Release;
     GCS.Free;
   end;
 end;
 
-class procedure SgLib.CallUnloadProcs;
+class procedure SgLib.CallUnloadCbs;
 var
   P: PSgLibUnloadCbItem;
 begin
   P := GUnloadCbs;
   while Assigned(P) do
   begin
-    P^.Proc(P^.Cls);
+    P^.Cb(P^.Cls);
     P := P^.Next;
   end;
 end;
@@ -839,7 +840,7 @@ begin
   try
     if GHandle = NilHandle then
       Exit(NilHandle);
-    CallUnloadProcs;
+    CallUnloadCbs;
     if not FreeLibrary(GHandle) then
       Exit(GHandle);
     GHandle := NilHandle;
@@ -1006,7 +1007,7 @@ begin
       [IfThen(GLastName = '', SG_LIB_NAME, GLastName)]);
 end;
 
-class procedure SgLib.AddUnloadCb(AProc: TSgLibUnloadCb; ACls: Pointer);
+class procedure SgLib.AddUnloadCb(ACb: TSgLibUnloadCb; ACls: Pointer);
 var
   P: PSgLibUnloadCbItem;
 begin
@@ -1014,9 +1015,37 @@ begin
   try
     New(P);
     P^.Next := GUnloadCbs;
-    P^.Proc := AProc;
+    P^.Cb := ACb;
     P^.Cls := ACls;
     GUnloadCbs := P;
+  finally
+    GCS.Release;
+  end;
+end;
+
+class procedure SgLib.RmUnloadCb(ACb: TSgLibUnloadCb);
+var
+  T, P: PSgLibUnloadCbItem;
+begin
+  GCS.Acquire;
+  try
+    if not Assigned(GUnloadCbs) then
+      Exit;
+    T := GUnloadCbs;
+    P := nil;
+    while (@T.Cb <> @ACb) and Assigned(T^.Next) do
+    begin
+      P := T;
+      T := T^.Next;
+    end;
+    if @T.Cb = @ACb then
+    begin
+      if Assigned(P) then
+        P^.Next := T^.Next
+      else
+        GUnloadCbs := T^.Next;
+      Dispose(T);
+    end;
   finally
     GCS.Release;
   end;
