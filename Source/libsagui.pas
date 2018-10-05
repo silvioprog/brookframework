@@ -554,18 +554,19 @@ var
 type
   ESgLibNotLoaded = class(EFileNotFoundException);
 
-  TSgLibUnloadProc = procedure;
+  TSgLibUnloadCb = procedure(ACls: Pointer); cdecl;
 
-  PSgLibUnloadProcItem = ^TSgLibUnloadProcItem;
-  TSgLibUnloadProcItem = record
-    Next: PSgLibUnloadProcItem;
-    Proc: TSgLibUnloadProc;
+  PSgLibUnloadCbItem = ^TSgLibUnloadCbItem;
+  TSgLibUnloadCbItem = record
+    Next: PSgLibUnloadCbItem;
+    Proc: TSgLibUnloadCb;
+    Cls: Pointer;
   end;
 
   SgLib = record
   private class var
     GCS: TCriticalSection;
-    GUnloadProcList: PSgLibUnloadProcItem;
+    GUnloadCbs: PSgLibUnloadCbItem;
     GLastName: TFileName;
     GHandle: TLibHandle;
   private
@@ -581,7 +582,7 @@ type
     class function Unload: TLibHandle; static;
     class function IsLoaded: Boolean; static;
     class procedure Check; static;
-    class procedure AddUnloadProc(AProc: TSgLibUnloadProc); static;
+    class procedure AddUnloadCb(AProc: TSgLibUnloadCb; ACls: Pointer); static;
     class property Handle: TLibHandle read GHandle;
   end;
 
@@ -590,17 +591,17 @@ implementation
 class procedure SgLib.Init;
 begin
   GCS := TCriticalSection.Create;
-  GUnloadProcList := nil;
+  GUnloadCbs := nil;
 end;
 
 class procedure SgLib.FreeUnloadProcs;
 var
-  P: PSgLibUnloadProcItem;
+  P: PSgLibUnloadCbItem;
 begin
-  while Assigned(GUnloadProcList) do
+  while Assigned(GUnloadCbs) do
   begin
-    P := GUnloadProcList;
-    GUnloadProcList := P^.Next;
+    P := GUnloadCbs;
+    GUnloadCbs := P^.Next;
     Dispose(P);
   end;
 end;
@@ -618,12 +619,12 @@ end;
 
 class procedure SgLib.CallUnloadProcs;
 var
-  P: PSgLibUnloadProcItem;
+  P: PSgLibUnloadCbItem;
 begin
-  P := GUnloadProcList;
+  P := GUnloadCbs;
   while Assigned(P) do
   begin
-    P^.Proc;
+    P^.Proc(P^.Cls);
     P := P^.Next;
   end;
 end;
@@ -1005,16 +1006,17 @@ begin
       [IfThen(GLastName = '', SG_LIB_NAME, GLastName)]);
 end;
 
-class procedure SgLib.AddUnloadProc(AProc: TSgLibUnloadProc);
+class procedure SgLib.AddUnloadCb(AProc: TSgLibUnloadCb; ACls: Pointer);
 var
-  P: PSgLibUnloadProcItem;
+  P: PSgLibUnloadCbItem;
 begin
   GCS.Acquire;
   try
     New(P);
-    P^.Next := GUnloadProcList;
+    P^.Next := GUnloadCbs;
     P^.Proc := AProc;
-    GUnloadProcList := P;
+    P^.Cls := ACls;
+    GUnloadCbs := P;
   finally
     GCS.Release;
   end;
