@@ -128,7 +128,7 @@ procedure TBrookLibraryLoader.Loaded;
 begin
   inherited Loaded;
   if FActive then
-    InternalOpen;
+    Open;
 end;
 
 procedure TBrookLibraryLoader.DefineProperties(AFiler: TFiler);
@@ -137,7 +137,7 @@ begin
   if FActive and not FStreamedActive then
   begin
     FStreamedActive := True;
-    Open;
+    InternalOpen;
   end;
 end;
 
