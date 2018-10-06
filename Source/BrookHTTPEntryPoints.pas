@@ -481,6 +481,7 @@ destructor TBrookHTTPEntryPoints.Destroy;
 begin
   try
     SetActive(False);
+    SgLib.RmUnloadCb({$IFNDEF VER3_0}@{$ENDIF}UnloadLibCb);
   finally
     inherited Destroy;
     FList.Free;

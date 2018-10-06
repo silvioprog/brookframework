@@ -294,6 +294,7 @@ destructor TBrookHTTPServer.Destroy;
 begin
   try
     SetActive(False);
+    SgLib.RmUnloadCb({$IFNDEF VER3_0}@{$ENDIF}UnloadLibCb);
   finally
     FSecurity.Free;
     inherited Destroy;
