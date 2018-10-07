@@ -34,6 +34,7 @@ uses
 {$IFDEF VER3_0_0}
   FPC300Fixes,
 {$ENDIF}
+  BrookLibraryLoader,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPServer;
@@ -74,6 +75,11 @@ begin
 end;
 
 begin
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt(1);
+  end;
   with THTTPServer.Create(nil) do
   try
     NoFavicon := True;

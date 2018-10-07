@@ -33,6 +33,7 @@ program httpuploads;
 uses
   SysUtils,
   IOUtils,
+  BrookLibraryLoader,
   BrookUtils,
   BrookHTTPUploads,
   BrookHTTPRequest,
@@ -68,7 +69,7 @@ const
   CONTENT_TYPE = 'text/html; charset=utf-8';
 
 type
-  THTTPServer = class(TBrookCustomHTTPServer)
+  THTTPServer = class(TBrookHTTPServer)
   protected
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); override;
@@ -103,6 +104,11 @@ begin
 end;
 
 begin
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt(1);
+  end;
   with THTTPServer.Create(nil) do
   try
     UploadsDir := TPath.Combine(BrookTmpDir, 'uploads');

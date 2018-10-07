@@ -32,6 +32,7 @@ program stringmap;
 uses
   SysUtils,
   Classes,
+  BrookLibraryLoader,
   BrookStringMap;
 
 function map_sort(AData: Pointer; APairA, APairB: TBrookStringPair): Integer;
@@ -58,6 +59,11 @@ var
   h: Pointer;
   map: TBrookStringMap;
 begin
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt(1);
+  end;
   map := TBrookStringMap.Create(@h);
   try
     chat(map, 'Clecio', 'Hello!');

@@ -30,6 +30,7 @@ program hellohttpsrv;
 {$WARN 5024 OFF}
 
 uses
+  BrookLibraryLoader,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPServer;
@@ -50,6 +51,11 @@ begin
 end;
 
 begin
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt(1);
+  end;
   with THTTPServer.Create(nil) do
   try
     Open;

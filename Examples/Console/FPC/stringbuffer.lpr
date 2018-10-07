@@ -32,6 +32,7 @@ program stringbuffer;
 uses
   SysUtils,
   Classes,
+  BrookLibraryLoader,
   BrookString;
 
 const
@@ -40,6 +41,11 @@ var
   sb: TBrookString;
   f: TBytesStream;
 begin
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt(1);
+  end;
   sb := TBrookString.Create(nil);
   try
     sb.Write('abc');

@@ -29,14 +29,11 @@ program httprouter;
 {$IFDEF MSWINDOWS}
  {$APPTYPE CONSOLE}
 {$ENDIF}
-//{$DEFINE CUSTOM_LIBRARY_PATH} Uncomment to customize the full library path ...
 
 uses
   SysUtils,
   Classes,
-{$IFDEF CUSTOM_LIBRARY_PATH}
   BrookLibraryLoader,
-{$ENDIF}
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPRouter,
@@ -162,13 +159,11 @@ begin
 end;
 
 begin
-{$IFDEF CUSTOM_LIBRARY_PATH}
-  if not TBrookLibraryLoader.Load('/full/path/to/the/libsagui.<dll|so|dylib>') then
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
   begin
     WriteLn(ErrOutput, 'Library not loaded.');
-    Halt;
+    Halt(1);
   end;
-{$ENDIF}
   with TServer.Create(nil) do
   try
     Open;

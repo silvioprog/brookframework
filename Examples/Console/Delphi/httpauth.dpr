@@ -38,13 +38,14 @@ program httpauth;
 
 uses
   SysUtils,
+  BrookLibraryLoader,
   BrookHTTPAuthentication,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPServer;
 
 type
-  THTTPServer = class(TBrookCustomHTTPServer)
+  THTTPServer = class(TBrookHTTPServer)
   protected
     function DoAuthenticate(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
@@ -75,6 +76,11 @@ begin
 end;
 
 begin
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt(1);
+  end;
   with THTTPServer.Create(nil) do
   try
     Authenticated := True;

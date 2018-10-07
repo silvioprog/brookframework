@@ -32,6 +32,7 @@ program httpcookies;
 
 uses
   SysUtils,
+  BrookLibraryLoader,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPServer;
@@ -43,7 +44,7 @@ const
   COOKIE_NAME = 'refresh_count';
 
 type
-  THTTPServer = class(TBrookCustomHTTPServer)
+  THTTPServer = class(TBrookHTTPServer)
   protected
     procedure DoRequest(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); override;
@@ -72,6 +73,11 @@ begin
 end;
 
 begin
+  if not TBrookLibraryLoader.Load(TBrookLibraryLoader.LIB_NAME) then
+  begin
+    WriteLn(ErrOutput, 'Library not loaded.');
+    Halt(1);
+  end;
   with THTTPServer.Create(nil) do
   try
     NoFavicon := True;
