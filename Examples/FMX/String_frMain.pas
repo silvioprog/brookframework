@@ -37,6 +37,8 @@ uses
   FMX.Controls.Presentation,
   FMX.Dialogs,
   FMX.Forms,
+  BrookHandledClasses,
+  BrookLibraryLoader,
   BrookString;
 
 type
@@ -45,11 +47,13 @@ type
     btAddNow: TButton;
     btShowContent: TButton;
     btClear: TButton;
+    BrookLibraryLoader1: TBrookLibraryLoader;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btAddNowClick(Sender: TObject);
     procedure btShowContentClick(Sender: TObject);
     procedure btClearClick(Sender: TObject);
+    procedure BrookLibraryLoader1Load(Sender: TObject);
   private
     FString: TBrookString;
   protected
@@ -65,6 +69,7 @@ implementation
 
 procedure TfrMain.FormCreate(Sender: TObject);
 begin
+  BrookLibraryLoader1.Open;
   FString := TBrookString.Create(nil);
 end;
 
@@ -77,6 +82,11 @@ procedure TfrMain.UpdateButtons;
 begin
   btShowContent.Enabled := FString.Length > 0;
   btClear.Enabled := btShowContent.Enabled;
+end;
+
+procedure TfrMain.BrookLibraryLoader1Load(Sender: TObject);
+begin
+  btAddNow.Enabled := True;
 end;
 
 procedure TfrMain.btAddNowClick(Sender: TObject);

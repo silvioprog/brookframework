@@ -101,7 +101,10 @@ end;
 
 procedure TfrMain.UpdateControls;
 begin
-  edPort.Value := BrookHTTPServer1.Port;
+  if BrookHTTPServer1.Active then
+    edPort.Value := BrookHTTPServer1.Port
+  else
+    BrookHTTPServer1.Port := edPort.Value;
   lbLink.Caption := Concat('http://localhost:', edPort.Value.ToString);
   acStart.Enabled := not BrookHTTPServer1.Active;
   acStop.Enabled := not acStart.Enabled;
@@ -164,8 +167,7 @@ end;
 
 procedure TfrMain.edPortChange(Sender: TObject);
 begin
-  if not BrookHTTPServer1.Active then
-    BrookHTTPServer1.Port := edPort.Value;
+  UpdateControls;
 end;
 
 {$PUSH}{$WARN 4055 OFF}

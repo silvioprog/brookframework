@@ -56,6 +56,8 @@ type
     FHandle: TLibHandle;
     FLibraryName: TFileName;
     FStreamedActive: Boolean;
+    FOnLoad: TNotifyEvent;
+    FOnUnload: TNotifyEvent;
     function IsActive: Boolean;
     function IsLibraryName: Boolean;
     procedure SetActive(AValue: Boolean);
@@ -88,6 +90,10 @@ type
       stored IsLibraryName;
     { Version of the loaded library. }
     property Version: string read FVersion stored False;
+    { Notifies that the library is loaded. }
+    property OnLoad: TNotifyEvent read FOnLoad write FOnLoad;
+    { Notifies that the library is unloaded. }
+    property OnUnload: TNotifyEvent read FOnUnload write FOnUnload;
   end;
 
 implementation
@@ -124,6 +130,8 @@ begin
     FVersion := BrookVersionStr
   else
     FVersion := '';
+  if Assigned(FOnLoad) then
+    FOnLoad(Self);
 end;
 
 procedure TBrookLibraryLoader.Loaded;
@@ -207,6 +215,8 @@ begin
   FActive := FHandle <> NilHandle;
   if not FActive then
     FVersion := '';
+  if Assigned(FOnUnload) then
+    FOnUnload(Self);
 end;
 
 end.

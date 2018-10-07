@@ -6,7 +6,7 @@ object frMain: TfrMain
   Caption = 'HTTP upload example'
   ClientHeight = 160
   ClientWidth = 320
-  OnCreate = FormCreate
+  OnShow = FormShow
   Position = poDesktopCenter
   LCLVersion = '1.8.4.0'
   object lbPort: TLabel
@@ -59,8 +59,7 @@ object frMain: TfrMain
     OnMouseLeave = lbLinkMouseLeave
   end
   object alMain: TActionList
-    OnUpdate = alMainUpdate
-    left = 76
+    left = 40
     top = 88
     object acStart: TAction
       Category = 'HTTP server'
@@ -81,7 +80,13 @@ object frMain: TfrMain
     OnRequest = BrookHTTPServer1Request
     OnRequestError = BrookHTTPServer1RequestError
     OnError = BrookHTTPServer1Error
-    left = 180
+    OnStart = BrookHTTPServer1Start
+    OnStop = BrookHTTPServer1Stop
+    left = 248
+    top = 88
+  end
+  object BrookLibraryLoader1: TBrookLibraryLoader
+    left = 128
     top = 88
   end
 end

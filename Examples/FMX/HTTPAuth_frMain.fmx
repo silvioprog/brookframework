@@ -46,7 +46,6 @@ object frMain: TfrMain
       TextSettings.HorzAlign = Trailing
       Position.X = 43.000000000000000000
       Position.Y = 14.000000000000000000
-      Enabled = False
       Margins.Top = 14.000000000000000000
       Margins.Right = 10.000000000000000000
       Margins.Bottom = 14.000000000000000000
@@ -54,6 +53,7 @@ object frMain: TfrMain
       Size.Height = 23.000000000000000000
       Size.PlatformDefault = False
       OnChange = edPortChange
+      OnChangeTracking = edPortChangeTracking
     end
     object btStart: TButton
       Action = acStart
@@ -115,8 +115,7 @@ object frMain: TfrMain
     OnMouseLeave = lbLinkMouseLeave
   end
   object alMain: TActionList
-    OnUpdate = alMainUpdate
-    Left = 88
+    Left = 48
     Top = 120
     object acStart: TAction
       Category = 'HTTP auth'
@@ -140,7 +139,13 @@ object frMain: TfrMain
     OnRequest = BrookHTTPServer1Request
     OnRequestError = BrookHTTPServer1RequestError
     OnError = BrookHTTPServer1Error
-    Left = 184
+    OnStart = BrookHTTPServer1Start
+    OnStop = BrookHTTPServer1Stop
+    Left = 264
+    Top = 120
+  end
+  object BrookLibraryLoader1: TBrookLibraryLoader
+    Left = 144
     Top = 120
   end
 end

@@ -45,6 +45,7 @@ uses
   FMX.Forms,
   FMX.Controls.Presentation,
   BrookHandledClasses,
+  BrookLibraryLoader,
   BrookHTTPAuthentication,
   BrookHTTPRequest,
   BrookHTTPResponse,
@@ -62,9 +63,9 @@ type
     acStart: TAction;
     acStop: TAction;
     BrookHTTPServer1: TBrookHTTPServer;
+    BrookLibraryLoader1: TBrookLibraryLoader;
     procedure acStartExecute(Sender: TObject);
     procedure acStopExecute(Sender: TObject);
-    procedure edPortChange(Sender: TObject);
     procedure lbLinkMouseEnter(Sender: TObject);
     procedure lbLinkMouseLeave(Sender: TObject);
     procedure lbLinkClick(Sender: TObject);
@@ -74,15 +75,18 @@ type
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
       AException: Exception);
     procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
-    procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
     function BrookHTTPServer1Authenticate(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse): Boolean;
     procedure BrookHTTPServer1AuthenticateError(ASender: TObject;
       AAuthentication: TBrookHTTPAuthentication; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse; AException: Exception);
+    procedure BrookHTTPServer1Start(Sender: TObject);
+    procedure BrookHTTPServer1Stop(Sender: TObject);
+    procedure edPortChange(Sender: TObject);
+    procedure edPortChangeTracking(Sender: TObject);
   public
-    procedure UpdateLink;
+    procedure UpdateControls; inline;
   end;
 
 var
@@ -92,28 +96,28 @@ implementation
 
 {$R *.fmx}
 
-procedure TfrMain.UpdateLink;
+procedure TfrMain.UpdateControls;
 begin
-  lbLink.Text := Concat('http://localhost:', edPort.Text);
+  if BrookHTTPServer1.Active then
+    edPort.Value := BrookHTTPServer1.Port
+  else
+    BrookHTTPServer1.Port := edPort.Text.ToInteger;
+  lbLink.Text := Concat('http://localhost:', edPort.Value.ToString);
+  acStart.Enabled := not BrookHTTPServer1.Active;
+  acStop.Enabled := not acStart.Enabled;
+  edPort.Enabled := acStart.Enabled;
+  lbLink.Enabled := not acStart.Enabled;
 end;
 
 procedure TfrMain.acStartExecute(Sender: TObject);
 begin
-  BrookHTTPServer1.Port := edPort.Text.ToInteger;
+  BrookLibraryLoader1.Open;
   BrookHTTPServer1.Open;
-  if edPort.Value = 0 then
-    edPort.Value := BrookHTTPServer1.Port;
-  UpdateLink;
 end;
 
 procedure TfrMain.acStopExecute(Sender: TObject);
 begin
   BrookHTTPServer1.Close;
-end;
-
-procedure TfrMain.edPortChange(Sender: TObject);
-begin
-  UpdateLink;
 end;
 
 procedure TfrMain.lbLinkMouseEnter(Sender: TObject);
@@ -129,14 +133,6 @@ end;
 procedure TfrMain.lbLinkClick(Sender: TObject);
 begin
   OpenURL(lbLink.Text);
-end;
-
-procedure TfrMain.alMainUpdate(Action: TBasicAction; var Handled: Boolean);
-begin
-  acStart.Enabled := not BrookHTTPServer1.Active;
-  acStop.Enabled := not acStart.Enabled;
-  edPort.Enabled := acStart.Enabled;
-  lbLink.Enabled := not acStart.Enabled;
 end;
 
 function TfrMain.BrookHTTPServer1Authenticate(ASender: TObject;
@@ -177,6 +173,26 @@ begin
   AResponse.Send(
     '<html><head><title>Error</title></head><body><font color="red">%s</font></body></html>',
     [AException.Message], 'text/html; charset=utf-8', 500);
+end;
+
+procedure TfrMain.BrookHTTPServer1Start(Sender: TObject);
+begin
+  UpdateControls;
+end;
+
+procedure TfrMain.BrookHTTPServer1Stop(Sender: TObject);
+begin
+  UpdateControls;
+end;
+
+procedure TfrMain.edPortChange(Sender: TObject);
+begin
+  UpdateControls;
+end;
+
+procedure TfrMain.edPortChangeTracking(Sender: TObject);
+begin
+  UpdateControls;
 end;
 
 procedure TfrMain.BrookHTTPServer1Error(ASender: TObject;

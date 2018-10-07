@@ -8,8 +8,9 @@ object frMain: TfrMain
   ClientWidth = 320
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   Position = poDesktopCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.8.4.0'
   object pnTop: TPanel
     Left = 0
     Height = 40
@@ -74,5 +75,9 @@ object frMain: TfrMain
       64
       252
     )
+  end
+  object BrookLibraryLoader1: TBrookLibraryLoader
+    left = 98
+    top = 125
   end
 end
