@@ -675,16 +675,13 @@ begin
       raise EArgumentException.CreateRes(@SSgLibEmptyName);
     GHandle := SafeLoadLibrary(AName);
     if GHandle = NilHandle then
+    begin
 {$IFDEF MSWINDOWS}
       if GetLastError = ERROR_BAD_EXE_FORMAT then
-      begin
-        MessageBox(0, PChar(Format(SSgLibInvalid, [AName])), nil,
-          MB_OK or MB_ICONERROR);
-        Halt;
-      end;
-{$ELSE}
-      Exit(NilHandle);
+        raise ESgLibNotLoaded.CreateResFmt(@SSgLibInvalid, [AName]);
 {$ENDIF}
+      raise ESgLibNotLoaded.CreateResFmt(@SSgLibNotLoaded, [AName])
+    end;
     GLastName := AName;
 
     sg_version := GetProcAddress(GHandle, 'sg_version');
