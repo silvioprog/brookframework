@@ -118,6 +118,8 @@ type
     FOnRequest: TBrookHTTPRequestEvent;
     FOnRequestError: TBrookHTTPRequestErrorEvent;
     FOnError: TBrookErrorEvent;
+    FOnStart: TNotifyEvent;
+    FOnStop: TNotifyEvent;
     function GetConnectionLimit: Cardinal;
     function GetConnectionTimeout: Cardinal;
     function GetPayloadLimit: NativeUInt;
@@ -232,6 +234,8 @@ type
     property OnRequestError: TBrookHTTPRequestErrorEvent read FOnRequestError
       write FOnRequestError;
     property OnError: TBrookErrorEvent read FOnError write FOnError;
+    property OnStart: TNotifyEvent read FOnStart write FOnStart;
+    property OnStop: TNotifyEvent read FOnStop write FOnStop;
   end;
 
 implementation
@@ -863,6 +867,8 @@ begin
     FActive := sg_httpsrv_listen(FHandle, FPort, FThreaded);
   if not FActive then
     InternalFreeServerHandle;
+  if Assigned(FOnStart) then
+    FOnStart(Self);
 end;
 
 procedure TBrookHTTPServer.DoClose;
@@ -872,6 +878,8 @@ begin
   SgLib.Check;
   InternalFreeServerHandle;
   FActive := False;
+  if Assigned(FOnStop) then
+    FOnStop(Self);
 end;
 
 procedure TBrookHTTPServer.Open;

@@ -7,7 +7,7 @@ object frMain: TfrMain
   ClientHeight = 160
   ClientWidth = 320
   Position = poDesktopCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.8.4.0'
   object lbPort: TLabel
     Left = 20
     Height = 15
@@ -58,7 +58,6 @@ object frMain: TfrMain
     OnMouseLeave = lbLinkMouseLeave
   end
   object alMain: TActionList
-    OnUpdate = alMainUpdate
     left = 48
     top = 60
     object acStart: TAction
@@ -77,10 +76,16 @@ object frMain: TfrMain
   end
   object BrookHTTPServer1: TBrookHTTPServer
     NoFavicon = True
+    OnStart = BrookHTTPServer1Start
+    OnStop = BrookHTTPServer1Stop
     OnRequest = BrookHTTPServer1Request
     OnRequestError = BrookHTTPServer1RequestError
     OnError = BrookHTTPServer1Error
-    left = 152
+    left = 248
+    top = 60
+  end
+  object BrookLibraryLoader1: TBrookLibraryLoader
+    left = 136
     top = 60
   end
 end
