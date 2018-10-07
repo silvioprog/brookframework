@@ -99,7 +99,7 @@ const
 {$ELSE}
     'libsagui'
 {$ENDIF}, '.', SharedSuffix
-{$IFDEF FPC}
+{$IFDEF LINUX}
     , '.1' // SG_VERSION_MAJOR
 {$ENDIF}
   );
