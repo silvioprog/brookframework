@@ -48,6 +48,8 @@ resourcestring
 type
   { Class for dynamic library loading. }
   TBrookLibraryLoader = class(TBrookHandledComponent)
+  public const
+    LIB_NAME = SG_LIB_NAME;
   private
     FActive: Boolean;
     FVersion: string;
@@ -71,7 +73,7 @@ type
     destructor Destroy; override;
     { Loads the library dynamically.
       @return(@True if the library is succesfully loaded.) }
-    class function Load(const ALibraryName: TFileName): Boolean;
+    class function Load(const ALibraryName: TFileName): Boolean; static;
     { Loads the library dynamically. }
     procedure Open; virtual;
     { Unloads the library dynamically. }
