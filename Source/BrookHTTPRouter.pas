@@ -40,7 +40,7 @@ uses
   FPC300Fixes,
 {$ENDIF}
   libsagui,
-  BrookUtils,
+  BrookUtility,
   BrookHandledClasses,
   BrookStringMap,
   BrookHTTPExtra,
@@ -440,7 +440,7 @@ var
 begin
   if (AValue = FPattern) or (not Assigned(FRoutes)) then
     Exit;
-  NP := BrookFixPath(AValue);
+  NP := Brook.FixPath(AValue);
   RT := FRoutes.Find(NP);
   if Assigned(RT) and (RT <> Self) then
     raise EBrookHTTPRoute.CreateResFmt(@SBrookRouteAlreadyExists,
@@ -614,7 +614,7 @@ begin
     raise EBrookHTTPRoutes.CreateResFmt(@SBrookRouteAlreadyExists,
       [ARoute.GetNamePath, ARoute.Pattern]);
   if R = EINVAL then
-    S := BrookStrError(R)
+    S := Sagui.StrError(R)
   else
     S := TMarshal.ToString(@P[0]).TrimRight;
   raise EBrookHTTPRoutes.Create(S);
@@ -889,8 +889,8 @@ begin
   CheckItems;
   CheckActive;
   SgLib.Check;
-  R := sg_router_dispatch(FHandle, M.ToCNullableString(BrookFixPath(APath)),
-    AUserData);
+  R := sg_router_dispatch(FHandle,
+    M.ToCNullableString(Brook.FixPath(APath)), AUserData);
   Result := R = 0;
   if (not Result) and (R <> ENOENT) then
     SgLib.CheckLastError(R);

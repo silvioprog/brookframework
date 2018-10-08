@@ -26,7 +26,7 @@
 
 { Utility functions of the library. }
 
-unit BrookUtils;
+unit BrookUtility;
 
 {$I Brook.inc}
 
@@ -44,72 +44,70 @@ type
   TBrookErrorEvent = procedure(ASender: TObject;
     AException: Exception) of object;
 
-{
-  Returns the library version number.
-  @return(Library version packed into a single integer.)
-}
-function BrookVersion: Cardinal; overload;
+  Sagui = record
+    {
+      Returns the library version number.
+      @return(Library version packed into a single integer.)
+    }
+    class function Version: Cardinal; overload; static;
+    { experimental }
+    class function Version(out AMajor, AMinor: Byte;
+      out APatch: SmallInt): Cardinal; overload; static;
+    {
+      Returns the library version number as string.
+      @return(Library version packed into a static string.)
+    }
+    class function VersionStr: string; static;
+    {
+      Allocates a new memory space and zero-initialize it.
 
-{ experimental }
-function BrookVersion(out AMajor, AMinor: Byte;
-  out APatch: SmallInt): Cardinal; overload;
+      @param(ASize[in] Memory size to be allocated.)
 
-{
-  Returns the library version number as string.
-  @return(Library version packed into a static string.)
-}
-function BrookVersionStr: string;
+      @return(Pointer of the allocated zero-initialized memory.
 
-{
-  Allocates a new memory space and zero-initialize it.
+        @bold(Returns values:)
 
-  @param(ASize[in] Memory size to be allocated.)
+        @definitionList(
+          @itemLabel(@code(nil))
+          @item(When size is @code(0) or no memory space.)
+        )
+      )
+    }
+    class function Alloc(ASize: NativeUInt): Pointer; static;
+    {
+      Frees a memory space previous allocated by @link(BrookAlloc).
+      @param(APtr[in] Pointer of the memory to be freed.)
+    }
+    class procedure Free(APtr: Pointer); static;
+    { experimental }
+    class function StrError(AErrorNum: Integer): string; static;
+    { experimental }
+    class function IsPost(const AMethod: string): Boolean; static;
+    { experimental }
+    class function ExtractEntryPoint(const APath: string): string; static;
+    { experimental }
+    class function TmpDir: string; static;
+  end;
 
-  @return(Pointer of the allocated zero-initialized memory.
-
-    @bold(Returns values:)
-
-    @definitionList(
-      @itemLabel(@code(nil))
-      @item(When size is @code(0) or no memory space.)
-    )
-  )
-}
-function BrookAlloc(ASize: NativeUInt): Pointer;
-
-{
-  Frees a memory space previous allocated by @link(BrookAlloc).
-  @param(APtr[in] Pointer of the memory to be freed.)
-}
-procedure BrookFree(APtr: Pointer);
-
-{ experimental }
-function BrookStrError(AErrorNum: Integer): string;
-
-{ experimental }
-function BrookIsPost(const AMethod: string): Boolean;
-
-{ experimental }
-function BrookExtractEntryPoint(const APath: string): string;
-
-{ experimental }
-function BrookTmpDir: string;
-
-{ experimental }
-function BrookFixPath(const APath: string): string; inline;
-
-{ experimental }
-function BrookFixEntryPoint(const APath: string): string;
+  Brook = record
+    { experimental }
+    class function FixPath(const APath: string): string; static; inline;
+    { experimental }
+    class function FixEntryPoint(const APath: string): string; static;
+  end;
 
 implementation
 
-function BrookVersion: Cardinal;
+{ Sagui }
+
+class function Sagui.Version: Cardinal;
 begin
   SgLib.Check;
   Result := sg_version;
 end;
 
-function BrookVersion(out AMajor, AMinor: Byte; out APatch: SmallInt): Cardinal;
+class function Sagui.Version(out AMajor, AMinor: Byte;
+  out APatch: SmallInt): Cardinal;
 begin
   SgLib.Check;
   Result := sg_version;
@@ -118,25 +116,25 @@ begin
   APatch := Result and $FF;
 end;
 
-function BrookVersionStr: string;
+class function Sagui.VersionStr: string;
 begin
   SgLib.Check;
   Result := TMarshal.ToString(sg_version_str);
 end;
 
-function BrookAlloc(ASize: NativeUInt): Pointer;
+class function Sagui.Alloc(ASize: NativeUInt): Pointer;
 begin
   SgLib.Check;
   Result := sg_alloc(ASize);
 end;
 
-procedure BrookFree(APtr: Pointer);
+class procedure Sagui.Free(APtr: Pointer);
 begin
   SgLib.Check;
   sg_free(APtr);
 end;
 
-function BrookStrError(AErrorNum: Integer): string;
+class function Sagui.StrError(AErrorNum: Integer): string;
 var
   P: array[0..SG_ERR_SIZE-1] of cchar;
 begin
@@ -145,7 +143,7 @@ begin
   Result := TMarshal.ToString(@P[0]);
 end;
 
-function BrookIsPost(const AMethod: string): Boolean;
+class function Sagui.IsPost(const AMethod: string): Boolean;
 var
   M: TMarshaller;
 begin
@@ -153,7 +151,7 @@ begin
   Result := sg_is_post(M.ToCString(AMethod));
 end;
 
-function BrookExtractEntryPoint(const APath: string): string;
+class function Sagui.ExtractEntryPoint(const APath: string): string;
 var
   M: TMarshaller;
   S: Pcchar;
@@ -167,7 +165,7 @@ begin
   end;
 end;
 
-function BrookTmpDir: string;
+class function Sagui.TmpDir: string;
 var
   S: Pcchar;
 begin
@@ -180,7 +178,9 @@ begin
   end;
 end;
 
-function BrookFixPath(const APath: string): string;
+{ Brook }
+
+class function Brook.FixPath(const APath: string): string;
 begin
   Result := APath;
   if not APath.StartsWith('/') then
@@ -189,7 +189,7 @@ begin
     SetLength(Result, Length(Result) - Length('/'));
 end;
 
-function BrookFixEntryPoint(const APath: string): string;
+class function Brook.FixEntryPoint(const APath: string): string;
 var
   PS: TArray<string>;
 begin

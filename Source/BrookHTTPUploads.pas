@@ -34,7 +34,7 @@ uses
   SysUtils,
   Marshalling,
   libsagui,
-  BrookUtils,
+  BrookUtility,
   BrookHandledClasses;
 
 type
@@ -154,7 +154,7 @@ begin
   R := sg_httpupld_save(FHandle, AOverwritten);
   Result := R = 0;
   if not Result then
-    AError := BrookStrError(R);
+    AError := Sagui.StrError(R);
 end;
 
 function TBrookHTTPUpload.Save(out AError: string): Boolean;
@@ -183,7 +183,7 @@ begin
   R := sg_httpupld_save_as(FHandle, M.ToCString(APath), AOverwritten);
   Result := R = 0;
   if not Result then
-    AError := BrookStrError(R);
+    AError := Sagui.StrError(R);
 end;
 
 function TBrookHTTPUpload.SaveAs(const APath: TFileName;

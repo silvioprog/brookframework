@@ -37,8 +37,8 @@
         <UnitName Value="BrookLibraryLoader"/>
       </Item6>
       <Item7>
-        <Filename Value="../Source/BrookUtils.pas"/>
-        <UnitName Value="BrookUtils"/>
+        <Filename Value="../Source/BrookUtility.pas"/>
+        <UnitName Value="BrookUtility"/>
       </Item7>
       <Item8>
         <Filename Value="../Source/BrookHandledClasses.pas"/>

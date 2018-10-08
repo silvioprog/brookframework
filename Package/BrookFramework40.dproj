@@ -103,7 +103,7 @@
         <DCCReference Include="..\Source\Platform.pas"/>
         <DCCReference Include="..\Source\Marshalling.pas"/>
         <DCCReference Include="..\Source\BrookLibraryLoader.pas"/>
-        <DCCReference Include="..\Source\BrookUtils.pas"/>
+        <DCCReference Include="..\Source\BrookUtility.pas"/>
         <DCCReference Include="..\Source\BrookHandledClasses.pas"/>
         <DCCReference Include="..\Source\BrookString.pas"/>
         <DCCReference Include="..\Source\BrookStringMap.pas"/>

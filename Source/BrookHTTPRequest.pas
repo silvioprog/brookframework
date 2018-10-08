@@ -37,7 +37,7 @@ uses
   FPC300Fixes,
 {$ENDIF}
   libsagui,
-  BrookUtils,
+  BrookUtility,
   BrookHandledClasses,
   BrookString,
   BrookStringMap,
@@ -186,7 +186,7 @@ end;
 
 function TBrookHTTPRequest.IsPost: Boolean;
 begin
-  Result := BrookIsPost(FMethod);
+  Result := Sagui.IsPost(FMethod);
 end;
 
 function TBrookHTTPRequest.IsFavicon: Boolean;

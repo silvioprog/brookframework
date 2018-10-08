@@ -37,7 +37,7 @@ uses
   Classes,
   libsagui,
   BrookHandledClasses,
-  BrookUtils;
+  BrookUtility;
 
 resourcestring
   { Indicates not allowed operation when the library loader is loaded. }
@@ -127,7 +127,7 @@ begin
   FHandle := SgLib.Load(FLibraryName);
   FActive := FHandle <> NilHandle;
   if FActive then
-    FVersion := BrookVersionStr
+    FVersion := Sagui.VersionStr
   else
     FVersion := '';
   if Assigned(FOnLoad) then

@@ -40,7 +40,7 @@ uses
   FPC300Fixes,
 {$ENDIF}
   libsagui,
-  BrookUtils,
+  BrookUtility,
   BrookHandledClasses,
   BrookHTTPExtra,
   BrookHTTPRequest,
@@ -255,7 +255,7 @@ var
 begin
   if (AValue = FName) or (not Assigned(FList)) then
     Exit;
-  NN := BrookFixEntryPoint(AValue);
+  NN := Brook.FixEntryPoint(AValue);
   EP := FList.FindInList(NN);
   if Assigned(EP) and (EP <> Self) then
     raise EBrookHTTPEntryPoint.CreateResFmt(@SBrookEntryPointAlreadyExists,
@@ -670,7 +670,7 @@ var
 begin
   CheckItems;
   CheckActive;
-  EP := BrookFixEntryPoint(APath);
+  EP := Brook.FixEntryPoint(APath);
   P := APath.SubString(EP.Length);
   if FList.Find(EP, RT) then
     HandleRoute(ASender, EP, P, RT, ARequest, AResponse)

@@ -38,7 +38,7 @@ uses
   FPC300Fixes,
 {$ENDIF}
   libsagui,
-  BrookUtils,
+  BrookUtility,
   BrookHandledClasses,
   BrookHTTPExtra,
   BrookHTTPAuthentication,
