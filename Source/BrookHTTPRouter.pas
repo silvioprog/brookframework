@@ -221,6 +221,8 @@ type
     FStreamedActive: Boolean;
     FOnNotFound: TBrookHTTPRouterRouteEvent;
     FOnRoute: TBrookHTTPRouterRouteEvent;
+    FOnActivate: TNotifyEvent;
+    FOnDeactivate: TNotifyEvent;
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetRoutes(AValue: TBrookHTTPRoutes);
@@ -255,6 +257,8 @@ type
     property OnRoute: TBrookHTTPRouterRouteEvent read FOnRoute write FOnRoute;
     property OnNotFound: TBrookHTTPRouterRouteEvent read FOnNotFound
       write FOnNotFound;
+    property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
 
 implementation
@@ -833,6 +837,8 @@ begin
   SgLib.Check;
   FHandle := sg_router_new(FRoutes.Handle);
   FActive := Assigned(FHandle);
+  if Assigned(FOnActivate) then
+    FOnActivate(Self);
 end;
 
 procedure TBrookHTTPRouter.DoClose;
@@ -843,6 +849,8 @@ begin
   sg_router_free(FHandle);
   FHandle := nil;
   FActive := False;
+  if Assigned(FOnDeactivate) then
+    FOnDeactivate(Self);
 end;
 
 procedure TBrookHTTPRouter.Open;

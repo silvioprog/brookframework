@@ -137,6 +137,8 @@ type
     FList: TBrookHTTPEntryPointList;
     FStreamedActive: Boolean;
     FOnNotFound: TBrookHTTPEntryPointsNotFoundEvent;
+    FOnActivate: TNotifyEvent;
+    FOnDeactivate: TNotifyEvent;
     function IsActive: Boolean;
     procedure SetActive(AValue: Boolean);
     function GetItem(AIndex: Integer): TBrookHTTPEntryPoint;
@@ -178,6 +180,8 @@ type
     property List: TBrookHTTPEntryPointList read FList write SetList;
     property OnNotFound: TBrookHTTPEntryPointsNotFoundEvent read FOnNotFound
       write FOnNotFound;
+    property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
   end;
 
 implementation
@@ -566,12 +570,16 @@ procedure TBrookHTTPEntryPoints.DoOpen;
 begin
   FList.Prepare;
   FActive := FList.IsPrepared;
+  if Assigned(FOnActivate) then
+    FOnActivate(Self);
 end;
 
 procedure TBrookHTTPEntryPoints.DoClose;
 begin
   FList.Unprepare;
   FActive := False;
+  if Assigned(FOnDeactivate) then
+    FOnDeactivate(Self);
 end;
 
 procedure TBrookHTTPEntryPoints.SetList(AValue: TBrookHTTPEntryPointList);
