@@ -149,7 +149,7 @@ type
     function CreateList: TBrookHTTPEntryPointList; virtual;
     procedure Loaded; override;
     function GetHandle: Pointer; override;
-    procedure HandleRoute(ASender: TObject; const AEntryPoint, APath: string;
+    procedure DoRoute(ASender: TObject; const AEntryPoint, APath: string;
       ARouter: TBrookHTTPRouter; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); virtual;
     procedure DoNotFound(ASender: TObject; const AEntryPoint, APath: string;
@@ -168,10 +168,10 @@ type
     procedure Clear; inline;
     procedure Open;
     procedure Close;
-    procedure Go(ASender: TObject; const APath: string;
+    procedure Enter(ASender: TObject; const APath: string;
       ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); overload; virtual;
-    procedure Go(ASender: TObject; ARequest: TBrookHTTPRequest;
+    procedure Enter(ASender: TObject; ARequest: TBrookHTTPRequest;
       AResponse: TBrookHTTPResponse); overload; virtual;
     property Items[AIndex: Integer]: TBrookHTTPEntryPoint read GetItem
       write SetItem; default;
@@ -640,9 +640,9 @@ begin
   SetActive(False);
 end;
 
-procedure TBrookHTTPEntryPoints.HandleRoute(ASender: TObject;
-  const AEntryPoint, APath: string; ARouter: TBrookHTTPRouter;
-  ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+procedure TBrookHTTPEntryPoints.DoRoute(ASender: TObject; const AEntryPoint,
+  APath: string; ARouter: TBrookHTTPRouter; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
 begin
   if Assigned(ARouter) then
     ARouter.Route(ASender, APath, ARequest, AResponse)
@@ -662,7 +662,7 @@ begin
       BROOK_CONTENT_TYPE, 404);
 end;
 
-procedure TBrookHTTPEntryPoints.Go(ASender: TObject; const APath: string;
+procedure TBrookHTTPEntryPoints.Enter(ASender: TObject; const APath: string;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
   RT: TBrookHTTPRouter;
@@ -673,17 +673,17 @@ begin
   EP := Brook.FixEntryPoint(APath);
   P := APath.SubString(EP.Length);
   if FList.Find(EP, RT) then
-    HandleRoute(ASender, EP, P, RT, ARequest, AResponse)
+    DoRoute(ASender, EP, P, RT, ARequest, AResponse)
   else
     DoNotFound(ASender, EP, P, ARequest, AResponse);
 end;
 
-procedure TBrookHTTPEntryPoints.Go(ASender: TObject;
+procedure TBrookHTTPEntryPoints.Enter(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 begin
   if not Assigned(ARequest) then
     raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ARequest']);
-  Go(ASender, ARequest.Path, ARequest, AResponse);
+  Enter(ASender, ARequest.Path, ARequest, AResponse);
 end;
 
 end.

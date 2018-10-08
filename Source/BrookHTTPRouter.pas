@@ -80,10 +80,6 @@ type
     ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse) of object;
 
-  TBrookHTTPRouteRequestErrorEvent = procedure(ASender: TObject;
-    ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
-    AResponse: TBrookHTTPResponse; AException: Exception) of object;
-
   TBrookHTTPRouteRequestMethodEvent = procedure(ASender: TObject;
     ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
     AResponse: TBrookHTTPResponse; var AAllowed: Boolean) of object;
@@ -111,7 +107,6 @@ type
     FMethods: TBrookHTTPRouteRequestMethods;
     FOnRequestMethod: TBrookHTTPRouteRequestMethodEvent;
     FOnRequest: TBrookHTTPRouteRequestEvent;
-    FOnRequestError: TBrookHTTPRouteRequestErrorEvent;
     function GetPattern: string;
     function GetPath: string;
     function GetRawPattern: string;
@@ -135,15 +130,12 @@ type
       var AAllowed: Boolean); virtual;
     procedure DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
-    procedure DoRequestError(ASender: TObject; ARoute: TBrookHTTPRoute;
-      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
-      AException: Exception); virtual;
     procedure HandleMatch(ARoute: TBrookHTTPRoute); virtual;
-    function IsReqMethodAllowed(const AMethod: string): Boolean; virtual;
-    procedure HandleReqMethodNotAllowed(const AMethod: string;
-      AResponse: TBrookHTTPResponse); virtual;
     procedure HandleRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse); virtual;
+    function IsMethodAllowed(const AMethod: string): Boolean; virtual;
+    procedure SendMethodNotAllowed(const AMethod: string;
+      AResponse: TBrookHTTPResponse); virtual;
     procedure CheckMethods; inline;
     property Routes: TBrookHTTPRoutes read FRoutes;
   public
@@ -166,8 +158,6 @@ type
       read FOnRequestMethod write FOnRequestMethod;
     property OnRequest: TBrookHTTPRouteRequestEvent read FOnRequest
       write FOnRequest;
-    property OnRequestError: TBrookHTTPRouteRequestErrorEvent
-      read FOnRequestError write FOnRequestError;
   end;
 
   TBrookHTTPRouteClass = class of TBrookHTTPRoute;
@@ -482,16 +472,6 @@ begin
     AResponse.SendEmpty;
 end;
 
-procedure TBrookHTTPRoute.DoRequestError(ASender: TObject;
-  ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
-  AResponse: TBrookHTTPResponse; AException: Exception);
-begin
-  if Assigned(FOnRequestError) then
-    FOnRequestError(ASender, ARoute, ARequest, AResponse, AException)
-  else
-    AResponse.Send(AException.Message, BROOK_CONTENT_TYPE, 500);
-end;
-
 procedure TBrookHTTPRoute.HandleMatch(ARoute: TBrookHTTPRoute);
 var
   CLS: TBrookHTTPRouteClosure;
@@ -501,41 +481,36 @@ begin
   HandleRequest(CLS.Sender, TBrookHTTPRoute(ARoute), CLS.Request, CLS.Response);
 end;
 
-function TBrookHTTPRoute.IsReqMethodAllowed(const AMethod: string): Boolean;
-begin
-  Result := (FMethods = []) or (rmUnknown.FromString(AMethod) in FMethods);
-end;
-
-procedure TBrookHTTPRoute.HandleReqMethodNotAllowed(const AMethod: string;
-  AResponse: TBrookHTTPResponse);
-begin
-  AResponse.Send(LoadResString(@SBrookRequestMethodNotAllowed), [AMethod],
-    BROOK_CONTENT_TYPE, 405);
-end;
-
 procedure TBrookHTTPRoute.HandleRequest(ASender: TObject;
   ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
   AResponse: TBrookHTTPResponse);
 var
   A: Boolean;
 begin
-  try
-    CheckMethods;
-    A := IsReqMethodAllowed(ARequest.Method);
-    DoRequestMethod(ASender, ARoute, ARequest, AResponse, A);
-    if A then
-      DoRequest(ASender, ARoute, ARequest, AResponse)
-    else
-      HandleReqMethodNotAllowed(ARequest.Method, AResponse);
-  except
-    on E: Exception do
-      DoRequestError(ASender, ARoute, ARequest, AResponse, E);
-  end;
+  CheckMethods;
+  A := IsMethodAllowed(ARequest.Method);
+  DoRequestMethod(ASender, ARoute, ARequest, AResponse, A);
+  if A then
+    DoRequest(ASender, ARoute, ARequest, AResponse)
+  else
+    SendMethodNotAllowed(ARequest.Method, AResponse);
 end;
 
 function TBrookHTTPRoute.IsMethods: Boolean;
 begin
   Result := FMethods <> DefaultReqMethods;
+end;
+
+function TBrookHTTPRoute.IsMethodAllowed(const AMethod: string): Boolean;
+begin
+  Result := (FMethods = []) or (rmUnknown.FromString(AMethod) in FMethods);
+end;
+
+procedure TBrookHTTPRoute.SendMethodNotAllowed(const AMethod: string;
+  AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send(LoadResString(@SBrookRequestMethodNotAllowed), [AMethod],
+    BROOK_CONTENT_TYPE, 405);
 end;
 
 { TBrookHTTPRoutesEnumerator }
