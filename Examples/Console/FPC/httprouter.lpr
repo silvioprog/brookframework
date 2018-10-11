@@ -94,7 +94,9 @@ type
 
 procedure TRouteHome.AfterConstruction;
 begin
+  Methods := [rmGET];
   Pattern := '/home';
+  Default := True;
 end;
 
 procedure TRouteHome.DoRequest(ASender: TObject; ARoute: TBrookHTTPRoute;
@@ -107,6 +109,7 @@ end;
 
 procedure TRouteDownload.AfterConstruction;
 begin
+  Methods := [rmGET];
   Pattern := '/download/(?P<file>[a-z]+)';
 end;
 
@@ -121,6 +124,7 @@ end;
 
 procedure TRoutePage.AfterConstruction;
 begin
+  Methods := [rmGET];
   Pattern := '/page/([0-9]+)';
 end;
 

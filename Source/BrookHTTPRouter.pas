@@ -55,6 +55,7 @@ resourcestring
   SBrookRequestMethodNotAllowed = 'Request method not allowed: %s';
   SBrookRequestNoMethodDefined = 'No method(s) defined';
   SBrookRouteNotFound = 'Route not found: %s';
+  SBrookDefaultRouteAlreadyExists = 'A default route already exists.';
 
 type
   TBrookHTTPRouteRequestMethod = (rmUnknown, rmGET, rmPOST, rmPUT, rmDELETE,
@@ -104,6 +105,7 @@ type
     FHandle: Psg_route;
     Fvars: Psg_strmap;
     FPattern: string;
+    FDefault: Boolean;
     FMethods: TBrookHTTPRouteRequestMethods;
     FOnRequestMethod: TBrookHTTPRouteRequestMethodEvent;
     FOnRequest: TBrookHTTPRouteRequestEvent;
@@ -113,6 +115,8 @@ type
     function GetVariables: TBrookStringMap;
     function GetRegexHandle: Pointer;
     function GetUserData: Pointer;
+    function IsDefault: Boolean;
+    procedure SetDefault(AValue: Boolean);
     procedure SetPattern(const AValue: string);
     function IsMethods: Boolean;
     function GetSegments: TArray<string>;
@@ -150,6 +154,8 @@ type
     property Path: string read GetPath;
     property UserData: Pointer read GetUserData;
   published
+    property Default: Boolean read FDefault write SetDefault
+      stored IsDefault default False;
     property Pattern: string read GetPattern write SetPattern;
     property Methods: TBrookHTTPRouteRequestMethods read FMethods write FMethods
       stored IsMethods default TBrookHTTPRoute.DefaultReqMethods;
@@ -194,6 +200,7 @@ type
     function Last: TBrookHTTPRoute; virtual;
     function IndexOf(const APattern: string): Integer; virtual;
     function Find(const APattern: string): TBrookHTTPRoute; virtual;
+    function FindDefault: TBrookHTTPRoute; virtual;
     function Remove(const APattern: string): Boolean; virtual;
     procedure Clear; virtual;
     property Items[AIndex: Integer]: TBrookHTTPRoute read GetItem
@@ -423,6 +430,20 @@ begin
   Result := sg_route_user_data(FHandle);
 end;
 
+function TBrookHTTPRoute.IsDefault: Boolean;
+begin
+  Result := FDefault;
+end;
+
+procedure TBrookHTTPRoute.SetDefault(AValue: Boolean);
+begin
+  if FDefault = AValue then
+    Exit;
+  if AValue and Assigned(FRoutes) and Assigned(FRoutes.FindDefault) then
+    raise EInvalidOpException.CreateRes(@SBrookDefaultRouteAlreadyExists);
+  FDefault := AValue;
+end;
+
 procedure TBrookHTTPRoute.SetPattern(const AValue: string);
 var
   RT: TBrookHTTPRoute;
@@ -546,6 +567,14 @@ end;
 class function TBrookHTTPRoutes.GetRouteLabel: string;
 begin
   Result := '/route';
+end;
+
+function TBrookHTTPRoutes.FindDefault: TBrookHTTPRoute;
+begin
+  for Result in Self do
+    if Result.FDefault then
+      Exit;
+  Result := nil;
 end;
 
 function TBrookHTTPRoutes.GetHandle: Pointer;
@@ -874,14 +903,26 @@ procedure TBrookHTTPRouter.Route(ASender: TObject; const ARoute: string;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
 var
   CLS: TBrookHTTPRouteClosure;
+  R: TBrookHTTPRoute;
 begin
   CLS.Request := ARequest;
   CLS.Response := AResponse;
   CLS.Sender := ASender;
   if DispatchRoute(ARoute, @CLS) then
-    DoRoute(ASender, ARoute, ARequest, AResponse)
-  else
-    DoNotFound(ASender, ARoute, ARequest, AResponse);
+  begin
+    DoRoute(ASender, ARoute, ARequest, AResponse);
+    Exit;
+  end;
+  if ARoute = '/' then
+  begin
+    R := FRoutes.FindDefault;
+    if Assigned(R) then
+    begin
+      R.HandleRequest(ASender, R, ARequest, AResponse);
+      Exit;
+    end;
+  end;
+  DoNotFound(ASender, ARoute, ARequest, AResponse);
 end;
 
 procedure TBrookHTTPRouter.Route(ASender: TObject;
