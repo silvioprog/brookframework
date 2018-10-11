@@ -166,21 +166,6 @@ var
   sg_tmpdir: function: Pcchar; cdecl;
 
 type
-  Psg_ffi = ^sg_ffi;
-  sg_ffi = record
-  end;
-
-  sg_ffi_fn = procedure;
-
-var
-  sg_ffi_new: function(const opts: Pcchar): Psg_ffi; cdecl;
-
-  sg_ffi_free: procedure(ffi: Psg_ffi); cdecl;
-
-  sg_ffi_call: function(ffi: Psg_ffi; fn: sg_ffi_fn; args: PPcvoid;
-    ret: Pcvoid): cint; cdecl;
-
-type
   Psg_str = ^sg_str;
   sg_str = record
   end;
@@ -358,7 +343,10 @@ var
   sg_httpres_set_cookie: function(res: Psg_httpres; const name: Pcchar;
     const val: Pcchar): cint; cdecl;
 
-  { sg_httpres_send }
+function sg_httpres_send(res: Psg_httpres; buf: Pcchar;
+  const content_type: Pcchar; status: cuint): cint; cdecl;
+
+var
 
   sg_httpres_sendbinary: function(res: Psg_httpres; buf: Pcvoid; size: csize_t;
     const content_type: Pcchar; status: cuint): cint; cdecl;
@@ -590,6 +578,18 @@ type
 
 implementation
 
+function sg_httpres_send(res: Psg_httpres; buf: Pcchar;
+  const content_type: Pcchar; status: cuint): cint;
+var
+  len: csize_t;
+begin
+  if Assigned(buf) then
+    len := Length(buf)
+  else
+    len := 0;
+  Result := sg_httpres_sendbinary(res, buf, len, content_type, status);
+end;
+
 class procedure SgLib.Init;
 begin
   GCS := TCriticalSection.Create;
@@ -696,10 +696,6 @@ begin
     sg_is_post := GetProcAddress(GHandle, 'sg_is_post');
     sg_extract_entrypoint := GetProcAddress(GHandle, 'sg_extract_entrypoint');
     sg_tmpdir := GetProcAddress(GHandle, 'sg_tmpdir');
-
-    sg_ffi_new := GetProcAddress(GHandle, 'sg_ffi_new');
-    sg_ffi_free := GetProcAddress(GHandle, 'sg_ffi_free');
-    sg_ffi_call := GetProcAddress(GHandle, 'sg_ffi_call');
 
     sg_str_new := GetProcAddress(GHandle, 'sg_str_new');
     sg_str_free := GetProcAddress(GHandle, 'sg_str_free');
@@ -853,10 +849,6 @@ begin
     sg_is_post := nil;
     sg_extract_entrypoint := nil;
     sg_tmpdir := nil;
-
-    sg_ffi_new := nil;
-    sg_ffi_free := nil;
-    sg_ffi_call := nil;
 
     sg_str_new := nil;
     sg_str_free := nil;
