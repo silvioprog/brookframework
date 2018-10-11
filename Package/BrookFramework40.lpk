@@ -3,6 +3,7 @@
   <Package Version="4">
     <Name Value="BrookFramework40"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Silvio Clecio (silvioprog)"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -11,6 +12,24 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
+    <Description Value="Brook is microframework which helps to develop web Pascal applications."/>
+    <License Value="Copyright (c) 2012-2018 Silvio Clecio &lt;silvioprog@gmail.com>
+
+This file is part of Brook framework.
+
+Brook framework is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Brook framework is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with Brook framework.  If not, see &lt;http://www.gnu.org/licenses/>."/>
+    <Version Major="5"/>
     <Files Count="19">
       <Item1>
         <Filename Value="../Source/libsagui.pas"/>

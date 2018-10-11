@@ -5,7 +5,7 @@
  *  |___/\__,_|\__, |\__,_|_|
  *             |___/
  *
- *   –– an ideal C library to develop cross-platform HTTP servers.
+ *   –– cross-platform library which helps to develop web servers or frameworks.
  *
  * Copyright (c) 2016-2018 Silvio Clecio <silvioprog@gmail.com>
  *
