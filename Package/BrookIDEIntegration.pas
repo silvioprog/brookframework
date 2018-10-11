@@ -202,10 +202,9 @@ begin
   Result := 1;
 end;
 
-function TBrookLibraryNamePropertyEditor.GetVerb(
-  AIndex: Integer): string;
+function TBrookLibraryNamePropertyEditor.GetVerb(AIndex: Integer): string;
 begin
-  Result := LoadResString(@SBrookSelectLibraryTitle);
+  Result := SBrookSelectLibraryTitle;
 end;
 
 procedure TBrookLibraryNamePropertyEditor.ExecuteVerb(AIndex: Integer);
@@ -220,14 +219,14 @@ var
   VSharedSuffix: string;
 begin
   VSharedSuffix := Concat('*.', SharedSuffix);
-  Result := Format(LoadResString(@SBrookSharedLibraryFilter), [VSharedSuffix,
+  Result := Format(SBrookSharedLibraryFilter, [VSharedSuffix,
 {$IFDEF LINUX}Concat({$ENDIF}VSharedSuffix
 {$IFDEF LINUX}, ';', VSharedSuffix, '.*'){$ENDIF}]);
 end;
 
 function TBrookLibraryNamePropertyEditor.GetDialogTitle: string;
 begin
-  Result := LoadResString(@SBrookSelectLibraryTitle);
+  Result := SBrookSelectLibraryTitle;
 end;
 
 {$IFNDEF LCL}
@@ -331,7 +330,7 @@ end;
 function TBrookLibraryNameComponentEditor.GetVerb(
   AIndex: Integer): string;
 begin
-  Result := LoadResString(@SBrookSelectLibraryTitle);
+  Result := SBrookSelectLibraryTitle;
 end;
 
 {$IFNDEF LCL}
@@ -374,7 +373,7 @@ end;
 
 function TBrookHTTPRouterComponentEditor.GetVerb(AIndex: Integer): string;
 begin
-  Result := LoadResString(@SBrookHTTPRoutesEditor);
+  Result := SBrookHTTPRoutesEditor;
 end;
 
 function TBrookHTTPRouterComponentEditor.GetVerbCount: Integer;
@@ -399,7 +398,7 @@ end;
 
 function TBrookHTTPEntryPointsComponentEditor.GetVerb(AIndex: Integer): string;
 begin
-  Result := LoadResString(@SBrookHTTPEntryPointsEditor);
+  Result := SBrookHTTPEntryPointsEditor;
 end;
 
 function TBrookHTTPEntryPointsComponentEditor.GetVerbCount: Integer;

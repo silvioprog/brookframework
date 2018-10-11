@@ -647,7 +647,7 @@ begin
   if Assigned(ARouter) then
     ARouter.Route(ASender, APath, ARequest, AResponse)
   else
-    AResponse.Send(LoadResString(@SBrookRouterNotAssigned), [AEntryPoint],
+    AResponse.Send(SBrookRouterNotAssigned, [AEntryPoint],
       BROOK_CONTENT_TYPE, 500);
 end;
 
@@ -658,7 +658,7 @@ begin
   if Assigned(FOnNotFound) then
     FOnNotFound(ASender, AEntryPoint, APath, ARequest, AResponse)
   else
-    AResponse.Send(LoadResString(@SBrookEntryPointNotFound), [AEntryPoint],
+    AResponse.Send(SBrookEntryPointNotFound, [AEntryPoint],
       BROOK_CONTENT_TYPE, 404);
 end;
 
