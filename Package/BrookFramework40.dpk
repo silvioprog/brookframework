@@ -51,6 +51,7 @@ package BrookFramework40;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Brook is microframework which helps to develop web Pascal applications.'}
 {$IMPLICITBUILD ON}
 
 requires
