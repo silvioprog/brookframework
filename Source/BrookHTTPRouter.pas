@@ -439,7 +439,7 @@ procedure TBrookHTTPRoute.SetDefault(AValue: Boolean);
 begin
   if FDefault = AValue then
     Exit;
-  if AValue and Assigned(FRoutes) and Assigned(FRoutes.FindDefault) then
+  if AValue and Assigned(FRoutes) and Assigned(FRoutes.FindDefault()) then
     raise EInvalidOpException.CreateRes(@SBrookDefaultRouteAlreadyExists);
   FDefault := AValue;
 end;

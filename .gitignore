@@ -70,7 +70,7 @@ __recovery/
 *.dylib
 *.lrs
 *.res
-!BrookFramework[0-9]*Icons.res
+!BrookTardigradeIcons.res
 *.compiled
 *.dbg
 *.ppu
@@ -89,7 +89,7 @@ __recovery/
 backup/
 *.bak
 lib/
-BrookFramework[0-9]*.pas
+BrookTardigrade.pas
 
 # Application bundle for Mac OS
 *.app/

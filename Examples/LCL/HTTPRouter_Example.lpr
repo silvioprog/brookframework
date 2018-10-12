@@ -1,4 +1,4 @@
-﻿(*   _                     _
+(*   _                     _
  *  | |__  _ __ ___   ___ | | __
  *  | '_ \| '__/ _ \ / _ \| |/ /
  *  | |_) | | | (_) | (_) |   <
@@ -24,16 +24,25 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program HTTPCookie_Example;
+program HTTPRouter_Example;
+
+{$MODE DELPHI}
 
 uses
-  System.StartUpCopy,
-  FMX.Forms,
-  HTTPCookie_frMain in 'HTTPCookie_frMain.pas' {frMain};
+{$IFDEF UNIX}
+  CThreads,
+{$ENDIF}
+  Interfaces,
+  Forms,
+  HTTPRouter_frMain;
 
 {$R *.res}
 
 begin
+{$IFNDEF VER3_0_0}
+  Application.Scaled := True;
+{$ENDIF}
+  RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TfrMain, frMain);
   Application.Run;

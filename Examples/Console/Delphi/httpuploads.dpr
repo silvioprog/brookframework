@@ -34,7 +34,7 @@ uses
   SysUtils,
   IOUtils,
   BrookLibraryLoader,
-  BrookUtils,
+  BrookUtility,
   BrookHTTPUploads,
   BrookHTTPRequest,
   BrookHTTPResponse,
@@ -111,7 +111,7 @@ begin
   end;
   with THTTPServer.Create(nil) do
   try
-    UploadsDir := TPath.Combine(BrookTmpDir, 'uploads');
+    UploadsDir := TPath.Combine(Sagui.TmpDir, 'uploads');
     NoFavicon := True;
     Open;
     if not Active then

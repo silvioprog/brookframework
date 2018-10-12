@@ -1,14 +1,14 @@
-(*   _                     _
+﻿(*   _                     _
  *  | |__  _ __ ___   ___ | | __
  *  | '_ \| '__/ _ \ / _ \| |/ /
  *  | |_) | | | (_) | (_) |   <
  *  |_.__/|_|  \___/ \___/|_|\_\
  *
- *  –– an ideal Pascal microframework to develop cross-platform HTTP servers.
+ *  –– microframework which helps to develop web Pascal applications.
  *
  * Copyright (c) 2012-2018 Silvio Clecio <silvioprog@gmail.com>
  *
- * This file is part of Brook library.
+ * This file is part of Brook framework.
  *
  * Brook framework is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

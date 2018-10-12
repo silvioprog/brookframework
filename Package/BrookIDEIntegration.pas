@@ -128,7 +128,7 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-{$R BrookFramework40Icons.res}
+{$R BrookTardigradeIcons.res}
 
 procedure Register;
 

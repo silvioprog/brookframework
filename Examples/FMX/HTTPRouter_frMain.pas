@@ -24,15 +24,12 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-unit HTTPUpload_frMain;
+unit HTTPRouter_frMain;
 
 interface
 
 uses
   System.SysUtils,
-{$IFDEF ANDROID}
-  System.IOUtils,
-{$ENDIF}
   System.UITypes,
   System.Classes,
   System.Actions,
@@ -47,28 +44,27 @@ uses
   FMX.DialogService,
   FMX.Forms,
   FMX.Controls.Presentation,
-  BrookUtility,
   BrookHandledClasses,
   BrookLibraryLoader,
-  BrookHTTPUploads,
   BrookHTTPRequest,
   BrookHTTPResponse,
   BrookHTTPServer,
-  Utility;
+  Utility, BrookHTTPRouter;
 
 type
   TfrMain = class(TForm)
-    lbPort: TLabel;
-    edPort: TNumberBox;
-    btStart: TButton;
-    btStop: TButton;
-    lbLink: TLabel;
     alMain: TActionList;
     acStart: TAction;
     acStop: TAction;
     BrookHTTPServer1: TBrookHTTPServer;
-    pnTop: TPanel;
     BrookLibraryLoader1: TBrookLibraryLoader;
+    lbLink: TLabel;
+    pnTop: TPanel;
+    lbPort: TLabel;
+    edPort: TNumberBox;
+    btStart: TButton;
+    btStop: TButton;
+    BrookHTTPRouter1: TBrookHTTPRouter;
     procedure acStartExecute(Sender: TObject);
     procedure acStopExecute(Sender: TObject);
     procedure lbLinkMouseEnter(Sender: TObject);
@@ -79,43 +75,25 @@ type
     procedure BrookHTTPServer1RequestError(ASender: TObject;
       ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse;
       AException: Exception);
-    procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
+    procedure BrookHTTPRouter1NotFound(ASender: TObject; const ARoute: string;
+      ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
+    procedure BrookHTTPRouter1Routes0Request(ASender: TObject;
+      ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse);
+    procedure BrookHTTPRouter1Routes1Request(ASender: TObject;
+      ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse);
+    procedure BrookHTTPRouter1Routes2Request(ASender: TObject;
+      ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+      AResponse: TBrookHTTPResponse);
     procedure BrookHTTPServer1Start(Sender: TObject);
     procedure BrookHTTPServer1Stop(Sender: TObject);
     procedure edPortChange(Sender: TObject);
     procedure edPortChangeTracking(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure BrookHTTPServer1Error(ASender: TObject; AException: Exception);
   public
     procedure UpdateControls; inline;
   end;
-
-const
-  PAGE_FORM = Concat(
-    '<html>',
-    '<body>',
-    '<form action="" method="post" enctype="multipart/form-data">',
-    '<fieldset>',
-    '<legend>Choose the files:</legend>',
-    'File 1: <input type="file" name="file1"/><br>',
-    'File 2: <input type="file" name="file2"/><br>',
-    '<input type="submit"/>',
-    '</fieldset>',
-    '</form>',
-    '</body>',
-    '</html>'
-  );
-  PAGE_DONE = Concat(
-    '<html>',
-    '<head>',
-    '<title>Uploads</title>',
-    '</head>',
-    '<body>',
-    '<strong>Uploaded files:</strong><br>',
-    '%s',
-    '</body>',
-    '</html>'
-  );
-  CONTENT_TYPE = 'text/html; charset=utf-8';
 
 var
   frMain: TfrMain;
@@ -123,14 +101,6 @@ var
 implementation
 
 {$R *.fmx}
-
-procedure TfrMain.FormShow(Sender: TObject);
-begin
-  BrookLibraryLoader1.Open;
-  if BrookHTTPServer1.UploadsDir.IsEmpty then
-    BrookHTTPServer1.UploadsDir :=
-{$IFDEF ANDROID}TPath.GetTempPath{$ELSE}Sagui.TmpDir{$ENDIF};
-end;
 
 procedure TfrMain.UpdateControls;
 begin
@@ -147,6 +117,8 @@ end;
 
 procedure TfrMain.acStartExecute(Sender: TObject);
 begin
+  BrookLibraryLoader1.Open;
+  BrookHTTPRouter1.Open;
   BrookHTTPServer1.Open;
 end;
 
@@ -172,30 +144,8 @@ end;
 
 procedure TfrMain.BrookHTTPServer1Request(ASender: TObject;
   ARequest: TBrookHTTPRequest; AResponse: TBrookHTTPResponse);
-var
-  VUpload: TBrookHTTPUpload;
-  VFile, VList, VError: string;
 begin
-  if ARequest.IsUploading then
-  begin
-    VList := '<ol>';
-    for VUpload in ARequest.Uploads do
-      if VUpload.Save(False, VError) then
-        VList := Concat(VList, '<li><a href="?file=', VUpload.Name, '">',
-          VUpload.Name, '</a></li>')
-      else
-        VList := Concat(VList, '<li><font color="red">', VUpload.Name,
-          ' - failed - ', VError, '</font></li>');
-    VList := Concat(VList, '</ol>');
-    AResponse.Send(PAGE_DONE, [VList], CONTENT_TYPE, 200);
-  end
-  else
-  begin
-    if ARequest.Params.TryValue('file', VFile) then
-      AResponse.SendFile(Concat(BrookHTTPServer1.UploadsDir, PathDelim, VFile))
-    else
-      AResponse.Send(PAGE_FORM, CONTENT_TYPE, 200);
-  end;
+  BrookHTTPRouter1.Route(ASender, ARequest, AResponse);
 end;
 
 procedure TfrMain.BrookHTTPServer1RequestError(ASender: TObject;
@@ -205,6 +155,42 @@ begin
   AResponse.Send(
     '<html><head><title>Error</title></head><body><font color="red">%s</font></body></html>',
     [AException.Message], 'text/html; charset=utf-8', 500);
+end;
+
+procedure TfrMain.BrookHTTPRouter1NotFound(ASender: TObject;
+  const ARoute: string; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send(
+    '<html><head><title>Not found</title></head><body>Page not found: %s</body></html>',
+    [ARequest.Path], 'text/html; charset=utf-8', 404);
+end;
+
+procedure TfrMain.BrookHTTPRouter1Routes0Request(ASender: TObject;
+  ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send(
+    '<html><head><title>Home page</title></head><body>Home page</body></html>',
+    'text/html; charset=utf-8', 200);
+end;
+
+procedure TfrMain.BrookHTTPRouter1Routes1Request(ASender: TObject;
+  ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send(
+    '<html><head><title>Downloads</title></head><body>Downloaded file: %s</body></html>',
+    [ARoute.Variables['file']], 'text/html; charset=utf-8', 200);
+end;
+
+procedure TfrMain.BrookHTTPRouter1Routes2Request(ASender: TObject;
+  ARoute: TBrookHTTPRoute; ARequest: TBrookHTTPRequest;
+  AResponse: TBrookHTTPResponse);
+begin
+  AResponse.Send(
+    '<html><head><title>Page</title></head><body>Page number: %d</body></html>',
+    [ARoute.Segments[0].ToInteger], 'text/html; charset=utf-8', 200);
 end;
 
 procedure TfrMain.BrookHTTPServer1Start(Sender: TObject);

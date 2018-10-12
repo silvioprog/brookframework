@@ -24,7 +24,7 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-package BrookFramework40;
+package BrookTardigrade;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}

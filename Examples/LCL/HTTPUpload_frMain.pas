@@ -45,7 +45,7 @@ uses
   FPC300Fixes,
 {$ENDIF}
   BrookLibraryLoader,
-  BrookUtils,
+  BrookUtility,
   BrookHTTPUploads,
   BrookHTTPRequest,
   BrookHTTPResponse,
@@ -123,7 +123,7 @@ procedure TfrMain.FormShow(Sender: TObject);
 begin
   BrookLibraryLoader1.Open;
   if BrookHTTPServer1.UploadsDir.IsEmpty then
-    BrookHTTPServer1.UploadsDir := BrookTmpDir;
+    BrookHTTPServer1.UploadsDir := Sagui.TmpDir;
 end;
 
 procedure TfrMain.DoError(AData: PtrInt);

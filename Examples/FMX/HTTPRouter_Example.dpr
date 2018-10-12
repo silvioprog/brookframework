@@ -1,10 +1,10 @@
-ï»¿(*   _                     _
+(*   _                     _
  *  | |__  _ __ ___   ___ | | __
  *  | '_ \| '__/ _ \ / _ \| |/ /
  *  | |_) | | | (_) | (_) |   <
  *  |_.__/|_|  \___/ \___/|_|\_\
  *
- *  â€“â€“ microframework which helps to develop web Pascal applications.
+ *  –– microframework which helps to develop web Pascal applications.
  *
  * Copyright (c) 2012-2018 Silvio Clecio <silvioprog@gmail.com>
  *
@@ -24,12 +24,12 @@
  * along with Brook framework.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-program HTTPCookie_Example;
+program HTTPRouter_Example;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
-  HTTPCookie_frMain in 'HTTPCookie_frMain.pas' {frMain};
+  HTTPRouter_frMain in 'HTTPRouter_frMain.pas' {frMain};
 
 {$R *.res}
 
