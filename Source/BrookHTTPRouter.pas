@@ -570,10 +570,12 @@ begin
 end;
 
 function TBrookHTTPRoutes.FindDefault: TBrookHTTPRoute;
+var
+  R: TBrookHTTPRoute;
 begin
-  for Result in Self do
-    if Result.FDefault then
-      Exit;
+  for R in Self do
+    if R.FDefault then
+      Exit(R);
   Result := nil;
 end;
 
