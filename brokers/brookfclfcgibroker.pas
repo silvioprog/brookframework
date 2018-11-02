@@ -98,12 +98,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TBrookApplication.CreateForm(AInstanceClass: TComponentClass; out
-  AReference);
+procedure TBrookApplication.CreateForm(AInstanceClass: TComponentClass;
+  out AReference);
 var
-  VReference: TComponent absolute AReference;
+  VReference: TComponent;
 begin
   VReference := AInstanceClass.Create(nil);
+  TComponent(AReference) := VReference;
   FApp.InsertComponent(VReference);
 end;
 
@@ -248,5 +249,8 @@ end;
 
 initialization
   BrookRegisterApp(TBrookApplication.Create);
+
+finalization
+  BrookUnregisterApp;
 
 end.
