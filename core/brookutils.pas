@@ -300,6 +300,8 @@ begin
   R := IncHttpPathDelim(R) + ALvl;
 end;
 
+{$PUSH}{$WARN 5093 OFF}
+
 function BrookGetPathLevel(const APath: string; const AIndex: SizeInt;
   const ADelimiter: Char): string;
 var
@@ -355,6 +357,8 @@ begin
   end;
   SetLength(Result, L);
 end;
+
+{$POP}
 
 function BrookMatchMethod(const ABrookMethod: TBrookRequestMethod;
   const AMethod: string): Boolean;

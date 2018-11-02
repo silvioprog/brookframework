@@ -96,6 +96,8 @@ end;
 
 {$endif fpc_fullversion >= 20701}
 
+{$PUSH}{$WARN 5093 OFF}
+
 { TStaticFileAction }
 
 procedure TStaticFileAction.Get;
@@ -140,6 +142,8 @@ begin
   RequestDirectoryMap[ARequestPath] := IncludeTrailingPathDelimiter(ADirectory);
   TStaticFileAction.Register(ARequestPath + ':file', rmGet);
 end;
+
+{$POP}
 
 initialization
   RequestDirectoryMap := TRequestDirectoryMap.Create;

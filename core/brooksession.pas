@@ -230,6 +230,8 @@ begin
   Result := FFields.Count < 1;
 end;
 
+{$PUSH}{$WARN 5093 OFF}
+
 function TBrookSession.GenerateID: string;
 var
   VGuid: TGuid;
@@ -240,6 +242,8 @@ begin
     VGuid.D4[0], VGuid.D4[1], VGuid.D4[2], VGuid.D4[3], VGuid.D4[4],
     VGuid.D4[5], VGuid.D4[6], VGuid.D4[7]]);
 end;
+
+{$POP}
 
 procedure TBrookSession.SetFields(AValue: TStrings);
 begin
