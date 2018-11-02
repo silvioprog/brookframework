@@ -80,12 +80,16 @@ begin
       AHandled);
 end;
 
+{$PUSH}{$WARN 5024 OFF}
+
 procedure TBrookMiddleware.Execute(ASender: TObject; AAction: TBrookAction;
   ARoute: TBrookRoute);
 begin
   if Assigned(FOnExecute) then
     FOnExecute(Self, AAction, ARoute);
 end;
+
+{$POP}
 
 procedure TBrookMiddleware.BindExecution(AEvent: PBrookExecuteActionEvent);
 begin

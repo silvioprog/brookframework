@@ -71,6 +71,8 @@ type
 var
   RequestDirectoryMap: TRequestDirectoryMap;
 
+{$PUSH}{$WARN 6058 OFF}
+
 {$if fpc_fullversion >= 20701}
 
 { TStringHash }
@@ -96,8 +98,6 @@ end;
 
 {$endif fpc_fullversion >= 20701}
 
-{$PUSH}{$WARN 5093 OFF}
-
 { TStaticFileAction }
 
 procedure TStaticFileAction.Get;
@@ -105,6 +105,7 @@ var
   VLastSlashPos: Integer;
   VPathInfo, VFilePath, VBuffer, VContentType: string;
 begin
+  VBuffer := '';
   VPathInfo := HttpRequest.PathInfo;
   VLastSlashPos := RPos('/', VPathInfo);
   System.Delete(VPathInfo, VLastSlashPos + 1, Length(VPathInfo) - VLastSlashPos);

@@ -504,6 +504,8 @@ begin
   Result := UrlFor(AClassName, []);
 end;
 
+{$PUSH}{$WARN 5024 OFF}
+
 procedure TBrookAction.Request(ARequest: TBrookRequest;
   AResponse: TBrookResponse);
 begin
@@ -517,6 +519,8 @@ begin
     BROOK_HTTP_REQUEST_METHOD_OPTIONS: Options;
   end;
 end;
+
+{$POP}
 
 procedure TBrookAction.Get;
 begin

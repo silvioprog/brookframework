@@ -211,11 +211,15 @@ implementation
 
 { TBrookHttpDef }
 
+{$PUSH}{$WARN 6058 OFF}
+
 class procedure TBrookHttpDef.Register;
 begin
   TBrookHttpDefs.Service.Add(Self);
   BROOK_HTTP_CLIENT_DEFAULT_LIBRARY := GetLibrary;
 end;
+
+{$POP}
 
 class procedure TBrookHttpDef.Unregister;
 begin
