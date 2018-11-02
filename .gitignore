@@ -7,7 +7,8 @@
 *.exe
 *.dll
 *.dbg
-brookrt.pas
+brookdt.pas
 brookex.pas
+brookrt.pas
 packages/lib
 /.DS_Store
