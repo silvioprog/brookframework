@@ -71,7 +71,7 @@ type
     procedure DoMakeOrderBy(var ASelect, AjtSorting: string); virtual;
     procedure DoMakeLimit(var ASelect: string); virtual;
     function DoRecordCount(var ASelect, AWhere: string;
-      {%H-}AParams: TObject): Integer; virtual;
+      AParams: TObject): Integer; virtual;
   public
     constructor Create; overload; virtual;
     destructor Destroy; override;
@@ -131,7 +131,7 @@ type
     procedure DoMakeOrderBy(var ASelect, AjtSorting: string); virtual;
     procedure DoMakeLimit(var ASelect: string); virtual;
     function DoRecordCount(var ASelect, AWhere: string;
-      {%H-}AParams: TObject): Integer; virtual;
+      AParams: TObject): Integer; virtual;
   public
     constructor Create; overload; virtual;
     destructor Destroy; override;

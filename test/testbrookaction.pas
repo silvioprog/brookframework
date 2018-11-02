@@ -70,9 +70,9 @@ type
   private
     Fac: TBrookAction;
     Fvars: TStrings;
-    procedure AfterExecuteAction({%H-}ASender: TObject; AAction: TBrookAction;
-      {%H-}ARequest: TBrookRequest;{%H-}AResponse: TBrookResponse;
-      {%H-}ARoute: TBrookRoute;{%H-}var AHandled: Boolean);
+    procedure AfterExecuteAction(ASender: TObject; AAction: TBrookAction;
+      ARequest: TBrookRequest; AResponse: TBrookResponse;
+      ARoute: TBrookRoute; var AHandled: Boolean);
     function Getv(const AName: string): string;
     procedure Setv(const AName: string; const AValue: string);
   public

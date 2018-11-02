@@ -49,8 +49,8 @@ type
     constructor Create(ABoundEvent: PBrookExecuteActionEvent); overload; virtual;
     { Is triggered when the @code(DoExecute) method bound in this class is
       executed. }
-    procedure Execute({%H-}ASender: TObject;{%H-}AAction: TBrookAction;
-      {%H-}ARoute: TBrookRoute); virtual;
+    procedure Execute(ASender: TObject; AAction: TBrookAction;
+      ARoute: TBrookRoute); virtual;
     { Bindes a @code(TBrookExecuteActionEvent) event to this class keeping the
       implementation of a previously declared event. }
     procedure BindExecution(AEvent: PBrookExecuteActionEvent);

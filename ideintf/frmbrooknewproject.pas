@@ -64,14 +64,14 @@ type
     procedure btNextClick(Sender: TObject);
     procedure btHelpClick(Sender: TObject);
     procedure btPriorClick(Sender: TObject);
-    procedure edAppNameContextPopup(Sender: TObject;{%H-}MousePos: TPoint;
+    procedure edAppNameContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
     procedure edAppNameKeyPress(Sender: TObject; var Key: char);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;{%H-}Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure lvActionsClick(Sender: TObject);
     procedure lvActionsDblClick(Sender: TObject);
-    procedure lvActionsSelectItem(Sender: TObject;{%H-}Item: TListItem;
+    procedure lvActionsSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
     procedure pcWizardChange(Sender: TObject);
     procedure pcWizardChanging(Sender: TObject; var AllowChange: Boolean);

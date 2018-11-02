@@ -189,7 +189,7 @@ initialization
       AResponse: TBrookResponse); virtual;
     { Is triggered by a request of any HTTP method. }
     procedure Request(ARequest: TBrookRequest;
-      {%H-}AResponse: TBrookResponse); virtual;
+      AResponse: TBrookResponse); virtual;
     { Get an object with the fields coming from a
         @code(x-www-form-urlencoded) form. }
     procedure GetFields(AObject: TObject);
@@ -319,7 +319,7 @@ initialization
     destructor Destroy; override;
     { Is triggered by a request of any HTTP method. }
     procedure Request(ARequest: TBrookRequest;
-      {%H-}AResponse: TBrookResponse); override;
+      AResponse: TBrookResponse); override;
     { Maps URI to object. }
     property Entity: T read FEntity write FEntity;
   end;

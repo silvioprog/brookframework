@@ -69,7 +69,7 @@ type
 
   generic TdGSelectBuilder<T> = class(specialize TdGSqlBuilder<T>)
   public
-    class function MakeFields({%H-}ATable: T; out AFields: string;
+    class function MakeFields(ATable: T; out AFields: string;
       const AIgnoreWildcard: Boolean): Boolean; virtual;
     procedure Build(out ASql: string;
       const AIgnoreWildcard: Boolean = True); override;
@@ -79,7 +79,7 @@ type
 
   generic TdGInsertBuilder<T> = class(specialize TdGSqlBuilder<T>)
   public
-    class function MakeFields({%H-}ATable: T; out AFields, AParams: string;
+    class function MakeFields(ATable: T; out AFields, AParams: string;
       const AIgnorePrimaryKeys: Boolean): Boolean; virtual;
     procedure Build(out ASql: string;
       const AIgnorePrimaryKeys: Boolean = True); override;
@@ -89,7 +89,7 @@ type
 
   generic TdGUpdateBuilder<T> = class(specialize TdGSqlBuilder<T>)
   public
-    class function MakeFields({%H-}ATable: T; out AFields, AParams: string;
+    class function MakeFields(ATable: T; out AFields, AParams: string;
       const AIgnorePrimaryKeys: Boolean): Boolean; virtual;
     procedure Build(out ASql: string;
       const AIgnorePrimaryKeys: Boolean = True); override;
@@ -99,7 +99,7 @@ type
 
   generic TdGDeleteBuilder<T> = class(specialize TdGSqlBuilder<T>)
   public
-    class function MakeParams({%H-}ATable: T; out AParams: string;
+    class function MakeParams(ATable: T; out AParams: string;
       const AIgnoreProperties: Boolean): Boolean; virtual;
     procedure Build(out ASql: string;
       const AIgnoreProperties: Boolean = True); override;

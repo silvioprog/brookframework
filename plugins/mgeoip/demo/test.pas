@@ -10,8 +10,8 @@ uses
 type
   TTest = class(TBrookAction)
   public
-    procedure Request({%H-}ARequest: TBrookRequest;
-      {%H-}AResponse: TBrookResponse); override;
+    procedure Request(ARequest: TBrookRequest;
+      AResponse: TBrookResponse); override;
   end;
 
 implementation

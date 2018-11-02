@@ -34,7 +34,7 @@ type
     function DoInitDescriptor: TModalResult; override;
   public
     constructor Create; override;
-    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
@@ -50,7 +50,7 @@ type
   public
     constructor Create; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
@@ -101,7 +101,7 @@ type
     function DoInitDescriptor: TModalResult; override;
   public
     constructor Create; override;
-    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
@@ -133,8 +133,8 @@ type
     constructor Create; override;
     function Init(var ANewFilename: string; ANewOwner: TObject;
        var ANewSource: string; AQuiet: Boolean): TModalResult; override;
-    function CreateSource({%H-}const AFileName,{%H-}ASourceName,
-      {%H-}AResourceName: string): string; override;
+    function CreateSource(const AFileName, ASourceName,
+      AResourceName: string): string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
@@ -149,9 +149,9 @@ type
   public
     constructor Create; override;
     function Init(var ANewFilename: string; ANewOwner: TObject;
-       var ANewSource: string;{%H-}AQuiet: Boolean): TModalResult; override;
-    function CreateSource({%H-}const AFileName,{%H-}ASourceName,
-      {%H-}AResourceName: string): string; override;
+       var ANewSource: string; AQuiet: Boolean): TModalResult; override;
+    function CreateSource(const AFileName, ASourceName,
+      AResourceName: string): string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     property ActName: string read FActName write FActName;
