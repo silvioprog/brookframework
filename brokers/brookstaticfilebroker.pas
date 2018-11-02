@@ -71,7 +71,9 @@ type
 var
   RequestDirectoryMap: TRequestDirectoryMap;
 
-{$PUSH}{$WARN 6058 OFF}
+{$IFNDEF VER3_0}
+ {$PUSH}{$WARN 6058 OFF}
+{$ENDIF}
 
 {$if fpc_fullversion >= 20701}
 
@@ -144,7 +146,9 @@ begin
   TStaticFileAction.Register(ARequestPath + ':file', rmGet);
 end;
 
-{$POP}
+{$IFNDEF VER3_0}
+ {$POP}
+{$ENDIF}
 
 initialization
   RequestDirectoryMap := TRequestDirectoryMap.Create;

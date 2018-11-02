@@ -211,7 +211,9 @@ implementation
 
 { TBrookHttpDef }
 
-{$PUSH}{$WARN 6058 OFF}
+{$IFNDEF VER3_0}
+ {$PUSH}{$WARN 6058 OFF}
+{$ENDIF}
 
 class procedure TBrookHttpDef.Register;
 begin
@@ -219,7 +221,9 @@ begin
   BROOK_HTTP_CLIENT_DEFAULT_LIBRARY := GetLibrary;
 end;
 
-{$POP}
+{$IFNDEF VER3_0}
+ {$POP}
+{$ENDIF}
 
 class procedure TBrookHttpDef.Unregister;
 begin
