@@ -181,15 +181,12 @@ begin
   pcWizard.PageIndex := pcWizard.PageIndex - 1;
 end;
 
+{$PUSH}{$WARN 5024 OFF}
+
 procedure TfrBrookNewProject.edAppNameContextPopup(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
 begin
   Handled := True;
-end;
-
-procedure TfrBrookNewProject.edAppNameKeyPress(Sender: TObject; var Key: char);
-begin
-  OnlyAlphaNumeric(Key);
 end;
 
 procedure TfrBrookNewProject.FormKeyDown(Sender: TObject; var Key: Word;
@@ -208,6 +205,20 @@ begin
     end;
 end;
 
+procedure TfrBrookNewProject.lvActionsSelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
+begin
+  btEditAct.Enabled := Selected;
+  btDeleteAct.Enabled := Selected;
+end;
+
+{$POP}
+
+procedure TfrBrookNewProject.edAppNameKeyPress(Sender: TObject; var Key: char);
+begin
+  OnlyAlphaNumeric(Key);
+end;
+
 procedure TfrBrookNewProject.FormShow(Sender: TObject);
 begin
   pcWizardChange(Sender);
@@ -224,13 +235,6 @@ end;
 procedure TfrBrookNewProject.lvActionsDblClick(Sender: TObject);
 begin
   btEditAct.Click;
-end;
-
-procedure TfrBrookNewProject.lvActionsSelectItem(Sender: TObject;
-  Item: TListItem; Selected: Boolean);
-begin
-  btEditAct.Enabled := Selected;
-  btDeleteAct.Enabled := Selected;
 end;
 
 procedure TfrBrookNewProject.pcWizardChange(Sender: TObject);
@@ -357,4 +361,3 @@ begin
 end;
 
 end.
-

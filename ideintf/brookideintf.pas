@@ -274,6 +274,8 @@ begin
   Name := '';
 end;
 
+{$PUSH}{$WARN 5024 OFF}
+
 function TBrookCustomSimpleCGIProjectDescriptor.CreateStartFiles(
   AProject: TLazProject): TModalResult;
 var
@@ -298,6 +300,8 @@ begin
   end;
   Result := mrOK;
 end;
+
+{$POP}
 
 function TBrookCustomSimpleCGIProjectDescriptor.DoInitDescriptor: TModalResult;
 begin
@@ -725,6 +729,8 @@ begin
     Result := mrCancel;
 end;
 
+{$PUSH}{$WARN 5024 OFF}
+
 function TBrookBrokersFileDescPascalUnit.CreateSource(const AFileName,
   ASourceName, AResourceName: string): string;
 var
@@ -834,6 +840,8 @@ begin
   FQuiet := False;
 end;
 
+{$POP}
+
 function TBrookBrokersFileDescPascalUnit.GetLocalizedName: string;
 begin
   Result := SBrookBrokersName;
@@ -862,6 +870,8 @@ begin
     FActDefault, True) then
     Result := mrCancel;
 end;
+
+{$PUSH}{$WARN 5024 OFF}
 
 function TBrookActionFileDescPascalUnit.CreateSource(const AFileName,
   ASourceName, AResourceName: string): string;
@@ -912,6 +922,8 @@ begin
   FActDefault := False;
   FQuiet := False;
 end;
+
+{$POP}
 
 function TBrookActionFileDescPascalUnit.GetLocalizedName: string;
 begin
