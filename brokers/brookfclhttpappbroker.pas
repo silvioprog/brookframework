@@ -135,11 +135,8 @@ end;
 
 procedure TBrookApplication.CreateForm(AInstanceClass: TComponentClass; out
   AReference);
-var
-  VReference: TComponent absolute AReference;
 begin
-  VReference := AInstanceClass.Create(nil);
-  FApp.InsertComponent(VReference);
+  FApp.InsertComponent(AInstanceClass.Create(nil));
 end;
 
 function TBrookApplication.Instance: TObject;
@@ -292,5 +289,8 @@ end;
 
 initialization
   BrookRegisterApp(TBrookApplication.Create);
+
+finalization
+  BrookUnregisterApp;
 
 end.
