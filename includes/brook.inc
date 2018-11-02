@@ -1,4 +1,5 @@
 {$mode objfpc}{$H+}
+{$WARN 5024 OFF}
 {.$DEFINE BROOK_DEBUG}
 {$IFDEF BROOK_DEBUG}
  {$DEFINE CGIDEBUG}
