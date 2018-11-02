@@ -64,7 +64,9 @@ type
     FOnBeforeMakeWhere: TjTableBeforeMakeWhereEvent;
     FParams: TjTableParams;
     FUnlistedFields: TStrings;
-  protected
+  public
+    constructor Create; overload; virtual;
+    destructor Destroy; override;
     procedure DoMakeFields(var AFields: string); virtual;
     procedure DoMakeSelect(var AFields, ASelect: string); virtual;
     procedure DoMakeWhere(var ASelect, AWhere: string); virtual;
@@ -72,9 +74,6 @@ type
     procedure DoMakeLimit(var ASelect: string); virtual;
     function DoRecordCount(var ASelect, AWhere: string;
       AParams: TObject): Integer; virtual;
-  public
-    constructor Create; overload; virtual;
-    destructor Destroy; override;
     procedure ListData(AEntity: T; AEntities: TEntities;
       AParamsStr: TStrings; AParams: TObject; var AWhere: string);
     property Params: TjTableParams read FParams;
@@ -124,7 +123,9 @@ type
     FOnBeforeMakeWhere: TjTableBeforeMakeWhereEvent;
     FParams: TjTableParams;
     FUnlistedFields: TStrings;
-  protected
+  public
+    constructor Create; overload; virtual;
+    destructor Destroy; override;
     procedure DoMakeFields(var AFields: string); virtual;
     procedure DoMakeSelect(var AFields, ASelect: string); virtual;
     procedure DoMakeWhere(var ASelect, AWhere: string); virtual;
@@ -132,9 +133,6 @@ type
     procedure DoMakeLimit(var ASelect: string); virtual;
     function DoRecordCount(var ASelect, AWhere: string;
       AParams: TObject): Integer; virtual;
-  public
-    constructor Create; overload; virtual;
-    destructor Destroy; override;
     procedure ListData(AEntity: T; AEntities: TEntities;
       AParamsStr: TStrings; AParams: TObject; var AWhere: string); virtual;
   published
