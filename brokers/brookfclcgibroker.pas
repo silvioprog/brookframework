@@ -101,9 +101,10 @@ end;
 procedure TBrookApplication.CreateForm(AInstanceClass: TComponentClass;
   out AReference);
 var
-  VReference: TComponent absolute AReference;
+  VReference: TComponent;
 begin
   VReference := AInstanceClass.Create(nil);
+  TComponent(AReference) := VReference;
   FApp.InsertComponent(VReference);
 end;
 

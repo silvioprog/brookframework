@@ -103,9 +103,10 @@ procedure TBrookDaemonApplication.CreateForm(AInstanceClass: TComponentClass;
   out AReference);
 var
   VInstance: TObject;
-  VReference: TComponent absolute AReference;
+  VReference: TComponent;
 begin
   VReference := AInstanceClass.Create(nil);
+  TComponent(AReference) := VReference;
   VInstance := Instance;
   if VInstance is TComponent then
     TComponent(VInstance).InsertComponent(VReference);
