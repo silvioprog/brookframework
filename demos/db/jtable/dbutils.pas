@@ -13,7 +13,7 @@ function pgCount(const ATableName: string): Int64; overload;
 function pgCount(const ATableName, AWhere: string; AParams: TObject;
   const ANulls: Boolean): Int64; overload;
 function pgCount(const ATableName, ASelect, AWhere: string; AParams: TObject;
-  const ANulls: Boolean): Int64; overload
+  const ANulls: Boolean): Int64; overload;
 
 implementation
 
