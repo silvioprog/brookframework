@@ -152,7 +152,7 @@ begin
     if H <> hhUnknown then
       SetHeader(H, P.Value)
     else
-      ADest.AddPair(P.Name, P.Value);
+      ADest.Add(Concat(P.Name, ADest.NameValueSeparator, P.Value));
   end;
 end;
 
@@ -161,7 +161,7 @@ var
   P: TBrookStringPair;
 begin
   for P in AMap do
-    ADest.AddPair(P.Name, P.Value);
+    ADest.Add(Concat(P.Name, ADest.NameValueSeparator, P.Value));
 end;
 
 procedure THTTPRequest.FetchParams(AMap: TBrookStringMap; ADest: TStrings);
@@ -169,7 +169,7 @@ var
   P: TBrookStringPair;
 begin
   for P in AMap do
-    ADest.AddPair(P.Name, P.Value);
+    ADest.Add(Concat(P.Name, ADest.NameValueSeparator, P.Value));
 end;
 
 procedure THTTPRequest.FetchCookies(AMap: TBrookStringMap; ADest: TStrings);
@@ -177,7 +177,7 @@ var
   P: TBrookStringPair;
 begin
   for P in AMap do
-    ADest.AddPair(P.Name, P.Value);
+    ADest.Add(Concat(P.Name, ADest.NameValueSeparator, P.Value));
 end;
 
 procedure THTTPRequest.FetchUploads(AUploads: TBrookHTTPUploads);
@@ -236,7 +236,8 @@ end;
 
 procedure THTTPResponse.CollectHeaders(AHeaders: TStrings);
 begin
-  AHeaders.AddPair(BROOK_HTTP_HEADER_X_POWERED_BY, 'Brook framework');
+  AHeaders.Add(Concat(BROOK_HTTP_HEADER_X_POWERED_BY,
+    AHeaders.NameValueSeparator, 'Brook framework'));
   inherited CollectHeaders(AHeaders);
 end;
 
