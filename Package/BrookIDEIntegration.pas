@@ -28,7 +28,7 @@
 
 unit BrookIDEIntegration;
 
-{$I Brook.inc}
+{$I BrookDefines.inc}
 
 {$IFDEF FPC}
  {$WARN 5024 OFF}

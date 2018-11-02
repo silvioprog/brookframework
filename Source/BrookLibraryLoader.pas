@@ -28,7 +28,7 @@
 
 unit BrookLibraryLoader;
 
-{$I Brook.inc}
+{$I BrookDefines.inc}
 
 interface
 

@@ -26,7 +26,7 @@
 
 unit BrookHTTPAuthentication;
 
-{$I Brook.inc}
+{$I BrookDefines.inc}
 
 interface
 

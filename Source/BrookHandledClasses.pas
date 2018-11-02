@@ -28,7 +28,7 @@
 
 unit BrookHandledClasses;
 
-{$I Brook.inc}
+{$I BrookDefines.inc}
 
 interface
 

@@ -26,7 +26,7 @@
 
 unit BrookHTTPEntryPoints;
 
-{$I Brook.inc}
+{$I BrookDefines.inc}
 
 interface
 

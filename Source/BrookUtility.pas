@@ -28,7 +28,7 @@
 
 unit BrookUtility;
 
-{$I Brook.inc}
+{$I BrookDefines.inc}
 
 interface
 

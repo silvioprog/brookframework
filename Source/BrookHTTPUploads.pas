@@ -26,7 +26,7 @@
 
 unit BrookHTTPUploads;
 
-{$I Brook.inc}
+{$I BrookDefines.inc}
 
 interface
 

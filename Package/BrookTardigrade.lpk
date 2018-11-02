@@ -48,7 +48,7 @@ along with Brook framework.  If not, see &lt;http://www.gnu.org/licenses/>."/>
         <UnitName Value="FPC300Fixes"/>
       </Item4>
       <Item5>
-        <Filename Value="../Source/Brook.inc"/>
+        <Filename Value="../Source/BrookDefines.inc"/>
         <Type Value="Include"/>
       </Item5>
       <Item6>
