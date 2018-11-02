@@ -57,8 +57,8 @@ type
   TBrookHttpConnectionRequest = class(TFPHttpConnectionRequest)
   protected
     procedure DeleteTempUploadedFiles; override;
-    function GetTempUploadFileName(
-      const {%H-}AName, AFileName: string; {%H-}ASize: Int64): string; override;
+    function GetTempUploadFileName(const AName, AFileName: string;
+      ASize: Int64): string; override;
     function RequestUploadDir: string; override;
     procedure InitRequestVars; override;
   end;
