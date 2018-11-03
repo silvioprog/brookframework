@@ -3,6 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="BrookDT"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Silvio Clecio - https://github.com/silvioprog"/>
     <CompilerOptions>
@@ -13,16 +14,10 @@
         <OtherUnitFiles Value="..\design"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CompilerMessages>
-          <MsgFileName Value=""/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="Brook designtime package."/>
     <License Value="See the file LICENSE, included in this distribution, for details about the copyright."/>
-    <Version Minor="9" Release="9"/>
+    <Version Major="1"/>
     <Files Count="7">
       <Item1>
         <Filename Value="..\design\brookconfiguratorhandler.pas"/>
@@ -54,7 +49,6 @@
         <UnitName Value="BrookSessionHandler"/>
       </Item7>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
         <PackageName Value="BrookRT"/>
