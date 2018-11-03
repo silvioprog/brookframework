@@ -115,6 +115,7 @@ end;
 procedure TfrBrookNewProject.btNextClick(Sender: TObject);
 begin
   pcWizard.PageIndex := Succ(pcWizard.PageIndex);
+  pcWizardChange(Sender);
 end;
 
 procedure TfrBrookNewProject.btHelpClick(Sender: TObject);
@@ -179,6 +180,7 @@ end;
 procedure TfrBrookNewProject.btPriorClick(Sender: TObject);
 begin
   pcWizard.PageIndex := pcWizard.PageIndex - 1;
+  pcWizardChange(Sender);
 end;
 
 {$PUSH}{$WARN 5024 OFF}
