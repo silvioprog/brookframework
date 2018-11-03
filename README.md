@@ -1,9 +1,11 @@
 # Development of the new Brook framework.
 
-* Version number: `4.0`
+* Version number: `5.0`
 * Codename: `Tardigrade`
 * Core under [Sagui library](https://risoflora.github.io/libsagui/)
     * shared library - dynamic loading, single external file required (`libsagui.so`/`libsagui.dll`)
+
+**This page will be updated (examples, how-to, links etc.) as soon as the version 5.0.0 was released!**
 
 # Supported platforms:
 
@@ -28,7 +30,7 @@ Successfully compiled for Windows 32/64 bit and Linux 64 bit using:
 
 Planning library distribution:
 
-* APT (Ubuntu repositories)
+* APT (Already requested tp the Ubuntu team)
 * Pacman (MinGW-w64 repositories)
 
 The shared library (DLL) for Windows [here](https://github.com/risoflora/libsagui/releases).
@@ -46,8 +48,8 @@ Planning package distribution/installation:
 
 # Current development
 
-* BrookHTTPCookies (in progress...)
-* BrookRESTRouter (planning)
+* Cookies support (in progress...)
+* Automatic server class (planning)
 
 # Bugs
 
