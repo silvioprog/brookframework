@@ -1,5 +1,0 @@
-{$mode objfpc}{$H+}
-{.$DEFINE BROOK_DEBUG}
-{$IFDEF BROOK_DEBUG}
- {$DEFINE CGIDEBUG}
-{$ENDIF}

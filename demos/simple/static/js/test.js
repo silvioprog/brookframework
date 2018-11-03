@@ -1,3 +1,0 @@
-function testjs() {
-  alert('test')
-}
