@@ -324,7 +324,7 @@ end;
 procedure TApplication.CreateForm(AInstanceClass: TComponentClass;
   out AReference);
 begin
-  inherited InsertComponent(AInstanceClass.Create(nil));
+  TComponent(AReference) := AInstanceClass.Create(Self);
 end;
 
 {$POP}
