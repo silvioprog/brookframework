@@ -59,6 +59,7 @@ type
     FTLSSession: Pointer;
     FHandle: Psg_httpreq;
     function GetPaths: TArray<string>; inline;
+    function GetContentType: string; inline;
     function GetReferer: string; inline;
     function GetUserAgent: string; inline;
   protected
@@ -89,6 +90,7 @@ type
     property Method: string read FMethod;
     property Path: string read FPath;
     { TODO: client IP }
+    property ContentType: string read GetContentType;
     property UserAgent: string read GetUserAgent;
     property Referer: string read GetReferer;
     property Paths: TArray<string> read GetPaths;
@@ -171,6 +173,11 @@ end;
 function TBrookHTTPRequest.GetPaths: TArray<string>;
 begin
   Result := Path.Split(['/'], TStringSplitOptions.ExcludeEmpty);
+end;
+
+function TBrookHTTPRequest.GetContentType: string;
+begin
+  Result := FHeaders.Get('Content-Type');
 end;
 
 function TBrookHTTPRequest.GetReferer: string;
