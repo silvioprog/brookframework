@@ -5,7 +5,7 @@
 * Core under [Sagui library](https://risoflora.github.io/libsagui/)
     * shared library - dynamic loading, single external file required (`libsagui.so`/`libsagui.dll`)
 
-**This page will be updated (examples, how-to, links etc.) as soon as the version 5.0.0 was released!**
+**This page will be updated (examples, how-to, links etc.) as soon as the version 5.0.0 is released!**
 
 # Supported platforms:
 
