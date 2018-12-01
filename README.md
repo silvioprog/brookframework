@@ -49,7 +49,7 @@ Planning package distribution/installation:
 # Current development
 
 * Cookies support (in progress...)
-* Automatic server class (planning)
+* Dynamic class routing (planning)
 
 # Bugs
 
