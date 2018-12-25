@@ -74,12 +74,8 @@ type
       const AContentType: string; AStatus: Word); overload; virtual;
     procedure SendBinary(ABuffer: Pointer; ASize: NativeUInt;
       const AContentType: string; AStatus: Word); virtual;
-    procedure SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
-      const AFileName: TFileName; ARendered: Boolean;
-      AStatus: Word); overload; virtual;
-    procedure SendFile(const AFileName: TFileName;
-      ARendered: Boolean); overload; virtual;
-    procedure SendFile(const AFileName: TFileName); overload; virtual;
+    procedure SendFile(ASize: NativeUInt; AMaxSize, AOffset: UInt64;
+      const AFileName: TFileName; ARendered: Boolean; AStatus: Word); virtual;
     procedure SendStream(AStream: TStream; AStatus: Word;
       AFreed: Boolean); overload; virtual;
     procedure SendStream(AStream: TStream; AStatus: Word); overload; virtual;
@@ -89,6 +85,8 @@ type
       AStatus: Word); overload; virtual;
     procedure SendAndRedirect(const AValue, ADestination,
       AContentType: string); overload; virtual;
+    procedure Download(const AFileName: TFileName; AStatus: Word); virtual;
+    procedure Render(const AFileName: TFileName; AStatus: Word); virtual;
     procedure Clear; virtual;
     property Headers: TBrookStringMap read FHeaders;
   end;
@@ -205,31 +203,21 @@ begin
   SgLib.CheckLastError(R);
 end;
 
-procedure TBrookHTTPResponse.SendFile(ABlockSize: NativeUInt; AMaxSize: UInt64;
-  const AFileName: TFileName; ARendered: Boolean; AStatus: Word);
+procedure TBrookHTTPResponse.SendFile(ASize: NativeUInt; AMaxSize,
+  AOffset: UInt64; const AFileName: TFileName; ARendered: Boolean;
+  AStatus: Word);
 var
   M: TMarshaller;
   R: cint;
 begin
   CheckStatus(AStatus);
   SgLib.Check;
-  R := sg_httpres_sendfile(FHandle, ABlockSize, AMaxSize,
+  R := sg_httpres_sendfile(FHandle, ASize, AMaxSize, AOffset,
     M.ToCString(AFileName), ARendered, AStatus);
   CheckAlreadySent(R);
   if R = ENOENT then
     raise EFileNotFoundException.CreateRes(@SFileNotFound);
   SgLib.CheckLastError(R);
-end;
-
-procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName;
-  ARendered: Boolean);
-begin
-  SendFile(BROOK_BLOCK_SIZE, 0, AFileName, ARendered, 200);
-end;
-
-procedure TBrookHTTPResponse.SendFile(const AFileName: TFileName);
-begin
-  SendFile(BROOK_BLOCK_SIZE, 0, AFileName, False, 200);
 end;
 
 procedure TBrookHTTPResponse.SendStream(AStream: TStream; AStatus: Word;
@@ -281,6 +269,36 @@ procedure TBrookHTTPResponse.SendAndRedirect(const AValue, ADestination,
   AContentType: string);
 begin
   SendAndRedirect(AValue, ADestination, AContentType, 302);
+end;
+
+procedure TBrookHTTPResponse.Download(const AFileName: TFileName;
+  AStatus: Word);
+var
+  M: TMarshaller;
+  R: cint;
+begin
+  CheckStatus(AStatus);
+  SgLib.Check;
+  R := sg_httpres_download(FHandle, M.ToCString(AFileName), AStatus);
+  CheckAlreadySent(R);
+  if R = ENOENT then
+    raise EFileNotFoundException.CreateRes(@SFileNotFound);
+  SgLib.CheckLastError(R);
+end;
+
+procedure TBrookHTTPResponse.Render(const AFileName: TFileName;
+  AStatus: Word);
+var
+  M: TMarshaller;
+  R: cint;
+begin
+  CheckStatus(AStatus);
+  SgLib.Check;
+  R := sg_httpres_render(FHandle, M.ToCString(AFileName), AStatus);
+  CheckAlreadySent(R);
+  if R = ENOENT then
+    raise EFileNotFoundException.CreateRes(@SFileNotFound);
+  SgLib.CheckLastError(R);
 end;
 
 procedure TBrookHTTPResponse.Clear;

@@ -95,7 +95,7 @@ begin
   else
   begin
     if ARequest.Params.TryValue('file', VFile) then
-      AResponse.SendFile(Concat(UploadsDir, PathDelim, VFile))
+      AResponse.Download(Concat(UploadsDir, PathDelim, VFile), 200)
     else
       AResponse.Send(PAGE_FORM, CONTENT_TYPE, 200);
   end;
