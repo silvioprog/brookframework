@@ -313,8 +313,8 @@ begin
     VACb := {$IFNDEF VER3_0}@{$ENDIF}DoAuthenticationCallback
   else
     VACb := nil;
-  FHandle := sg_httpsrv_new2(VACb, Self,
-{$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback, Self,
+  FHandle := sg_httpsrv_new2(VACb,
+{$IFNDEF VER3_0}@{$ENDIF}DoRequestCallback,
 {$IFNDEF VER3_0}@{$ENDIF}DoErrorCallback, Self);
   if not Assigned(FHandle) then
     raise EInvalidPointer.CreateRes(@SBrookCannotCreateServerHandle);

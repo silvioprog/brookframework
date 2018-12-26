@@ -368,9 +368,8 @@ var
   sg_httpres_clear: function(res: Psg_httpres): cint; cdecl;
 
 var
-  sg_httpsrv_new2: function(auth_cb: sg_httpauth_cb; auth_cls: Pcvoid;
-    req_cb: sg_httpreq_cb; req_cls: Pcvoid; err_cb: sg_err_cb;
-    err_cls: Pcvoid): Psg_httpsrv; cdecl;
+  sg_httpsrv_new2: function(auth_cb: sg_httpauth_cb; req_cb: sg_httpreq_cb;
+    err_cb: sg_err_cb; err_cls: Pcvoid): Psg_httpsrv; cdecl;
 
   sg_httpsrv_new: function(cb: sg_httpreq_cb; cls: Pcvoid): Psg_httpsrv; cdecl;
 
