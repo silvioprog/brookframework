@@ -1,11 +1,15 @@
+#WARNING
+
+This project was moved to: [risoflora/brookframework](https://github.com/risoflora/brookframework).
+
+If you want Brook only for Free Pascal, it is available in a new repository too: [risoflora/brookfreepascal](https://github.com/risoflora/brookfreepascal).
+
 # Development of the new Brook framework.
 
 * Version number: `5.0`
 * Codename: `Tardigrade`
 * Core under [Sagui library](https://risoflora.github.io/libsagui/)
     * shared library - dynamic loading, single external file required (`libsagui.so`/`libsagui.dll`)
-
-**This page will be updated (examples, how-to, links etc.) as soon as the version 5.0.0 is released!**
 
 # Supported platforms:
 
